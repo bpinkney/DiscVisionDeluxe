@@ -9,7 +9,8 @@ OPT_INC = ${PROJECT_ROOT}/common/make/common_spin.mk
 # Key paths and settings
 ################################################################################
 CFLAGS += -std=c++11 -pthread
-CPPFLAGS = -I../../lib/matplotlib-cpp/ -I../../lib/opencv/include/opencv/ -I../../lib/opencv/modules/imgcodecs/include/opencv2/ -I../../lib/opencv/modules/core/include/opencv2/ -I../../lib/opencv/include/opencv2/ -I../../lib/opencv/modules/highgui/include/opencv2/ `pkg-config --libs opencv`
+CPPFLAGS = $(shell pkg-config --cflags opencv4)
+LIB += $(shell pkg-config --libs opencv4)
 ifeq ($(wildcard ${OPT_INC}),)
 CXX = g++ ${CFLAGS} ${CPPFLAGS}
 ODIR  = .obj/build${D}

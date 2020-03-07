@@ -21,6 +21,8 @@
 
 // Include the standard OpenCV headers
 #include <opencv2/opencv.hpp>
+//#include <imgcodecs.hpp>
+//#include <highgui.hpp>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -28,46 +30,52 @@ using namespace Spinnaker::GenICam;
 using namespace std;
 using namespace cv;
 
+// Define a container for the Spinnaker so we can store them in a queue
+struct CameraImage {
+    CameraImage()
+        : imagePtr(Image::Create()), imageNumber(0), imageTimestamp_ns(0) {}
+    CameraImage(Spinnaker::ImagePtr iPtr, uint64_t iN, uint64_t iT)
+        : imagePtr(iPtr), imageNumber(iN), imageTimestamp_ns(iT) {}
+    Spinnaker::ImagePtr imagePtr;
+    uint64_t imageNumber;
+    uint64_t imageTimestamp_ns;
+};
+
 // declare global queue for mutex access
-std::queue<uint64_t> timestampnsQueue;
-std::queue<cv::Mat> imageMatQueue;
-std::mutex imageMatMutex;
+std::queue<CameraImage> imageQueue;
+std::mutex imageMutex;
 std::atomic<bool> ai_thread_ready (false);
 
-
-void image_queue_push(cv::Mat imageMat, uint64_t timestamp_ns)
+bool image_queue_empty()
 {
+  bool empty;
   // mutex on
-  imageMatMutex.lock();
-  timestampnsQueue.push(timestamp_ns);
-  imageMatQueue.push(imageMat);
+  imageMutex.lock();  
+  empty = imageQueue.empty();
   // mutex off
-  imageMatMutex.unlock();
+  imageMutex.unlock();
+
+  return empty;
 }
 
-bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns)
+void image_queue_push(CameraImage image)
+{
+  // mutex on
+  imageMutex.lock();
+  imageQueue.push(image);
+  // mutex off
+  imageMutex.unlock();
+}
+
+CameraImage image_queue_pull()
 {   
   // mutex on
-  imageMatMutex.lock();
-  if(imageMatQueue.empty())
-  {
-    // mutex off
-    imageMatMutex.unlock();
-    *timestamp_ns = 0;
-    *imageMat = cv::Mat();
-    return false;
-  }
-  else
-  {
-    *timestamp_ns = timestampnsQueue.front();
-    *imageMat = imageMatQueue.front();
-    timestampnsQueue.pop();
-    imageMatQueue.pop();
-    // mutex off
-    imageMatMutex.unlock();
-    return true;
-  }
-
+  imageMutex.lock();  
+  CameraImage image = imageQueue.front();
+  imageQueue.pop();
+  // mutex off
+  imageMutex.unlock();
+  return image;
 }
 
 // Get time stamp in milliseconds.
@@ -108,26 +116,25 @@ double get_uptime_ms()
 }
 
 // OpenCV stuff
-cv::Mat spinnakerWrapperToCvMat(ImagePtr imagePtr)
+bool spinnakerWrapperToCvMat(CameraImage imageCam, cv::Mat * imageBayerMat)
 {
   try
   {
-    //ImagePtr convertedImagePtr = imagePtr->Convert(PixelFormat_BGR8, NEAREST_NEIGHBOR);
-    ImagePtr convertedImagePtr = imagePtr;//->Convert(PixelFormat_Mono8, HQ_LINEAR);
+    ImagePtr imagePtr = imageCam.imagePtr;
 
-    const auto XPadding = convertedImagePtr->GetXPadding();
-    const auto YPadding = convertedImagePtr->GetYPadding();
-    const auto rowsize = convertedImagePtr->GetWidth();
-    const auto colsize = convertedImagePtr->GetHeight();
+    const auto XPadding = imagePtr->GetXPadding();
+    const auto YPadding = imagePtr->GetYPadding();
+    const auto rowsize = imagePtr->GetWidth();
+    const auto colsize = imagePtr->GetHeight();
 
-    cv::Mat openCVOutputImage  = 
+    *imageBayerMat = 
       cv::Mat
       (
         (int)(colsize + YPadding), 
         (int)(rowsize + XPadding), 
         CV_8UC1, 
-        convertedImagePtr->GetData(),
-        convertedImagePtr->GetStride()
+        imagePtr->GetData(),
+        imagePtr->GetStride()
       );
 
     // debug
@@ -135,16 +142,18 @@ cv::Mat spinnakerWrapperToCvMat(ImagePtr imagePtr)
     if(show_me)
     {
       namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-      imshow( "Display window",openCVOutputImage );    // Show our image inside it.
+      imshow( "Display window",*imageBayerMat );    // Show our image inside it.
       waitKey(0);                                      // Wait for a keystroke in the window
-    }    
+    }
+    // de-alloc Spinnaker Object
+    imageCam.imagePtr->Release();
 
-    return openCVOutputImage;
+    return true;
   }
   catch (const std::exception& e)
   {
-    cout << endl << endl << "*** Could not convert Spinnaker Image Pointer to OpenCV MAT! ***" << endl << endl;
-    return cv::Mat();
+    cout << endl << endl << "*** Could not convert Spinnaker Image Pointer to OpenCV MAT! ***" << endl << e.what() << endl << endl;
+    return false;
   }
 }
 
@@ -492,7 +501,6 @@ int PrintDeviceInfo(INodeMap& nodeMap)
 int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
 {            
   int result = 0;
-
   
   // Retrieve GenICam nodemap
   INodeMap& nodeMap = pCam->GetNodeMap();
@@ -569,9 +577,6 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
     cout << endl;
 
     // Retrieve images and pipe them into threadsafe queue       
-    ImagePtr imagePtr;
-    ImagePtr convertedImagePtr;
-    cv::Mat  imageMat;
     uint64_t timestamp_ns;
 
     // Begin acquiring images
@@ -586,30 +591,37 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
       try
       {
         // Retrieve next received image and ensure image completion
-        imagePtr = pCam->GetNextImage();
+        ImagePtr pResultImage = pCam->GetNextImage();
 
-        if (imagePtr->IsIncomplete())
+        if (pResultImage->IsIncomplete())
         {
-          cout << "Image incomplete with image status " << imagePtr->GetImageStatus() << "..." << endl
+          cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..." << endl
              << endl;
         }
         else
         {
+          cout << "Get timestamp" << endl;
           if(init_timestamp_ns == 0)
           {
-            init_timestamp_ns = imagePtr->GetTimeStamp();
+            init_timestamp_ns = pResultImage->GetTimeStamp();
           }
 
-          timestamp_ns = (imagePtr->GetTimeStamp() - init_timestamp_ns);
-
-          // Convert to OpenCV matrix
-          imageMat = spinnakerWrapperToCvMat(imagePtr);
-          // push to IO thread so we can keep grabbing frames
-          image_queue_push(imageMat, timestamp_ns);
+          cout << "create image" << endl;
+          ImagePtr copiedImage = Image::Create();
+          cout << "deepcopy" << endl;
+          copiedImage->DeepCopy(pResultImage);
+          // Free up image memory after deepcopy to queue
+          pResultImage->Release();
+          cout << "Get timestamp again..." << endl;
+          timestamp_ns = (copiedImage->GetTimeStamp() - init_timestamp_ns);
+          cout << "construct cameraimage" << endl;
+          CameraImage tempCameraImage = CameraImage(copiedImage, imageCnt, timestamp_ns);          
+          // push to IO thread so we can keeps grabbing frames
+          image_queue_push(tempCameraImage);
         }
 
-        // Free up image memory after OpenCV conversion                
-        imagePtr->Release();
+                        
+        
       }
       catch (Spinnaker::Exception& e)
       {
@@ -623,7 +635,13 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
     }
 
     // End acquisition
+    cout << "End Acquisition" << endl;
+    // It looks like this can't actually complete until all the pointers (including deep copy)
+    // are de-referenced. This seems strange to me...
+    // It also means that we MUST be converting to openCV and running
+    // 'Release()' on these imagePtrs before this thread can complete (no more stashing purely to RAM!)
     pCam->EndAcquisition();
+    cout << "Done" << endl;
   }
   catch (Spinnaker::Exception& e)
   {
@@ -644,15 +662,15 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
 
 int ProcessImages(void)
 {    
-  // cycle through buffered images
-  
+  // cycle through buffered images  
   uint64_t imageCnt           = 0;
   uint64_t timestamp_ns       = 0;
   uint64_t last_timestamp_ns  = 0;
-  cv::Mat imageBayerMat   = cv::Mat();
-  cv::Mat imageMat        = cv::Mat();
+  cv::Mat     imageBayerMat;
+  cv::Mat     imageMat;
   bool empty_queue = false;
 
+  // We are not allowed to do this now that the queue is composed of Spinnaker imgPtr objects
   if(0)
   {
     // due to CPU issues, just wait here and log all images to RAM before writing to disk
@@ -666,53 +684,63 @@ int ProcessImages(void)
   while(!ai_thread_ready || !empty_queue)
   {
     // Pull the raw image out of the queue
-    if(!image_queue_pull(&imageBayerMat, &timestamp_ns))
+    empty_queue = image_queue_empty();
+    
+    if(empty_queue)
     {
-      //cout << endl << "Empty Queue!" << endl;
-      empty_queue = true;
       continue;
     }
-    empty_queue = false;
 
-    // Colour option
-    cvtColor(imageBayerMat, imageMat, cv::COLOR_BayerRG2RGB); // starts as PixelFormat_BayerRG8
-
-    // Greyscale option
-    //cvtColor(imageBayerMat, imageMat, cv::COLOR_BayerRG2GRAY); // starts as PixelFormat_BayerRG8
-
-    double dt_ms = (double)(timestamp_ns - last_timestamp_ns)*0.000001;
-
-    bool print_writes = false;
-    if(print_writes)
+    if(!empty_queue)
     {
-      // print info
-      cv::Size s = imageMat.size();
+      CameraImage imageCam = image_queue_pull();
+      if(spinnakerWrapperToCvMat(imageCam, &imageBayerMat))
+      {
 
-      cout 
-      << imageCnt << " : " 
-      << (double)(timestamp_ns - last_timestamp_ns)*0.000001 
-      << " ms : Grabbed images " 
-      << imageCnt << ", width = " << s.width
-      << ", height = " << s.height << endl;
-    }
-    
-    if(dt_ms > 2.2)
-    {
-      cout << "Frames lost!" << endl;
-    }
+        // Colour option
+        cvtColor(imageMat, imageBayerMat, cv::COLOR_BayerRG2RGB); // starts as PixelFormat_BayerRG8
 
-    last_timestamp_ns = timestamp_ns;
+        // Greyscale option
+        //cvtColor(imageMat, imageBayerMat, cv::COLOR_BayerRG2GRAY); // starts as PixelFormat_BayerRG8
 
-    // Create a unique filename
-    ostringstream filename;
+        double dt_ms = (double)(timestamp_ns - last_timestamp_ns)*0.000001;
 
-    filename << "imgs/" << "BFS-";
-    filename << imageCnt << ".jpg";
-    // Save image
-    cv::imwrite(filename.str(), imageMat);
+        bool print_writes = false;
+        if(print_writes)
+        {
+          // print info
+          cv::Size s = imageMat.size();
 
-    imageCnt++;
+          cout 
+          << imageCnt << " : " 
+          << (double)(timestamp_ns - last_timestamp_ns)*0.000001 
+          << " ms : Grabbed images " 
+          << imageCnt << ", width = " << s.width
+          << ", height = " << s.height << endl;
+        }
       
+        if(dt_ms > 2.2)
+        {
+          cout << "Frames lost!" << endl;
+        }
+
+        last_timestamp_ns = timestamp_ns;
+
+        // Create a unique filename
+        ostringstream filename;
+
+        filename << "imgs/" << "BFS-";
+        filename << imageCnt << ".jpg";
+        // Save image
+        cv::imwrite(filename.str(), imageMat);
+      }
+      else
+      {
+        cout << "Parse Spinnaker to OpenCV failed! image " << imageCnt << endl;
+      }
+
+      imageCnt++;
+    }      
   }
   cout << "Grabbed images " << imageCnt << endl;
   
@@ -844,7 +872,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 5000);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 5);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 
