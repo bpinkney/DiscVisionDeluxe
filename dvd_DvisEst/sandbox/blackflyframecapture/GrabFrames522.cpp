@@ -756,6 +756,7 @@ int RunSingleCamera(CameraPtr pCam, uint32_t k_numImages)
     {
       return err;
     }
+    
 
     // Print image format info
     cout << endl << "Pixel Format Enum: " << pCam->PixelFormat.GetValue() << " == " << PixelFormat_BayerRG8 << endl;
