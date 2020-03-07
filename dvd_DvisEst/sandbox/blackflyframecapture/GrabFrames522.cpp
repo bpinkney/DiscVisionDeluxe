@@ -29,23 +29,28 @@ using namespace std;
 using namespace cv;
 
 // declare global queue for mutex access
-std::queue<uint64_t> timestampnsQueue;
+
 std::queue<cv::Mat> imageMatQueue;
+std::queue<uint64_t> timestampnsQueue;
+std::queue<uint64_t> frameIDQueue;
 std::mutex imageMatMutex;
 std::atomic<bool> ai_thread_ready (false);
 
 
-void image_queue_push(cv::Mat imageMat, uint64_t timestamp_ns)
+void image_queue_push(cv::Mat imageMat, uint64_t timestamp_ns, uint64_t frame_id)
 {
   // mutex on
   imageMatMutex.lock();
-  timestampnsQueue.push(timestamp_ns);
+  
   imageMatQueue.push(imageMat);
+  timestampnsQueue.push(timestamp_ns);
+  frameIDQueue.push(frame_id);
+
   // mutex off
   imageMatMutex.unlock();
 }
 
-bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns)
+bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns, uint64_t * frame_id)
 {   
   // mutex on
   imageMatMutex.lock();
@@ -53,16 +58,20 @@ bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns)
   {
     // mutex off
     imageMatMutex.unlock();
-    *timestamp_ns = 0;
     *imageMat = cv::Mat();
+    *timestamp_ns = 0;
+    *frame_id     = 0;
     return false;
   }
   else
-  {
+  {    
+    *imageMat     = imageMatQueue.front();
     *timestamp_ns = timestampnsQueue.front();
-    *imageMat = imageMatQueue.front();
-    timestampnsQueue.pop();
+    *frame_id     = frameIDQueue.front();
+    
     imageMatQueue.pop();
+    timestampnsQueue.pop();
+    frameIDQueue.pop();
     // mutex off
     imageMatMutex.unlock();
     return true;
@@ -605,7 +614,7 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
           // Convert to OpenCV matrix
           imageMat = spinnakerWrapperToCvMat(imagePtr);
           // push to IO thread so we can keep grabbing frames
-          image_queue_push(imageMat, timestamp_ns);
+          image_queue_push(imageMat, timestamp_ns, imagePtr->GetFrameID());
         }
 
         // Free up image memory after OpenCV conversion                
@@ -649,6 +658,8 @@ int ProcessImages(void)
   uint64_t imageCnt           = 0;
   uint64_t timestamp_ns       = 0;
   uint64_t last_timestamp_ns  = 0;
+  uint64_t frame_id           = 0;
+  uint64_t last_frame_id      = 0;
   cv::Mat imageBayerMat   = cv::Mat();
   cv::Mat imageMat        = cv::Mat();
   bool empty_queue = false;
@@ -666,7 +677,7 @@ int ProcessImages(void)
   while(!ai_thread_ready || !empty_queue)
   {
     // Pull the raw image out of the queue
-    if(!image_queue_pull(&imageBayerMat, &timestamp_ns))
+    if(!image_queue_pull(&imageBayerMat, &timestamp_ns, &frame_id))
     {
       //cout << endl << "Empty Queue!" << endl;
       empty_queue = true;
@@ -680,7 +691,7 @@ int ProcessImages(void)
     // Greyscale option
     //cvtColor(imageBayerMat, imageMat, cv::COLOR_BayerRG2GRAY); // starts as PixelFormat_BayerRG8
 
-    double dt_ms = (double)(timestamp_ns - last_timestamp_ns)*0.000001;
+    uint64_t frame_diff = (frame_id - last_frame_id);
 
     bool print_writes = false;
     if(print_writes)
@@ -696,12 +707,13 @@ int ProcessImages(void)
       << ", height = " << s.height << endl;
     }
     
-    if(dt_ms > 2.2)
+    if(frame_diff > 1)
     {
-      cout << "Frames lost!" << endl;
+      cout << "Frames lost! " << imageCnt << endl;
     }
 
     last_timestamp_ns = timestamp_ns;
+    last_frame_id     = frame_id;
 
     // Create a unique filename
     ostringstream filename;
@@ -755,6 +767,21 @@ int RunSingleCamera(CameraPtr pCam, uint32_t k_numImages)
     auto f = p.get_future();
     
     std::thread aiThread(AcquireImages, pCam, k_numImages, std::move(p));
+
+    // jack up thread priority for capture (does this actually help?)
+    #ifdef linux
+    sched_param sch;
+    int policy; 
+    pthread_getschedparam(aiThread.native_handle(), &policy, &sch);
+    sch.sched_priority = 90;
+    if (pthread_setschedparam(aiThread.native_handle(), SCHED_FIFO, &sch)) 
+    {
+        cout << "Failed to setschedparam: " << std::strerror(errno) << '\n';
+    }
+    #endif
+    #ifdef _WIN32
+        // figure out how to do thread priority on Windows...
+    #endif
 
     // Save/process them in another (main thread with an atomic watch)
     ProcessImages();
@@ -844,7 +871,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 5000);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 10000);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 
