@@ -1,4 +1,6 @@
 
+// This is the old version of opencv!
+
 // std headers
 #include <vector>
 #include <fstream>

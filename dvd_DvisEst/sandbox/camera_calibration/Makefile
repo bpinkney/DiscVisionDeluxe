@@ -1,19 +1,28 @@
 CC = gcc
 CXX = g++
 
-CPPFLAGS = -I../../lib/matplotlib-cpp/ -I../../lib/opencv/include/opencv/ -I../../lib/opencv/modules/imgcodecs/include/opencv2/ -I../../lib/opencv/modules/core/include/opencv2/ -I../../lib/opencv/include/opencv2/ -I../../lib/opencv/modules/highgui/include/opencv2/ -I../../lib/apriltag/ `pkg-config --libs opencv` `pkg-config --libs apriltag`
+CPPFLAGS = $(shell pkg-config --cflags opencv4)
+# why does this choke on -L/usr/local/lib?
+LIB += -lopencv_gapi -lopencv_stitching -lopencv_video -lopencv_highgui -lopencv_ml -lopencv_videoio -lopencv_photo -lopencv_dnn -lopencv_imgcodecs -lopencv_objdetect -lopencv_calib3d -lopencv_features2d -lopencv_flann -lopencv_imgproc -lopencv_core
+#opencv stuff
+#LIB += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio 
+#LIB += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
 CXXFLAGS = -Wall -O4 -std=c++11 -I/usr/include/python2.7 -lpython2.7
-LDFLAGS = -lpthread -lm -g
+LDFLAGS = -lpthread -g
 VPATH=src
 
-TARGETS := camera_calibration_from_jpegs
+TARGETS := camera_calibration_from_jpegs imagelist_creator
 
 .PHONY: all
-all: camera_calibration_from_jpegs
+all: camera_calibration_from_jpegs imagelist_creator
 
-camera_calibration_from_jpegs: camera_calibration_from_jpegs.o 
+camera_calibration_from_jpegs: camera_calibration_from_jpegs.o ${LIB}
 		@echo "   [$@]"
-		@$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
+		@$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) 
+
+imagelist_creator: imagelist_creator.o ${LIB}
+		@echo "   [$@]"
+		@$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) 
 
 .PHONY: clean
 clean:
