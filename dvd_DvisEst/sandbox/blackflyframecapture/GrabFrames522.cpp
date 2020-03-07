@@ -872,7 +872,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 10000);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 900);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 
