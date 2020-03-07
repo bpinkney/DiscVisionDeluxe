@@ -20,7 +20,7 @@
 #include <atomic>
 
 // Include the standard OpenCV headers
-#include <cv.hpp>
+#include <opencv.hpp>
 #include <imgcodecs.hpp>
 #include <highgui.hpp>
 
