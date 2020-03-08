@@ -18,8 +18,9 @@ using namespace std;
 int main( int argc, char** argv )
 {
   // params 
-  string filename = "camera_cal_sample.yaml";
+  string filename = "camera_cals/cal2.yaml";
   string folderpath = "distorted_imgs/*.jpg";
+  string folderpathsave = "undistorted_imgs/";
 
   // get list of images
   vector<String> filenames;
@@ -54,7 +55,7 @@ int main( int argc, char** argv )
   // undistort  
   initUndistortRectifyMap(camera_matrix.mat(), distortion_coefficients.mat(), Mat(),
                           getOptimalNewCameraMatrix(camera_matrix.mat(), distortion_coefficients.mat(), imageSize, 1, imageSize, 0),
-                          imageSize, CV_16SC2, map1, map2);
+                          imageSize, CV_8UC1, map1, map2);
   int i;
   for( i = 0; i < (int)filenames.size(); i++ )
   {
@@ -65,6 +66,12 @@ int main( int argc, char** argv )
       //undistort( view, rview, cameraMatrix, distCoeffs, cameraMatrix );
       remap(view, rview, map1, map2, INTER_LINEAR);
       imshow("Image View", rview);
+
+      // write to file (can;t save as jpg with opencv for some reason)
+      string outfile = folderpathsave + "undistort-" + to_string(i) + ".jpg";
+      cout << outfile << endl;
+      imwrite(outfile, rview);
+
       char c = (char)waitKey();
       if( c == 27 || c == 'q' || c == 'Q' )
           break;

@@ -261,7 +261,8 @@ static void saveCameraParams( const string& filename,
         fs << "extrinsic_parameters" << bigmat;
     }
 
-    if( !imagePoints.empty() )
+    // don't log
+    if(0 && !imagePoints.empty() )
     {
         Mat imagePtMat((int)imagePoints.size(), (int)imagePoints[0].size(), CV_32FC2);
         for( int i = 0; i < (int)imagePoints.size(); i++ )
@@ -273,7 +274,8 @@ static void saveCameraParams( const string& filename,
         fs << "image_points" << imagePtMat;
     }
 
-    if( !newObjPoints.empty() )
+    // don't log
+    if(0 &&  !newObjPoints.empty() )
     {
         fs << "grid_points" << newObjPoints;
     }
