@@ -52,10 +52,13 @@ int main( int argc, char** argv )
   view = imread(filenames[0], 1);
   Size imageSize = view.size();
 
-  // undistort  
+  // undistort
+  // Increase image size by ~2x pixels to maintain the detail of centre pixels
+  // during the de-warp
+  Size imageSizeOut = Size(1040.0/720.0 * imageSize.width, 1040.0/720.0 * imageSize.height);
   initUndistortRectifyMap(camera_matrix.mat(), distortion_coefficients.mat(), Mat(),
-                          getOptimalNewCameraMatrix(camera_matrix.mat(), distortion_coefficients.mat(), imageSize, 1, imageSize, 0),
-                          imageSize, CV_8UC1, map1, map2);
+                          getOptimalNewCameraMatrix(camera_matrix.mat(), distortion_coefficients.mat(), imageSize, 1, imageSizeOut, 0),
+                          imageSizeOut, CV_8UC1, map1, map2);
   int i;
   for( i = 0; i < (int)filenames.size(); i++ )
   {

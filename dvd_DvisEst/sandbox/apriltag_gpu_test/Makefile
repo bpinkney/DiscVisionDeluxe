@@ -1,32 +1,40 @@
-CC = gcc
-CXX = g++
+BIN               := mv 
+CXXFLAGS          := -O3 -g
 
-CPPFLAGS = $(shell pkg-config --cflags opencv4)
-# why does this choke on -L/usr/local/lib?
-LIB += -lopencv_gapi -lopencv_stitching -lopencv_video -lopencv_highgui -lopencv_ml -lopencv_videoio -lopencv_photo -lopencv_dnn -lopencv_imgcodecs -lopencv_objdetect -lopencv_calib3d -lopencv_features2d -lopencv_flann -lopencv_imgproc -lopencv_core
-#opencv stuff
-#LIB += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio 
-#LIB += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+CUDA_INSTALL_PATH ?= /usr/local/cuda
 
-#apriltag stuff
-ISSAC_APRILTAG_INC = -I../../lib/apriltag_gpu/nvapriltags
-CPPFLAGS += $(ISSAC_APRILTAG_INC)
-ISSAC_APRILTAG_LIB = -L../../lib/apriltag_gpu/lib_x64 -lapril_tagging
-LIB += $(ISSAC_APRILTAG_LIB)
-
-CXXFLAGS = -Wall -O4 -std=c++11 -I/usr/include/python2.7 -lpython2.7
-LDFLAGS = -lpthread -g
+NVCC ?= $(CUDA_INSTALL_PATH)/bin/nvcc
+INCD = -I"$(CUDA_INSTALL_PATH)/include" -I"./inc"
+LIBS = -lcuda -L"$(CUDA_INSTALL_PATH)/lib64" -lcudart -lcublas -lcufft -L"$(CUDA_INSTALL_PATH)/samples/common/inc -lstdc++ -lpthread
+CUDA_SDK?=3
+COMMONFLAGS = -DCUDA_SDK=$(CUDA_SDK)
+NVCCFLAGS := --ptxas-options=-v -O3 -G -g -std=c++11
 VPATH=src
 
-TARGETS := apriltag_gpu_test
+export PATH=$PATH:/usr/local/cuda/bin:$$(PATH)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:$$(LD_LIBRARY_PATH)
 
-.PHONY: all
-all: apriltag_gpu_test
+#apriltag stuff
+ISSAC_APRILTAG_INC = -I"../../lib/apriltag_gpu/nvapriltags"
+ISSAC_APRILTAG_LIB = -L"../../lib/apriltag_gpu/lib_x64 -lapril_tagging"
+INCD += $(ISSAC_APRILTAG_INC)
+LIBS += $(ISSAC_APRILTAG_LIB)
 
-apriltag_gpu_test: apriltag_gpu_test.o ${LIB}
-		@echo "   [$@]"
-		@$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) 
+# files
+CPP_SOURCES       := 
+CU_SOURCES        := apriltag_gpu_test.cu
+HEADERS           := $(wildcard *.h)
+CPP_OBJS          := $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+CU_OBJS           := $(patsubst %.cu, %.cu_o, $(CU_SOURCES))
 
-.PHONY: clean
+%.cu_o : %.cu
+	$(NVCC) $(NVCCFLAGS) -c $(INCD) -o $@ $<
+
+%.o: %.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCD) -o $@ $<
+
+$(BIN): $(CPP_OBJS) $(CU_OBJS)
+	$(CXX) -o $(BIN) $(CU_OBJS) $(CPP_OBJS) $(LDFLAGS) $(INCD) $(LIBS)
+
 clean:
-		@rm -rf *.o $(TARGETS)
+	rm -f $(BIN) *.o *.cu_o

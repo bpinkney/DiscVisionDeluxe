@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "nvAprilTags.h"
 
-//#include "apriltag_gpu.h"
+#include "apriltag_gpu.h"
 
 using namespace std;
 
@@ -142,4 +142,9 @@ void nv_print_stats() {
     for(auto id : ids) {
         std::cout << "id = " << id << " count " << m[id] << "\n";
     }
+}
+
+int main( int argc, char** argv )
+{
+    std::cout << "TEST" << endl;
 }
