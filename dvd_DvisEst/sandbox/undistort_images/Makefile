@@ -7,7 +7,7 @@ LIB += -lopencv_gapi -lopencv_stitching -lopencv_video -lopencv_highgui -lopencv
 #opencv stuff
 #LIB += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio 
 #LIB += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
-CXXFLAGS = -Wall -O4 -std=c++11 -I/usr/include/python2.7 -lpython2.7
+CXXFLAGS = -Wall -O4 -std=c++11
 LDFLAGS = -lpthread -g
 VPATH=src
 

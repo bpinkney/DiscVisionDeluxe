@@ -146,7 +146,7 @@ bool spinnakerWrapperToCvMat(CameraImage imageCam, cv::Mat * imageBayerMat)
       waitKey(0);                                      // Wait for a keystroke in the window
     }
     // de-alloc Spinnaker Object
-    imageCam.imagePtr->Release();
+    //imageCam.imagePtr->Release();
 
     return true;
   }
@@ -610,8 +610,11 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
           ImagePtr copiedImage = Image::Create();
           cout << "deepcopy" << endl;
           copiedImage->DeepCopy(pResultImage);
+          
           // Free up image memory after deepcopy to queue
+          // should this be called regardless of the IsIncomplete status?
           pResultImage->Release();
+          
           cout << "Get timestamp again..." << endl;
           timestamp_ns = (copiedImage->GetTimeStamp() - init_timestamp_ns);
           cout << "construct cameraimage" << endl;
@@ -619,6 +622,9 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
           // push to IO thread so we can keeps grabbing frames
           image_queue_push(tempCameraImage);
         }
+
+        // Free up image memory after deepcopy to queue
+        //pResultImage->Release();
 
                         
         
@@ -872,7 +878,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 5);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 5000);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 

@@ -1,8 +1,8 @@
 #pragma once
 #include<cstdint>
 
-static int IMAGE_W = 640;
-static int IMAGE_H = 480;
+static int IMAGE_W = 1040;
+static int IMAGE_H = 780;
 static int IMAGE_C = 1;
 
 int nv_create_apriltag_detector();
