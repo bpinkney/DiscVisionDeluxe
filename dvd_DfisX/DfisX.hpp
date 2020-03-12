@@ -22,6 +22,7 @@ namespace DfisX
 {
 
 void test();
+void simulate_throw();
 
 
 
