@@ -8,12 +8,20 @@ Main input functions
 
 
 ----Set the Throw
+
+
 void new_throw (Disc_Object thrown_disc_object, Disc_State thrown_disc_state, double thrown_radians_per_second, double thrown_disc_wobble);
+
+
+
+
 
 Set the beginning state of the throw to be simulated
 
 
 ----Simulate the throw
+
+
 void simulate_throw();
 
 
