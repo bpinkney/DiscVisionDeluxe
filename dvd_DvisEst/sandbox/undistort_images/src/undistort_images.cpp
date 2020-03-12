@@ -15,6 +15,15 @@
 using namespace cv;
 using namespace std;
 
+template<typename T/*, typename = std::enable_if_t<std::is_integral_v<T>>*/>
+std::string to_string_with_zero_padding(const T& value, std::size_t total_length)
+{
+    auto str = std::to_string(value);
+    if (str.length() < total_length)
+        str.insert(str.front() == '-' ? 1 : 0, total_length - str.length(), '0');
+    return str;
+}
+
 int main( int argc, char** argv )
 {
   // params 
@@ -70,8 +79,8 @@ int main( int argc, char** argv )
       remap(view, rview, map1, map2, INTER_LINEAR);
       imshow("Image View", rview);
 
-      // write to file (can;t save as jpg with opencv for some reason)
-      string outfile = folderpathsave + "undistort-" + to_string(i) + ".jpg";
+      // write to file  
+      string outfile = folderpathsave + "undistort-" + to_string_with_zero_padding(i, 5) + ".jpg";
       cout << outfile << endl;
       imwrite(outfile, rview);
 

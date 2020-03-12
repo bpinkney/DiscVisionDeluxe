@@ -11,8 +11,13 @@
 #include <helper_functions.h>
 #include <helper_cuda.h>
 
-#include "nvAprilTags.h"
-#include "apriltag_gpu.h"
+// GPU version
+//#include "nvAprilTags.h"
+//#include "apriltag_gpu.h"
+
+// CPU version
+#include "apriltag.h"
+#include "tag36h11.h"
 
 // opencv stuff
 #include "opencv2/core.hpp"
