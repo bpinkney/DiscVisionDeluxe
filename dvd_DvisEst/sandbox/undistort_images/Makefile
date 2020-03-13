@@ -11,6 +11,9 @@ CXXFLAGS = -Wall -O4 -std=c++11
 LDFLAGS = -lpthread -g
 VPATH=src
 
+#try loading in disc definitions for test
+CXXFLAGS += -I../../../common/inc
+
 TARGETS := undistort_images
 
 .PHONY: all

@@ -12,6 +12,9 @@
 #include <time.h>
 #include <iostream>
 
+// Test inclusion of disc defs
+#include <disc_layouts.hpp>
+
 using namespace cv;
 using namespace std;
 
