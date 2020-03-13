@@ -11,7 +11,7 @@ LIB += -lapriltag
 # add disc stuff
 CXXFLAGS += -I../../../common/inc
 
-CXXFLAGS = -Wall -O4 -std=c++11
+CXXFLAGS += -Wall -O4 -std=c++11
 LDFLAGS = -lpthread -g
 VPATH=src
 
