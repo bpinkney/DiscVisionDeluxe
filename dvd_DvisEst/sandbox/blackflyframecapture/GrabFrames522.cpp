@@ -79,6 +79,15 @@ bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns, uint64_t * fr
 
 }
 
+template<typename T/*, typename = std::enable_if_t<std::is_integral_v<T>>*/>
+std::string to_string_with_zero_padding(const T& value, std::size_t total_length)
+{
+    auto str = std::to_string(value);
+    if (str.length() < total_length)
+        str.insert(str.front() == '-' ? 1 : 0, total_length - str.length(), '0');
+    return str;
+}
+
 // Get time stamp in milliseconds.
 uint64_t millis()
 {
@@ -719,7 +728,7 @@ int ProcessImages(void)
     ostringstream filename;
 
     filename << "imgs/" << "BFS-";
-    filename << imageCnt << ".jpg";
+    filename << to_string_with_zero_padding(imageCnt, 8) << ".jpg";
     // Save image
     cv::imwrite(filename.str(), imageMat);
 
@@ -872,7 +881,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 100);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 500);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 

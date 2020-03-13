@@ -15,7 +15,7 @@
 
 // CPU AprilTags
 #include "apriltag.h"
-#include "tag16h5.h"
+#include "tag36h11.h"
 #include "tag36h11.h"
 #include "common/homography.h"
 
@@ -82,7 +82,7 @@ int main( int argc, char** argv )
   // Init AprilTag Stuff
   // tag parameters used to convert the transformation matrix translations
   // to actual measurements in meters
-  const float tag_size_mm = 47.5;//52; //width of tag
+  const float tag_size_mm = 110;//52; //width of tag
   // Tag size is the size of the tag in your desired units. I.e., if
   // your tag measures 0.25m along the side, your tag size is
   // 0.25. (The homography is computed in terms of *half* the tag
@@ -90,7 +90,7 @@ int main( int argc, char** argv )
   const float homography_to_m_z  = tag_size_mm / 2.0 *0.001 * sqrt(2.0); //this seems to be wrong? by sqrt(2)?
   const float homography_to_m_xy = tag_size_mm / 2.0 *0.001;
 
-  apriltag_family_t *tf = tag16h5_create();
+  apriltag_family_t *tf = tag36h11_create();
 
   apriltag_detector_t *td = apriltag_detector_create();
   apriltag_detector_add_family_bits(td, tf, 1);
@@ -201,7 +201,7 @@ int main( int argc, char** argv )
       }
 
       // only overlay great detections
-      const bool show_overlay = (det->hamming == 0);
+      const bool show_overlay = (det->hamming <= 1);
       if(show_overlay)
       {
         // overlay square at tag corners
@@ -248,5 +248,5 @@ int main( int argc, char** argv )
   }
 
   apriltag_detector_destroy(td);
-  tag16h5_destroy(tf);
+  tag36h11_destroy(tf);
 }
