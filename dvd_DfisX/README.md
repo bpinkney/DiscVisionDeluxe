@@ -1,9 +1,11 @@
 # DiscVisionDeluxe Disc Aero and Physics
 
 g++ main.cpp dfisx.cpp daero.cpp dgyro.cpp dpropagate.cpp -o main
-/*
+
+
+
 Can currently simulate one disc at a time
-!!!Currently has a main function!!! need to remove and hook to a control file
+
 
 Main input functions 
 
