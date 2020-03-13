@@ -26,17 +26,8 @@ Throw_Container active_throw;
 
 	
 
-int main() 
+namespace DfisX
 {
-    std::cout << "Hello, World!\n   this is an exmaple throw\n";
-    DfisX::new_throw (DfisX::disc_aviar,DfisX::default_hard_throw,20, 0);
-    
-    while (DfisX::sim_state != DfisX::SIM_STATE_STOPPED)
-    {
-    	DfisX::step_simulation (DfisX::active_throw, 0.01);
-    	
-    }
-}
 
 void test() 
 {
@@ -65,8 +56,7 @@ void simulate_throw()
 
 
 
-namespace DfisX
-{
+
 
 
 
