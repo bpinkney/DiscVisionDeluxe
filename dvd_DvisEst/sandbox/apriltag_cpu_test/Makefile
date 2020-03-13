@@ -8,6 +8,8 @@ CPPFLAGS += -I/usr/local/include/apriltag/
 LIB = -lopencv_stitching -lopencv_video -lopencv_highgui -lopencv_ml -lopencv_videoio -lopencv_photo -lopencv_dnn -lopencv_imgcodecs -lopencv_objdetect -lopencv_calib3d -lopencv_features2d -lopencv_flann -lopencv_imgproc -lopencv_core
 LIB += -lapriltag
 
+# add disc stuff
+CXXFLAGS += -I../../../common/inc
 
 CXXFLAGS = -Wall -O4 -std=c++11
 LDFLAGS = -lpthread -g

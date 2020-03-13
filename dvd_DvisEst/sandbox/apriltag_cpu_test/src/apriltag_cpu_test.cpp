@@ -19,6 +19,9 @@
 #include "tag36h11.h"
 #include "common/homography.h"
 
+// Disc Stuff
+#include <disc_layouts.hpp>
+
 using namespace cv;
 using namespace std;
 
@@ -33,6 +36,12 @@ std::string to_string_with_zero_padding(const T& value, std::size_t total_length
 
 int main( int argc, char** argv )
 {
+  // Quick, un-related test for disc def headers
+  uint16_t apriltag_id = 109;
+  map<uint16_t, disc_layout_t>::const_iterator dl_lookup = disc_layout_by_id.find(apriltag_id);
+  disc_layout_t dl = dl_lookup->second;
+  cout << "Look up disc index for tag id " << to_string(apriltag_id) <<  " : " << to_string(dl.disc_index) << endl;
+  
   // params 
   string cal_filename = "camera_cals/cal2.yaml";
   string folderpath = "undistorted_imgs/*.jpg";
