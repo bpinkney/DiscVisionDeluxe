@@ -44,7 +44,7 @@ int main( int argc, char** argv )
   
   // params 
   string cal_filename = "camera_cals/cal2.yaml";
-  string folderpath = "undistorted_imgs/*.jpg";
+  string folderpath = "../../../resources/test_throws/0_slow_pitch_putt/*.jpg";
   string folderpathsave = "overlay_images/";
 
   // get list of images
@@ -91,7 +91,7 @@ int main( int argc, char** argv )
   // Init AprilTag Stuff
   // tag parameters used to convert the transformation matrix translations
   // to actual measurements in meters
-  const float tag_size_mm = 110;//52; //width of tag
+  const float tag_size_mm = 108;//52; //width of tag
   // Tag size is the size of the tag in your desired units. I.e., if
   // your tag measures 0.25m along the side, your tag size is
   // 0.25. (The homography is computed in terms of *half* the tag
@@ -109,7 +109,7 @@ int main( int argc, char** argv )
   td->debug           = 0;
   td->refine_edges    = 0; // might want to disable this for 522fps
 
-  const int quiet     = 0;
+  const int quiet     = 1;
   //const int maxiters  = 1;
 
   int i;
@@ -248,7 +248,8 @@ int main( int argc, char** argv )
     //cout << outfile << endl;
     imwrite(outfile, view);
 
-    if(detect_num > 0)
+    // pause for detects
+    if(0 && detect_num > 0)
     {
       char c = (char)waitKey();
       if( c == 27 || c == 'q' || c == 'Q' )

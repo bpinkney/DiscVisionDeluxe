@@ -23,7 +23,7 @@ std::string to_string_with_zero_padding(const T& value, std::size_t total_length
 {
     auto str = std::to_string(value);
     if (str.length() < total_length)
-        str.insert(str.front() == '-' ?uio 1 : 0, total_length - str.length(), '0');
+        str.insert(str.front() == '-' ? 1 : 0, total_length - str.length(), '0');
     return str;
 }
 
@@ -93,8 +93,11 @@ int main( int argc, char** argv )
       cout << outfile << endl;
       imwrite(outfile, rview);
 
-      char c = (char)waitKey();
-      if( c == 27 || c == 'q' || c == 'Q' )
-          break;
+      if(0)
+      {
+        char c = (char)waitKey();
+        if( c == 27 || c == 'q' || c == 'Q' )
+            break;
+      }
   }
 }

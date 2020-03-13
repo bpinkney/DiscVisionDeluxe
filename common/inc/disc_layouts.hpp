@@ -54,19 +54,19 @@ struct disc_layout_t
 #define DISC_LAYOUTS_NUM  (13)
 const disc_layout_t DISC_LAYOUTS[DISC_LAYOUTS_NUM] = 
 {
-  {PUTTER,      f36h11, 100, 112, 1},
-  {PUTTER_OS,   f36h11, 101, 112, 1},
-  {PUTTER_US,   f36h11, 102, 112, 1},
-  {MIDRANGE,    f36h11, 103, 112, 1},
-  {MIDRANGE_OS, f36h11, 104, 112, 1},
-  {MIDRANGE_US, f36h11, 105, 112, 1},
-  {FAIRWAY,     f36h11, 106, 112, 1},
-  {FAIRWAY_OS,  f36h11, 107, 112, 1},
-  {FAIRWAY_US,  f36h11, 108, 112, 1},
-  {DRIVER,      f36h11, 109, 112, 1},
-  {DRIVER_OS,   f36h11, 110, 112, 1},
-  {DRIVER_US,   f36h11, 111, 112, 1},
-  {SPECIAL,     f36h11, 112, 112, 1}
+  {PUTTER,      f36h11, 100, 109, 1},
+  {PUTTER_OS,   f36h11, 101, 109, 1},
+  {PUTTER_US,   f36h11, 102, 109, 1},
+  {MIDRANGE,    f36h11, 103, 109, 1},
+  {MIDRANGE_OS, f36h11, 104, 109, 1},
+  {MIDRANGE_US, f36h11, 105, 109, 1},
+  {FAIRWAY,     f36h11, 106, 109, 1},
+  {FAIRWAY_OS,  f36h11, 107, 109, 1},
+  {FAIRWAY_US,  f36h11, 108, 109, 1},
+  {DRIVER,      f36h11, 109, 109, 1},
+  {DRIVER_OS,   f36h11, 110, 109, 1},
+  {DRIVER_US,   f36h11, 111, 109, 1},
+  {SPECIAL,     f36h11, 112, 109, 1}
 };
 
 // Define a map so we can look up disc_layout from the detected AprilTag ID
