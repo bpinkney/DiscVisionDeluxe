@@ -72,7 +72,19 @@ const disc_layout_t DISC_LAYOUTS[DISC_LAYOUTS_NUM] =
 // Define a map so we can look up disc_layout from the detected AprilTag ID
 const std::map<uint16_t, disc_layout_t> disc_layout_by_id
 { 
-  {DISC_LAYOUTS[0].tad_id, DISC_LAYOUTS[0]}, 
+  {DISC_LAYOUTS[0].tag_id, DISC_LAYOUTS[0]},
+  {DISC_LAYOUTS[1].tag_id, DISC_LAYOUTS[1]},
+  {DISC_LAYOUTS[2].tag_id, DISC_LAYOUTS[2]},
+  {DISC_LAYOUTS[3].tag_id, DISC_LAYOUTS[3]},
+  {DISC_LAYOUTS[4].tag_id, DISC_LAYOUTS[4]},
+  {DISC_LAYOUTS[5].tag_id, DISC_LAYOUTS[5]},
+  {DISC_LAYOUTS[6].tag_id, DISC_LAYOUTS[6]},
+  {DISC_LAYOUTS[7].tag_id, DISC_LAYOUTS[7]},
+  {DISC_LAYOUTS[8].tag_id, DISC_LAYOUTS[8]},
+  {DISC_LAYOUTS[9].tag_id, DISC_LAYOUTS[9]},
+  {DISC_LAYOUTS[10].tag_id, DISC_LAYOUTS[10]},
+  {DISC_LAYOUTS[11].tag_id, DISC_LAYOUTS[11]},
+  {DISC_LAYOUTS[12].tag_id, DISC_LAYOUTS[12]},
 };
 
 
