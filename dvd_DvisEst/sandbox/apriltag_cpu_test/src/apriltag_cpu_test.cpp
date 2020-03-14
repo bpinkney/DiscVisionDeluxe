@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <iostream>
+#include <fstream>
 
 // OpenCV stuff
 #include "opencv2/core.hpp"
@@ -25,6 +26,8 @@
 using namespace cv;
 using namespace std;
 
+std::ofstream csvlog;
+
 template<typename T/*, typename = std::enable_if_t<std::is_integral_v<T>>*/>
 std::string to_string_with_zero_padding(const T& value, std::size_t total_length)
 {
@@ -32,6 +35,98 @@ std::string to_string_with_zero_padding(const T& value, std::size_t total_length
     if (str.length() < total_length)
         str.insert(str.front() == '-' ? 1 : 0, total_length - str.length(), '0');
     return str;
+}
+
+// Indexing functions for matrices
+#define MAT3X3(x) x[9]
+#define MAT4X4(x) x[16]
+
+#define VEC2(x)   x[2]
+#define VEC3(x)   x[3]
+#define VEC4(x)   x[4]
+
+// Row-major
+#define i3x3(r,c)   (3*(r)+(c))
+#define i4x4(r,c)   (4*(r)+(c))
+void R2Q( float MAT3X3(R), float VEC4(Q) )
+{
+  // Note the reverse ordering
+  const float m00 = R[i3x3(0,0)];
+  const float m10 = R[i3x3(0,1)];
+  const float m20 = R[i3x3(0,2)];
+  const float m01 = R[i3x3(1,0)];
+  const float m11 = R[i3x3(1,1)];
+  const float m21 = R[i3x3(1,2)];
+  const float m02 = R[i3x3(2,0)];
+  const float m12 = R[i3x3(2,1)];
+  const float m22 = R[i3x3(2,2)];
+  
+  float trace1 = 1.0 + m00 - m11 - m22;
+  float trace2 = 1.0 - m00 + m11 - m22;
+  float trace3 = 1.0 - m00 - m11 + m22;
+
+  if( (trace1 > trace2) && (trace1 > trace3) )
+  {
+    if( trace1 < 0.0 ) trace1 = 0.0;
+    
+    const float s = 0.5 / sqrt(trace1);
+    Q[0] = (m12 - m21) * s;
+    Q[1] = 0.25 / s;
+    Q[2] = (m01 + m10) * s; 
+    Q[3] = (m02 + m20) * s; 
+  }
+  else if( (trace2 > trace1) && (trace2 > trace3) )
+  {
+    if( trace2 < 0.0 ) trace2 = 0.0;
+    
+    const float s = 0.5 / sqrt(trace2);
+    Q[0] = (m20 - m02) * s;
+    Q[1] = (m01 + m10) * s; 
+    Q[2] = 0.25 / s;
+    Q[3] = (m12 + m21) * s; 
+  }
+  else
+  {
+    if( trace3 < 0.0 ) trace3 = 0.0;
+  
+    const float s = 0.5 / sqrt(trace3);
+    Q[0] = (m01 - m10) * s;
+    Q[1] = (m02 + m20) * s;
+    Q[2] = (m12 + m21) * s;
+    Q[3] = 0.25 / s;
+  }
+}
+
+void norm_quat(float quat[4]) 
+{
+  uint8_t i;
+  float mag = 0;
+  for(i=0; i<4; i++)
+    mag += quat[i] * quat[i];
+  mag = sqrt( mag );
+  for(i=0; i<4; i++)
+    quat[i] /= mag;
+}
+
+static void csv_log_open()
+{
+  csvlog.open("csvlog.csv", std::ios_base::trunc);// discard old file contents each run
+  csvlog << "t_ms, x_m, y_m, z_m, qw, qx, qy, qz" << endl;
+}
+
+static void csv_log_close()
+{
+  csvlog.close();
+}
+
+static void csv_log_write(float time_ms, float x_m, float y_m, float z_m, float qw, float qx, float qy, float qz)
+{
+  char out[128];
+  sprintf(
+      out, "%0.6f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f",
+      time_ms, x_m, y_m, z_m, qw, qx, qy, qz);
+
+  csvlog << out << endl;
 }
 
 int main( int argc, char** argv )
@@ -46,6 +141,10 @@ int main( int argc, char** argv )
   string cal_filename = "camera_cals/cal2.yaml";
   string folderpath = "../../../resources/test_throws/0_slow_pitch_putt/*.jpg";
   string folderpathsave = "overlay_images/";
+
+  // define local variables
+  float MAT3X3(R_out);
+  float VEC4(Q_out); 
 
   // get list of images
   vector<String> filenames;
@@ -112,16 +211,21 @@ int main( int argc, char** argv )
   const int quiet     = 1;
   //const int maxiters  = 1;
 
+  // Assume at we got all frames at our desired framerate for test purposes
+  float time_ms = 0.0;
+  float dt_ms = 1.0/522.0; 
+
+  // open logfile
+  csv_log_open();
+
   int i;
-
-  int throttle = (int)filenames.size();//min((int)filenames.size(), 10);
-
+  int throttle = (int)filenames.size();
   for( i = 0; i < throttle; i++ )
   {
     // get opencv image matrix
     //int im_height = view.rows;
     //int im_width  = view.cols;
-    cout << "Read Image: " << filenames[i] << endl;
+    //cout << "Read Image: " << filenames[i] << endl;
     view = imread(filenames[i], 1);
 
 
@@ -153,6 +257,9 @@ int main( int argc, char** argv )
       view.copyTo(viewOverlay);
     }
 
+    // snap to first tag_id;
+    int16_t track_tag_id = -1;
+
     for (int tag = 0; tag < detect_num; tag++) 
     {
 
@@ -168,7 +275,39 @@ int main( int argc, char** argv )
       // might need better projection from the sensor through to the camera frame?
       // For homography_to_pose, you have to pass in a negative fx parameter.
       // This is again due to the OpenCV convention of having z negative.
-      matd_t * T = homography_to_pose(det->H, -sFx, sFy, sCx, sCy);       
+      matd_t * T = homography_to_pose(det->H, -sFx, sFy, sCx, sCy);
+
+      // store translation points for plotting
+      tag_id[tag] = det->id;
+
+      if(track_tag_id < 0)
+      {
+        //first tag is only tag!
+        track_tag_id = tag_id[tag];
+      }
+
+      x_m[tag] = MATD_EL(T, 0, 3)*homography_to_m_xy;
+      y_m[tag] = MATD_EL(T, 1, 3)*homography_to_m_xy;
+      z_m[tag] = MATD_EL(T, 2, 3)*homography_to_m_z;
+
+      // convert rotation matrix to quaternion
+      R_out[i3x3(0,0)] = MATD_EL(T, 0, 0);
+      R_out[i3x3(0,1)] = MATD_EL(T, 0, 1);
+      R_out[i3x3(0,2)] = MATD_EL(T, 0, 2);
+      R_out[i3x3(1,0)] = MATD_EL(T, 1, 0);
+      R_out[i3x3(1,1)] = MATD_EL(T, 1, 1);
+      R_out[i3x3(1,2)] = MATD_EL(T, 1, 2);
+      R_out[i3x3(2,0)] = MATD_EL(T, 2, 0);
+      R_out[i3x3(2,1)] = MATD_EL(T, 2, 1);
+      R_out[i3x3(2,2)] = MATD_EL(T, 2, 2);
+      R2Q(R_out, Q_out);
+      norm_quat(Q_out); // make sure this a unit quaternion
+
+      // Print to log file
+      if(tag_id[tag] == track_tag_id)
+      {
+        csv_log_write(time_ms, x_m[tag], y_m[tag], z_m[tag], Q_out[0], Q_out[1], Q_out[2], Q_out[3]);
+      }
 
       if (!quiet)
       {
@@ -182,31 +321,21 @@ int main( int argc, char** argv )
         printf("Transformation Matrix:\n[");
         matd_print(T, " %f,");
         printf("]\n");
-      }
 
-      printf("Tag Position in meters?:[XYZ] [%lf, %lf, %lf]\n", 
-        MATD_EL(T, 0, 3)*homography_to_m_xy, //why are these /2???
-        MATD_EL(T, 1, 3)*homography_to_m_xy,
-        MATD_EL(T, 2, 3)*homography_to_m_z);
+        printf("Tag Position in meters?:[XYZ] [%lf, %lf, %lf]\n", 
+        x_m[tag], //why are these /2???
+        y_m[tag],
+        z_m[tag]);
 
-      // store translation points for plotting
-      tag_id[tag] = det->id;  
-      x_m[tag] = MATD_EL(T, 0, 3)*homography_to_m_xy;
-      y_m[tag] = MATD_EL(T, 1, 3)*homography_to_m_xy;
-      z_m[tag] = MATD_EL(T, 2, 3)*homography_to_m_z;
-
-      //hamm_hist[det->hamming]++;
-      //total_hamm_hist[det->hamming]++;
-
-
-      cout << "Corners: " << endl;
-      for (int xx = 0; xx < 4; xx++)
-      {
-        for (int yy = 0; yy < 2; yy++)
+        cout << "Corners: " << endl;
+        for (int xx = 0; xx < 4; xx++)
         {
-          cout << det->p[xx][yy] << ' ';
+          for (int yy = 0; yy < 2; yy++)
+          {
+            cout << det->p[xx][yy] << ' ';
+          }
+          cout << endl;
         }
-        cout << endl;
       }
 
       // only overlay great detections
@@ -254,8 +383,13 @@ int main( int argc, char** argv )
       char c = (char)waitKey();
       if( c == 27 || c == 'q' || c == 'Q' )
         break;
-    }    
+    }
+
+    time_ms += dt_ms;    
   }
+
+  // close log file
+  csv_log_close();
 
   apriltag_detector_destroy(td);
   tag36h11_destroy(tf);
