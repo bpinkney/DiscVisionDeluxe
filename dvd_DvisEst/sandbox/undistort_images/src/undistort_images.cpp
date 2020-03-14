@@ -36,7 +36,7 @@ int main( int argc, char** argv )
   cout << "Look up disc index for tag id " << to_string(apriltag_id) <<  " : " << to_string(dl.disc_index) << endl;
 
   // params 
-  string filename = "camera_cals/cal2.yaml";
+  string filename = "camera_cals/camera_cal800.yaml";
   string folderpath = "distorted_imgs/*.jpg";
   string folderpathsave = "undistorted_imgs/";
 
@@ -73,7 +73,8 @@ int main( int argc, char** argv )
   // undistort
   // Increase image size by ~2x pixels to maintain the detail of centre pixels
   // during the de-warp
-  Size imageSizeOut = Size(1040.0/720.0 * imageSize.width, 1040.0/720.0 * imageSize.height);
+  // keep same size for initial spriltag test
+  Size imageSizeOut = imageSize;//Size(1040.0/720.0 * imageSize.width, 1040.0/720.0 * imageSize.height);
   initUndistortRectifyMap(camera_matrix.mat(), distortion_coefficients.mat(), Mat(),
                           getOptimalNewCameraMatrix(camera_matrix.mat(), distortion_coefficients.mat(), imageSize, 1, imageSizeOut, 0),
                           imageSizeOut, CV_8UC1, map1, map2);

@@ -138,8 +138,8 @@ int main( int argc, char** argv )
   cout << "Look up disc index for tag id " << to_string(apriltag_id) <<  " : " << to_string(dl.disc_index) << endl;
   
   // params 
-  string cal_filename = "camera_cals/cal2.yaml";
-  string folderpath = "../../../resources/test_throws/0_slow_pitch_putt/*.jpg";
+  string cal_filename = "camera_cals/camera_cal800.yaml";
+  string folderpath = "undistorted_imgs/*.jpg";//"../../../resources/test_throws/0_slow_pitch_putt/*.jpg";
   string folderpathsave = "overlay_images/";
 
   // define local variables
@@ -170,6 +170,9 @@ int main( int argc, char** argv )
   //  fx   0    cx
   //  0    fy   cy
   //  0    0    1 
+
+
+  // Important note: If we scaled the image at all, these extrinsic parameters also need to be scaled up!
   cout << "Camera Matrix: " << endl << camera_matrix.mat() << endl;
   const float sFx = camera_matrix.mat().at<double>(0,0);
   const float sFy = camera_matrix.mat().at<double>(1,1);
@@ -190,23 +193,61 @@ int main( int argc, char** argv )
   // Init AprilTag Stuff
   // tag parameters used to convert the transformation matrix translations
   // to actual measurements in meters
-  const float tag_size_mm = 108;//52; //width of tag
+  const float tag_size_mm = 109;//52; //width of tag
   // Tag size is the size of the tag in your desired units. I.e., if
-  // your tag measures 0.25m along the side, your tag size is
   // 0.25. (The homography is computed in terms of *half* the tag
   // size, i.e., that a tag is 2 units wide as it spans from -1 to +1
-  const float homography_to_m_z  = tag_size_mm / 2.0 *0.001 * sqrt(2.0); //this seems to be wrong? by sqrt(2)?
-  const float homography_to_m_xy = tag_size_mm / 2.0 *0.001;
+  const float homography_to_m  = tag_size_mm / 2.0 * 0.001;// * sqrt(2.0); //this seems to be wrong? by sqrt(2)?
 
   apriltag_family_t *tf = tag36h11_create();
 
+/*  ///////////////////////////////////////////////////////////////
+  // User-configurable parameters.
+
+  // How many threads should be used?
+  int nthreads;
+
+  // detection of quads can be done on a lower-resolution image,
+  // improving speed at a cost of pose accuracy and a slight
+  // decrease in detection rate. Decoding the binary payload is
+  // still done at full resolution. .
+  float quad_decimate;
+
+  // What Gaussian blur should be applied to the segmented image
+  // (used for quad detection?)  Parameter is the standard deviation
+  // in pixels.  Very noisy images benefit from non-zero values
+  // (e.g. 0.8).
+  float quad_sigma;
+
+  // When non-zero, the edges of the each quad are adjusted to "snap
+  // to" strong gradients nearby. This is useful when decimation is
+  // employed, as it can increase the quality of the initial quad
+  // estimate substantially. Generally recommended to be on (1).
+  //
+  // Very computationally inexpensive. Option is ignored if
+  // quad_decimate = 1.
+  int refine_edges;
+
+  // How much sharpening should be done to decoded images? This
+  // can help decode small tags but may or may not help in odd
+  // lighting conditions or low light conditions.
+  //
+  // The default value is 0.25.
+  double decode_sharpening;
+
+  // When non-zero, write a variety of debugging images to the
+  // current working directory at various stages through the
+  // detection process. (Somewhat slow).
+  int debug;*/
+
   apriltag_detector_t *td = apriltag_detector_create();
   apriltag_detector_add_family_bits(td, tf, 1);
-  td->quad_decimate   = 2.0;
+  td->quad_decimate   = 0.0;
   td->quad_sigma      = 0.0;
-  td->nthreads        = 1;
+  td->nthreads        = 4;
   td->debug           = 0;
-  td->refine_edges    = 0; // might want to disable this for 522fps
+  td->refine_edges    = 1; // might want to disable this for 522fps
+  td->decode_sharpening = 0.25;
 
   const int quiet     = 1;
   //const int maxiters  = 1;
@@ -220,6 +261,7 @@ int main( int argc, char** argv )
 
   int i;
   int throttle = (int)filenames.size();
+  cout << "Max Img Count: " << throttle << endl;
   for( i = 0; i < throttle; i++ )
   {
     // get opencv image matrix
@@ -286,9 +328,9 @@ int main( int argc, char** argv )
         track_tag_id = tag_id[tag];
       }
 
-      x_m[tag] = MATD_EL(T, 0, 3)*homography_to_m_xy;
-      y_m[tag] = MATD_EL(T, 1, 3)*homography_to_m_xy;
-      z_m[tag] = MATD_EL(T, 2, 3)*homography_to_m_z;
+      x_m[tag] = MATD_EL(T, 0, 3)*homography_to_m;
+      y_m[tag] = MATD_EL(T, 1, 3)*homography_to_m;
+      z_m[tag] = MATD_EL(T, 2, 3)*homography_to_m;
 
       // convert rotation matrix to quaternion
       R_out[i3x3(0,0)] = MATD_EL(T, 0, 0);

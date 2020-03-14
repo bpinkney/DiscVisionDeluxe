@@ -6,7 +6,7 @@ close all;
 clc;
 
 %t_ms, x_m, y_m, z_m, qw, qx, qy, qz
-M = csvread('/home/jamestkirk/disc_vision_deluxe/DiscVisionDeluxe/dvd_DvisEst/sandbox/apriltag_cpu_test/csvlog.csv', 1, 0);
+M = csvread('/home/jamestkirk/disc_vision_deluxe/DiscVisionDeluxe/dvd_DvisEst/sandbox/apriltag_cpu_test/lobtest.csv', 1, 0);
 
 time_s      = M(:, 1);
 pos_x       = M(:, 2);
@@ -39,4 +39,56 @@ disp(sprintf('%d entries over %0.4f seconds', length(time_s), max(time_s) - min(
 
 figure; hold on;
 plot3(pos_x, pos_y, pos_z, '.-')
+% draw shadow
+shadow = plot3(pos_x, pos_y, time_s./time_s .* min(pos_z), 'k.');
+alpha(shadow, 0.1)
 axis equal
+grid on
+title('XYZ pos')
+xlabel('X'); xlabel('Y'); xlabel('Z');
+%shift shadow to bopttom without vioating axis equal
+zlims = zlim;
+zlim([min(pos_z), min(pos_z) + (zlims(2) - zlims(1))])
+%zlim([min(pos_z), min(pos_z)+0.3])
+
+figure; hold on;
+plot(time_s, pos_x)
+plot(time_s, pos_y)
+plot(time_s, pos_z)
+grid on
+title('XYZ pos')
+
+figure; hold on;
+plot(time_s, Qwxyz)
+grid on
+title('Qwxyz')
+
+for i=1:length(time_s)
+    eul(i, :) = quat2euler(Qwxyz(i, :));
+end
+
+figure; hold on;
+plot(time_s, eul)
+grid on
+title('Eulers')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

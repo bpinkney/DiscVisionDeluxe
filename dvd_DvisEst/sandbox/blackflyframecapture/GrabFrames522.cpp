@@ -285,7 +285,7 @@ int ConfigureExposureGainWhiteBalanceADC(INodeMap& nodeMap)
     }
     if(1)
     {
-      double des_gain = 10.0;
+      double des_gain = 3.0;
       
       const double gainMax = ptrGain->GetMax();
       const double gainMin = ptrGain->GetMin();
@@ -881,7 +881,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 1000);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 5000);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 
