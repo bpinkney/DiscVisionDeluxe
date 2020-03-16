@@ -139,7 +139,7 @@ int main( int argc, char** argv )
   
   // params 
   string cal_filename = "camera_cals/camera_cal800.yaml";
-  string folderpath = "undistorted_imgs/*.jpg";//"../../../resources/test_throws/0_slow_pitch_putt/*.jpg";
+  string folderpath = "undistorted_imgs/*.jpg";
   string folderpathsave = "overlay_images/";
 
   // define local variables
@@ -174,10 +174,11 @@ int main( int argc, char** argv )
 
   // Important note: If we scaled the image at all, these extrinsic parameters also need to be scaled up!
   cout << "Camera Matrix: " << endl << camera_matrix.mat() << endl;
-  const float sFx = camera_matrix.mat().at<double>(0,0);
-  const float sFy = camera_matrix.mat().at<double>(1,1);
-  const float sCx = camera_matrix.mat().at<double>(0,2);
-  const float sCy = camera_matrix.mat().at<double>(1,2);
+  float image_scale = 1040.0/720.0;
+  const float sFx = camera_matrix.mat().at<double>(0,0) * image_scale;
+  const float sFy = camera_matrix.mat().at<double>(1,1) * image_scale;
+  const float sCx = camera_matrix.mat().at<double>(0,2) * image_scale;
+  const float sCy = camera_matrix.mat().at<double>(1,2) * image_scale;
 
   cout << "Fx: " << sFx << endl;
   cout << "Fy: " << sFy << endl;

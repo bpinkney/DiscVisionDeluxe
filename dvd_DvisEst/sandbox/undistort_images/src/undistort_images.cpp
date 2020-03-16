@@ -73,8 +73,10 @@ int main( int argc, char** argv )
   // undistort
   // Increase image size by ~2x pixels to maintain the detail of centre pixels
   // during the de-warp
-  // keep same size for initial spriltag test
-  Size imageSizeOut = imageSize;//Size(1040.0/720.0 * imageSize.width, 1040.0/720.0 * imageSize.height);
+  // This scaling factor S (H * S, W * S) also needs to be applied to fx, fy, cx, cy
+  // for them to still be correct
+  float image_scale = 1040.0/720.0;
+  Size imageSizeOut = Size(image_scale * imageSize.width, image_scale * imageSize.height);
   initUndistortRectifyMap(camera_matrix.mat(), distortion_coefficients.mat(), Mat(),
                           getOptimalNewCameraMatrix(camera_matrix.mat(), distortion_coefficients.mat(), imageSize, 1, imageSizeOut, 0),
                           imageSizeOut, CV_8UC1, map1, map2);
