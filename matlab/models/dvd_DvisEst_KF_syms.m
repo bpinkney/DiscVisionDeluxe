@@ -26,7 +26,7 @@
 %       disc-plane frame, we are susceptible to 'gimbal lock' when
 %       throwing directly down (oh well)
 
-syms ang_hyzer ang_pitch ang_spin R00 R01 R02 R10 R11 R12 R20 R21 R22
+syms ang_hyzer ang_pitch ang_spin R00 R01 R02 R10 R11 R12 R20 R21 R22 real;
 
 
 R = [R00 R01 R02; ...
@@ -69,6 +69,73 @@ ang_spin  = simplify(ang_spin)
 % by defining all of our linear an angular states separately, and with
 % separate covariance matrices. All states will take the form of:
 % x = [xp, xd]
+ 
+syms p11 p12 p21 p22 real; % Covariance
+syms dt dk1 vk1 dk S2dp S2vp S2dm dmk vmk Kk1 Kk2 dpk vpk real;
+
+
+%XYZ and angular state Kalman filter state space
+% mk -> -k -> state at time 'k' after prediction/propagation step
+% pk -> +k -> state at time 'k' after measurement update step
+
+
+%% define states
+xpk1 = [dk1; vk1]
+yk = dk; %measurements are positions
+
+%% define A, B, and C Jacobian matrices
+%propagate the states forward
+A = [...
+  sym(1), dt; ...
+  sym(0), sym(1)];
+%no inputs in the prediction step!
+B = [0; 0]
+%apply the measurement 
+C = [sym(1), sym(0)]  
+
+%define state covariance
+Ppk1 = [p11, p12; p21, p22];
+
+% define process covariance and measurement covariance matrices
+% process covariance is a function of our derivatives and prdiction forward in time
+Q = [S2dp, sym(0); sym(0), S2vp]
+% measurement covariance is a function of our measurement uncertainty 
+% (this could vary depending on the AprilTag detection quality, but we need to generate it
+% based on hamming error, etc.)
+% It's probably sufficient to have a fixed measurement covariance for this for now.
+R = [S2dm]
+
+% output a matlab function for each of these so we can easily move them to C++
+%% prediction/propagation step
+% update state covariance of xmk (prediction step) due to prediction uncertainty (Q)
+Pmk = A * Ppk1 * A' + Q;
+  Pmk = collectby(simplify(Pmk), dt);
+  Pmk_predict = matlabFunction(Pmk)
+  Pmk = [p11, p12; p21, p22];
+  
+% propagate states forward by one timestep
+xmk = A*xpk1;% + B*jk1
+  xmk = collectby(simplify(xmk), dt);    
+  xmk_predict = matlabFunction(xmk)  
+  xmk = [dmk; vmk];
+      
+%% update step
+xmk = [dmk; vmk];
+yk = dk;
+% calculate Kalman gain
+Kk = Pmk * C' * inv(C * Pmk * C' + R)
+  Kalman_gain = matlabFunction(simplify(Kk))  
+  Kk = [Kk1;Kk2];  
+% apply Kalman gain for measurement update
+xpk = xmk + Kk * (yk - C * xmk);
+  xpk_update = matlabFunction(simplify(xpk))
+  xpk = [dpk; vpk];
+%update state covariance/uncertainty during VO measurement step
+I = eye(2);
+Ppk = (I - Kk * C) * Pmk;  
+  Ppk_update = matlabFunction(simplify(Ppk))
+  
+
 
 
 
