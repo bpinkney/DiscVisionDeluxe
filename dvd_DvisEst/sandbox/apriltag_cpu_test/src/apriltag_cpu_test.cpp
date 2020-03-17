@@ -119,12 +119,15 @@ static void csv_log_close()
   csvlog.close();
 }
 
-static void csv_log_write(float time_ms, float x_m, float y_m, float z_m, float qw, float qx, float qy, float qz)
+static void csv_log_write(float time_ms, float x_m, float y_m, float z_m, float VEC4(Q), float MAT3X3(R))
 {
   char out[128];
   sprintf(
-      out, "%0.6f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f",
-      time_ms, x_m, y_m, z_m, qw, qx, qy, qz);
+      out, "%0.6f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
+      time_ms, x_m, y_m, z_m, Q[0], Q[1], Q[2], Q[3], 
+      R[i3x3(0,0)], R[i3x3(0,1)], R[i3x3(0,2)], 
+      R[i3x3(1,0)], R[i3x3(1,1)], R[i3x3(1,2)],
+      R[i3x3(2,0)], R[i3x3(2,1)], R[i3x3(2,2)]);
 
   csvlog << out << endl;
 }
@@ -349,7 +352,11 @@ int main( int argc, char** argv )
       // Print to log file
       if(tag_id[tag] == track_tag_id)
       {
-        csv_log_write(time_ms, x_m[tag], y_m[tag], z_m[tag], Q_out[0], Q_out[1], Q_out[2], Q_out[3]);
+        csv_log_write(
+          time_ms, 
+          x_m[tag], y_m[tag], z_m[tag], 
+          Q_out,
+          R_out);
       }
 
       if (!quiet)

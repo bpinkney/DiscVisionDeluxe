@@ -101,6 +101,10 @@ title('Euler Rates')
 
 
 
+% actual trig time
+
+
+
 
 
 
