@@ -26,6 +26,9 @@
 %       disc-plane frame, we are susceptible to 'gimbal lock' when
 %       throwing directly down (oh well)
 
+% for octave
+% pkg load symbolic; 
+
 syms ang_hyzer ang_pitch ang_spin R00 R01 R02 R10 R11 R12 R20 R21 R22 real;
 
 
@@ -61,8 +64,6 @@ ang_hyzer = simplify(ang_hyzer)
 ang_pitch = simplify(ang_pitch)
 ang_spin  = simplify(ang_spin)
 
-
-
 %% now let's define our Kalman Filter states for each axis
 
 % We are going to be very lazy (and a little bit memory concious) here
@@ -87,7 +88,7 @@ yk = dk; %measurements are positions
 %propagate the states forward
 A = [...
   sym(1), dt; ...
-  sym(0), sym(1)];
+  sym(0), sym(1)]
 %no inputs in the prediction step!
 B = [0; 0]
 %apply the measurement 
@@ -134,6 +135,11 @@ xpk = xmk + Kk * (yk - C * xmk);
 I = eye(2);
 Ppk = (I - Kk * C) * Pmk;  
   Ppk_update = matlabFunction(simplify(Ppk))
+  
+  
+% grab function for angular transform also:
+ang_hps = [ang_hyzer, ang_pitch, ang_spin]
+Ang_hyzer_pitch_spin = matlabFunction(ang_hps)
   
 
 
