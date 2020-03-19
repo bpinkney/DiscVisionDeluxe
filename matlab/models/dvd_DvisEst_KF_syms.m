@@ -110,13 +110,13 @@ R = [S2dm]
 %% prediction/propagation step
 % update state covariance of xmk (prediction step) due to prediction uncertainty (Q)
 Pmk = A * Ppk1 * A' + Q;
-  Pmk = collectby(simplify(Pmk), dt);
+  Pmk = collect(simplify(Pmk), dt);
   Pmk_predict = matlabFunction(Pmk)
   Pmk = [p11, p12; p21, p22];
   
 % propagate states forward by one timestep
 xmk = A*xpk1;% + B*jk1
-  xmk = collectby(simplify(xmk), dt);    
+  xmk = collect(simplify(xmk), dt);    
   xmk_predict = matlabFunction(xmk)  
   xmk = [dmk; vmk];
       

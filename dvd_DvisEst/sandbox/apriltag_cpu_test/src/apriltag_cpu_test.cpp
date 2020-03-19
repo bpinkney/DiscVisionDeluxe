@@ -111,7 +111,7 @@ void norm_quat(float quat[4])
 static void csv_log_open()
 {
   csvlog.open("csvlog.csv", std::ios_base::trunc);// discard old file contents each run
-  csvlog << "t_ms, x_m, y_m, z_m, qw, qx, qy, qz" << endl;
+  csvlog << "t_ms, x_m, y_m, z_m, qw, qx, qy, qz, R00, R01, R02, R10, R11, R12, R20, R21, R22" << endl;
 }
 
 static void csv_log_close()
@@ -121,7 +121,7 @@ static void csv_log_close()
 
 static void csv_log_write(float time_ms, float x_m, float y_m, float z_m, float VEC4(Q), float MAT3X3(R))
 {
-  char out[128];
+  char out[256];
   sprintf(
       out, "%0.6f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
       time_ms, x_m, y_m, z_m, Q[0], Q[1], Q[2], Q[3], 
