@@ -9,6 +9,7 @@ Can currently simulate one disc at a time
 
 Main input functions 
 
+-
 
 ----Set the Throw
 
@@ -30,10 +31,12 @@ void new_throw
 
 
 
-
+-
 
 
 Set the beginning state of the throw to be simulated
+
+-
 
 
 ----Simulate the throw
