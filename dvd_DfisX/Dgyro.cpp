@@ -28,9 +28,9 @@ Wp = lift_induced_pitching_moment / (Im * d_forces.angular_velocity);
 
 //
 orientation_change = disc_x_unit_vector * (tan(Wp * step_time));
-d_state.disc_orientation += orientation_change;
-cumulative_roll +=  lift_induced_pitching_moment * 57.3;
-std::cout << "     Total Roll: " << cumulative_roll;
+d_state.disc_orientation -= orientation_change;
+cumulative_roll += Wp * 57.3 * step_time;
+std::cout << "     Total Roll Change: " << cumulative_roll;
 
 make_unit_vector (d_state.disc_orientation);
 

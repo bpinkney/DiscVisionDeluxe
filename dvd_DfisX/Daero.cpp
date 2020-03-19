@@ -197,9 +197,11 @@ else if (realized_pitching_moment_coefficient <= -0.0005) 													sim_state
 else if (realized_pitching_moment_coefficient > -0.0005 && realized_pitching_moment_coefficient < 0.0005) 	sim_state = SIM_STATE_FLYING;
 else if (realized_pitching_moment_coefficient >= 0.0005) 													sim_state = SIM_STATE_FLYING_FADE;
 
-std::cout << "   aoar:" << aoar;
+
 std::cout << "   rpc:" << realized_pitching_moment_coefficient;
 */
+std::cout << "   aoar:" << aoar;
+//std::cout << "\n \n orientaton is x: " << d_orientation[0] << " y: " << d_orientation[1] << " z: " << d_orientation[2] ;
 
 
 

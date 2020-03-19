@@ -32,7 +32,9 @@ namespace DfisX
 void test() 
 {
     std::cout << "Hello, World!\n   this is an exmaple throw\n";
-    DfisX::new_throw (DfisX::disc_aviar,DfisX::default_hard_throw,20, 0);
+    
+    new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 150, 0);
+
     
     while (DfisX::sim_state != DfisX::SIM_STATE_STOPPED)
     {
@@ -65,35 +67,63 @@ void simulate_throw()
 
 
 
-void new_throw (Disc_Object thrown_disc_object, Disc_State thrown_disc_state, double thrown_disc_radians_per_second, double thrown_disc_wobble)
+void new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble)
 //used to start a new simulation
 
 /*
 Takes the following inputs
+
+
 	
-	thrown_disc_object				a struct which defines the aerodynamic qualities of a disc
-	thrown_disc_state				a struct which contains location,orientation,velocity vectors and rotation
-	thrown_disc_radians_per_second	a double
-	double thrown_disc_wobble		a double whichs describe the amount of off axis rotation of a thrown disc (needs to be defined better)
+d state
+	Eigen::Vector3d thrown_disc_position
+	Eigen::Vector3d thrown_disc_velocity
+	double thrown_disc_roll
+	double thrown_disc_pitch
+d force
+	double thrown_disc_radians_per_second
+	double thrown_disc_wobble	
+d object
+	Disc_Mold_Enum disc_mold_enum
+
+	
+
 
 Does the following things
 
-	
 */
 {
+
+	
+
+//convert world frame roll/pitch into and orientation vector
+	double x_component = sin (-thrown_disc_pitch) * cos (thrown_disc_roll);
+	double y_component = sin (thrown_disc_roll) * cos (thrown_disc_pitch);
+	double z_component = cos (thrown_disc_pitch) * cos (thrown_disc_roll);
+
+	Eigen::Vector3d thrown_disc_orientation = {x_component,y_component,z_component};
+
+
+	double thrown_disc_rotation = 0;
+
+//create the starting d state
+	d_state = {thrown_disc_position,thrown_disc_velocity,thrown_disc_orientation,thrown_disc_rotation};
+	std::cout << "orientaton is x: " << d_orientation[0] << " y: " << d_orientation[1] << " z: " << d_orientation[2] ;
+
 	sim_state = SIM_STATE_STARTED;
 	std::cout << "new_throw!\n";
 	
+
 	d_forces = {};
 	d_forces.angular_velocity = thrown_disc_radians_per_second;
 
 
-	d_state = thrown_disc_state;
+	
 	p_state = {};
 
 
 
-	d_object = thrown_disc_object;
+	d_object = disc_aviar;
 	d_object.mass = 0.175;
 	d_object.diameter = 0.25;
 	d_object.radius = d_object.diameter / 2;

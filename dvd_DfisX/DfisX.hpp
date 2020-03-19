@@ -21,6 +21,32 @@
 namespace DfisX
 {
 
+enum Disc_Mold_Enum
+{
+	AVIAR,
+	SHARK,
+	LEOPARD
+	
+};
+
+
+//SIMULATION STATE
+
+enum Sim_State
+{
+	SIM_STATE_STOPPED,
+	SIM_STATE_STARTED,
+	SIM_STATE_FLYING,
+	SIM_STATE_FLYING_TURN,
+	SIM_STATE_FLYING_HIGH_SPEED_TURN,
+	SIM_STATE_FLYING_FADE,
+	SIM_STATE_SKIPPING,
+	SIM_STATE_TREE_HIT,
+	SIM_STATE_ROLLING,
+	SIM_STATE_SLIDING
+	
+};
+
 void test();
 void simulate_throw();
 
@@ -37,8 +63,8 @@ struct Disc_State
 //everything needed for display purposes
 {
 	Eigen::Vector3d disc_location;  	//in meters
-	Eigen::Vector3d disc_orientation;	//orientation vector is the normal of the plane inscribed by the disc
 	Eigen::Vector3d disc_velocity;  	//in meters per second
+	Eigen::Vector3d disc_orientation;	//orientation vector is the normal of the plane inscribed by the disc
 	double disc_rotation;    			//in radians
 };
 
@@ -94,7 +120,8 @@ float radius;
 float area;
 };
 
-const Disc_Object disc_aviar {"Aviar",0.15,0.44,0.055,-0.0010,	0.010,0.175,0.210};
+const Disc_Object disc_aviar {"Aviar",0.18,0.5,0.015,-0.025,	0.25,0.175,0.210};
+//const Disc_Object disc_aviar {"Aviar",0.15,0.44,0.055,-0.0010,	0.010,0.175,0.210};
 
 
 
@@ -115,7 +142,7 @@ void step_simulation (Throw_Container &throw_container, float step_time);
 Disc_State get_disc_state ();
 //used to return the variables needed to display/save a disc flight
 
-void new_throw (Disc_Object thrown_disc_object, Disc_State thrown_disc_state, double thrown_radians_per_second, double thrown_disc_wobble);
+void new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
 /*	Used to initialize a new throw simulation 
 	
 */	
@@ -123,31 +150,7 @@ void new_throw (Disc_Object thrown_disc_object, Disc_State thrown_disc_state, do
 
 
 
-enum Disc_Mold_Enum
-{
-	AVIAR,
-	SHARK,
-	LEOPARD
-	
-};
 
-
-//SIMULATION STATE
-
-enum Sim_State
-{
-	SIM_STATE_STOPPED,
-	SIM_STATE_STARTED,
-	SIM_STATE_FLYING,
-	SIM_STATE_FLYING_TURN,
-	SIM_STATE_FLYING_HIGH_SPEED_TURN,
-	SIM_STATE_FLYING_FADE,
-	SIM_STATE_SKIPPING,
-	SIM_STATE_TREE_HIT,
-	SIM_STATE_ROLLING,
-	SIM_STATE_SLIDING
-	
-};
 
 Sim_State get_simulation_state ();
 
