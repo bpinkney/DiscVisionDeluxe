@@ -1,7 +1,9 @@
 function dvd_DvisEst_KF_on_log()
 %% define KF and transform funcs
 
-clc
+clc;
+close all;
+clear all;
 
 %meas preprocessing
 Ang_hyzer_pitch_spin = @(R00,R01,R02,R12)[asin(R12),asin(R02),atan2(R01,R00)];
@@ -12,7 +14,7 @@ xpk_update = @(Kk1,Kk2,dk,dmk,vmk)[dmk+Kk1.*(dk-dmk);vmk+Kk2.*(dk-dmk)];
 Ppk_update = @(Kk1,Kk2,p11,p12,p21,p22)reshape([-p11.*(Kk1-1.0),p21-Kk2.*p11,-p12.*(Kk1-1.0),p22-Kk2.*p12],[2,2]);
 
 %predict
-xmk_predict = @(dk1,dt,vk1)[dk1+dt.*vk1;vk1];
+xmk_predict = @(dt,dk1,vk1)[dk1+dt.*vk1;vk1];
 Pmk_predict = @(S2dp,S2vp,dt,p11,p12,p21,p22)reshape([S2dp+p11+dt.*(p12+p21)+dt.^2.*p22,p21+dt.*p22,p12+dt.*p22,S2vp+p22],[2,2]);
 
 
@@ -21,10 +23,14 @@ Pmk_predict = @(S2dp,S2vp,dt,p11,p12,p21,p22)reshape([S2dp+p11+dt.*(p12+p21)+dt.
 dt_pred = 1.0/522.0;
 
 % fixed meas covar for now
-S2dm = 1.0;
+lin_S2dm = 0.001;
+ang_S2dm = 0.001;
+
 % process covariance
-S2dp = 1.0; %should be a function of dt
-S2dv = 1.0; %should be a function of dt
+lin_S2dp = 100.0; %should be a function of dt
+ang_S2dp = 100.0; %should be a function of dt
+lin_S2vp = 100000.0; %should be a function of dt
+ang_S2vp = 100000.0; %should be a function of dt
 
 % initial covariances values
 LIN_POS_VAR_INIT = 0.1;  % (m)^2
@@ -45,13 +51,21 @@ steps = ceil(time_end / dt_pred)
 kf.state_valid = zeros(steps, 1);
 % linear XYZ
 kf.lin_xyz_pos = zeros(steps, 3);
-kf.lin_vel_xyz = zeros(steps, 3);
+kf.lin_xyz_vel = zeros(steps, 3);
 kf.lin_xyz_var = cell(steps, 3); % 2x2 covariance matrix for each
 
 % angular HYZER, PITCH, SPIN
 kf.ang_hps_pos = zeros(steps, 3);
 kf.ang_hps_vel = zeros(steps, 3);
-kf.ang_hps_var = cell(steps, 3); % 2x2 covariance matrix for each
+kf.ang_hps_var = cell(steps, 3);% 2x2 covariance matrix for each
+
+%init covariance matrices to zeros
+for i = 1:steps
+    for j = 1:3
+        kf.lin_xyz_var{i, j} = [0,0;0,0];
+        kf.ang_hps_var{i, j} = [0,0;0,0];
+    end    
+end    
 
 %% Run Kalman Filter
 t = 0;
@@ -65,9 +79,9 @@ init_queue.primed       = 0; % mark whether or not the queue has been consumed t
 
 % shift measurement timestamps to zero
 ld.time_s = ld.time_s - ld.time_s(1);
-
+t_steps = 0:dt_pred:(dt_pred*steps-dt_pred);
 for s = 2:steps
-    disp(sprintf('t = %0.5fs, last meas = %0.5f s', t, ld.time_s(meas_idx)));
+    disp(sprintf('t = %0.5fs, next meas = %0.5f s', t, ld.time_s(meas_idx)));
     % perform update step if required
     if (t > ld.time_s(meas_idx) && ld.unprocessed_measurement(meas_idx) == 1)
         % mark measurement as processed
@@ -75,8 +89,8 @@ for s = 2:steps
 
         % process measurement into KF measurement
         meas.time_s      = ld.time_s(meas_idx);
-        meas.lin_pos_xyz = ld.pos_xyz(meas_idx, :);
-        meas.ang_pos_rps = Ang_hyzer_pitch_spin(ld.R00(meas_idx),ld.R01(meas_idx),ld.R02(meas_idx),ld.R12(meas_idx));
+        meas.lin_xyz_pos = ld.pos_xyz(meas_idx, :);
+        meas.ang_hps_pos = Ang_hyzer_pitch_spin(ld.R00(meas_idx),ld.R01(meas_idx),ld.R02(meas_idx),ld.R12(meas_idx));
 
         if(init_queue.queue_count < init_queue_size)
             % we have just started getting measurements
@@ -95,8 +109,8 @@ for s = 2:steps
                 init_queue.queue_time_s(i)   = init_queue.queue_time_s(i-1);
             end
 
-            init_queue.lin_xyz_pos(1, :) = meas.lin_pos_xyz;
-            init_queue.ang_hps_pos(1, :) = meas.ang_pos_rps;
+            init_queue.lin_xyz_pos(1, :) = meas.lin_xyz_pos;
+            init_queue.ang_hps_pos(1, :) = meas.ang_hps_pos;
             init_queue.queue_time_s(1)   = meas.time_s;
             
             % increase queue count
@@ -119,11 +133,14 @@ for s = 2:steps
                 % mark queue as consumed
                 init_queue.primed = 1;
 
+                init_queue.init_t = t;
                 kf.lin_xyz_pos(s, :) = mean(init_queue.lin_xyz_pos);
+                init_queue.init_lin_pos = kf.lin_xyz_pos(s, :);
                 % differentiate elements in the queue to get the initial
                 % velocity
                 lin_vel_xyz = diff(init_queue.lin_xyz_pos) ./ repmat(diff(init_queue.queue_time_s), 1, 3);
                 kf.lin_vel_xyz(s, :) = mean(lin_vel_xyz);
+                init_queue.init_lin_vel = kf.lin_vel_xyz(s, :);
 
                 kf.ang_hps_pos(s, :) = wrap2pi(mean(init_queue.lin_xyz_pos));
                 % differentiate elements in the queue to get the initial
@@ -161,26 +178,49 @@ for s = 2:steps
             for i= 1:3
                 P_last = kf.lin_xyz_var{s-1, i};
                 % calculate Kalman gain
-                Kgain = Kalman_gain(S2dm,P_last(1,1),P_last(2,1));
+                Kgain = Kalman_gain(lin_S2dm,P_last(1,1),P_last(2,1));
                 % update KF states using measurement and Kalman gain
                 last_pos = kf.lin_xyz_pos(s-1, i);
                 last_vel = kf.lin_xyz_vel(s-1, i);
-                xpk    = xpk_update(Kgain(1),Kgain(2),meas.lin_pos_xyz(i),last_pos,last_vel);
+                xpk    = xpk_update(Kgain(1),Kgain(2),meas.lin_xyz_pos(i),last_pos,last_vel);
                 kf.lin_xyz_pos(s, i) = xpk(1);
                 kf.lin_xyz_vel(s, i) = xpk(1);
                 % update state covariance using Kalman gain                
-                P_new = Ppk_update(Kgain(1),Kgain(2),P_last(1,1),P_last(1,2),P_last(2,1),P_last(2,2));%reshape([-p11.*(Kk1-1.0),p21-Kk2.*p11,-p12.*(Kk1-1.0),p22-Kk2.*p12],[2,2]);
+                P_new = Ppk_update(Kgain(1),Kgain(2),P_last(1,1),P_last(1,2),P_last(2,1),P_last(2,2));
                 kf.lin_xyz_var{s, i} = P_new;
             end
             
             % angular axes
-%start here!
-            
-            
+            for i= 1:3
+                P_last = kf.ang_hps_var{s-1, i};
+                % calculate Kalman gain
+                Kgain = Kalman_gain(ang_S2dm,P_last(1,1),P_last(2,1));
+                % update KF states using measurement and Kalman gain
+                last_pos = kf.ang_hps_pos(s-1, i);
+                last_vel = kf.ang_hps_vel(s-1, i);
+                xpk    = xpk_update(Kgain(1),Kgain(2),meas.ang_hps_pos(i),last_pos,last_vel);
+                kf.ang_hps_pos(s, i) = xpk(1);
+                kf.ang_hps_vel(s, i) = xpk(1);
+                % update state covariance using Kalman gain                
+                P_new = Ppk_update(Kgain(1),Kgain(2),P_last(1,1),P_last(1,2),P_last(2,1),P_last(2,2));
+                kf.ang_hps_var{s, i} = P_new;
+            end
         end    
         
         % increment meas_idx to next entry
         meas_idx = meas_idx + 1;
+    else    
+        % no measurement was applied this loop, copy over states from the
+        % previous loop for the prediction step to action on
+        kf.lin_xyz_pos(s, :) = kf.lin_xyz_pos(s-1, :);
+        kf.lin_xyz_vel(s, :) = kf.lin_xyz_vel(s-1, :);
+        kf.ang_hps_pos(s, :) = kf.ang_hps_pos(s-1, :);
+        kf.ang_hps_vel(s, :) = kf.ang_hps_vel(s-1, :);
+        
+        for i=1:3
+            kf.lin_xyz_var{s, i} = kf.lin_xyz_var{s-1, i};
+            kf.ang_hps_var{s, i} = kf.ang_hps_var{s-1, i};
+        end
     end    
     
     
@@ -193,17 +233,66 @@ for s = 2:steps
     % only apply the prediction step if we have a valid KF state
     if(kf.state_valid(s))
         disp('Prediction Step')
+        % linear axes
+        for i= 1:3
+            P_last = kf.lin_xyz_var{s, i};
+            last_pos = kf.lin_xyz_pos(s, i);
+            last_vel = kf.lin_xyz_vel(s, i);
+            % propagate state forward using constant velocity assumption
+            xmk = xmk_predict(dt_pred,last_pos,last_vel);
+            kf.lin_xyz_pos(s, i) = xmk(1);
+            kf.lin_xyz_vel(s, i) = xmk(1);
+            % degrade covariance due to prediction uncertainty
+            Pmk = Pmk_predict(lin_S2dp*(dt_pred*dt_pred),lin_S2vp*(dt_pred*dt_pred),dt_pred,P_last(1,1),P_last(1,2),P_last(2,1),P_last(2,2));
+            kf.lin_xyz_var{s, i} = Pmk;
+        end
 
+        % angular axes
+        for i= 1:3
+            P_last = kf.ang_hps_var{s, i};
+            last_pos = kf.ang_hps_pos(s, i);
+            last_vel = kf.ang_hps_vel(s, i);
+            % propagate state forward using constant velocity assumption
+            xmk = xmk_predict(dt_pred,last_pos,last_vel);
+            kf.ang_hps_pos(s, i) = xmk(1);
+            kf.ang_hps_vel(s, i) = xmk(1);
+            % degrade covariance due to prediction uncertainty
+            Pmk = Pmk_predict(ang_S2dp*(dt_pred*dt_pred),ang_S2vp*(dt_pred*dt_pred),dt_pred,P_last(1,1),P_last(1,2),P_last(2,1),P_last(2,2));
+            kf.ang_hps_var{s, i} = Pmk;
+        end
+        
     end 
     
     % increment timer
     t = t + dt_pred;
-end    
+end
+
+% plot outputs and meas
+
+
+% lin states
+figure; hold on;
+plot(t_steps, kf.lin_xyz_pos)
+reset_colours
+plot(ld.time_s, ld.pos_xyz, '.')
+reset_colours
+plot(init_queue.init_t+dt_pred, init_queue.init_lin_pos, 'p', 'MarkerSize', 5, 'LineWidth', 3);
+legend('KF pos X', 'KF pos Y', 'KF pos Z', 'MEAS pos X', 'MEAS pos Y', 'MEAS pos Z', 'Q init X', 'Q init Y', 'Q init Z');
+title('Linear XYZ POS meas and KF states');
+
+figure; hold on;
+plot(t_steps, kf.lin_xyz_vel)
+reset_colours
+plot(ld.time_s(2:end), diff(ld.pos_xyz)./repmat(diff(ld.time_s), 1, 3), '.')
+reset_colours
+plot(init_queue.init_t+dt_pred, init_queue.init_lin_vel, 'p', 'MarkerSize', 5, 'LineWidth', 3);
+legend('KF vel X', 'KF vel Y', 'KF vel Z', 'MEAS vel X', 'MEAS vel Y', 'MEAS vel Z', 'Q init X', 'Q init Y', 'Q init Z');
+title('Linear XYZ VEL meas and KF states');
     
 
     
     
-    
+    %Ang_hyzer_pitch_spin(ld.R00(meas_idx),ld.R01(meas_idx),ld.R02(meas_idx),ld.R12(meas_idx))
     
     
     
