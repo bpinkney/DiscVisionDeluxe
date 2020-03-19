@@ -7,9 +7,9 @@ clc;
 
 %t_ms, x_m, y_m, z_m, qw, qx, qy, qz, R00, R01, R02, R10, R11, R12, R20, R21, R22
 
-% M = csvread('/home/jamestkirk/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv', 1, 0);
+% M = csvread('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv', 1, 0);
 
-ld = dvd_DvisEst_load_csv_log('/home/jamestkirk/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive15/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive15/csvlog.csv');
 
 %define ground plane and base frame rotation
 % translation is within the updated plane space
