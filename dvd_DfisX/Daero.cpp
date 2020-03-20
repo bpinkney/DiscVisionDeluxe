@@ -191,16 +191,17 @@ void step_Daero (Throw_Container &active_throw, float step_time)
 
 
 
-/*Aerial State detection  ..... Not working yet 
-if 		(aoar < 0) 																							sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
-else if (realized_pitching_moment_coefficient <= -0.0005) 													sim_state = SIM_STATE_FLYING_TURN;
-else if (realized_pitching_moment_coefficient > -0.0005 && realized_pitching_moment_coefficient < 0.0005) 	sim_state = SIM_STATE_FLYING;
-else if (realized_pitching_moment_coefficient >= 0.0005) 													sim_state = SIM_STATE_FLYING_FADE;
+
+if 		(aoar < 0) 																							d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
+else if (realized_pitching_moment_coefficient <= -0.015) 													d_state.sim_state = SIM_STATE_FLYING_TURN;
+else if (realized_pitching_moment_coefficient > -0.015 && realized_pitching_moment_coefficient < 0.025) 	d_state.sim_state = SIM_STATE_FLYING;
+else if (realized_pitching_moment_coefficient >= 0.025) 													d_state.sim_state = SIM_STATE_FLYING_FADE;
 
 
-std::cout << "   rpc:" << realized_pitching_moment_coefficient;
-*/
+//std::cout << "   rpc:" << realized_pitching_moment_coefficient;
+
 std::cout << "   aoar:" << aoar;
+std::cout << "   rpc:" << realized_pitching_moment_coefficient;
 //std::cout << "\n \n orientaton is x: " << d_orientation[0] << " y: " << d_orientation[1] << " z: " << d_orientation[2] ;
 
 

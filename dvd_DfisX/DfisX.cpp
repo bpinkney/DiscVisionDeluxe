@@ -34,31 +34,33 @@ void test()
     std::cout << "Hello, World!\n   this is an exmaple throw\n";
     
     new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 150, 0);
+    
+    simulate_throw();
+
+    
+}
+
+
+void  simulate_throw()
+{
+    std::cout << "Hello, World!\n   this is a simulated throw\n";
+
+
 
     std::ofstream myfile;
     myfile.open ("simulated_throw.csv");
     
-    while (DfisX::sim_state != DfisX::SIM_STATE_STOPPED)
+    while (d_state.sim_state != SIM_STATE_STOPPED)
     {
     	DfisX::step_simulation (DfisX::active_throw, 0.01);
     	myfile << d_location [0] << ",";
     	myfile << d_location [1] << ",";
-    	myfile << d_location [2] << "\n";
+    	myfile << d_location [2] << ",";
+    	myfile << d_state.sim_state << "\n";
+    	
     }
 
     myfile.close();
-}
-
-
-void simulate_throw() 
-{
-    std::cout << "Hello, World!\n   this is a simulated throw\n";
-    
-    while (DfisX::sim_state != DfisX::SIM_STATE_STOPPED)
-    {
-    	DfisX::step_simulation (DfisX::active_throw, 0.01);
-    	
-    }
 }
 
 
@@ -116,7 +118,7 @@ Does the following things
 	d_state = {thrown_disc_position,thrown_disc_velocity,thrown_disc_orientation,thrown_disc_rotation};
 	std::cout << "orientaton is x: " << d_orientation[0] << " y: " << d_orientation[1] << " z: " << d_orientation[2] ;
 
-	sim_state = SIM_STATE_STARTED;
+	d_state.sim_state = SIM_STATE_STARTED;
 	std::cout << "new_throw!\n";
 	
 
@@ -167,7 +169,7 @@ void step_simulation (Throw_Container &active_throw, float step_time)
 	step_Daero (active_throw, step_time);
 	step_Dgyro (active_throw, step_time);
 	propagate (active_throw, step_time); 
-	std::cout << std::setprecision(3) << std::fixed << "\nX: " << d_location[0] << "   Y: " << d_location[1] << "    Height: " << d_location[2] << "    State: " << sim_state << "    Velocity: " << d_state.disc_velocity.norm() << "\t    " << std::setprecision(5);
+	std::cout << std::setprecision(3) << std::fixed << "\nX: " << d_location[0] << "   Y: " << d_location[1] << "    Height: " << d_location[2] << "    State: " << d_state.sim_state << "    Velocity: " << d_state.disc_velocity.norm() << "\t    " << std::setprecision(5);
 
 		
 
@@ -177,14 +179,14 @@ void step_simulation (Throw_Container &active_throw, float step_time)
     ////When to stop the simulation
     {
     	std::cout << std::setprecision(3) << "The throw simulated " << d_forces.step_count << " steps before ending normally.";
-    	sim_state = SIM_STATE_STOPPED;
+    	d_state.sim_state = SIM_STATE_STOPPED;
     }
 
     else if (d_forces.step_count > 1000)
 
     {
-    	std::cout << "The throw simulation aborted due to reaching maximum steps";
-    	sim_state = SIM_STATE_STOPPED;
+    	std::cout << "The throw simulation aborted due to reaching maximum steps (1000)";
+    	d_state.sim_state = SIM_STATE_STOPPED;
     }
 }
 

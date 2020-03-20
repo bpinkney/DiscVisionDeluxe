@@ -36,9 +36,9 @@ enum Sim_State
 {
 	SIM_STATE_STOPPED,
 	SIM_STATE_STARTED,
-	SIM_STATE_FLYING,
-	SIM_STATE_FLYING_TURN,
 	SIM_STATE_FLYING_HIGH_SPEED_TURN,
+	SIM_STATE_FLYING_TURN,
+	SIM_STATE_FLYING,
 	SIM_STATE_FLYING_FADE,
 	SIM_STATE_SKIPPING,
 	SIM_STATE_TREE_HIT,
@@ -66,6 +66,7 @@ struct Disc_State
 	Eigen::Vector3d disc_velocity;  	//in meters per second
 	Eigen::Vector3d disc_orientation;	//orientation vector is the normal of the plane inscribed by the disc
 	double disc_rotation;    			//in radians
+	Sim_State sim_state; 				//describes the current state of the disc
 };
 
 const Eigen::Vector3d location_throwing_height_origin (0,0,1);
