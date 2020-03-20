@@ -85,6 +85,10 @@ init_queue.primed       = 0; % mark whether or not the queue has been consumed t
 ld.time_s = ld.time_s - ld.time_s(1);
 
 t_steps = 0:dt_pred:(dt_pred*steps-dt_pred);
+
+%track lin vel var
+mv_var = zeros(steps, 1);
+
 for s = 2:steps
     disp(sprintf('t = %0.5fs, next meas = %0.5f s', t, ld.time_s(meas_idx)));
     % perform update step if required
@@ -262,6 +266,10 @@ for s = 2:steps
     
     if(abs(t - ld.time_s(meas_idx)) > max_valid_time_s)
       kf.state_valid(s) = 0;
+      if(sum(kf.state_valid) > 0)
+        disp('Quitting early due to invalid KF states (not enough meas!)')
+        break;
+      end
     end  
 
     % only apply the prediction step if we have a valid KF state
@@ -295,36 +303,71 @@ for s = 2:steps
             kf.ang_hps_var{s, i} = Pmk;
         end
         
-    end 
+    end
+    
+    % Check variance of last few linear velocity states
+    % If we are in a stable region (use the min for now!), 
+    % mark where the C-version might exit early.
+    % Check the last 'state_var_num' states
+    state_var_num = 5;
+    if(kf.state_valid(s) && s > state_var_num)
+      states = kf.lin_xyz_vel(s-state_var_num:s, :);
+      mv_mean = mean(states);
+      mv_var(s) = mean(sum((states - mv_mean).^2));
+    end  
     
     % increment timer
     t = t + dt_pred;
 end
 
 % plot outputs and meas
-% only plot valid states?
-% --> kf.state_valid(s)
+% only plot valid states from the first index, to the last valid 
+% (so we can see the queue priming)
+last_valid_idx = find(kf.state_valid == 1, 1, 'last');
+mlast_valid_idx = find(interp1(t_steps, kf.state_valid, ld.time_s, 'previous', 'extrap') == 1, 1, 'last');
+plot_to_last_valid = 1;
+idx = ones(length(t_steps), 1) > 0;
+midx = ones(length(ld.time_s), 1) > 0;
+if(plot_to_last_valid)
+    idx(last_valid_idx:end) = 0 > 1;
+    midx(mlast_valid_idx:end) = 0 > 1;
+end
+
+mv_var_idx = (mv_var == min(mv_var(kf.state_valid > 0)) & kf.state_valid);
+disp(sprintf('Minimum VEL Variance = %0.4f (m/s)^2', mv_var(mv_var_idx)));
 
 % lin states
 figure; hold on;
-plot(t_steps, kf.lin_xyz_pos)
+plot(t_steps(idx), kf.lin_xyz_pos(idx, :))
 reset_colours
-plot(ld.time_s, ld.pos_xyz, '.')
+plot(ld.time_s(midx), ld.pos_xyz(midx, :), '.')
 reset_colours
 plot(init_queue.init_t, init_queue.init_lin_pos, 'p', 'MarkerSize', 5, 'LineWidth', 3);
+reset_colours
+plot(t_steps(idx & mv_var_idx), kf.lin_xyz_pos(idx & mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('m');
-legend('KF pos X', 'KF pos Y', 'KF pos Z', 'MEAS pos X', 'MEAS pos Y', 'MEAS pos Z', 'Q init X', 'Q init Y', 'Q init Z');
+legend( ...
+  'KF pos X', 'KF pos Y', 'KF pos Z', ...
+  'MEAS pos X', 'MEAS pos Y', 'MEAS pos Z', ...
+  'Q init X', 'Q init Y', 'Q init Z', ...
+  'KF pos X below var thres', 'KF pos Y below var thres', 'KF pos Z below var thres');
 title('Linear XYZ POS meas and KF states');
 grid on;
 
 figure; hold on;
-plot(t_steps, kf.lin_xyz_vel)
+plot(t_steps(idx), kf.lin_xyz_vel(idx, :))
 reset_colours
-plot(ld.time_s(2:end), diff(ld.pos_xyz)./repmat(diff(ld.time_s), 1, 3), '.')
+plot(ld.time_s(midx), [0, 0, 0; diff(ld.pos_xyz(midx, :))./repmat(diff(ld.time_s(midx)), 1, 3)], '.')
 reset_colours
 plot(init_queue.init_t, init_queue.init_lin_vel, 'p', 'MarkerSize', 5, 'LineWidth', 3);
+reset_colours
+plot(t_steps(idx & mv_var_idx), kf.lin_xyz_vel(idx & mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('m/s');
-legend('KF vel X', 'KF vel Y', 'KF vel Z', 'MEAS vel X', 'MEAS vel Y', 'MEAS vel Z', 'Q init X', 'Q init Y', 'Q init Z');
+legend( ...
+  'KF vel X', 'KF vel Y', 'KF vel Z', ...
+  'MEAS vel X', 'MEAS vel Y', 'MEAS vel Z', ...
+  'Q init X', 'Q init Y', 'Q init Z', ...
+  'KF vel X below var thres', 'KF vel Y below var thres', 'KF vel Z below var thres');
 title('Linear XYZ VEL meas and KF states');
 grid on;
     
@@ -332,29 +375,58 @@ grid on;
 meas_hps = Ang_hyzer_pitch_spin(ld.R00,ld.R01,ld.R02,ld.R12);
 
 figure; hold on;
-plot(t_steps, rad2deg(kf.ang_hps_pos))
+plot(t_steps(idx), rad2deg(kf.ang_hps_pos(idx, :)))
 reset_colours
-plot(ld.time_s, rad2deg(meas_hps), '.')
+plot(ld.time_s(midx), rad2deg(meas_hps(midx, :)), '.')
 reset_colours
 plot(init_queue.init_t, rad2deg(init_queue.init_ang_pos), 'p', 'MarkerSize', 5, 'LineWidth', 3);
+reset_colours
+plot(t_steps(idx & mv_var_idx), rad2deg(kf.ang_hps_pos(idx & mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('deg');
-legend('KF pos HYZER', 'KF pos PITCH', 'KF pos SPIN', 'MEAS pos HYZER', 'MEAS pos PITCH', 'MEAS pos SPIN', 'Q init HYZER', 'Q init PITCH', 'Q init SPIN');
+legend('KF pos HYZER', 'KF pos PITCH', 'KF pos SPIN', ...
+  'MEAS pos HYZER', 'MEAS pos PITCH', 'MEAS pos SPIN', ...
+  'Q init HYZER', 'Q init PITCH', 'Q init SPIN', ...
+  'KF pos HYZER below var thres', 'KF pos PITCH below var thres', 'KF pos SPIN below var thres');
 title('Angular HYZER PITCH SPIN POS meas and KF states');
 grid on;
 
 figure; hold on;
-plot(t_steps, rad2deg(kf.ang_hps_vel))
+plot(t_steps(idx), rad2deg(kf.ang_hps_vel(idx, :)))
 reset_colours
-plot(ld.time_s(2:end), rad2deg(diff(meas_hps)./repmat(diff(ld.time_s), 1, 3)), '.')
+plot(ld.time_s(midx), [0,0,0; rad2deg(diff(meas_hps(midx, :))./repmat(diff(ld.time_s(midx)), 1, 3))], '.')
 reset_colours
 plot(init_queue.init_t, rad2deg(init_queue.init_ang_vel), 'p', 'MarkerSize', 5, 'LineWidth', 3);
+reset_colours
+plot(t_steps(idx & mv_var_idx), rad2deg(kf.ang_hps_vel(idx & mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('deg/s');
-legend('KF vel HYZER', 'KF vel PITCH', 'KF vel SPIN', 'MEAS vel HYZER', 'MEAS vel PITCH', 'MEAS vel SPIN', 'Q init HYZER', 'Q init PITCH', 'Q init SPIN');
+legend('KF vel HYZER', 'KF vel PITCH', 'KF vel SPIN', ...
+  'MEAS vel HYZER', 'MEAS vel PITCH', 'MEAS vel SPIN', ...
+  'Q init HYZER', 'Q init PITCH', 'Q init SPIN', ...
+  'KF vel HYZER below var thres', 'KF vel PITCH below var thres', 'KF vel SPIN below var thres');
 title('Angular HYZER PITCH SPIN VEL meas and KF states');
 grid on;
 
+%plot3d
+% figure; hold on;
+% plot3(kf.lin_xyz_pos(idx, 1), kf.lin_xyz_pos(idx, 2), kf.lin_xyz_pos(idx, 3))
+% % plot(ld.pos_xyz(midx(:, 1), 1), ld.pos_xyz(midx(:, 1), 2), ld.pos_xyz(midx(:, 1), 3), '.')
+% plot(init_queue.init_lin_pos(1), init_queue.init_lin_pos(2), init_queue.init_lin_pos(3), 'p', 'MarkerSize', 5, 'LineWidth', 3);
+% reset_colours
+% plot(kf.lin_xyz_pos(idx & mv_var_idx, 1), kf.lin_xyz_pos(idx & mv_var_idx, 2), kf.lin_xyz_pos(idx & mv_var_idx, 3), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+% xlabel('Time (s)'); ylabel('m');
+% legend( ...
+%   'KF pos XYZ', ...
+%   'MEAS pos XYZ', ...
+%   'Q init XYZ', ...
+%   'KF pos XYZ below var thres');
+% title('Linear XYZ POS 3d meas and KF states');
+% grid on;
     
-    
+
+figure; hold on;
+plot(t_steps(idx), mv_var(idx))
+plot(t_steps(idx & mv_var_idx), mv_var(idx & mv_var_idx), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+title('Vel Variance mean(xyz)')
     
     
     
