@@ -121,7 +121,7 @@ float radius;
 float area;
 };
 
-const Disc_Object disc_aviar {"Aviar",0.18,0.5,0.015,-0.025,	0.25,0.175,0.210};
+const Disc_Object disc_aviar {"Aviar",0.18,0.5,0.015,-0.012,	0.12,0.175,0.210};
 //const Disc_Object disc_aviar {"Aviar",0.15,0.44,0.055,-0.0010,	0.010,0.175,0.210};
 
 
