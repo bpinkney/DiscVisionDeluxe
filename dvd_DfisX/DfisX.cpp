@@ -46,17 +46,23 @@ void  simulate_throw()
     std::cout << "Hello, World!\n   this is a simulated throw\n";
 
 
-
+    double total_time = 0;
     std::ofstream myfile;
     myfile.open ("simulated_throw.csv");
-    
+    myfile << "time_elapsed,pos_x,pos_y,pos_z,disc_state,orient_x,orient_y,orient_z\n";
     while (d_state.sim_state != SIM_STATE_STOPPED)
     {
     	DfisX::step_simulation (DfisX::active_throw, 0.01);
+
+    	total_time += 0.01;
+    	myfile << total_time  << ",";
     	myfile << d_location [0] << ",";
     	myfile << d_location [1] << ",";
     	myfile << d_location [2] << ",";
-    	myfile << d_state.sim_state << "\n";
+    	myfile << d_state.sim_state << ",";
+    	myfile << d_orientation [0] << ",";
+    	myfile << d_orientation [1] << ",";
+    	myfile << d_orientation [2] << "\n";
     	
     }
 
