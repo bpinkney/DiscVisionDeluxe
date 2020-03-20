@@ -33,8 +33,17 @@ void test()
 {
     std::cout << "Hello, World!\n   this is an exmaple throw\n";
     
-    new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 150, 0);
-    
+    // Standard test
+    //new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 150, 0);
+
+    // from Brandon's matlab KF:
+    // angle4:
+    // new_throw (AVIAR,Eigen::Vector3d(0.3214,-0.0138,-0.6758),Eigen::Vector3d(6.4023,0.0373,1.2247), -1.1280, -0.0250, -48.3007, 0);
+    // drive15:
+    // new_throw (AVIAR,Eigen::Vector3d(-0.1519,0.1908,-1.3575),Eigen::Vector3d(21.0172,-8.6808,7.3457), -0.4581, -0.1604, -73.0954, 0);
+    // drive 17:
+    // new_throw (AVIAR,Eigen::Vector3d(-0.1230,0.4742,-1.3695),Eigen::Vector3d(17.3008,-1.6305,-1.4441), -0.4515, -0.2277, -63.5608, 0);
+
     simulate_throw();
 
     

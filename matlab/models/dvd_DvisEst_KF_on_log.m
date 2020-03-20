@@ -45,7 +45,7 @@ init_queue_size = 10;
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_angle4/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive17/csvlog.csv');
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 
 time_end = max(ld.time_s) - min(ld.time_s);
@@ -313,7 +313,10 @@ for s = 2:steps
     if(kf.state_valid(s) && s > state_var_num)
       states = kf.lin_xyz_vel(s-state_var_num:s, :);
       mv_mean = mean(states);
-      mv_var(s) = mean(sum((states - mv_mean).^2));
+      for k=1:state_var_num
+        vark(k) = sum(states(k, :) - mv_mean).^2;
+      end
+      mv_var(s) = mean(vark);
     end  
     
     % increment timer
@@ -428,6 +431,11 @@ plot(t_steps(idx), mv_var(idx))
 plot(t_steps(idx & mv_var_idx), mv_var(idx & mv_var_idx), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 title('Vel Variance mean(xyz)')
     
-    
-    
+% run this command to simulate this throw
+% pos_xyz, vel_xyz, hyzer, pitch, spin rate, wobble
+disp('Your command:')
+disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f,%0.4f,%0.4f),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), %0.4f, %0.4f, %0.4f, 0);', ...
+    kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), ...
+    kf.lin_xyz_vel(mv_var_idx, 1), kf.lin_xyz_vel(mv_var_idx, 2), kf.lin_xyz_vel(mv_var_idx, 3), ...
+    kf.ang_hps_pos(mv_var_idx, 1), kf.ang_hps_pos(mv_var_idx, 2), kf.ang_hps_vel(mv_var_idx, 3))));
 end
