@@ -134,8 +134,9 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
           if(i == mainplot)
             if(exist('maintext'))
               delete(maintext)
-            end            
-            maintext = text(0, 0, 0, 'Jim');
+            end
+            overlay_text = sprintf('%0.2f kph\n%0.2f m/s', vel_mag(k)*3.6, vel_mag(k));
+            maintext = text(20, 40, 0, overlay_text, 'FontSize', 20, 'HorizontalAlignment', 'left');
           end
           
           plot_disc_circle(pos_xyz(k, :), orient_uv(k, :));
