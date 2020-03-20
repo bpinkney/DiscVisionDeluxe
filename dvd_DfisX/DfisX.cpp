@@ -4,7 +4,7 @@
 
 
 
-
+#include <fstream>
 #include <iostream> 
 #include <Eigen/Dense>
 #include <typeinfo>   
@@ -35,12 +35,18 @@ void test()
     
     new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 150, 0);
 
+    std::ofstream myfile;
+    myfile.open ("simulated_throw.csv");
     
     while (DfisX::sim_state != DfisX::SIM_STATE_STOPPED)
     {
     	DfisX::step_simulation (DfisX::active_throw, 0.01);
-    	
+    	myfile << d_location [0] << ",";
+    	myfile << d_location [1] << ",";
+    	myfile << d_location [2] << "\n";
     }
+
+    myfile.close();
 }
 
 
