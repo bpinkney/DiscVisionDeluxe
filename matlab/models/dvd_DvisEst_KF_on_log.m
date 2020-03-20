@@ -45,7 +45,7 @@ init_queue_size = 10;
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive17/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_angle4/csvlog.csv');
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 
 time_end = max(ld.time_s) - min(ld.time_s);
