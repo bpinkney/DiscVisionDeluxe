@@ -59,18 +59,21 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
         fig=gcf;
         fig.Units='normalized';
         fig.OuterPosition=[0 0 0.5 1];
+        set(gca, 'YDir','reverse')
         %subplot(2, 2, [1,3]); hold all;
       elseif(i == YZplot)
         figure(YZplot); hold all;
         fig=gcf;
         fig.Units='normalized';
         fig.OuterPosition=[0.5 0.5 0.5 0.5];
+        set(gca, 'YDir','reverse')
         %subplot(2, 2, 2); hold all;
       elseif(i == XZplot)
         figure(XZplot); hold all;
         fig=gcf;
         fig.Units='normalized';
         fig.OuterPosition=[0.5 0 0.5 0.5];
+        set(gca, 'YDir','reverse')
         %subplot(2, 2, 4); hold all;
       end
       

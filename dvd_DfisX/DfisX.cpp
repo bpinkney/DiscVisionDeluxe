@@ -38,27 +38,14 @@ void test()
 
     // from Brandon's matlab KF:
     // (override starting location since it seems to end up in the ground otherwise, haha)
-    // I have revercved the sign for some of the pitch stuff here (I might have just been throwing down...)
-    // maybe the camera was a little offcentre?
-    // angle4:
-    // new_throw (AVIAR,Eigen::Vector3d(0,0,1.5),Eigen::Vector3d(6.4023,0.0373*0,1.2247*0), -1.1280, 0.0250, -48.3007, 0);
-    // drive15:
-    // new_throw (AVIAR,Eigen::Vector3d(0,0,1.5),Eigen::Vector3d(21.0172,-8.6808*0,7.3457*0), -0.4581, 0.1604, -73.0954, 0);
-    // drive17:
-    // new_throw (AVIAR,Eigen::Vector3d(0,0,1.5),Eigen::Vector3d(17.3008,-1.6305*0,-1.4441*0), -0.4515, 0.2277, -63.5608, 0);
-    // drive4:
-    // new_throw (AVIAR,Eigen::Vector3d(0.9506,0.3990,1.2574),Eigen::Vector3d(17.1241,-1.0752 * 0,-5.8594 * 0), -0.1234, 0.1757, -65.5807, 0);
-    // drive 16:
-    // new_throw (AVIAR,Eigen::Vector3d(0.1943,-0.1468,1.6541),Eigen::Vector3d(13.4837,-4.1587 * 0,-0.8570 * 0), -0.1133, 0.0000, -70.2707, 0);
-    // drive 18:
-    // new_throw (AVIAR,Eigen::Vector3d(-0.6497,0.3021,1.6229),Eigen::Vector3d(15.3363,-0.9850 * 0,-10.5016 * 0), -0.5378, 0.0000, -67.7888, 0);
-    // wobble0
-    // new_throw (AVIAR,Eigen::Vector3d(-0.5053,0.1361,2.2421),Eigen::Vector3d(7.6136,-0.6932,5.3417), -0.3190, 0.3428, -33.4142, 0);
-    // drive5
-    // new_throw (AVIAR,Eigen::Vector3d(-0.3665,0.5779,1.3802),Eigen::Vector3d(15.9568,0.4087,-2.7279*0), -0.1042, 0.0000, -57.0460, 0);
-    // drive19
-    // new_throw (AVIAR,Eigen::Vector3d(-0.3841,0.5379,1.4570),Eigen::Vector3d(17.4807,4.7906,0), -0.6859, 0.0000, -26.2723, 0);
-
+    // maybe the camera was a little offcentre, --> should now be fixed by groundplane rotation and translation!
+    // drive15
+    //new_throw (AVIAR,Eigen::Vector3d(0.1882 * 0,0.0608 * 0,-1.4049 * 0 + 1.5),Eigen::Vector3d(18.3007,-6.9504,-2.1581), -0.6294, -0.1353, -74.9837*2, 0);
+    // drive17
+    //new_throw (AVIAR,Eigen::Vector3d(0.2192 * 0,0.4152 * 0,-1.3299 * 0 + 1.5),Eigen::Vector3d(17.7919,-1.6811,-1.9496*0), -0.8069, -0.2617*0, -78.3925, 0);
+    // angle4
+    //new_throw (AVIAR,Eigen::Vector3d(0.0861 * 0,-0.0154 * 0,-0.7044 * 0 + 1.5),Eigen::Vector3d(6.7812,0.1229,2.9423), -1.3580, -0.0793, -44.8209, 0);
+    //new_throw (AVIAR,Eigen::Vector3d(-0.0006 * 0,0.3567 * 0,-1.4461 * 0 + 1.5),Eigen::Vector3d(17.9716,-2.7589,-4.2515), -0.6021, -0.2259, 393.4330, 0);
     simulate_throw();
 
     

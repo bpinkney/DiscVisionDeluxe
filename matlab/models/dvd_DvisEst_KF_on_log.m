@@ -5,6 +5,8 @@ clc;
 close all;
 clear all;
 
+format long g
+
 %meas preprocessing
 Ang_hyzer_pitch_spin = @(R00,R01,R02,R12)[asin(R12),asin(R02),atan2(R01,R00)];
 
@@ -39,17 +41,11 @@ LIN_POS_VAR_INIT = 0.1;  % (m)^2
 LIN_VEL_VAR_INIT = 0.01; % (m/s)^2
 ANG_POS_VAR_INIT = 0.1;  % (rad)^2
 ANG_VEL_VAR_INIT = 0.01; % (rad/s)^2
-%queue size to start estimate
-init_queue_size = 10;  
 % max time delta between measurements before KF state is invalidated
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive19/csvlog.csv');
-
-%adjust groundplane to measured values
-pos_xyz_ground = [0, 0, -3];
-ld.pos_xyz = ld.pos_xyz - pos_xyz_ground;
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive14fliplabel/csvlog.csv');
 
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 
@@ -80,10 +76,13 @@ end
 t = 0;
 meas_idx = 1;
 
+%queue size to start estimate
+init_queue_size = 8;  
 init_queue.lin_xyz_pos  = zeros(init_queue_size, 3);
 init_queue.ang_hps_pos  = zeros(init_queue_size, 3);
 init_queue.queue_time_s = zeros(init_queue_size, 1);
 init_queue.queue_count  = 0;
+init_queue.ok_to_prime  = 0; % don't allow the queue to prime if the vel variance is too high
 init_queue.primed       = 0; % mark whether or not the queue has been consumed to generate the initial estimate
 
 % shift measurement timestamps to zero
@@ -106,7 +105,7 @@ for s = 2:steps
         meas.lin_xyz_pos = ld.pos_xyz(meas_idx, :);
         meas.ang_hps_pos = Ang_hyzer_pitch_spin(ld.R00(meas_idx),ld.R01(meas_idx),ld.R02(meas_idx),ld.R12(meas_idx));
 
-        if(init_queue.queue_count < init_queue_size)
+        if(init_queue.ok_to_prime == 0)
             % we have just started getting measurements
             % (in c-code, we need to throw out old entries in case of false early detections!)
             % fill the queue, and do not apply a measurement update to the
@@ -129,12 +128,33 @@ for s = 2:steps
             
             % increase queue count
             init_queue.queue_count = init_queue.queue_count + 1;
-                
+            if(init_queue.queue_count > init_queue_size)
+              init_queue.queue_count = init_queue_size; % old entries will be discarded
+            end
+            
+            vel_var_limit = 3.0;
+            max_extra_meas = 20;
+            % check for velocity variance to allow queue priming
+            if(init_queue.queue_count >= init_queue_size)
+              lin_xyz_vel = diff(init_queue.lin_xyz_pos) ./ repmat(diff(init_queue.queue_time_s), 1, 3);
+              lin_xyz_vel_mean = mean(lin_xyz_vel);
+              lin_xyz_vel_var = (lin_xyz_vel - lin_xyz_vel_mean).^2;
+              
+              % if all elements in the queue are within the velocity
+              % variance limit, we are clear to initialize the Kalman
+              % Filter
+              % otherwise, allow a prime if we have already seen
+              % 'max_extra_meas' measurements
+              if(sum(sum(lin_xyz_vel_var > vel_var_limit)) == 0 || meas_idx >= max_extra_meas)
+                init_queue.ok_to_prime = 1;
+              end
+            end   
+              
         end
 
         % check for full, unprimed queue
         if(~init_queue.primed)
-            if(init_queue.queue_count >= init_queue_size)
+            if(init_queue.ok_to_prime > 0)
                 % TODO: we probably want to add a velocity variance check
                 % before the queue is considered valid!
 
@@ -156,7 +176,7 @@ for s = 2:steps
                 % first-order filter
                 % start with the oldest value in the queue
                 kf.lin_xyz_pos(s, :) = init_queue.lin_xyz_pos(init_queue_size, :);
-                for i = (init_queue_size-1):-1:1
+                for i = (init_queue_size):-1:1
                   kf.lin_xyz_pos(s, :) = LP_FILT(kf.lin_xyz_pos(s, :), init_queue.lin_xyz_pos(i, :), 0);
                 end
                 
@@ -172,7 +192,7 @@ for s = 2:steps
                 % first-order filter
                 % start with the oldest value in the queue
                 kf.ang_hps_pos(s, :) = init_queue.ang_hps_pos(init_queue_size, :);
-                for i = (init_queue_size-1):-1:1
+                for i = (init_queue_size):-1:1
                   kf.ang_hps_pos(s, :) = wrap2pi(LP_FILT(kf.ang_hps_pos(s, :), init_queue.ang_hps_pos(i, :), 0));
                 end
                 
@@ -328,6 +348,10 @@ for s = 2:steps
     t = t + dt_pred;
 end
 
+if(sum(kf.state_valid) == 0)
+  error('KF was never initialized as valid! Try increasing vel_var_limit')
+end  
+
 % plot outputs and meas
 % only plot valid states from the first index, to the last valid 
 % (so we can see the queue priming)
@@ -341,7 +365,41 @@ if(plot_to_last_valid)
     midx(mlast_valid_idx:end) = 0 > 1;
 end
 
-mv_var_idx = (mv_var == min(mv_var(kf.state_valid > 0)) & kf.state_valid);
+% check state velocity covariance
+kfvelvar = zeros(steps, 3);
+for s = 1:steps
+  Px = kf.lin_xyz_var{s, 1};
+  kfvelvar(s, 1) = Px(2,2);
+  Py = kf.lin_xyz_var{s, 2};
+  kfvelvar(s, 2) = Py(2,2);
+  Pz = kf.lin_xyz_var{s, 3};
+  kfvelvar(s, 3) = Pz(2,2);  
+end
+
+figure; hold on;
+plot(t_steps(idx), kfvelvar(idx, :))
+title('State KF vel var XYZ')
+
+% use either the minimum variance, or the first time it dips below 0.1
+% whichever comes first
+var_thres = 0.1; % disable for now
+thres_mv_var_idx = find(mv_var <= var_thres & kf.state_valid > 0);
+min_valid_var = min(mv_var(kf.state_valid > 0))
+min_valid_var_kf = min(mv_var(kf.state_valid > 0))
+min_mv_var_idx = find(mv_var == min_valid_var & kf.state_valid);
+if(~isempty(thres_mv_var_idx))  
+  mv_var_idx = min(thres_mv_var_idx(1), min_mv_var_idx);
+else
+  % nothing was found below the specified variance threshold
+  mv_var_idx = min_mv_var_idx;
+end
+
+% use the linear state vel covariance to determine the optimal state
+% min_velvar = min(kfvelvar(kf.state_valid > 0, :));
+% min_valid_var = min_velvar(1);
+% min_mv_var_idx = find(kfvelvar(:, 1) == min_valid_var & kf.state_valid)
+% mv_var_idx = min_mv_var_idx(1);
+
 disp(sprintf('Minimum VEL Variance = %0.4f (m/s)^2', mv_var(mv_var_idx)));
 
 % lin states
@@ -352,7 +410,7 @@ plot(ld.time_s(midx), ld.pos_xyz(midx, :), '.')
 reset_colours
 plot(init_queue.init_t, init_queue.init_lin_pos, 'p', 'MarkerSize', 5, 'LineWidth', 3);
 reset_colours
-plot(t_steps(idx & mv_var_idx), kf.lin_xyz_pos(idx & mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+plot(t_steps(mv_var_idx), kf.lin_xyz_pos(mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('m');
 legend( ...
   'KF pos X', 'KF pos Y', 'KF pos Z', ...
@@ -369,7 +427,7 @@ plot(ld.time_s(midx), [0, 0, 0; diff(ld.pos_xyz(midx, :))./repmat(diff(ld.time_s
 reset_colours
 plot(init_queue.init_t, init_queue.init_lin_vel, 'p', 'MarkerSize', 5, 'LineWidth', 3);
 reset_colours
-plot(t_steps(idx & mv_var_idx), kf.lin_xyz_vel(idx & mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+plot(t_steps(mv_var_idx), kf.lin_xyz_vel(mv_var_idx, :), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('m/s');
 legend( ...
   'KF vel X', 'KF vel Y', 'KF vel Z', ...
@@ -389,7 +447,7 @@ plot(ld.time_s(midx), rad2deg(meas_hps(midx, :)), '.')
 reset_colours
 plot(init_queue.init_t, rad2deg(init_queue.init_ang_pos), 'p', 'MarkerSize', 5, 'LineWidth', 3);
 reset_colours
-plot(t_steps(idx & mv_var_idx), rad2deg(kf.ang_hps_pos(idx & mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+plot(t_steps(mv_var_idx), rad2deg(kf.ang_hps_pos(mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('deg');
 legend('KF pos HYZER', 'KF pos PITCH', 'KF pos SPIN', ...
   'MEAS pos HYZER', 'MEAS pos PITCH', 'MEAS pos SPIN', ...
@@ -405,7 +463,7 @@ plot(ld.time_s(midx), [0,0,0; rad2deg(diff(meas_hps(midx, :))./repmat(diff(ld.ti
 reset_colours
 plot(init_queue.init_t, rad2deg(init_queue.init_ang_vel), 'p', 'MarkerSize', 5, 'LineWidth', 3);
 reset_colours
-plot(t_steps(idx & mv_var_idx), rad2deg(kf.ang_hps_vel(idx & mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+plot(t_steps(mv_var_idx), rad2deg(kf.ang_hps_vel(mv_var_idx, :)), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 xlabel('Time (s)'); ylabel('deg/s');
 legend('KF vel HYZER', 'KF vel PITCH', 'KF vel SPIN', ...
   'MEAS vel HYZER', 'MEAS vel PITCH', 'MEAS vel SPIN', ...
@@ -420,7 +478,7 @@ grid on;
 % % plot(ld.pos_xyz(midx(:, 1), 1), ld.pos_xyz(midx(:, 1), 2), ld.pos_xyz(midx(:, 1), 3), '.')
 % plot(init_queue.init_lin_pos(1), init_queue.init_lin_pos(2), init_queue.init_lin_pos(3), 'p', 'MarkerSize', 5, 'LineWidth', 3);
 % reset_colours
-% plot(kf.lin_xyz_pos(idx & mv_var_idx, 1), kf.lin_xyz_pos(idx & mv_var_idx, 2), kf.lin_xyz_pos(idx & mv_var_idx, 3), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+% plot(kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 % xlabel('Time (s)'); ylabel('m');
 % legend( ...
 %   'KF pos XYZ', ...
@@ -433,16 +491,14 @@ grid on;
 
 figure; hold on;
 plot(t_steps(idx), mv_var(idx))
-plot(t_steps(idx & mv_var_idx), mv_var(idx & mv_var_idx), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+plot(t_steps(mv_var_idx), mv_var(mv_var_idx), 'x', 'MarkerSize', 10, 'LineWidth', 2)
 title('Vel Variance mean(xyz)')
     
 % run this command to simulate this throw
 % pos_xyz, vel_xyz, hyzer, pitch, spin rate, wobble
 disp('Your command:')
-% for now, just zero out the other two velocities...
-% just massage the hell out of this...
-disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f,%0.4f,%0.4f),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), %0.4f, %0.4f, %0.4f, 0);', ...
+disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f * 0,%0.4f * 0,%0.4f * 0 + 1.5),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), %0.4f, %0.4f, %0.4f, 0);', ...
     kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), ...
     kf.lin_xyz_vel(mv_var_idx, 1), kf.lin_xyz_vel(mv_var_idx, 2), kf.lin_xyz_vel(mv_var_idx, 3), ...
-    kf.ang_hps_pos(mv_var_idx, 1), max(kf.ang_hps_pos(mv_var_idx, 2), 0), kf.ang_hps_vel(mv_var_idx, 3))));
+    kf.ang_hps_pos(mv_var_idx, 1), kf.ang_hps_pos(mv_var_idx, 2), kf.ang_hps_vel(mv_var_idx, 3))));
 end
