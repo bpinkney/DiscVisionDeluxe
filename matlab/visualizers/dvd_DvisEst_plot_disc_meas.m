@@ -9,7 +9,7 @@ clc;
 
 % M = csvread('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv', 1, 0);
 
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive15/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv');
 
 %define ground plane and base frame rotation
 % translation is within the updated plane space

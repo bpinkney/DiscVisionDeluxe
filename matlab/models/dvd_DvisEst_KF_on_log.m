@@ -45,7 +45,12 @@ init_queue_size = 10;
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_angle4/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive19/csvlog.csv');
+
+%adjust groundplane to measured values
+pos_xyz_ground = [0, 0, -3];
+ld.pos_xyz = ld.pos_xyz - pos_xyz_ground;
+
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 
 time_end = max(ld.time_s) - min(ld.time_s);
@@ -434,8 +439,10 @@ title('Vel Variance mean(xyz)')
 % run this command to simulate this throw
 % pos_xyz, vel_xyz, hyzer, pitch, spin rate, wobble
 disp('Your command:')
+% for now, just zero out the other two velocities...
+% just massage the hell out of this...
 disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f,%0.4f,%0.4f),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), %0.4f, %0.4f, %0.4f, 0);', ...
     kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), ...
     kf.lin_xyz_vel(mv_var_idx, 1), kf.lin_xyz_vel(mv_var_idx, 2), kf.lin_xyz_vel(mv_var_idx, 3), ...
-    kf.ang_hps_pos(mv_var_idx, 1), kf.ang_hps_pos(mv_var_idx, 2), kf.ang_hps_vel(mv_var_idx, 3))));
+    kf.ang_hps_pos(mv_var_idx, 1), max(kf.ang_hps_pos(mv_var_idx, 2), 0), kf.ang_hps_vel(mv_var_idx, 3))));
 end
