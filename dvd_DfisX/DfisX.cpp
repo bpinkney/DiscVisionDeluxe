@@ -34,18 +34,29 @@ void test()
     std::cout << "Hello, World!\n   this is an exmaple throw\n";
     
     // Standard test
-    new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 70, 0);
+    //new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 70, 0);
 
     // from Brandon's matlab KF:
     // (override starting location since it seems to end up in the ground otherwise, haha)
     // maybe the camera was a little offcentre, --> should now be fixed by groundplane rotation and translation!
+    // Why does the disc go farther if hyzer and spin are positive (vs. both negative??)
+    // throws which actually seem to make some distance (or an appropriate one) are marked with ***
+    // we probably need to get some more data with a better ground plane definition
+    // possibly collected outside so we can actually track the flight distance (might be simple to use a drone to capture the flight path)
+
     // drive15
-    //new_throw (AVIAR,Eigen::Vector3d(0.1882 * 0,0.0608 * 0,-1.4049 * 0 + 1.5),Eigen::Vector3d(18.3007,-6.9504,-2.1581), -0.6294, -0.1353, -74.9837*2, 0);
-    // drive17
-    //new_throw (AVIAR,Eigen::Vector3d(0.2192 * 0,0.4152 * 0,-1.3299 * 0 + 1.5),Eigen::Vector3d(17.7919,-1.6811,-1.9496*0), -0.8069, -0.2617*0, -78.3925, 0);
+    //new_throw (AVIAR,Eigen::Vector3d(0.1792 * 0,0.5830 * 0,1.6704 * 0 + 1.5),Eigen::Vector3d(18.2379,7.4158,-2.5641), fabs(0.0815), -0.1048, fabs(-79.1582), 0);
+    // drive13 ***
+    new_throw (AVIAR,Eigen::Vector3d(0.1991 * 0,0.3180 * 0,1.7996 * 0 + 1.5),Eigen::Vector3d(20.8845,6.0413,0.8772), fabs(-0.0924), 0.1999, fabs(-77.9917), 0);
     // angle4
-    //new_throw (AVIAR,Eigen::Vector3d(0.0861 * 0,-0.0154 * 0,-0.7044 * 0 + 1.5),Eigen::Vector3d(6.7812,0.1229,2.9423), -1.3580, -0.0793, -44.8209, 0);
-    //new_throw (AVIAR,Eigen::Vector3d(-0.0006 * 0,0.3567 * 0,-1.4461 * 0 + 1.5),Eigen::Vector3d(17.9716,-2.7589,-4.2515), -0.6021, -0.2259, 393.4330, 0);
+    //new_throw (AVIAR,Eigen::Vector3d(-0.2786 * 0,0.8777 * 0,2.0911 * 0 + 1.5),Eigen::Vector3d(4.1654,-0.1151,-0.7052), fabs(-0.7771), -0.1169, fabs(-45.4723), 0);
+    // wobble0
+    //new_throw (AVIAR,Eigen::Vector3d(-0.2234 * 0,0.7923 * 0,2.3306 * 0 + 1.5),Eigen::Vector3d(8.8370,2.7146,4.7251), fabs(-0.3033), 0.2270, fabs(-22.8755), 0);
+    // putt2
+    //new_throw (AVIAR,Eigen::Vector3d(0.5079 * 0,0.8690 * 0,1.8733 * 0 + 1.5),Eigen::Vector3d(11.0294,3.5728,1.6619), fabs(0.2241), -0.1919, fabs(-45.9233), 0);
+    //spin2
+    //new_throw (AVIAR,Eigen::Vector3d(-0.1317 * 0,0.5205 * 0,2.0303 * 0 + 1.5),Eigen::Vector3d(5.4661,0.4827,-0.6882), fabs(0.4373), 0.4299, fabs(-42.6808), 0);
+
     simulate_throw();
 
     

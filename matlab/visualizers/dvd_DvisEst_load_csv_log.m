@@ -29,8 +29,8 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
     if(use_groundplane)
       % define ground plane and base frame rotation
       % translation is within the ground-plane frame
-      R_CG   = [-0.995864632149249 0.0299075147135663 -0.0857856339832013;8.47361904241506e-05 0.944566143543897 0.328321173990331;0.0908494758048719 0.326956176014874 -0.940662549329839]
-      xyz_CG = [-0.0158304 0.128522400000004 -3.17157020000002]'
+      R_CG   = [0.995864632149249 0.0299075147135663 0.0857856339832013;-8.47361904241506e-05 0.944566143543897 -0.328321173990331;-0.0908494758048719 0.326956176014874 0.940662549329839]
+      xyz_CG = [-0.0158304 0.128522400000004 -3.17]';%[-0.0158304 0.128522400000004 -3.17157020000002]'
       
       if(calc_groundplane)
         %get avg position for groundplanelog
@@ -41,16 +41,49 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
         % axes
         % define the accidental disc plane (rotated 90 degrees due to Brandon's floor placement) as Gp
         % then this is the rotation from Gp to G, RGpG
+        % We also note that nominally, the AprilTag lib defines rotations
+        % in the camera frame as: ???? Fix this
+        %  
+        %  ___
+        % |   | -> X
+        % |___| x Z
+        %   |
+        %   v Y
+        % but we want
+        %  ___
+        % |   | -> X
+        % |___| . Z
+        %   |
+        %   v  Y
+        
+        % So add another 180 degree rotation about the X axis (first)  
+        % the invert the Y axis
         % for a given matrix R0N = R01 * R12 * R23 * ... * R(N-1)N
         % our rotation from the camera frame to ground plane is then:
         % RCG = RCGp * RGpG 
         angle = -90;
-        R_GpG = [ ...
+        R_GpGz = [ ...
                 cosd(angle)  -sind(angle)  0 ; ...
                 sind(angle)   cosd(angle)  0 ; ...
                 0           0           1 ; ...
                 ];
 
+        angle = 180;
+        R_GpGx = [ ...
+          1   0           0 ; ...
+          0   cosd(angle)  -sind(angle) ; ...
+          0   sind(angle) cosd(angle) ; ...
+          ]; 
+        
+        angle = 0;
+          R_GpGy = [ ...
+          cosd(angle)  0   sind(angle) ;
+          0           1   0 ;
+          -sind(angle)  0   cosd(angle) ;
+        ];
+
+        
+        R_GpG = R_GpGx * R_GpGy * R_GpGz;
         % get the average value of RCGp by averaging quaternions 
         % this isn't quite right, but it's a good enough approximation for 
         % similar quaternions
@@ -73,8 +106,8 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
         R_CGp = Q2R(Q_CGp);
           
           
-        % RCG = RCGp * RGpG 
-        R_CG = R_CGp * R_GpG
+        % RCG = RCGp * RGpG
+        R_CG = R_CGp * R_GpG;
         
         % rotate camera-frame points into the ground plane to get our base
         % offset?? No, just leave them defined in the camera frame
@@ -102,7 +135,7 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
              ld.R20(i), ld.R21(i), ld.R22(i)];
 
            % rotate by base groundplane
-           R_GD = R_CG' * R_CD;
+           R_GD = R_CG * R_CD; %shouldn't this be transpose?
 
            ld.R00(i) = R_GD(1,1);
            ld.R01(i) = R_GD(1,2);
@@ -117,6 +150,9 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
            % rotate xyz_CD positions into xyz_GD frame
            % subtract base xyz offset defined in CG frame
            pos_xyz_GD = R_CG * (ld.pos_xyz(i, :)' - xyz_CG);
+           ld.pos_xyz(i, :) = pos_xyz_GD;
+           % invert the y axis
+           ld.pos_xyz(i, 2) = -ld.pos_xyz(i, 2);
 
       end
     end

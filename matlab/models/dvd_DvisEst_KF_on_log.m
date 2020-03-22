@@ -7,6 +7,8 @@ clear all;
 
 format long g
 
+plot_to_last_valid = 1;
+
 %meas preprocessing
 Ang_hyzer_pitch_spin = @(R00,R01,R02,R12)[asin(R12),asin(R02),atan2(R01,R00)];
 
@@ -31,21 +33,21 @@ ang_S2dm = 0.01;
 
 % process covariance
 lin_S2dp = 1.0; %should be a function of dt
-lin_S2vp = 5000.0; %should be a function of dt
+lin_S2vp = 200.0; %should be a function of dt
 
 ang_S2dp = 1.0; %should be a function of dt
-ang_S2vp = 5000.0; %should be a function of dt
+ang_S2vp = 200.0; %should be a function of dt
 
 % initial covariances values
-LIN_POS_VAR_INIT = 0.1;  % (m)^2
-LIN_VEL_VAR_INIT = 0.01; % (m/s)^2
-ANG_POS_VAR_INIT = 0.1;  % (rad)^2
-ANG_VEL_VAR_INIT = 0.01; % (rad/s)^2
+LIN_POS_VAR_INIT = 1;  % (m)^2
+LIN_VEL_VAR_INIT = 50; % (m/s)^2
+ANG_POS_VAR_INIT = 1;  % (rad)^2
+ANG_VEL_VAR_INIT = 50; % (rad/s)^2
 % max time delta between measurements before KF state is invalidated
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive14fliplabel/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_spin2/csvlog.csv');
 
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 
@@ -77,7 +79,7 @@ t = 0;
 meas_idx = 1;
 
 %queue size to start estimate
-init_queue_size = 8;  
+init_queue_size = 5;  
 init_queue.lin_xyz_pos  = zeros(init_queue_size, 3);
 init_queue.ang_hps_pos  = zeros(init_queue_size, 3);
 init_queue.queue_time_s = zeros(init_queue_size, 1);
@@ -132,8 +134,8 @@ for s = 2:steps
               init_queue.queue_count = init_queue_size; % old entries will be discarded
             end
             
-            vel_var_limit = 3.0;
-            max_extra_meas = 20;
+            vel_var_limit = 1.0;
+            max_extra_meas = 30;
             % check for velocity variance to allow queue priming
             if(init_queue.queue_count >= init_queue_size)
               lin_xyz_vel = diff(init_queue.lin_xyz_pos) ./ repmat(diff(init_queue.queue_time_s), 1, 3);
@@ -193,7 +195,9 @@ for s = 2:steps
                 % start with the oldest value in the queue
                 kf.ang_hps_pos(s, :) = init_queue.ang_hps_pos(init_queue_size, :);
                 for i = (init_queue_size):-1:1
-                  kf.ang_hps_pos(s, :) = wrap2pi(LP_FILT(kf.ang_hps_pos(s, :), init_queue.ang_hps_pos(i, :), 0));
+                  for j = 1:3
+                    kf.ang_hps_pos(s, j) = wrap2pi(LP_FILT(kf.ang_hps_pos(s, j), init_queue.ang_hps_pos(i, j), 0));
+                  end
                 end
                 
                 init_queue.init_ang_pos = kf.ang_hps_pos(s, :);
@@ -201,7 +205,15 @@ for s = 2:steps
                 % differentiate elements in the queue to get the initial
                 % velocity, just take a straight mean here
                 % don't constrain angular veloicty to +-2*pi!
-                ang_hps_vel = (diff(init_queue.ang_hps_pos) ./ repmat(diff(init_queue.queue_time_s), 1, 3));
+                % DO wrap the delta pos to +-pi!
+                ang_hps_pos_diff = diff(init_queue.ang_hps_pos);
+                ang_hps_pos_diff_size = size(ang_hps_pos_diff);
+                for i = 1:ang_hps_pos_diff_size(1)
+                  for j = 1:ang_hps_pos_diff_size(2)
+                    ang_hps_pos_diff(i,j) = wrap2pi(ang_hps_pos_diff(i,j));
+                  end
+                end  
+                ang_hps_vel = (ang_hps_pos_diff ./ repmat(diff(init_queue.queue_time_s), 1, 3));
                 kf.ang_hps_vel(s, :) = (mean(ang_hps_vel));
                 init_queue.init_ang_vel = kf.ang_hps_vel(s, :);
 
@@ -357,28 +369,52 @@ end
 % (so we can see the queue priming)
 last_valid_idx = find(kf.state_valid == 1, 1, 'last');
 mlast_valid_idx = find(interp1(t_steps, kf.state_valid, ld.time_s, 'previous', 'extrap') == 1, 1, 'last');
-plot_to_last_valid = 1;
 idx = ones(length(t_steps), 1) > 0;
 midx = ones(length(ld.time_s), 1) > 0;
 if(plot_to_last_valid)
-    idx(last_valid_idx:end) = 0 > 1;
+    % for the KF states, just plot valid states
+    idx(kf.state_valid==0)    = 0 > 1;
+    %idx(last_valid_idx:end) = 0 > 1;
     midx(mlast_valid_idx:end) = 0 > 1;
 end
 
-% check state velocity covariance
+% check state position and velocity covariance
+kfposvar = zeros(steps, 3);
 kfvelvar = zeros(steps, 3);
+kfaposvar = zeros(steps, 3);
+kfavelvar = zeros(steps, 3);
 for s = 1:steps
+  % linear  
   Px = kf.lin_xyz_var{s, 1};
+  kfposvar(s, 1) = Px(1,1);
   kfvelvar(s, 1) = Px(2,2);
   Py = kf.lin_xyz_var{s, 2};
+  kfposvar(s, 2) = Px(1,1);
   kfvelvar(s, 2) = Py(2,2);
   Pz = kf.lin_xyz_var{s, 3};
-  kfvelvar(s, 3) = Pz(2,2);  
+  kfposvar(s, 3) = Px(1,1);
+  kfvelvar(s, 3) = Pz(2,2);
+  
+  % angular  
+  Px = kf.ang_hps_var{s, 1};
+  kfaposvar(s, 1) = Px(1,1);
+  kfavelvar(s, 1) = Px(2,2);
+  Py = kf.ang_hps_var{s, 2};
+  kfaposvar(s, 2) = Px(1,1);
+  kfavelvar(s, 2) = Py(2,2);
+  Pz = kf.ang_hps_var{s, 3};
+  kfaposvar(s, 3) = Px(1,1);
+  kfavelvar(s, 3) = Pz(2,2);
 end
 
 figure; hold on;
-plot(t_steps(idx), kfvelvar(idx, :))
-title('State KF vel var XYZ')
+grid on
+plot(t_steps(idx), kfposvar(idx, 1))
+plot(t_steps(idx), kfvelvar(idx, 1))
+plot(t_steps(idx), kfaposvar(idx, 1))
+plot(t_steps(idx), kfavelvar(idx, 1))
+legend('Lin Pos Var (m^2)', 'Line Vel Var (m^2/s^2', 'Ang Pos Var (rad^2)', 'Ang Vel Var (rad^2/s^2)')
+title('State KF Variances first axis')
 
 % use either the minimum variance, or the first time it dips below 0.1
 % whichever comes first
@@ -472,21 +508,26 @@ legend('KF vel HYZER', 'KF vel PITCH', 'KF vel SPIN', ...
 title('Angular HYZER PITCH SPIN VEL meas and KF states');
 grid on;
 
+
 %plot3d
-% figure; hold on;
-% plot3(kf.lin_xyz_pos(idx, 1), kf.lin_xyz_pos(idx, 2), kf.lin_xyz_pos(idx, 3))
-% % plot(ld.pos_xyz(midx(:, 1), 1), ld.pos_xyz(midx(:, 1), 2), ld.pos_xyz(midx(:, 1), 3), '.')
-% plot(init_queue.init_lin_pos(1), init_queue.init_lin_pos(2), init_queue.init_lin_pos(3), 'p', 'MarkerSize', 5, 'LineWidth', 3);
-% reset_colours
-% plot(kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), 'x', 'MarkerSize', 10, 'LineWidth', 2)
-% xlabel('Time (s)'); ylabel('m');
-% legend( ...
-%   'KF pos XYZ', ...
-%   'MEAS pos XYZ', ...
-%   'Q init XYZ', ...
-%   'KF pos XYZ below var thres');
-% title('Linear XYZ POS 3d meas and KF states');
-% grid on;
+figure; hold on;
+plot3(kf.lin_xyz_pos(idx , 1), kf.lin_xyz_pos(idx, 2), kf.lin_xyz_pos(idx, 3))
+
+plot3(ld.pos_xyz(midx(:, 1), 1), ld.pos_xyz(midx(:, 1), 2), ld.pos_xyz(midx(:, 1), 3), '.')
+
+plot3(init_queue.init_lin_pos(1), init_queue.init_lin_pos(2), init_queue.init_lin_pos(3), 'p', 'MarkerSize', 5, 'LineWidth', 3);
+
+plot3(kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), 'x', 'MarkerSize', 10, 'LineWidth', 2)
+xlabel('X'); ylabel('Y');zlabel('Z');
+legend( ...
+  'KF pos XYZ', ...
+  'MEAS pos XYZ', ...
+  'Q init XYZ', ...
+  'KF pos XYZ below var thres');
+title('Linear XYZ POS 3d meas and KF states');
+set(gca, 'YDir','reverse')
+grid on;
+axis equal
     
 
 figure; hold on;
@@ -496,8 +537,8 @@ title('Vel Variance mean(xyz)')
     
 % run this command to simulate this throw
 % pos_xyz, vel_xyz, hyzer, pitch, spin rate, wobble
-disp('Your command:')
-disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f * 0,%0.4f * 0,%0.4f * 0 + 1.5),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), %0.4f, %0.4f, %0.4f, 0);', ...
+disp('Your command (for some reason, positive hyzer and spin result in more distance in dvd_DfisX right now):')
+disp((sprintf('new_throw (AVIAR,Eigen::Vector3d(%0.4f * 0,%0.4f * 0,%0.4f * 0 + 1.5),Eigen::Vector3d(%0.4f,%0.4f,%0.4f), fabs(%0.4f), %0.4f, fabs(%0.4f), 0);', ...
     kf.lin_xyz_pos(mv_var_idx, 1), kf.lin_xyz_pos(mv_var_idx, 2), kf.lin_xyz_pos(mv_var_idx, 3), ...
     kf.lin_xyz_vel(mv_var_idx, 1), kf.lin_xyz_vel(mv_var_idx, 2), kf.lin_xyz_vel(mv_var_idx, 3), ...
     kf.ang_hps_pos(mv_var_idx, 1), kf.ang_hps_pos(mv_var_idx, 2), kf.ang_hps_vel(mv_var_idx, 3))));
