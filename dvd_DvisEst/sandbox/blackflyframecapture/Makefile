@@ -11,15 +11,13 @@ OPT_INC = ${PROJECT_ROOT}/common/make/common_spin.mk
 CFLAGS += -std=c++11 -pthread
 CPPFLAGS = $(shell pkg-config --cflags opencv4)
 LIB += $(shell pkg-config --libs opencv4)
+PLATFORM = $(shell uname)
 ifeq ($(wildcard ${OPT_INC}),)
 CXX = g++ ${CFLAGS} ${CPPFLAGS}
+CXX_WIN = x86_64-w64-mingw32-g++ ${CFLAGS} ${CPPFLAGS}
 ODIR  = .obj/build${D}
 SDIR  = .
 MKDIR = mkdir -p
-PLATFORM = $(shell uname)
-ifeq ($(PLATFORM),Darwin)
-OS = mac
-endif
 endif
 
 OUTPUTNAME = GrabFrames522${D}
@@ -41,10 +39,6 @@ ifneq ($(OS),mac)
 INC += -I/usr/include/spinnaker
 LIB += -Wl,-Bdynamic ${SPINNAKER_LIB}
 LIB += -Wl,-rpath-link=../../lib 
-else
-INC += -I/usr/local/include/spinnaker
-LIB += -rpath lib/
-LIB += ${SPINNAKER_LIB}
 endif
 
 #opencv stuff
@@ -54,10 +48,16 @@ LIB += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
 ################################################################################
 # Rules/recipes
 ################################################################################
-# Final binary
+
+# Final binary LINUX
 ${OUTPUTNAME}: ${OBJ}
 	${CXX} -o ${OUTPUTNAME} ${OBJ} ${LIB}
 	mv ${OUTPUTNAME} ${OUTDIR}
+
+# Final binary WINDOWS
+#${OUTPUTNAME}: ${OBJ}
+#	${CXX_WIN} -o ${OUTPUTNAME} ${OBJ} ${LIB}
+#	mv ${OUTPUTNAME} ${OUTDIR}
 
 # Intermediate object files
 ${OBJ}: ${ODIR}/%.o : ${SDIR}/%.cpp

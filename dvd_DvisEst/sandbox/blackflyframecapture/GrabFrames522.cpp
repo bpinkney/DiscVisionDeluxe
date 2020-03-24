@@ -44,6 +44,7 @@ void image_queue_push(cv::Mat * imageMat, uint64_t timestamp_ns, uint64_t frame_
   
   cv::Mat imageMatLocal;
   (* imageMat).copyTo(imageMatLocal);
+  (* imageMat).release();
 
   imageMatQueue.push(imageMatLocal);
   timestampnsQueue.push(timestamp_ns);
@@ -61,14 +62,16 @@ bool image_queue_pull(cv::Mat * imageMat, uint64_t * timestamp_ns, uint64_t * fr
   {
     // mutex off
     imageMatMutex.unlock();
-    *imageMat = cv::Mat();
+    //*imageMat = cv::Mat();
     *timestamp_ns = 0;
     *frame_id     = 0;
     return false;
   }
   else
-  {    
-    *imageMat     = imageMatQueue.front();
+  {
+    // deepcopy mat to avoid 'clever' opencv memory usage
+    imageMatQueue.front().copyTo(*imageMat);
+    imageMatQueue.front().release();
     *timestamp_ns = timestampnsQueue.front();
     *frame_id     = frameIDQueue.front();
     
@@ -129,7 +132,7 @@ double get_uptime_ms()
 }
 
 // OpenCV stuff
-cv::Mat spinnakerWrapperToCvMat(ImagePtr imagePtr)
+void spinnakerWrapperToCvMat(ImagePtr imagePtr, cv::Mat * openCVOutputImage)
 {
   try
   {
@@ -141,7 +144,7 @@ cv::Mat spinnakerWrapperToCvMat(ImagePtr imagePtr)
     const auto rowsize = convertedImagePtr->GetWidth();
     const auto colsize = convertedImagePtr->GetHeight();
 
-    cv::Mat openCVOutputImage  = 
+    (* openCVOutputImage) =
       cv::Mat
       (
         (int)(colsize + YPadding), 
@@ -156,16 +159,13 @@ cv::Mat spinnakerWrapperToCvMat(ImagePtr imagePtr)
     if(show_me)
     {
       namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-      imshow( "Display window",openCVOutputImage );    // Show our image inside it.
+      imshow( "Display window", (* openCVOutputImage) );         // Show our image inside it.
       waitKey(0);                                      // Wait for a keystroke in the window
-    }    
-
-    return openCVOutputImage;
+    }
   }
   catch (const std::exception& e)
   {
     cout << endl << endl << "*** Could not convert Spinnaker Image Pointer to OpenCV MAT! ***" << endl << endl;
-    return cv::Mat();
   }
 }
 
@@ -644,7 +644,7 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
           timestamp_ns = (imagePtr->GetTimeStamp() - init_timestamp_ns);
 
           // Convert to OpenCV matrix
-          imageMat = spinnakerWrapperToCvMat(imagePtr);
+          spinnakerWrapperToCvMat(imagePtr, &imageMat);
           // push to IO thread so we can keep grabbing frames
           image_queue_push(&imageMat, timestamp_ns, imagePtr->GetFrameID());
         }
@@ -756,7 +756,10 @@ int ProcessImages(void)
     cv::imwrite(filename.str(), imageMat);
 
     imageCnt++;
-      
+
+    // release OpenCV memory
+    imageMat.release();
+    imageBayerMat.release();
   }
   cout << "Grabbed images " << imageCnt << endl;
   
