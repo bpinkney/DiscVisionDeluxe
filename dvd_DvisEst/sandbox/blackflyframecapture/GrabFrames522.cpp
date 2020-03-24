@@ -37,12 +37,15 @@ std::mutex imageMatMutex;
 std::atomic<bool> ai_thread_ready (false);
 
 
-void image_queue_push(cv::Mat imageMat, uint64_t timestamp_ns, uint64_t frame_id)
+void image_queue_push(cv::Mat * imageMat, uint64_t timestamp_ns, uint64_t frame_id)
 {
   // mutex on
   imageMatMutex.lock();
   
-  imageMatQueue.push(imageMat);
+  cv::Mat imageMatLocal;
+  (* imageMat).copyTo(imageMatLocal);
+
+  imageMatQueue.push(imageMatLocal);
   timestampnsQueue.push(timestamp_ns);
   frameIDQueue.push(frame_id);
 
@@ -225,7 +228,7 @@ int ConfigureExposureGainWhiteBalanceADC(INodeMap& nodeMap)
       // add a de-rate factor here to account for overhead
       // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
       // tested experimentally at 522fps to be between 6-7%
-      double frame_capture_overhead_factor = 1.07 * 5.0;
+      double frame_capture_overhead_factor = 1.07 * 7.0;
       double des_exposure_us = max_exp_time_s * 1000000.0 / frame_capture_overhead_factor;
 
       CFloatPtr ptrExposureTime = nodeMap.GetNode("ExposureTime");
@@ -643,7 +646,7 @@ int AcquireImages(CameraPtr pCam, uint k_numImages, std::promise<int> && p)
           // Convert to OpenCV matrix
           imageMat = spinnakerWrapperToCvMat(imagePtr);
           // push to IO thread so we can keep grabbing frames
-          image_queue_push(imageMat, timestamp_ns, imagePtr->GetFrameID());
+          image_queue_push(&imageMat, timestamp_ns, imagePtr->GetFrameID());
         }
 
         // Free up image memory after OpenCV conversion                
@@ -901,7 +904,7 @@ int main(int /*argc*/, char** /*argv*/)
   unsigned int i = 0;
   cout << endl << "Running example for camera " << i << "..." << endl;
 
-  result = result | RunSingleCamera(camList.GetByIndex(i), 1500);
+  result = result | RunSingleCamera(camList.GetByIndex(i), 5000);
 
   cout << "Camera " << i << " example complete..." << endl << endl;
 
