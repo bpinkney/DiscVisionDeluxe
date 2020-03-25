@@ -17,7 +17,6 @@
 // CPU AprilTags
 #include "apriltag.h"
 #include "tag36h11.h"
-#include "tag36h11.h"
 #include "common/homography.h"
 
 // Disc Stuff
