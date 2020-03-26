@@ -10,17 +10,29 @@ project( dvd_DvisEst )
 
 # add package deps
 find_package( OpenCV REQUIRED )
-find_package( apriltag REQUIRED )
-#[[find_package(Spinnaker)
-if (NOT SPINNAKER_FOUND)
-  message(FATAL_ERROR "Spinnaker not found. Either turn off the `WITH_FLIR_CAMERA` option or specify the path to
-    the Spinnaker includes and libs.")
-endif (NOT SPINNAKER_FOUND)]]
-#find_package( Spinnaker REQUIRED )
+if (UNIX)
+  # this only works on linux, for windows, we'll set the INC and LIB directly
+  find_package( apriltag REQUIRED )
+endif (UNIX)
 
-# find apriltag inc and lib stuff
-find_path(APRILTAG_INC NAMES apriltag.h PATH_SUFFIXES apriltag)
-find_library(APRILTAG_LIB apriltag)
+if (UNIX)
+
+  # find apriltag inc and lib stuff
+  find_path(APRILTAG_INC NAMES apriltag.h PATH_SUFFIXES apriltag)
+  find_library(APRILTAG_LIB apriltag)
+
+endif (UNIX)
+if (WIN32)
+
+  # this path is set explicitly here on windows (so change it to your checkout location for apriltag)
+  set(APRILTAG_INC "C:/apriltag")
+  set(APRILTAG_LIB "C:/apriltag/libapriltag.so")
+
+  # check external deps with debug messages
+  message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
+  message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
+
+endif (WIN32)
 
 # find spinnaker inc and lib stuff
 #find_path(SPINNAKER_INC NAMES Spinnaker.h PATH_SUFFIXES spinnaker)
@@ -29,13 +41,10 @@ find_library(APRILTAG_LIB apriltag)
 # add project executable (must be done before local includes)
 add_executable( dvd_DvisEst src/main.cpp )
 
-# check external deps with debug messages
-#message(WARNING "APRILTAG_INC = ${APRILTAG_INC}" )
-#message(WARNING "APRILTAG_LIB = ${APRILTAG_LIB}" )
-
 #Windows includes
 if (WIN32)
     #do something
+    #spinnaker not yet hooked up for windows
 endif (WIN32)
 
 #Linux includes
@@ -47,7 +56,6 @@ endif (UNIX)
 # add project local include files
 target_include_directories(dvd_DvisEst PUBLIC "../common/inc/")
 target_include_directories(dvd_DvisEst PUBLIC inc)
-#target_include_directories(dvd_DvisEst PUBLIC ${apriltag_INCLUDE_DIRS})
 target_include_directories( dvd_DvisEst PRIVATE ${APRILTAG_INC} )
 
 # add project local filenames
