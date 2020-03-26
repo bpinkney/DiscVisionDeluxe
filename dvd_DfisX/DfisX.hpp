@@ -18,14 +18,16 @@
 #define RHO 		1.225
 #define PI_X_AR 	3.99
 
+#define AVIAR 		DANGLE_SS
+
 namespace DfisX
 {
 
 enum Disc_Mold_Enum
 {
-	AVIAR,
-	SHARK,
-	LEOPARD
+	DANGLE_SS,
+	DANGLE,
+	DANGLE_OS
 	
 };
 
@@ -121,7 +123,7 @@ float radius;
 float area;
 };
 
-const Disc_Object disc_aviar {"Aviar",0.18,0.5,0.015,-0.012,	0.12,0.175,0.210};
+//const Disc_Object disc_aviar {"Aviar",0.18,0.5,0.015,-0.012,	0.12,0.175,0.210};
 //const Disc_Object disc_aviar {"Aviar",0.15,0.44,0.055,-0.0010,	0.010,0.175,0.210};
 
 
@@ -140,19 +142,12 @@ Disc_Object disc_object;
 
 void step_simulation (Throw_Container &throw_container, float step_time);
 
-Disc_State get_disc_state ();
-//used to return the variables needed to display/save a disc flight
-
 void new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
 /*	Used to initialize a new throw simulation 
 	
 */	
+void load_disc_parameters ();
 
 
-
-
-
-
-Sim_State get_simulation_state ();
 
 }
