@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	}
 	
 
-	if (command_line_arg_throw && thrown_disc_roll && thrown_disc_pitch && thrown_disc_radians_per_second && posz && velx && vely && velz)
+	if (command_line_arg_throw &&  thrown_disc_radians_per_second && posz && velx && vely )
 	{
 	std::cout << "\n creating throw from command line args \n";
 	thrown_disc_position = Eigen::Vector3d(posx,posy,posz);
