@@ -12,19 +12,21 @@ Can currently simulate one disc at a time
  
  Command Line Args
  -
- 
 must be followed by a number!
  
  -
  
  test||hyzer||pitch||posx||posy||posz||velx||vely||velz||wobble||spinrate||discmold
+ -
  
  
  main hyzer 0.224 pitch -0.192 discmold 0 posx 0 posy 0 posz 2 velx 11 vely 3.6 velz 1.66 spinrate -46 wobble 0
- main test 1
+
  
  -
  
+  main test 1
+  
  -
  
 
