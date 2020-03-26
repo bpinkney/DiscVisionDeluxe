@@ -5,7 +5,21 @@ g++ main.cpp dfisx.cpp daero.cpp dgyro.cpp dpropagate.cpp -o main
 
 
 Can currently simulate one disc at a time
-
+ - 
+ 
+ -
+ 
+ Command Line Args
+ must be followed by a number!
+ 
+ -
+ 
+ test||hyzer||pitch||posx||posy||posz||velx||vely||velz||wobble||spinrate||discmold
+ 
+ -
+ 
+ -
+ 
 
 Main input functions 
 
