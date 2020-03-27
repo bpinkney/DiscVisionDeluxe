@@ -32,9 +32,11 @@
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
+#endif
+
 using namespace std;
 using namespace cv;
-#endif
+
 
 bool dvd_DvisEst_image_capture_test(void)
 {
