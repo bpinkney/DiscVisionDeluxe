@@ -43,8 +43,7 @@ add_executable( dvd_DvisEst src/main.cpp )
 
 #Windows includes
 if (WIN32)
-    #do something
-    #spinnaker not yet hooked up for windows
+ target_include_directories(dvd_DvisEst PRIVATE "C:/Program Files/Point Grey Research/Spinnaker/include")
 endif (WIN32)
 
 #Linux includes
