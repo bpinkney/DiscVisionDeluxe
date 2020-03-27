@@ -1,3 +1,11 @@
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
+// not available in mingw64 for windows! (sad)
+// I'm starting to think spinnaker and apriltag are never meant to
+// be together on windows...
+#else
+#define SPINNAKER_ALLOWED
+#endif
+
 // OpenCV stuff
 #include <opencv2/opencv.hpp>
 
@@ -6,8 +14,10 @@
 #include <iostream>
 #include <sstream>
 
+#if defined(SPINNAKER_ALLOWED)
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
+#endif
 
 // threading stuff
 //#include <thread>
@@ -18,14 +28,17 @@
 
 #include <dvd_DvisEst_image_capture.hpp>
 
+#if defined(SPINNAKER_ALLOWED)
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 using namespace cv;
+#endif
 
 bool dvd_DvisEst_image_capture_test(void)
 {
+#if defined(SPINNAKER_ALLOWED)
   // Retrieve singleton reference to system object
   SystemPtr system = System::GetInstance();
 
@@ -43,4 +56,7 @@ bool dvd_DvisEst_image_capture_test(void)
   //cout << "Number of cameras detected: " << numCameras << endl << endl;
 
   return true;
+#else
+  return false;
+#endif
 }
