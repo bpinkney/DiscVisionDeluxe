@@ -32,6 +32,9 @@ if (WIN32)
   message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
   message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
 
+  # spinnaker stuff
+  set(SPINNAKER_LIB "C:/Program Files/Point Grey Research/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
+
 endif (WIN32)
 
 # find spinnaker inc and lib stuff
@@ -44,6 +47,8 @@ add_executable( dvd_DvisEst src/main.cpp )
 #Windows includes
 if (WIN32)
  target_include_directories(dvd_DvisEst PRIVATE "C:/Program Files/Point Grey Research/Spinnaker/include")
+ # fix for janky windows pthreads (shame!)
+ add_compile_definitions(HAVE_STRUCT_TIMESPEC)
 endif (WIN32)
 
 #Linux includes
@@ -68,4 +73,9 @@ target_sources(dvd_DvisEst
 # link libs
 target_link_libraries( dvd_DvisEst ${OpenCV_LIBS} )
 target_link_libraries( dvd_DvisEst ${APRILTAG_LIB} )
+if (WIN32)
+target_link_libraries( dvd_DvisEst ${SPINNAKER_LIB} )
+endif (WIN32)
+if (UNIX)
 target_link_libraries( dvd_DvisEst Spinnaker )
+endif (UNIX)
