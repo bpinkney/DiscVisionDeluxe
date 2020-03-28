@@ -15,9 +15,92 @@
 using namespace cv;
 using namespace std;
 
+// define local statics
+double  sv_image_scale = 1.0;
+cv::Mat sv_camera_matrix;
+cv::Mat sv_distortion_coefficients;
+
+// Trandformations used for undistortion
+cv::Mat sv_undistort_map0;
+cv::Mat sv_undistort_map1;
+
 bool dvd_DvisEst_image_processing_test(void)
 {
   Mat *view = new Mat();
 
   return true;
+}
+
+bool dvd_DvisEst_image_processing_init(const cv::String camera_cal_file, const double image_scale)
+{
+  // get camera cal parameters from .yaml file
+  FileStorage fs;
+  fs.open(camera_cal_file, FileStorage::READ);
+  if (!fs.isOpened())
+  {
+      cerr << "Failed to open camera cal: " << camera_cal_file << endl;
+      return false;
+  }
+
+  FileNode camera_matrix                    = fs["camera_matrix"];
+  FileNode distortion_coefficients          = fs["distortion_coefficients"];
+  FileNode image_width                      = fs["image_width"];
+  FileNode image_height                     = fs["image_height"];
+  //FileNode avg_reprojection_error           = fs["avg_reprojection_error"];
+  //FileNode per_view_reprojection_errors     = fs["per_view_reprojection_errors"];
+  //FileNode extrinsic_parameters             = fs["extrinsic_parameters"];
+
+  sv_camera_matrix           = camera_matrix.mat();
+  sv_distortion_coefficients = distortion_coefficients.mat();
+  sv_image_scale             = image_scale;
+
+  // Compute optimal undistort tranformation mappings
+  Size image_size     = Size((double)image_width, (double)image_height);
+  Size image_size_out = Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
+
+  // Populate map0 and map1 for undistortion
+  initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Mat(),
+                        getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
+                        image_size_out, CV_8UC1, sv_undistort_map0, sv_undistort_map1);
+
+  fs.release();
+  return true;
+}
+
+// These parameters are scaled linearly by sv_image_scale to reflect the resize step performed during the undistort
+bool dvd_DvisEst_image_processing_get_camera_params(double * Fx, double * Fy, double * Cx, double * Cy)
+{
+  if(sv_camera_matrix.empty())
+  {
+    cerr << "Can't retrieve camera intrinsics, camera cal was never loaded!" << endl;
+    return false;
+  }
+
+  *Fx = sv_camera_matrix.at<double>(0,0) * sv_image_scale;
+  *Fy = sv_camera_matrix.at<double>(1,1) * sv_image_scale;
+  *Cx = sv_camera_matrix.at<double>(0,2) * sv_image_scale;
+  *Cy = sv_camera_matrix.at<double>(1,2) * sv_image_scale;
+
+  return true;
+}
+
+// Undistort opencv mat image, and output using the same pointer
+void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image)
+{
+  // No cal loaded? return early
+  if(sv_camera_matrix.empty())
+  {
+    cerr << "Can't undistort image, camera cal was never loaded!" << endl;
+    return;
+  }
+
+  Mat d_image, ud_image;
+  d_image = *image;
+
+  // use re-map to undistort, linear interpolation
+  remap(d_image, ud_image, sv_undistort_map0, sv_undistort_map1, INTER_LINEAR);
+
+  // point to undistorted image, free memory from extra mat
+  *image = ud_image;
+  d_image.release();
 }

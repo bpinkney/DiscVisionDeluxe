@@ -64,6 +64,7 @@ target_sources(dvd_DvisEst
       src/dvd_DvisEst_apriltag.cpp
       src/dvd_DvisEst_image_capture.cpp
       src/dvd_DvisEst_image_processing.cpp
+      src/dvd_DvisEst_estimate.cpp
 )
 
 # link libs

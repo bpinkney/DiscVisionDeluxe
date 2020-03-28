@@ -1,6 +1,14 @@
 #ifndef DVD_DVISEST_IMAGE_CAPTURE_HPP
 #define DVD_DVISEST_IMAGE_CAPTURE_HPP
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32)) && !defined(SPINNAKER_ALLOWED)
+// not available in mingw64 for windows! (sad)
+// I'm starting to think spinnaker and apriltag are never meant to
+// be together on windows...
+#else
+#define SPINNAKER_ALLOWED
+#endif
+
 #include <string>
 #include <iostream>
 
@@ -28,6 +36,12 @@ struct image_capture_t
 
 // Functions
 bool dvd_DvisEst_image_capture_test(void);
+// Init camera inteface
+void dvd_DvisEst_image_capture_init(void);
+// Start collecting frames (this also purges remaining frames in the queue)
+void dvd_DvisEst_image_capture_start(void);
+// Stop collecting frames
+void dvd_DvisEst_image_capture_stop(void);
 // load test images into the capture queue and return
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt);
 // Return the next captured image from the front of the queue
