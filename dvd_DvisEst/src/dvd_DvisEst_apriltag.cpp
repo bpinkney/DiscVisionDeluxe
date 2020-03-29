@@ -12,7 +12,11 @@
 
 // Disc Stuff
 #include <dvd_DvisEst_apriltag.hpp>
+#include <dvd_DvisEst_image_capture.hpp>
+#include <dvd_DvisEst_estimate.hpp>
 #include <disc_layouts.hpp>
+
+using namespace std;
 
 // Test a simple call to the apriltag lib
 bool dvd_DvisEst_apriltag_test(void)
@@ -22,3 +26,11 @@ bool dvd_DvisEst_apriltag_test(void)
 
   return true;
 }
+
+// Initialize apriltag thread pool
+void dvd_DvisEst_apriltag_init(void)
+{
+  cerr << "Call dvd_DvisEst_apriltag_init" << endl;
+}
+
+// Start apriltag thread with new image_capture_t

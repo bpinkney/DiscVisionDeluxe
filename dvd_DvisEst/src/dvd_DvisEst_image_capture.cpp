@@ -421,6 +421,7 @@ void dvd_DvisEst_image_capture_init(void)
   #if defined(SPINNAKER_ALLOWED)
 
   // set camera params
+  cerr << "Call dvd_DvisEst_image_capture_init" << endl;
 
   #endif
 }
