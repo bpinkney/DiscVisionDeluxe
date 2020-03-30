@@ -20,8 +20,7 @@
 
 namespace DfisX
 {
-std::string save_path = "";
-save_path = "hi";
+std::string save_path = "hi";
 
 //Sim_State sim_state = SIM_STATE_STOPPED; 
 Throw_Container active_throw;
@@ -29,7 +28,8 @@ std::vector<DfisX::Disc_Object> disc_object_array;
 //save_path = "\\flight_saves\\saved_throw.csv";
 
 
-	void test() { 
+void test() 
+{ 
     std::cout << "     This is an example throw\n\n";
     
     // Standard test

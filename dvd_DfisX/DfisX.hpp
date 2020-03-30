@@ -138,6 +138,9 @@ Disc_Object disc_object;
 };
 
 
+// define extern globals
+extern std::string save_path;
+
 
 
 void step_simulation (Throw_Container &throw_container, float step_time);
