@@ -49,6 +49,8 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
 bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
 
 
+// TEST
+# define FRAME_SKIP_TEST_N (0) // skip N-1 frames each pull
 
 
 

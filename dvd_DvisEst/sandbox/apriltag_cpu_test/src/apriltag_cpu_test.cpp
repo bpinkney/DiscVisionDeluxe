@@ -305,12 +305,12 @@ int main( int argc, char** argv )
     // snap to first tag_id;
     int16_t track_tag_id = -1;
 
+    // store XYZ translations for tags in m
+    std::vector<double> x_m(detect_num), y_m(detect_num), z_m(detect_num);
+    std::vector<int> tag_id(detect_num);
+
     for (int tag = 0; tag < detect_num; tag++) 
     {
-
-      // store XYZ translations for tags in m
-      std::vector<double> x_m(detect_num), y_m(detect_num), z_m(detect_num);
-      std::vector<int> tag_id(detect_num);
 
       apriltag_detection_t *det;
       zarray_get(detections, tag, &det);

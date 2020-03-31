@@ -2,7 +2,20 @@
 #define DVD_DVISEST_ESTIMATE_HPP
 
 #include <stdint.h>
+#include <string>
+
+// OpenCV stuff
+#include "opencv2/core.hpp"
+#include <opencv2/core/utility.hpp>
+#include "opencv2/imgproc.hpp"
+#include "opencv2/calib3d.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/highgui.hpp"
+
+// Disc Stuff
 #include <dvd_DvisEst_maths.hpp>
+#include <disc_layouts.hpp>
 
 // define measurement and state structures
 struct pos_vel_var_state_t
@@ -22,6 +35,8 @@ struct dvd_DvisEst_kf_meas_t
   uint32_t    frame_id;             // Frame ID reported by camera, sequential. We'll use this to check against the reserved measurement slots
   double      VEC3(lin_xyz_pos);    // Linear XYZ position measurement (m)
   double      VEC3(ang_hps_pos);    // Angular Hyzer, Pitch, Spin measurement (rad) (recall the special disc-frame definition for spin position here)
+  DiscIndex   disc_index;           // DiscIndex enum
+  uint8_t     player;               // player num lookup
 };
 
 struct dvd_DvisEst_kf_state_t
@@ -32,9 +47,9 @@ struct dvd_DvisEst_kf_state_t
 };
 
 // Init Kalman filter states and measurement queues
-void dvd_DvisEst_estimate_init(void);
+bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
 
-// check whether the stimation has completed
+// check whether the estimation has completed
 bool dvd_DvisEst_estimate_complete(void);
 
 // Indicate that a new frame has been received, and is currently in processing
@@ -47,6 +62,9 @@ void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id);
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);
+
+// Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
+void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_CD, dvd_DvisEst_kf_meas_t * kf_meas);
 
 // Run the Kalman Filter
 void dvd_DvisEst_estimate_process_filter(void);

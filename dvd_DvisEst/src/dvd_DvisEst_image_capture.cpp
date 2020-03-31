@@ -497,6 +497,15 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 // Return the next captured image from the front of the queue
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture)
 {
+  if(FRAME_SKIP_TEST_N > 0)
+  {
+    int i;
+    for(i=0;i<FRAME_SKIP_TEST_N-1;i++)
+    {
+      image_queue_pull(image_capture);
+    }
+  }
+
   return image_queue_pull(image_capture);
 }
 

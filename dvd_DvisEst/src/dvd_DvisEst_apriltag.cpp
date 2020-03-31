@@ -18,6 +18,10 @@
 #include <mutex>
 #include <atomic>
 
+#include <exception>
+#include <typeinfo>
+#include <stdexcept>
+
 // Disc Stuff
 #include <dvd_DvisEst_apriltag.hpp>
 #include <dvd_DvisEst_image_capture.hpp>
@@ -37,7 +41,7 @@ double Cy = 0;
 // in general, it seems like this should be << than the meas queue to account for
 // the variability in apriltag detection speed
 #define AT_THREAD_COUNT     (8)
-#define AT_INT_THREAD_COUNT (4)
+#define AT_INT_THREAD_COUNT (2)
 //std::vector<std::atomic<uint8_t>>  sv_meas_queue_status(MEAS_QUEUE_SIZE);
 std::vector<std::thread> at_detection_thread (AT_THREAD_COUNT);
 
@@ -85,6 +89,7 @@ int at_detection_thread_run(uint8_t thread_id)
   // How much sharpening should be done to decoded images? This
   // can help decode small tags but may or may not help in odd
   // lighting conditions or low light conditions.
+  // This slows down detection a bit
   //
   // The default value is 0.25.
   double decode_sharpening;
@@ -102,7 +107,7 @@ int at_detection_thread_run(uint8_t thread_id)
   td->nthreads        = AT_INT_THREAD_COUNT;
   td->debug           = 0;
   td->refine_edges    = 0; // might want to disable this for 522fps
-  td->decode_sharpening = 0.25;
+  td->decode_sharpening = 0.0;
 
   // Define housing for grayscale tag
   cv::Mat img_grey;
@@ -139,15 +144,71 @@ int at_detection_thread_run(uint8_t thread_id)
 
         const int detect_num = zarray_size(detections);
 
-        // Using the apriltag measurement, generate a measurement update for our Kalman filter
-        dvd_DvisEst_kf_meas_t kf_meas;
-        memset(&kf_meas, 0, sizeof(dvd_DvisEst_kf_meas_t));
-        kf_meas.timestamp_ns  = detect_num > 0 ? image_capture.timestamp_ns : 0;
-        kf_meas.frame_id      = detect_num > 0 ? image_capture.frame_id : 0;
+        // TODO: take first detection which falls within our lookup sets
+        for (int tag = 0; tag < min(detect_num, 1); tag++) 
+        {
+          apriltag_detection_t *det;
+          zarray_get(detections, tag, &det);
 
-        // for now? let's just return an array of zeros, ha
-        //cerr << "Delivered measurement!" << endl;
-        dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, &kf_meas);
+          // get apriltag ID
+          const uint16_t apriltag_id = det->id;
+
+          //cerr << "Got apriltag with ID " << (int)apriltag_id << endl;
+
+          // Look up apriltag and disc parameters based on apriltag ID
+          map<uint16_t, disc_layout_t>::const_iterator dl_lookup = disc_layout_by_id.find(apriltag_id);
+          disc_layout_t dl = dl_lookup->second;
+
+          DiscIndex disc_index = dl.disc_index;
+          uint8_t player       = dl.player;
+          uint16_t tag_size_mm = dl.tag_size_mm;
+
+          // get homography transform from tag size
+          const float homography_to_m  = tag_size_mm / 2.0 * 0.001;
+
+          // Using the apriltag measurement, generate a measurement update for our Kalman filter
+          dvd_DvisEst_kf_meas_t kf_meas;
+          memset(&kf_meas, 0, sizeof(dvd_DvisEst_kf_meas_t));
+
+          // update metadata
+          kf_meas.timestamp_ns  = image_capture.timestamp_ns;
+          kf_meas.frame_id      = image_capture.frame_id;
+          kf_meas.disc_index    = disc_index;
+          kf_meas.player        = player;
+
+          // determine actual pose (rotation and translation) from Homography matrix and camera intrinsics
+          // This seems to get the depth correct, but not the translations in X and Y
+          // might need better projection from the sensor through to the camera frame?
+          // For homography_to_pose, you have to pass in a negative fx parameter.
+          // This is again due to the OpenCV convention of having z negative.
+          matd_t * T = homography_to_pose(det->H, -Fx, Fy, Cx, Cy);
+
+          cv::Matx33d R_CD
+          ( 
+            MATD_EL(T, 0, 0), MATD_EL(T, 0, 1), MATD_EL(T, 0, 2),
+            MATD_EL(T, 1, 0), MATD_EL(T, 1, 1), MATD_EL(T, 1, 2),
+            MATD_EL(T, 2, 0), MATD_EL(T, 2, 1), MATD_EL(T, 2, 2)
+          );
+
+          cv::Matx31d T_CD
+          ( 
+            MATD_EL(T, 0, 3)*homography_to_m, 
+            MATD_EL(T, 1, 3)*homography_to_m, 
+            MATD_EL(T, 2, 3)*homography_to_m
+          );          
+
+          // calculate disc measurements from AprilTag measurements
+          dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
+
+          // fulfill measurement reservation
+          dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, &kf_meas);
+        }
+
+        if(detect_num == 0)
+        {
+          // No apriltag detections, cancel reservation
+          dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id);
+        }
 
         apriltag_detections_destroy(detections);
       }
