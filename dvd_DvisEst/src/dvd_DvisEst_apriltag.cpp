@@ -36,7 +36,8 @@ double Cy = 0;
 // should this match the meas queue count in the estimate meas queue? probably not
 // in general, it seems like this should be << than the meas queue to account for
 // the variability in apriltag detection speed
-#define AT_THREAD_COUNT (3)
+#define AT_THREAD_COUNT     (8)
+#define AT_INT_THREAD_COUNT (4)
 //std::vector<std::atomic<uint8_t>>  sv_meas_queue_status(MEAS_QUEUE_SIZE);
 std::vector<std::thread> at_detection_thread (AT_THREAD_COUNT);
 
@@ -98,9 +99,9 @@ int at_detection_thread_run(uint8_t thread_id)
   apriltag_detector_add_family_bits(td, tf, 1);
   td->quad_decimate   = 0.0;
   td->quad_sigma      = 0.0;
-  td->nthreads        = 4;
+  td->nthreads        = AT_INT_THREAD_COUNT;
   td->debug           = 0;
-  td->refine_edges    = 1; // might want to disable this for 522fps
+  td->refine_edges    = 0; // might want to disable this for 522fps
   td->decode_sharpening = 0.25;
 
   // Define housing for grayscale tag
@@ -117,6 +118,10 @@ int at_detection_thread_run(uint8_t thread_id)
       if(dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id))
       {
         // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
+
+        // First, undistort the image
+        dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data));
+
         // convert to greyscale
         cvtColor(image_capture.image_data, img_grey, cv::COLOR_RGB2GRAY);
     
@@ -137,8 +142,8 @@ int at_detection_thread_run(uint8_t thread_id)
         // Using the apriltag measurement, generate a measurement update for our Kalman filter
         dvd_DvisEst_kf_meas_t kf_meas;
         memset(&kf_meas, 0, sizeof(dvd_DvisEst_kf_meas_t));
-        kf_meas.timestamp_ns  = image_capture.timestamp_ns;
-        kf_meas.frame_id      = image_capture.frame_id;
+        kf_meas.timestamp_ns  = detect_num > 0 ? image_capture.timestamp_ns : 0;
+        kf_meas.frame_id      = detect_num > 0 ? image_capture.frame_id : 0;
 
         // for now? let's just return an array of zeros, ha
         //cerr << "Delivered measurement!" << endl;

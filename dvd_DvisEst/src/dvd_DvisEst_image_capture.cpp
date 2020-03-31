@@ -499,3 +499,9 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
 {
   return image_queue_pull(image_capture);
 }
+
+// Return the next captured image from the front of the queue
+bool dvd_DvisEst_image_capture_image_capture_queue_empty(void)
+{
+  return image_queue_empty();
+}

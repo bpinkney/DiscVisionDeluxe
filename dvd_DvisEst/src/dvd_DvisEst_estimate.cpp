@@ -1,4 +1,5 @@
 #include <dvd_DvisEst_estimate.hpp>
+#include <dvd_DvisEst_image_capture.hpp>
 
 #include <iostream>
 #include <vector>
@@ -50,7 +51,8 @@ std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 #define MEAS_QUEUE_MEAS(y)   (sv_meas_queue_meas[y])
 
 // current index of measurement queue (atomic since we want to observe it from multiple threads)
-std::atomic<uint8_t> sv_meas_queue_idx      (0);
+std::atomic<uint8_t> sv_meas_queue_read_idx      (0);
+std::atomic<uint8_t> sv_meas_queue_write_idx     (0);
 
 // is the estimate ready? we can stop the detection and capture threads then
 std::atomic<bool> sv_kf_estimate_complete (0);
@@ -59,7 +61,7 @@ std::atomic<bool> sv_kf_estimate_complete (0);
 std::thread kf_process_filter;
 
 uint16_t test_count = 0;
-const uint16_t test_count_total = 100;
+const uint16_t test_count_total = 1500;
 
 static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
 {
@@ -102,11 +104,18 @@ void toc() {
   std::cerr << "Time elapsed: "
             << s_elapsed * 1000
             << " ms ("
-            << 1.0/s_elapsed * test_count_total
+            << 1.0/s_elapsed * test_count
             << " Hz for "
-            << test_count_total
+            << test_count
             << " samples)" 
-            << std::endl;
+            << std::flush;
+
+/*  // why is this necessary? do your job flush...
+  int i;
+  for(i=0;i<10;i++)
+  {
+    std::cerr << std::endl;
+  }*/
 }
 
 // Init Kalman filter states and measurement queues
@@ -134,10 +143,24 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
 {
   // TODO: use frame_id to help with consumption order?
 
-  // get first available measurement slot, return false if none are available
-  int i;
-  uint8_t next_idx = sv_meas_queue_idx;
-  for(i = 0; i < MEAS_QUEUE_SIZE; i++)
+  // only give out next slot if it is available
+  // only give out next slot to preserve adjacency
+  if(MEAS_QUEUE_STATUS(sv_meas_queue_write_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
+  {
+    (*slot_id) = sv_meas_queue_write_idx;
+  }
+
+  uint8_t next_idx = get_next_meas_queue_idx(sv_meas_queue_write_idx);
+  if(MEAS_QUEUE_STATUS(next_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
+  {
+    (*slot_id) = next_idx;
+    sv_meas_queue_write_idx = next_idx;
+    return true;
+  }
+  // only give out next slot if it is available
+
+
+  /*for(i = 0; i < MEAS_QUEUE_SIZE; i++)
   {
     next_idx = get_next_meas_queue_idx(next_idx);
     if(MEAS_QUEUE_STATUS(next_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
@@ -147,7 +170,7 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
       MEAS_QUEUE_STATUS(*slot_id) = MEAS_QUEUE_STATUS_RESERVED;
       return true;
     }
-  }
+  }*/
 
   return false;
 }
@@ -167,12 +190,13 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
 }
 
-#define KF_FILTER_PRED_DT_NS (100000) // 0.1 ms, 10000Hz for now
+#define KF_FILTER_PRED_DT_NS (1000000) // 1.0 ms, 1000Hz for now
 static void process_filter_thread(void)
 {
   static uint64_t last_loop_ns = 0;
   uint64_t now;
   bool latch_tic = false;
+  bool latch_toc = false;
 
   while(1)//!sv_kf_estimate_complete)
   {
@@ -180,40 +204,46 @@ static void process_filter_thread(void)
     // run at KF_FILTER_PRED_DT_NS intervals
     if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
     {
-      // for now (test), just assume the measurement is consumed right away    
-      if(MEAS_QUEUE_STATUS(sv_meas_queue_idx) == MEAS_QUEUE_STATUS_POPULATED)
+      // started on the wrong index?
+      if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
       {
-        // start timing profile block
-        if(!latch_tic)
-        {
-          // tic
-          tic();
-          latch_tic = true;
-        }
+        sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
+      }
 
-        //cerr << "Consumed slot " << (int)sv_meas_queue_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms)" << endl;
-        
-        // TODO: maybe actually do something with the measurement here...
-
-        MEAS_QUEUE_STATUS(sv_meas_queue_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
-
-        // be careful about this ++, atomics, amirite?
-        if(sv_meas_queue_idx >= MEAS_QUEUE_SIZE-1)
+      // for now (test), just assume the measurement is consumed right away
+      // consume all ready adjacent measurements    
+      while(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_POPULATED)
+      {
+        // right now, this indicates an actual detection
+        //if(MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id > 0)
         {
-          sv_meas_queue_idx = 0;
-        }
-        else
-        {
-          sv_meas_queue_idx++;
-        }
+          // start timing profile block
+          if(!latch_tic)
+          {
+            // tic
+            tic();
+            latch_tic = true;
+          }
 
-        // after 100 measurements, let's mark the estimate complete so we can test thread joining
-        // and do some profiling
-        test_count++;
-        if(test_count >= test_count_total-1)
-        {
-          toc();
-          sv_kf_estimate_complete = true;
+          cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms)" << endl;
+          
+          // TODO: maybe actually do something with the measurement here...
+
+          MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
+
+          // be careful about this ++, atomics, amirite?
+          sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
+
+          // after 100 measurements, let's mark the estimate complete so we can test thread joining
+          // and do some profiling
+          test_count++;
+          if(dvd_DvisEst_image_capture_image_capture_queue_empty() && !latch_toc)
+          {
+            toc();
+            sv_kf_estimate_complete = true;
+            latch_toc = true;
+            //return;
+          }
         }
       }      
     }

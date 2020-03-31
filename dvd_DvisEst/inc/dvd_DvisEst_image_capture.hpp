@@ -46,6 +46,7 @@ void dvd_DvisEst_image_capture_stop(void);
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt);
 // Return the next captured image from the front of the queue
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture);
+bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
 
 
 

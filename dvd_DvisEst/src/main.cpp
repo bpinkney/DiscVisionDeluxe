@@ -171,10 +171,15 @@ int main(int argc, char** argv )
     // start image capture thread
   }
   
-  do 
+  // this clocks prints, d'oh
+  /*do 
   {
    cout << '\n' << "Press enter key to exit..." << endl;
-  } while (cin.get() != '\n');
+  } while (cin.get() != '\n');*/
+
+  // sleep for 100 seconds
+  cout << '\n' << "Sleeping until threads join..." << endl;
+  usleep(100 * 1000000);
 
   return 0;
 }
