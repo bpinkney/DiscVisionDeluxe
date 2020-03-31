@@ -32,14 +32,23 @@ struct dvd_DvisEst_kf_state_t
 };
 
 // Init Kalman filter states and measurement queues
-void dvd_DvisEst_estimate_init();
+void dvd_DvisEst_estimate_init(void);
+
+// check whether the stimation has completed
+bool dvd_DvisEst_estimate_complete(void);
+
 // Indicate that a new frame has been received, and is currently in processing
 // reserve a slot in the incoming measurement queue so that measurements are processed in the correct order
 // return slot #
-uint8_t dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id);
+bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id);
+
 // Perhaps AprilTag detection failed? cancel our slot reservation
 void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id);
+
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);
+
+// Run the Kalman Filter
+void dvd_DvisEst_estimate_process_filter(void);
 
 #endif // DVD_DVISEST_ESTIMATE_HPP

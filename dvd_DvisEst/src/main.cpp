@@ -142,7 +142,22 @@ int main(int argc, char** argv )
       }
     }
   }
-  else
+
+  // Init remaining calls
+  // allocate measurement slots and prep Kalman Filter initial states
+  dvd_DvisEst_estimate_init();
+
+  // Now let's read the image frames out of our queue, undistort them, and run them through our apriltag detector
+  // start estimation thread (Kalman filter)
+  // wait for estimation thread to return with a low-variance state
+  // start this before your detection thread so we're ready to consume!
+  dvd_DvisEst_estimate_process_filter();
+
+  // start apriltag detection thread pool
+  dvd_DvisEst_apriltag_init();
+
+  // Finally, start the capture thread now that everything is ready
+  if(camera_src)
   {
     // Not running a test from image files?
     // Then we are actively capturing from our capture thread
@@ -155,20 +170,11 @@ int main(int argc, char** argv )
 
     // start image capture thread
   }
-
-  // Init remaining calls
-  dvd_DvisEst_apriltag_init();
-  dvd_DvisEst_estimate_init();
-
-  // Now let's read the image frames out of our queue, undistort them, and run them through our apriltag detector
-  // start estimation thread (Kalman filter)
-
-  // start apriltag detection thread pool
-
-  // wait for estimation thread to return with a low-variance state
-
-
-  //waitKey(0);
+  
+  do 
+  {
+   cout << '\n' << "Press enter key to exit..." << endl;
+  } while (cin.get() != '\n');
 
   return 0;
 }

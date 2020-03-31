@@ -1,15 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 # Add a bin directory at the top level for this project (ooh, special)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../bin)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 #define project
 project( dvd_DvisEst )
 
 # add package deps
 find_package( OpenCV REQUIRED )
+find_package( Threads REQUIRED)
 if (UNIX)
   # this only works on linux, for windows, we'll set the INC and LIB directly
   find_package( apriltag REQUIRED )
@@ -70,6 +72,7 @@ target_sources(dvd_DvisEst
 # link libs
 target_link_libraries( dvd_DvisEst ${OpenCV_LIBS} )
 target_link_libraries( dvd_DvisEst ${APRILTAG_LIB} )
+target_link_libraries( dvd_DvisEst Threads::Threads )
 if (WIN32)
 #target_link_libraries( dvd_DvisEst ${SPINNAKER_LIB} )
 endif (WIN32)

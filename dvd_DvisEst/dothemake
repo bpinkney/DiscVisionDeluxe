@@ -3,4 +3,4 @@ rm -rf *
 cmake ..
 make
 cd ..
-../bin/dvd_DvisEst -h
+#../bin/dvd_DvisEst -h

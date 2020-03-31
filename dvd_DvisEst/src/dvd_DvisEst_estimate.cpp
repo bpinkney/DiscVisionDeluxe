@@ -1,8 +1,21 @@
 #include <dvd_DvisEst_estimate.hpp>
 
-#include<iostream>
+#include <iostream>
+#include <vector>
+#include <cstring>
 
-// include thread stuff
+// Timer stuff
+#include <unistd.h>
+#include <chrono>
+#define _BSD_SOURCE
+#include <sys/time.h>
+#include <stack>
+#include <ctime>
+
+// threading stuff
+#include <thread>
+#include <future>
+#include <queue>
 #include <mutex>
 #include <atomic>
 
@@ -24,43 +37,193 @@ using namespace std;
 // many concurrent apriltag threads we expect
 
 //Concatenate preprocessor tokens x and y after macro-expanding them.
-#define JOIN_NX(x,y) (x##y)
+/*#define JOIN_NX(x,y) (x##y)
 #define JOIN(x,y) JOIN_NX(x,y)
+#define MEAS_QUEUE_STATUS(y) JOIN(sv_meas_queue_status_,y)
+#define MEAS_QUEUE_MEAS(y)   JOIN(sv_meas_queue_meas_,y)*/
 
-#define MEAS_QUEUE_STATUS(y) JOIN(meas_queue_status_,y)
-std::atomic<uint8_t> meas_queue_status_0 (MEAS_QUEUE_STATUS_AVAILABLE);
-std::atomic<uint8_t> meas_queue_status_1 (MEAS_QUEUE_STATUS_AVAILABLE);
-std::atomic<uint8_t> meas_queue_status_2 (MEAS_QUEUE_STATUS_AVAILABLE);
-#define MEAS_QUEUE_SIZE (3)
+// should this match the thread count in the apriltag threadpool? probably not if we can't process frames fast enough
+#define MEAS_QUEUE_SIZE (200)
+std::vector<std::atomic<uint8_t>>  sv_meas_queue_status(MEAS_QUEUE_SIZE);
+std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
+#define MEAS_QUEUE_STATUS(y) (sv_meas_queue_status[y])
+#define MEAS_QUEUE_MEAS(y)   (sv_meas_queue_meas[y])
+
+// current index of measurement queue (atomic since we want to observe it from multiple threads)
+std::atomic<uint8_t> sv_meas_queue_idx      (0);
+
+// is the estimate ready? we can stop the detection and capture threads then
+std::atomic<bool> sv_kf_estimate_complete (0);
+
+// filter thread
+std::thread kf_process_filter;
+
+uint16_t test_count = 0;
+const uint16_t test_count_total = 100;
+
+static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
+{
+  uint8_t next_idx = start_idx + 1;
+  if(next_idx > MEAS_QUEUE_SIZE - 1)
+  {
+    next_idx = 0;
+  }
+  return next_idx;
+}
+
+// Get time stamp in nanoseconds.
+static uint64_t nanos()
+{
+  uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::
+          now().time_since_epoch()).count();
+  return ns; 
+}
+
+// Get boot-time stamp in nanoseconds.
+static uint64_t uptime_get_ns()
+{
+  static uint64_t start_time_ns = 0;
+  if(start_time_ns == 0)
+  {
+    start_time_ns = nanos();
+  }
+
+  return (nanos() - start_time_ns); 
+}
+
+// timing and profiling
+static uint64_t profile_start_time_ns = 0;
+void tic() {
+  profile_start_time_ns = nanos();
+}
+void toc() {
+  const uint64_t profile_end_time_ns = nanos();
+  double s_elapsed = (profile_end_time_ns - profile_start_time_ns) * 0.000000001;
+  std::cerr << "Time elapsed: "
+            << s_elapsed * 1000
+            << " ms ("
+            << 1.0/s_elapsed * test_count_total
+            << " Hz for "
+            << test_count_total
+            << " samples)" 
+            << std::endl;
+}
 
 // Init Kalman filter states and measurement queues
 void dvd_DvisEst_estimate_init()
 {
-  // test
-  MEAS_QUEUE_STATUS(0) = MEAS_QUEUE_STATUS_RESERVED;
+  cerr << "Call dvd_DvisEst_estimate_init" << endl;
 
-  int meas_queue_status_0_print_test = MEAS_QUEUE_STATUS(0);
-  int meas_queue_status_1_print_test = MEAS_QUEUE_STATUS(1);
+  // init structs to zero
+  int i;
+  for(i = 0; i < MEAS_QUEUE_SIZE; i++)
+  {
+    MEAS_QUEUE_STATUS(i) = MEAS_QUEUE_STATUS_AVAILABLE;
+    memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
+  }
+}
 
-  cerr << "Queue status 0: " << meas_queue_status_0_print_test << ", Queue status 1: " << meas_queue_status_1_print_test << endl;
+bool dvd_DvisEst_estimate_complete()
+{
+  return sv_kf_estimate_complete;
 }
 
 // Indicate that a new frame has been received, and is currently in processing
 // reserve a slot in the incoming measurement queue so that measurements are processed in the correct order
-// return slot #
-uint8_t dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id)
+bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id)
 {
+  // TODO: use frame_id to help with consumption order?
 
-  return 0;
+  // get first available measurement slot, return false if none are available
+  int i;
+  uint8_t next_idx = sv_meas_queue_idx;
+  for(i = 0; i < MEAS_QUEUE_SIZE; i++)
+  {
+    next_idx = get_next_meas_queue_idx(next_idx);
+    if(MEAS_QUEUE_STATUS(next_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
+    {
+      (*slot_id) = next_idx;
+      // reserve measurement slot
+      MEAS_QUEUE_STATUS(*slot_id) = MEAS_QUEUE_STATUS_RESERVED;
+      return true;
+    }
+  }
+
+  return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
 void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id)
 {
-
+  // free measurement slot
+  MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
 }
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas)
 {
-
+  // add measurement to queue
+  MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
+  // mark measurement slot populated and ready for consumption
+  MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
 }
+
+#define KF_FILTER_PRED_DT_NS (100000) // 0.1 ms, 10000Hz for now
+static void process_filter_thread(void)
+{
+  static uint64_t last_loop_ns = 0;
+  uint64_t now;
+  bool latch_tic = false;
+
+  while(1)//!sv_kf_estimate_complete)
+  {
+    now = uptime_get_ns();
+    // run at KF_FILTER_PRED_DT_NS intervals
+    if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
+    {
+      // for now (test), just assume the measurement is consumed right away    
+      if(MEAS_QUEUE_STATUS(sv_meas_queue_idx) == MEAS_QUEUE_STATUS_POPULATED)
+      {
+        // start timing profile block
+        if(!latch_tic)
+        {
+          // tic
+          tic();
+          latch_tic = true;
+        }
+
+        //cerr << "Consumed slot " << (int)sv_meas_queue_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms)" << endl;
+        
+        // TODO: maybe actually do something with the measurement here...
+
+        MEAS_QUEUE_STATUS(sv_meas_queue_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
+
+        // be careful about this ++, atomics, amirite?
+        if(sv_meas_queue_idx >= MEAS_QUEUE_SIZE-1)
+        {
+          sv_meas_queue_idx = 0;
+        }
+        else
+        {
+          sv_meas_queue_idx++;
+        }
+
+        // after 100 measurements, let's mark the estimate complete so we can test thread joining
+        // and do some profiling
+        test_count++;
+        if(test_count >= test_count_total-1)
+        {
+          toc();
+          sv_kf_estimate_complete = true;
+        }
+      }      
+    }
+  }
+}
+
+void dvd_DvisEst_estimate_process_filter(void)
+{
+  kf_process_filter = std::thread(process_filter_thread);
+}
+
+// remember that we want to load in a ground-plane, and use that to modify 
+// the measurements coming from the apriltag threads!

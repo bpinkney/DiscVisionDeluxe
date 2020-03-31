@@ -33,6 +33,7 @@ bool dvd_DvisEst_image_processing_test(void)
 
 bool dvd_DvisEst_image_processing_init(const cv::String camera_cal_file, const double image_scale)
 {
+  cerr << "Call dvd_DvisEst_image_processing_init" << endl;
   // get camera cal parameters from .yaml file
   FileStorage fs;
   fs.open(camera_cal_file, FileStorage::READ);
