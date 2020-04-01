@@ -125,9 +125,11 @@ int main(int argc, char** argv )
       cerr << "Got images, now show 'em" << endl;
       image_capture_t image_capture;
       bool got_one;
+      uint16_t skipped_frames = 0; 
       while(1)
       {
-        got_one = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture);
+        skipped_frames = 888;// quick flag to avoid frame skips
+        got_one = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames);
 
         if(got_one)
         {

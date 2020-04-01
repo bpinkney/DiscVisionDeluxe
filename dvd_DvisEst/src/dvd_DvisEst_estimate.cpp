@@ -66,8 +66,11 @@ std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 std::atomic<uint8_t> sv_meas_queue_read_idx      (0);
 std::atomic<uint8_t> sv_meas_queue_write_idx     (0);
 
+// are we getting apriltag detections? we may wish to suppress frame skips for now
+std::atomic<bool> sv_kf_estimate_tags_detected (false);
+
 // is the estimate ready? we can stop the detection and capture threads then
-std::atomic<bool> sv_kf_estimate_complete (0);
+std::atomic<bool> sv_kf_estimate_complete (false);
 
 // filter thread
 std::thread kf_process_filter;
@@ -76,8 +79,8 @@ std::thread kf_process_filter;
 cv::Matx33d R_CG = cv::Matx33d(0,0,0,0,0,0,0,0,0);
 cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
-uint16_t test_count = 0;
-const uint16_t test_count_total = 1500;
+std::atomic<uint32_t> meas_count_populated (0);
+std::atomic<uint32_t> meas_count_empty     (0);
 
 static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
 {
@@ -120,10 +123,14 @@ void toc() {
   std::cerr << "Time elapsed: "
             << s_elapsed * 1000
             << " ms ("
-            << 1.0/s_elapsed * test_count * (FRAME_SKIP_TEST_N > 0 ? FRAME_SKIP_TEST_N : 1.0)
+            << 1.0/s_elapsed * (int)(meas_count_populated + meas_count_empty)
             << " Hz for "
-            << test_count * (FRAME_SKIP_TEST_N > 0 ? FRAME_SKIP_TEST_N : 1.0)
-            << " samples)" 
+            << (int)(meas_count_populated + meas_count_empty)
+            << " samples). ["
+            << (int)(meas_count_populated)
+            << "/"
+            << (int)(meas_count_empty)
+            << "] valid/empty meas"
             << std::flush;
 
 /*  // why is this necessary? do your job flush...
@@ -187,6 +194,11 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
   return true;
 }
 
+bool dvd_DvisEst_estimate_tags_detected()
+{
+  return sv_kf_estimate_tags_detected;
+}
+
 bool dvd_DvisEst_estimate_complete()
 {
   return sv_kf_estimate_complete;
@@ -194,8 +206,11 @@ bool dvd_DvisEst_estimate_complete()
 
 // Indicate that a new frame has been received, and is currently in processing
 // reserve a slot in the incoming measurement queue so that measurements are processed in the correct order
-bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id)
+bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id, uint16_t skipped_frames)
 {
+  // increment skipped frames count for book-keeping
+  meas_count_empty += skipped_frames;
+
   // TODO: use frame_id to help with consumption order?
 
   // only give out next slot if it is available
@@ -218,8 +233,11 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
 void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id)
 {
   // free measurement slot
-  cerr << "Cancel measurement in slot " << (int)slot_id << endl;
+  //cerr << "Cancel measurement in slot " << (int)slot_id << endl;
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
+
+  // indicate that measurement returned empty
+  meas_count_empty++;
 }
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
@@ -229,6 +247,9 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_
   MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
   // mark measurement slot populated and ready for consumption
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
+
+  // indicate the measurement returned with a tag detection
+  meas_count_populated++;
 }
 
 static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD)
@@ -273,16 +294,30 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
 }
 
 #define KF_FILTER_PRED_DT_NS (1000000) // 1.0 ms, 1000Hz for now
+// if the filter isn't active, and we havent had a tag detection for at least this long
+// allow frame skips again
+#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (0.25 * 1000000000)
 static void process_filter_thread(void)
 {
-  static uint64_t last_loop_ns = 0;
+  uint64_t last_loop_ns = 0;
   uint64_t now;
+
+  uint64_t tag_detect_time_ns = 0;
+
   bool latch_tic = false;
   bool latch_toc = false;
 
   while(1)//!sv_kf_estimate_complete)
   {
     now = uptime_get_ns();
+
+    // check whether to reset the frame skip lock-out
+    if((now - tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && sv_kf_estimate_tags_detected)
+    {
+      std::cerr << "Time out apriltag detects!" << std::endl;
+      sv_kf_estimate_tags_detected = false;
+    }
+
     // run at KF_FILTER_PRED_DT_NS intervals
     if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
     {
@@ -304,25 +339,26 @@ static void process_filter_thread(void)
           latch_tic = true;
         }
 
-        cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms)" << endl;
-        
-        // TODO: maybe actually do something with the measurement here...
+        // mark apriltag detection active to lock out frame skips
+        sv_kf_estimate_tags_detected = true;
+        tag_detect_time_ns           = now;
 
+        cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms) ";
+        cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << "]" << endl;
+
+        // TODO: maybe actually do something with the measurement here...
         MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
 
         // be careful about this ++, atomics, amirite?
         sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
 
-        // after 100 measurements, let's mark the estimate complete so we can test thread joining
+        // after N measurements, let's mark the estimate complete so we can test thread joining
         // and do some profiling
-        test_count++;
         if(dvd_DvisEst_image_capture_image_capture_queue_empty() && !latch_toc)
         {
           toc();
           sv_kf_estimate_complete = true;
           latch_toc = true;
-          // this profiling is a bit broken now that we're only consuming actual measurements
-          //return;
         }
       }      
     }

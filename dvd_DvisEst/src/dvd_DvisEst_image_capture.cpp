@@ -33,6 +33,7 @@
 #include <atomic>
 
 #include <dvd_DvisEst_image_capture.hpp>
+#include <dvd_DvisEst_estimate.hpp>
 
 #if defined(SPINNAKER_ALLOWED)
 using namespace Spinnaker;
@@ -59,6 +60,18 @@ static bool image_queue_empty()
   sv_image_capture_mutex.unlock();
 
   return empty;
+}
+
+static uint16_t image_queue_size()
+{
+  uint16_t size;
+  // mutex on
+  sv_image_capture_mutex.lock();  
+  size = sv_image_capture_queue.size();
+  // mutex off
+  sv_image_capture_mutex.unlock();
+
+  return size;
 }
 
 static void image_queue_push(image_capture_t * image_capture)
@@ -495,15 +508,35 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 }
 
 // Return the next captured image from the front of the queue
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture)
+#define MAX_FRAME_SKIP_COUNT (0)
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames)
 {
-  if(FRAME_SKIP_TEST_N > 0)
+  if(!dvd_DvisEst_estimate_tags_detected() && (*skipped_frames) != 888)
   {
+    // allow some frame skips here maybe?
+    // we need to figure out a way to try
+    // a measurement MAX_FRAME_SKIP_COUNT entries into the queue
+    // and if a detection is found, reverse gears and consume the old measurements
+    // That will be a challenge with multiple threads likely.
+
+    // If the queue has more than twice the number of frames in it
+    // than our max frame skip, we may be able to accelerate the frame dropping
+    // to speed things back up
+    const uint16_t frames_to_skip = MAX_FRAME_SKIP_COUNT;
+    //const uint16_t frames_to_skip = (image_queue_size() > MAX_FRAME_SKIP_COUNT*2) ? MAX_FRAME_SKIP_COUNT*2 : MAX_FRAME_SKIP_COUNT;
+
+    // for now, we're just going to burn the past
     int i;
-    for(i=0;i<FRAME_SKIP_TEST_N-1;i++)
+    for(i=0;i<frames_to_skip;i++)
     {
       image_queue_pull(image_capture);
     }
+
+    *skipped_frames = MAX_FRAME_SKIP_COUNT;
+  }
+  else
+  {
+    *skipped_frames = 0;
   }
 
   return image_queue_pull(image_capture);

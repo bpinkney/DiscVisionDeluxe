@@ -45,13 +45,7 @@ void dvd_DvisEst_image_capture_stop(void);
 // load test images into the capture queue and return
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt);
 // Return the next captured image from the front of the queue
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture);
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames);
 bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
-
-
-// TEST
-# define FRAME_SKIP_TEST_N (0) // skip N-1 frames each pull
-
-
 
 #endif // DVD_DVISEST_IMAGE_CAPTURE_HPP

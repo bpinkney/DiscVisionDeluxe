@@ -49,13 +49,17 @@ struct dvd_DvisEst_kf_state_t
 // Init Kalman filter states and measurement queues
 bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
 
+// If we have recent tag detections, suppress frame skipping
+// expires after a long enough hiatus of detections (if the filter isn't active that is)
+bool dvd_DvisEst_estimate_tags_detected(void);
+
 // check whether the estimation has completed
 bool dvd_DvisEst_estimate_complete(void);
 
 // Indicate that a new frame has been received, and is currently in processing
 // reserve a slot in the incoming measurement queue so that measurements are processed in the correct order
 // return slot #
-bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id);
+bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id, uint16_t skipped_frames);
 
 // Perhaps AprilTag detection failed? cancel our slot reservation
 void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id);

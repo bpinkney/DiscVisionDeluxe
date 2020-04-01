@@ -112,15 +112,18 @@ int at_detection_thread_run(uint8_t thread_id)
   // Define housing for grayscale tag
   cv::Mat img_grey;
 
+  // How many frames did we skip each sample to meet our real-time criteria?
+  uint16_t skipped_frames = 0;
+
   while(!dvd_DvisEst_estimate_complete())
   {
     // Look for a new frame from the camera (or perhaps from loaded test images)
-    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture);
+    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames);
 
     // did we get a frame? Neat, let's reserve a measurement queue slot until apriltag detection is complete
     if(got_image)
     {
-      if(dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id))
+      if(dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id, skipped_frames))
       {
         // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
 
