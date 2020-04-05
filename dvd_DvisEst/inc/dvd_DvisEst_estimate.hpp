@@ -64,7 +64,7 @@ bool dvd_DvisEst_estimate_complete(void);
 bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id, uint16_t skipped_frames);
 
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id);
+void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame);
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);

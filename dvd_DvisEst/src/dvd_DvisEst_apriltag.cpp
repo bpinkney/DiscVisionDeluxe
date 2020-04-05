@@ -119,7 +119,7 @@ int at_detection_thread_run(uint8_t thread_id)
       if(at_detection_thread_mode[thread_id] != AT_DETECTION_THREAD_MODE_SCOUT)
       {
         at_detection_thread_mode[thread_id] = AT_DETECTION_THREAD_MODE_SCOUT;
-        cout << "Thread #" << (int)thread_id << " changed back to SCOUT mode!" << endl;
+        //cout << "Thread #" << (int)thread_id << " changed back to SCOUT mode!" << endl;
       }
     }
     else if(at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_SCOUT)
@@ -232,7 +232,7 @@ int at_detection_thread_run(uint8_t thread_id)
         else
         {
           // No apriltag detections, cancel reservation
-          dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id);
+          dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS);
         }
 
         apriltag_detections_destroy(detections);

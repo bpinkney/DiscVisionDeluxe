@@ -121,16 +121,17 @@ static bool image_queue_pull(image_capture_t * image_capture, const uint16_t fro
 
 // pop N frames from the front of the queue
 // always leave one entry
-static bool image_queue_purge(const uint16_t front_offset)
+static uint16_t image_queue_purge(const uint16_t front_offset)
 {
   if(image_queue_empty())
   {
-    return false;
+    return 0;
   } 
 
   // mutex on
   sv_image_capture_mutex.lock();
   int i;
+  int purge_count = 0;
   for(i = 0; i < front_offset; i++)
   {
     if(sv_image_capture_queue.size() <= 1)
@@ -138,11 +139,12 @@ static bool image_queue_purge(const uint16_t front_offset)
       break;
     }
 
+    purge_count++;
     sv_image_capture_queue.pop_front();
   }
   // mutex off
   sv_image_capture_mutex.unlock();
-  return true;
+  return (purge_count);
 }
 
 //end thread stuff
@@ -582,16 +584,15 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
     // add in random *2 right now (for test), maybe we can just use lots of RAM anyhow...
     if(image_queue_size() < AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * 2.0 && !wrap_things_up_for_test_mode)
     {
+      *skipped_frames = 0;
       return false;
     }
 
     // For SCOUT mode threads, we deliver the next scout frame, and automatically discard old frames in the queue
     const uint16_t frames_to_skip = MAX_FRAME_SKIP_COUNT;    
-    got_frame &= image_queue_purge(frames_to_skip);
+    *skipped_frames = image_queue_purge(frames_to_skip);
 
-    *skipped_frames = MAX_FRAME_SKIP_COUNT;
-
-    if(got_frame || wrap_things_up_for_test_mode)
+    if(*skipped_frames > 0 || wrap_things_up_for_test_mode)
     {
       // techincally the offset here isn't necessary, since we purge the frames first
       // pop that frame if we're exiting test mode...

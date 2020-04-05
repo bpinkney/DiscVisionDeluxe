@@ -245,14 +245,17 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id)
+void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame)
 {
   // free measurement slot
   //cerr << "Cancel measurement in slot " << (int)slot_id << endl;
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
 
   // indicate that measurement returned empty
-  meas_count_empty++;
+  if(popped_frame)
+  {
+    meas_count_empty++;
+  }
 }
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
