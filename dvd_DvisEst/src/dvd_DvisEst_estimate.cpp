@@ -49,6 +49,11 @@ using namespace cv;
 // for now, let's just have 3 slots, we can expand this later if necessary pending how
 // many concurrent apriltag threads we expect
 
+#define KF_FILTER_PRED_DT_NS (1000000) // 1.0 ms, 1000Hz for now
+// if the filter isn't active, and we havent had a tag detection for at least this long
+// allow frame skips again
+#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (0.25 * 1000000000) // too long for now
+
 //Concatenate preprocessor tokens x and y after macro-expanding them.
 /*#define JOIN_NX(x,y) (x##y)
 #define JOIN(x,y) JOIN_NX(x,y)
@@ -68,6 +73,7 @@ std::atomic<uint8_t> sv_meas_queue_write_idx     (0);
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
+std::atomic<uint64_t> sv_kf_estimate_tag_detect_time_ns (0);
 
 // is the estimate ready? we can stop the detection and capture threads then
 std::atomic<bool> sv_kf_estimate_complete (false);
@@ -194,7 +200,16 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
   return true;
 }
 
-bool dvd_DvisEst_estimate_tags_detected()
+bool dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
+{
+  sv_kf_estimate_tags_detected = tags_detected;
+  if(tags_detected)
+  {
+    sv_kf_estimate_tag_detect_time_ns = uptime_get_ns();
+  }
+}
+
+bool dvd_DvisEst_estimate_get_tags_detected()
 {
   return sv_kf_estimate_tags_detected;
 }
@@ -293,29 +308,23 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   }
 }
 
-#define KF_FILTER_PRED_DT_NS (1000000) // 1.0 ms, 1000Hz for now
-// if the filter isn't active, and we havent had a tag detection for at least this long
-// allow frame skips again
-#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (0.25 * 1000000000)
 static void process_filter_thread(void)
 {
   uint64_t last_loop_ns = 0;
   uint64_t now;
 
-  uint64_t tag_detect_time_ns = 0;
-
   bool latch_tic = false;
   bool latch_toc = false;
 
-  while(1)//!sv_kf_estimate_complete)
+  while(!sv_kf_estimate_complete)
   {
     now = uptime_get_ns();
 
     // check whether to reset the frame skip lock-out
-    if((now - tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && sv_kf_estimate_tags_detected)
+    if((now - sv_kf_estimate_tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && dvd_DvisEst_estimate_get_tags_detected())
     {
       std::cerr << "Time out apriltag detects!" << std::endl;
-      sv_kf_estimate_tags_detected = false;
+      dvd_DvisEst_estimate_set_tags_detected(false);
     }
 
     // run at KF_FILTER_PRED_DT_NS intervals
@@ -339,10 +348,6 @@ static void process_filter_thread(void)
           latch_tic = true;
         }
 
-        // mark apriltag detection active to lock out frame skips
-        sv_kf_estimate_tags_detected = true;
-        tag_detect_time_ns           = now;
-
         cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms) ";
         cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << "]" << endl;
 
@@ -351,23 +356,33 @@ static void process_filter_thread(void)
 
         // be careful about this ++, atomics, amirite?
         sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
-
-        // after N measurements, let's mark the estimate complete so we can test thread joining
-        // and do some profiling
-        if(dvd_DvisEst_image_capture_image_capture_queue_empty() && !latch_toc)
-        {
-          toc();
-          sv_kf_estimate_complete = true;
-          latch_toc = true;
-        }
-      }      
+      }
+      // after the queue is empty, let's mark the estimate complete so we can test thread joining
+      // and do some profiling
+      if(dvd_DvisEst_image_capture_image_capture_queue_empty() && latch_tic && !latch_toc)
+      {
+        toc();
+        sv_kf_estimate_complete = true;
+        latch_toc = true;
+      }
+    }
+    else
+    {
+      // sleep for a bit so we don't busy poll
+      usleep(1000);
     }
   }
+  cerr << "Estimate Thread completed." << endl;
 }
 
 void dvd_DvisEst_estimate_process_filter(void)
 {
   kf_process_filter = std::thread(process_filter_thread);
+}
+
+void dvd_DvisEst_estimate_end_filter(void)
+{
+  kf_process_filter.join();
 }
 
 // remember that we want to load in a ground-plane, and use that to modify 

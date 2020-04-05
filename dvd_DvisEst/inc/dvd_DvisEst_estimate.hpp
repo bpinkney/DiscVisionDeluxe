@@ -51,7 +51,9 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
 
 // If we have recent tag detections, suppress frame skipping
 // expires after a long enough hiatus of detections (if the filter isn't active that is)
-bool dvd_DvisEst_estimate_tags_detected(void);
+bool dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
+
+bool dvd_DvisEst_estimate_get_tags_detected(void);
 
 // check whether the estimation has completed
 bool dvd_DvisEst_estimate_complete(void);
@@ -72,5 +74,8 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
 
 // Run the Kalman Filter
 void dvd_DvisEst_estimate_process_filter(void);
+
+// Join Kalman Filter thread
+void dvd_DvisEst_estimate_end_filter(void);
 
 #endif // DVD_DVISEST_ESTIMATE_HPP

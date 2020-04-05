@@ -35,17 +35,19 @@ struct image_capture_t
 };
 
 // Functions
+bool dvd_DvisEst_image_capture_thread_ready(void);
 bool dvd_DvisEst_image_capture_test(void);
 // Init camera inteface
 void dvd_DvisEst_image_capture_init(void);
 // Start collecting frames (this also purges remaining frames in the queue)
 void dvd_DvisEst_image_capture_start(void);
 // Stop collecting frames
-void dvd_DvisEst_image_capture_stop(void);
+void dvd_DvisEst_image_capture_stop(const bool camera_src);
 // load test images into the capture queue and return
+void dvd_DvisEst_image_capture_load_test_queue_threaded(const cv::String imgdir_src, const double dt);
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt);
 // Return the next captured image from the front of the queue
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames);
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode);
 bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
 
 #endif // DVD_DVISEST_IMAGE_CAPTURE_HPP

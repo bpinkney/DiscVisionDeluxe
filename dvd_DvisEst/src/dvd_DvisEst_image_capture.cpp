@@ -33,6 +33,7 @@
 #include <atomic>
 
 #include <dvd_DvisEst_image_capture.hpp>
+#include <dvd_DvisEst_apriltag.hpp>
 #include <dvd_DvisEst_estimate.hpp>
 
 #if defined(SPINNAKER_ALLOWED)
@@ -45,9 +46,13 @@ using namespace std;
 using namespace cv;
 
 // declare static local structures
-std::queue<image_capture_t> sv_image_capture_queue;
+std::deque<image_capture_t> sv_image_capture_queue;
 std::mutex                  sv_image_capture_mutex;
-//std::atomic<bool> ai_thread_ready (false);
+
+std::thread                 capture_thread;
+
+// this is only used for test images for now (since we never expect the camera to stop rolling until told to)
+std::atomic<bool> capture_thread_ready (false);
 
 // start thread stuff
 static bool image_queue_empty()
@@ -79,14 +84,14 @@ static void image_queue_push(image_capture_t * image_capture)
   // mutex on
   sv_image_capture_mutex.lock();
   // no deep copy required here?
-  sv_image_capture_queue.push(*image_capture);
+  sv_image_capture_queue.push_back(*image_capture);
 
   //cerr << "Queue size: " << sv_image_capture_queue.size() << endl;
   // mutex off
   sv_image_capture_mutex.unlock();
 }
 
-static bool image_queue_pull(image_capture_t * image_capture)
+static bool image_queue_pull(image_capture_t * image_capture, const uint16_t front_offset, const bool pop_frame)
 {   
   // mutex on
   sv_image_capture_mutex.lock();
@@ -101,13 +106,45 @@ static bool image_queue_pull(image_capture_t * image_capture)
   else
   {
     // no deep copy required here I think
-    (*image_capture) = sv_image_capture_queue.front();
-    sv_image_capture_queue.pop();
+    const uint16_t front_offset_idx = max(0, min((int)front_offset, ((int)sv_image_capture_queue.size())-1));
+    (*image_capture) = sv_image_capture_queue[front_offset_idx]; // 0 is the front of the queue
+    // only pop frames when reading normally for measurements
+    if(pop_frame)
+    {
+      sv_image_capture_queue.pop_front();
+    }
     // mutex off
     sv_image_capture_mutex.unlock();
     return true;
   }
 }
+
+// pop N frames from the front of the queue
+// always leave one entry
+static bool image_queue_purge(const uint16_t front_offset)
+{
+  if(image_queue_empty())
+  {
+    return false;
+  } 
+
+  // mutex on
+  sv_image_capture_mutex.lock();
+  int i;
+  for(i = 0; i < front_offset; i++)
+  {
+    if(sv_image_capture_queue.size() <= 1)
+    {
+      break;
+    }
+
+    sv_image_capture_queue.pop_front();
+  }
+  // mutex off
+  sv_image_capture_mutex.unlock();
+  return true;
+}
+
 //end thread stuff
 
 // convert Spinnaker frame to OpenCV Mat
@@ -408,6 +445,11 @@ int camera_settings_reset(INodeMap& nodeMap)
 
 // TODO: we need to actually implement all the spinnaker functions and thread handling here
 
+bool dvd_DvisEst_image_capture_thread_ready()
+{
+  return capture_thread_ready;
+}
+
 // external functions
 bool dvd_DvisEst_image_capture_test(void)
 {
@@ -450,13 +492,23 @@ void dvd_DvisEst_image_capture_start(void)
 }
 
 // Stop collecting frames
-void dvd_DvisEst_image_capture_stop(void)
+void dvd_DvisEst_image_capture_stop(const bool camera_src)
 {
   #if defined(SPINNAKER_ALLOWED)
+  if(camera_src)
+  {
 
-  // stop a capture thread (purge frames here?)
-
+  }
   #endif
+
+  // purge frames here perhaps? Only matters if this is included as a library
+
+  capture_thread.join();
+}
+
+void dvd_DvisEst_image_capture_load_test_queue_threaded(const cv::String imgdir_src, const double dt)
+{
+  capture_thread = std::thread(dvd_DvisEst_image_capture_load_test_queue, imgdir_src, dt);
 }
 
 // load test images into the capture queue and return
@@ -481,7 +533,7 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
   cv::Mat image;
   for(i = 0; i < (int)img_filenames.size(); i++)
   {
-    cerr << "Loading " << img_filenames[i] << " into image queue..." << endl;
+    //cerr << "Loading " << img_filenames[i] << " into image queue..." << endl;
     
     image = imread(img_filenames[i], 1);
 
@@ -504,42 +556,55 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
     frame_id     += 1;
   }
 
+  capture_thread_ready = true;
+  cerr << "Capture Test Thread Complete." << endl;
+
   return true;
 }
 
 // Return the next captured image from the front of the queue
-#define MAX_FRAME_SKIP_COUNT (0)
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames)
+#define MAX_FRAME_SKIP_COUNT (25)
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode)
 {
-  if(!dvd_DvisEst_estimate_tags_detected() && (*skipped_frames) != 888)
+  static uint16_t scout_index = 0;
+  bool got_frame = true;
+
+  //cerr << "Queue Size: " << (int)image_queue_size() << endl;
+
+  const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
+
+  // If we're using test images, might want to keep processing until the end of the queue....
+  // (fake out meas mode for the last 100 entries for now)
+  if(at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
-    // allow some frame skips here maybe?
-    // we need to figure out a way to try
-    // a measurement MAX_FRAME_SKIP_COUNT entries into the queue
-    // and if a detection is found, reverse gears and consume the old measurements
-    // That will be a challenge with multiple threads likely.
-
-    // If the queue has more than twice the number of frames in it
-    // than our max frame skip, we may be able to accelerate the frame dropping
-    // to speed things back up
-    const uint16_t frames_to_skip = MAX_FRAME_SKIP_COUNT;
-    //const uint16_t frames_to_skip = (image_queue_size() > MAX_FRAME_SKIP_COUNT*2) ? MAX_FRAME_SKIP_COUNT*2 : MAX_FRAME_SKIP_COUNT;
-
-    // for now, we're just going to burn the past
-    int i;
-    for(i=0;i<frames_to_skip;i++)
+    // The queue has not yet recovered from the last scout thread
+    // wait around (in the apriltag thread) until this is so to ensure that the scout threads are spaced by at least MAX_FRAME_SKIP_COUNT
+    
+    if(image_queue_size() < AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT && !wrap_things_up_for_test_mode)
     {
-      image_queue_pull(image_capture);
+      return false;
     }
 
+    // For SCOUT mode threads, we deliver the next scout frame, and automatically discard old frames in the queue
+    const uint16_t frames_to_skip = MAX_FRAME_SKIP_COUNT;    
+    got_frame &= image_queue_purge(frames_to_skip);
+
     *skipped_frames = MAX_FRAME_SKIP_COUNT;
+
+    if(got_frame || wrap_things_up_for_test_mode)
+    {
+      // techincally the offset here isn't necessary, since we purge the frames first
+      // pop that frame if we're exiting test mode...
+      got_frame = image_queue_pull(image_capture, 0, wrap_things_up_for_test_mode);
+    }
   }
   else
   {
     *skipped_frames = 0;
-  }
+    got_frame = image_queue_pull(image_capture, 0, 1);
+  }  
 
-  return image_queue_pull(image_capture);
+  return got_frame;
 }
 
 // Return the next captured image from the front of the queue
