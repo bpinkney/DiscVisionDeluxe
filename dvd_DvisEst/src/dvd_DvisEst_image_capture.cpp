@@ -563,7 +563,7 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 }
 
 // Return the next captured image from the front of the queue
-#define MAX_FRAME_SKIP_COUNT (25)
+#define MAX_FRAME_SKIP_COUNT (20)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode)
 {
   static uint16_t scout_index = 0;
@@ -579,8 +579,8 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
   {
     // The queue has not yet recovered from the last scout thread
     // wait around (in the apriltag thread) until this is so to ensure that the scout threads are spaced by at least MAX_FRAME_SKIP_COUNT
-    
-    if(image_queue_size() < AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT && !wrap_things_up_for_test_mode)
+    // add in random *2 right now (for test), maybe we can just use lots of RAM anyhow...
+    if(image_queue_size() < AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * 2.0 && !wrap_things_up_for_test_mode)
     {
       return false;
     }
