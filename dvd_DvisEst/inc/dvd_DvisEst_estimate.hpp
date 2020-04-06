@@ -31,7 +31,7 @@ struct pos_vel_var_state_t
 // origin is at the ground plane point
 struct dvd_DvisEst_kf_meas_t
 {
-  uint64_t    timestamp_ns;         // Timestamp reported by camera, nanoseconds
+  uint64_t    timestamp_ns;         // Timestamp reported by camera, normalized to our uptime, nanoseconds
   uint32_t    frame_id;             // Frame ID reported by camera, sequential. We'll use this to check against the reserved measurement slots
   double      VEC3(lin_xyz_pos);    // Linear XYZ position measurement (m)
   double      VEC3(ang_hps_pos);    // Angular Hyzer, Pitch, Spin measurement (rad) (recall the special disc-frame definition for spin position here)

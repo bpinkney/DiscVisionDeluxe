@@ -85,8 +85,21 @@ std::thread kf_process_filter;
 cv::Matx33d R_CG = cv::Matx33d(0,0,0,0,0,0,0,0,0);
 cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
+// Kalman Filter statics
+dvd_DvisEst_kf_state_t sv_kf_state;
+
 std::atomic<uint32_t> meas_count_populated (0);
 std::atomic<uint32_t> meas_count_empty     (0);
+
+// Static Funcs
+static void kf_meas_update_step(void);
+static void kf_prediction_step(void);
+static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD);
+static void kf_get_kalman_gain(const double S2dm, const double MAT2X2(P), double VEC2(K));
+static void kf_apply_meas_update_state(const double VEC2(K), const double innovation, double * pos_state, double * vel_state);
+static void kf_apply_meas_update_var(const double VEC2(K), double MAT2X2(P));
+static void kf_prediction_state(const double dt, double * pos_state, double * vel_state);
+static void kf_prediction_var(const double S2dp, const double S2vp, const double dt, double MAT2X2(P));
 
 static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
 {
@@ -153,6 +166,8 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
   cerr << "Call dvd_DvisEst_estimate_init" << endl;
 
   // init structs to zero
+  memset(&sv_kf_state, 0, sizeof(dvd_DvisEst_kf_state_t));
+
   int i;
   for(i = 0; i < MEAS_QUEUE_SIZE; i++)
   {
@@ -270,13 +285,6 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_
   meas_count_populated++;
 }
 
-static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD)
-{
-  *hyzer_angle  = asin(R_GD(1,2));
-  *pitch_angle  = asin(R_GD(0,2));
-  *spin_angle   = atan2(R_GD(0,1), R_GD(0,0));
-}
-
 // Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
 // Transform camera-to-disc transformation into groundplane-to-disc transformation
 // Then compute the disc measurement
@@ -330,15 +338,15 @@ static void process_filter_thread(void)
       dvd_DvisEst_estimate_set_tags_detected(false);
     }
 
+    // if we got some cancellations, just skip them and move the read idx forward
+    if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
+    {
+      sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);        
+    }    
+
     // run at KF_FILTER_PRED_DT_NS intervals
     if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
     {
-      // if we got some cancellations, just skip them
-      if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
-      {
-        sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);        
-      }
-
       // for now (test), just assume the measurement is consumed right away
       // consume all ready adjacent measurements    
       while(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_POPULATED)
@@ -354,12 +362,18 @@ static void process_filter_thread(void)
         cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms) ";
         cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << "]" << endl;
 
-        // TODO: maybe actually do something with the measurement here...
+        // perform the measurement update step
+        kf_meas_update_step();
+
         MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
 
         // be careful about this ++, atomics, amirite?
         sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
       }
+
+      // run the kalman filter prediction step
+      kf_prediction_step();
+
       // after the queue is empty, let's mark the estimate complete so we can test thread joining
       // and do some profiling
       if(dvd_DvisEst_image_capture_image_capture_queue_empty() && latch_tic && !latch_toc)
@@ -377,6 +391,79 @@ static void process_filter_thread(void)
   }
   cerr << "Estimate Thread completed." << endl;
 }
+
+// Kalman Filter Functions
+
+static void kf_meas_update_step()
+{
+  // TODO: Queue the measurement if the filter has not yet initialized
+
+  // TODO: If we have already initialized the filter, consume the measurement
+}
+
+static void kf_prediction_step()
+{
+
+}
+
+// Tranform GroundPlane-to-Disc rotation matrix into hyzer (worldframe X), pitch (worlframe Y), and spin (discframe Z) angles
+static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD)
+{
+  *hyzer_angle  = asin(R_GD(1,2));
+  *pitch_angle  = asin(R_GD(0,2));
+  *spin_angle   = atan2(R_GD(0,1), R_GD(0,0));
+}
+
+// measurement update functions
+static void kf_get_kalman_gain(const double S2dm, const double MAT2X2(P), double VEC2(K))
+{
+  const double denom = max((S2dm + P[i2x2(0,0)]), CLOSE_TO_ZERO);
+
+  K[0] = P[i2x2(0,0)] / denom;
+  K[1] = P[i2x2(1,0)] / denom;
+}
+
+static void kf_apply_meas_update_state(const double VEC2(K), const double innovation, double * pos_state, double * vel_state)
+{
+  // innovation = (dk-dmk)
+  (*pos_state) += K[0] * innovation;
+  (*vel_state) += K[1] * innovation;
+}
+
+static void kf_apply_meas_update_var(const double VEC2(K), double MAT2X2(P))
+{
+  double p11 = P[i2x2(0,0)];
+  double p12 = P[i2x2(0,1)];
+
+  P[i2x2(0,0)] += (-K[0] * p11);
+  P[i2x2(0,1)] += (-K[0] * p12);
+  P[i2x2(1,0)] += (-K[1] * p11);
+  P[i2x2(1,1)] += (-K[1] * p12);
+}
+
+// prediction/propagation functions
+// Constant velocity assumption for the prediction step suffices
+static void kf_prediction_state(const double dt, double * pos_state, double * vel_state)
+{
+  (*pos_state) += (*vel_state) * dt;
+  //(*vel_state) += 0;
+}
+
+static void kf_prediction_var(const double S2dp, const double S2vp, const double dt, double MAT2X2(P))
+{
+  double p12 = P[i2x2(0,1)];
+  double p21 = P[i2x2(1,0)];
+  double p22 = P[i2x2(1,1)];
+
+  double dte2 = dt*dt;
+
+  P[i2x2(0,0)] += (dte2 * p22) + (dt * (p12 + p21)) + (S2dp);
+  P[i2x2(0,1)] += (dt * p22);
+  P[i2x2(1,0)] += (dt * p22);
+  P[i2x2(1,1)] += (S2vp);
+}
+
+// end Kalman Filter Functions
 
 void dvd_DvisEst_estimate_process_filter(void)
 {

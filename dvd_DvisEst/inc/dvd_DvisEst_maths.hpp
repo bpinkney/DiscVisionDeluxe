@@ -17,4 +17,6 @@
 #define i3x3(r,c)   (3*(r)+(c))
 #define i4x4(r,c)   (4*(r)+(c))
 
+#define CLOSE_TO_ZERO (0.0001)
+
 #endif // DVD_DVISEST_MATHS_HPP
