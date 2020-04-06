@@ -255,6 +255,7 @@ int at_detection_thread_run(uint8_t thread_id)
   tag36h11_destroy(tf);
 
   cerr << "AprilTag Thread#" << (int)thread_id << " completed." << endl;
+  return 0;
 }
 
 // Test a simple call to the apriltag lib

@@ -51,7 +51,7 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
 
 // If we have recent tag detections, suppress frame skipping
 // expires after a long enough hiatus of detections (if the filter isn't active that is)
-bool dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
+void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
 
 bool dvd_DvisEst_estimate_get_tags_detected(void);
 

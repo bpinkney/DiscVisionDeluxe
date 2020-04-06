@@ -200,7 +200,7 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
   return true;
 }
 
-bool dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
+void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
 {
   sv_kf_estimate_tags_detected = tags_detected;
   if(tags_detected)
