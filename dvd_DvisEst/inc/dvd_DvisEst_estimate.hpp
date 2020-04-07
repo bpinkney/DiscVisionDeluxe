@@ -17,6 +17,10 @@
 #include <dvd_DvisEst_maths.hpp>
 #include <disc_layouts.hpp>
 
+// define a few physics maximums to help our initial estimates along
+#define MAX_LIN_VEL (37.0)  // m/s
+#define MAX_ANG_VEL (150.0) // rad/s
+
 // define measurement and state structures
 struct pos_vel_var_state_t
 {
@@ -47,7 +51,7 @@ struct dvd_DvisEst_kf_state_t
 };
 
 // Init Kalman filter states and measurement queues
-bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
+bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog);
 
 // If we have recent tag detections, suppress frame skipping
 // expires after a long enough hiatus of detections (if the filter isn't active that is)

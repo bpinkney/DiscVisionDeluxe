@@ -46,6 +46,7 @@ int main(int argc, char** argv )
     "{groundplane gp |../bin/sample_ground_plane.yaml| Ground plane rotation and pre-rot translation.\n"
                   "                Defines transformation between camera and ground plane frames wrt camera frame.}"
     "{setgroundplane sgp |false| Place sample AprilTag on the ground, and determine resulting ground plane}"
+    "{kflog log      |true       | Generate log files for KF meas and states}"
     ;
 
   cv::CommandLineParser parser(argc, argv, keys);
@@ -64,6 +65,7 @@ int main(int argc, char** argv )
   const cv::String  camera_cal  = parser.get<cv::String>("camcal");
   const cv::String  gnd_plane   = parser.get<cv::String>("groundplane");
   const bool      set_gnd_plane = parser.get<bool>("setgroundplane");
+  const bool        kflog       = parser.get<bool>("kflog");
 
   // check for basic function test call
   if(helloworld)
@@ -161,7 +163,7 @@ int main(int argc, char** argv )
 
   // Init remaining calls
   // allocate measurement slots and prep Kalman Filter initial states
-  if(!dvd_DvisEst_estimate_init(gnd_plane))
+  if(!dvd_DvisEst_estimate_init(gnd_plane, kflog))
   {
     cerr << "Can't read ground plane, exiting...!" << endl;
     return 1;
@@ -206,6 +208,10 @@ int main(int argc, char** argv )
   dvd_DvisEst_estimate_end_filter();
   dvd_DvisEst_apriltag_end();
   dvd_DvisEst_image_capture_stop(camera_src);
+
+  // plotting with matlab!
+  cerr << ("Executing Matlab plot...\n") << endl;
+  system ("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
 
   // sleep for 200 seconds
   //cout << '\n' << "Sleeping until threads join..." << endl;

@@ -104,8 +104,8 @@ int at_detection_thread_run(uint8_t thread_id)
   td->quad_sigma      = 0.0;
   td->nthreads        = AT_INT_THREAD_COUNT;
   td->debug           = 0;
-  td->refine_edges    = 0; // might want to disable this for 522fps
-  td->decode_sharpening = 0.0;
+  td->refine_edges    = 1; // might want to disable this for 522fps
+  td->decode_sharpening = 0.25;
 
   // Define housing for grayscale tag
   cv::Mat img_grey;
