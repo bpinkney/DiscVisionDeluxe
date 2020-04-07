@@ -67,14 +67,16 @@ std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 #define MEAS_QUEUE_STATUS(y) (sv_meas_queue_status[y])
 #define MEAS_QUEUE_MEAS(y)   (sv_meas_queue_meas[y])
 
-// current index of measurement queue (atomic since we want to observe it from multiple threads)
-std::atomic<uint8_t> sv_meas_queue_read_idx      (0);
-std::atomic<uint8_t> sv_meas_queue_write_idx     (0);
+// current index of measurement queue
+uint8_t              sv_meas_queue_read_idx      (0);
+uint8_t              sv_meas_queue_write_idx     (0);
+std::mutex           sv_meas_queue_write_mutex;
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
 std::atomic<uint64_t> sv_kf_estimate_tag_detect_time_ns (0);
 
+std::atomic<bool> sv_kf_estimate_active (false);
 // is the estimate ready? we can stop the detection and capture threads then
 std::atomic<bool> sv_kf_estimate_complete (false);
 
@@ -86,6 +88,12 @@ cv::Matx33d R_CG = cv::Matx33d(0,0,0,0,0,0,0,0,0);
 cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
 // Kalman Filter statics
+// initial covariances values
+#define LIN_POS_VAR_INIT  (1.0)   //(m^2)
+#define LIN_VEL_VAR_INIT  (50.0)  //(m/s)^2
+#define ANG_POS_VAR_INIT  (1.0)   //(rad)^2
+#define ANG_VEL_VAR_INIT  (50.0)  //(rad/s)^2
+
 dvd_DvisEst_kf_state_t sv_kf_state;
 
 std::atomic<uint32_t> meas_count_populated (0);
@@ -101,7 +109,7 @@ static void kf_apply_meas_update_var(const double VEC2(K), double MAT2X2(P));
 static void kf_prediction_state(const double dt, double * pos_state, double * vel_state);
 static void kf_prediction_var(const double S2dp, const double S2vp, const double dt, double MAT2X2(P));
 
-static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
+static uint8_t get_next_meas_queue_size(uint8_t start_idx)
 {
   uint8_t next_idx = start_idx + 1;
   if(next_idx > MEAS_QUEUE_SIZE - 1)
@@ -245,18 +253,21 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
 
   // only give out next slot if it is available
   // only give out next slot to preserve adjacency
-  if(MEAS_QUEUE_STATUS(sv_meas_queue_write_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
-  {
-    (*slot_id) = sv_meas_queue_write_idx;
-  }
 
-  uint8_t next_idx = get_next_meas_queue_idx(sv_meas_queue_write_idx);
+  // mutex access to the measurement queue allocation
+  sv_meas_queue_write_mutex.lock();
+  
+  const uint16_t next_idx = get_next_meas_queue_size(sv_meas_queue_write_idx);
+
   if(MEAS_QUEUE_STATUS(next_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
   {
-    (*slot_id) = next_idx;
     sv_meas_queue_write_idx = next_idx;
+    MEAS_QUEUE_STATUS(next_idx) = MEAS_QUEUE_STATUS_RESERVED;
+    (*slot_id) = next_idx;
+    sv_meas_queue_write_mutex.unlock();
     return true;
   }
+  sv_meas_queue_write_mutex.unlock();
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
@@ -339,10 +350,11 @@ static void process_filter_thread(void)
     }
 
     // if we got some cancellations, just skip them and move the read idx forward
-    if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
+    // for obvious reasons, don't let the read idx surpass the write!!
+    if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE && sv_meas_queue_read_idx != sv_meas_queue_write_idx)
     {
-      sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);        
-    }    
+      sv_meas_queue_read_idx = get_next_meas_queue_size(sv_meas_queue_read_idx);        
+    }
 
     // run at KF_FILTER_PRED_DT_NS intervals
     if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
@@ -368,7 +380,7 @@ static void process_filter_thread(void)
         MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
 
         // be careful about this ++, atomics, amirite?
-        sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
+        //sv_meas_queue_read_idx = get_next_meas_queue_size(sv_meas_queue_read_idx);
       }
 
       // run the kalman filter prediction step
@@ -393,12 +405,139 @@ static void process_filter_thread(void)
 }
 
 // Kalman Filter Functions
-
+#define MEAS_PRIME_QUEUE_MAX_AGE_NS           (1000000 * 200) // no older than 200ms
+#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (15)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (5)
+#define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (1.0) // (m/s)^2
 static void kf_meas_update_step()
 {
   // TODO: Queue the measurement if the filter has not yet initialized
+  // Let's just keep this queue as a local static for now (bad form, but eh)
+  static std::deque<dvd_DvisEst_kf_meas_t> meas_prime_queue;
 
-  // TODO: If we have already initialized the filter, consume the measurement
+  // We haven't started the kalman filter yet, keep buffering measurements (and discarding old ones) for now
+  if(!sv_kf_estimate_active)
+  {
+    meas_prime_queue.push_back(MEAS_QUEUE_MEAS(sv_meas_queue_read_idx));
+
+    cerr << "Meas Prime Queue count is now" << (int)meas_prime_queue.size() << " TStamps [" << 
+      (int)meas_prime_queue.back().timestamp_ns << ", " << meas_prime_queue.front().timestamp_ns << "]" << endl;
+
+    // discard old measurements
+    while(!meas_prime_queue.empty())
+    {
+      if((meas_prime_queue.back().timestamp_ns - meas_prime_queue.front().timestamp_ns) > MEAS_PRIME_QUEUE_MAX_AGE_NS)
+      {
+        // ditch old measurements (vs queue head/back)
+        meas_prime_queue.pop_front();
+      }
+      else
+      {
+        // all measurements are within MEAS_PRIME_QUEUE_MAX_AGE_NS
+        break;
+      }
+    }
+
+    // There are 2 conditions used to determine whether we should prime the initial KF state:
+    // 1. Have we queued more than MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES?
+    // OR
+    // 2. Is the velocity variance of the last MEAS_PRIME_QUEUE_PRIME_COUNT entries in the queue less than MEAS_PRIME_QUEUE_PRIME_MIN_VAR?
+    // Ideally we will achieve criteria #2, but failing that, we need to start the filter one way or another
+    if(meas_prime_queue.size() >= MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES)
+    {
+      cerr << "Meas Queue Entry Count Target for Kalman Filter prime has been met!" << endl;
+      sv_kf_estimate_active = true;
+    }
+
+    // define these out here, since they'll be used later to prime the filter
+    int xyz;
+    double meas_vel_xyz_mean[3] = {0};
+    double meas_vel_hps_mean[3] = {0};
+    if(meas_prime_queue.size() >= MEAS_PRIME_QUEUE_PRIME_COUNT)
+    {
+      // check queue variance for final MEAS_PRIME_QUEUE_PRIME_COUNT entries
+      bool var_target_met = true;
+      int i;
+      const int queue_size = meas_prime_queue.size()-1;
+      double meas_vel_xyz[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+      double meas_vel_hps[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+      // for now, only use the linear variance to determine whether to prime the queue
+      double meas_vel_xyz_var[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+      for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
+      {
+        const double dt = 
+          max(
+            CLOSE_TO_ZERO, 
+            (double)(meas_prime_queue[queue_size - i].timestamp_ns - meas_prime_queue[queue_size - i - 1].timestamp_ns) * 0.000000001
+          );
+          cerr << "dt = " << meas_prime_queue[queue_size - i].timestamp_ns << " - " << meas_prime_queue[queue_size - i-1].timestamp_ns << " = " << dt << endl;
+        for(xyz = 0; xyz < 3; xyz++)
+        { 
+          meas_vel_xyz[i][xyz] = (meas_prime_queue[queue_size - i].lin_xyz_pos[xyz] - meas_prime_queue[queue_size - i - 1].lin_xyz_pos[xyz]) / dt;
+          meas_vel_hps[i][xyz] = (meas_prime_queue[queue_size - i].ang_hps_pos[xyz] - meas_prime_queue[queue_size - i - 1].ang_hps_pos[xyz]) / dt;
+          // calculate mean
+          meas_vel_xyz_mean[xyz] += meas_vel_xyz[i][xyz] * (1/(MEAS_PRIME_QUEUE_PRIME_COUNT-1));
+          meas_vel_hps_mean[xyz] += meas_vel_hps[i][xyz] * (1/(MEAS_PRIME_QUEUE_PRIME_COUNT-1));
+        }
+      }
+
+      // calculate resulting variance
+      for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
+      {
+        for(xyz = 0; xyz < 3; xyz++)
+        {
+          cerr << "diff i = " << i << "xyz = " << xyz << endl;
+          double vel_diff = (meas_vel_xyz[i][xyz] - meas_vel_xyz_mean[xyz]);
+          meas_vel_xyz_var[i][xyz] = vel_diff * vel_diff;
+          if(meas_vel_xyz_var[i][xyz] > MEAS_PRIME_QUEUE_PRIME_MIN_VAR)
+          {
+            var_target_met = false;
+            break;            
+          }
+        }
+        if(!var_target_met)
+        {
+          break;
+        }
+      }
+
+      if(var_target_met)
+      {
+        cerr << "Variance Target for Kalman Filter prime has been met!" << endl;
+        sv_kf_estimate_active = true;
+      }
+    }
+
+    // We are now ready to prime the initial Kalman filter state! Nice!
+    // Take an average of the queued velocities, and the most recent position state (for now)
+    if(sv_kf_estimate_active)
+    {
+      cerr << "Priming Kalman Filters!" << endl;
+      for(xyz = 0; xyz < 3; xyz++)
+      {
+        // set init positions to latest meas
+        sv_kf_state.lin_xyz[xyz].pos = meas_prime_queue.back().lin_xyz_pos[xyz];
+        sv_kf_state.ang_hps[xyz].pos = meas_prime_queue.back().ang_hps_pos[xyz];
+
+        // set init vels to mean of last MEAS_PRIME_QUEUE_PRIME_COUNT differentiated measurements
+        sv_kf_state.lin_xyz[xyz].vel = meas_vel_xyz_mean[xyz];
+        sv_kf_state.ang_hps[xyz].vel = meas_vel_hps_mean[xyz];
+
+        // set initial state covariance values
+        sv_kf_state.lin_xyz[xyz].var[i2x2(0,0)] = LIN_POS_VAR_INIT;
+        sv_kf_state.lin_xyz[xyz].var[i2x2(0,1)] = sv_kf_state.lin_xyz[xyz].var[i2x2(1,0)] = 0; // correlation terms start at zero
+        sv_kf_state.lin_xyz[xyz].var[i2x2(1,1)] = LIN_VEL_VAR_INIT;
+        
+        sv_kf_state.ang_hps[xyz].var[i2x2(0,0)] = ANG_POS_VAR_INIT;
+        sv_kf_state.ang_hps[xyz].var[i2x2(0,1)] = sv_kf_state.ang_hps[xyz].var[i2x2(1,0)] = 0; // correlation terms start at zero
+        sv_kf_state.ang_hps[xyz].var[i2x2(1,1)] = ANG_VEL_VAR_INIT;
+      }      
+    }
+  }
+  else
+  {
+    // TODO: If we have already initialized the filter, consume the measurement
+  }  
 }
 
 static void kf_prediction_step()

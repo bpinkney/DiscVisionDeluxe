@@ -20,8 +20,8 @@
 // define measurement and state structures
 struct pos_vel_var_state_t
 {
-  double      VEC3(pos);    // position 
-  double      VEC3(vel);    // velocity
+  double      pos;          // position 
+  double      vel;          // velocity
   double      MAT2X2(var);  // covariance matrix
 };
 

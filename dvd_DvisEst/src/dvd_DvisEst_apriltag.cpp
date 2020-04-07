@@ -41,6 +41,8 @@ double Cy = 0;
 std::vector<std::thread>          at_detection_thread (AT_THREAD_COUNT);
 std::vector<std::atomic<uint8_t>> at_detection_thread_mode (AT_THREAD_COUNT);
 
+std::mutex                  test_mutex;
+
 // Start apriltag thread (image_capture_t not yet populated)
 // I don't think we need any return values from these right now
 int at_detection_thread_run(uint8_t thread_id)
@@ -129,6 +131,7 @@ int at_detection_thread_run(uint8_t thread_id)
       cout << "Thread #" << (int)thread_id << " changed to MEAS mode!" << endl; 
     }
 
+    //test_mutex.lock();
     // Look for a new frame from the camera (or perhaps from loaded test images)
     const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, at_detection_thread_mode[thread_id]);
 
@@ -137,6 +140,7 @@ int at_detection_thread_run(uint8_t thread_id)
     {
       if(dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id, skipped_frames))
       {
+        //test_mutex.unlock();
         // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
 
         // First, undistort the image
@@ -165,7 +169,6 @@ int at_detection_thread_run(uint8_t thread_id)
         {
           dvd_DvisEst_estimate_set_tags_detected(true);
         }
-
 
         if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS)
         {
@@ -240,14 +243,17 @@ int at_detection_thread_run(uint8_t thread_id)
       else
       {
         // did we not get a measurement slot reservation? weird. Maybe we haven't processed the old measurements yet
+        //test_mutex.unlock();
         cerr << "Frame ID " << image_capture.frame_id << " was dropped due to a lack of available measurement slots!! Do your estimate loop faster!" << endl;
       }
     }
     else
     {
       // sleep for a bit so we don't busy poll
+      //test_mutex.unlock();
       usleep(1000);
     }
+
   }
 
   // clean up apriltag objects
