@@ -116,13 +116,6 @@ void step_Daero (Throw_Container &active_throw, float step_time)
 
 {
 
-  // test for extern string
-  std::cout << "Save Path is: " << save_path << std::endl;
-  // test for assign to extern string
-  save_path = "jim dangle";
-  // test for extern string
-  std::cout << "Save Path is now: " << save_path << std::endl;
-
 	/* ripped from dfisx.py, naming scheme isnt accurate yet
     #####Unit Vectors
     #vel_unit:  unit vector of total disc velocity

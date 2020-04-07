@@ -20,17 +20,30 @@
 
 namespace DfisX
 {
-std::string save_path = "hi";
 
-//Sim_State sim_state = SIM_STATE_STOPPED; 
 Throw_Container active_throw;
 std::vector<DfisX::Disc_Object> disc_object_array;
-//save_path = "\\flight_saves\\saved_throw.csv";
+Global_Variables global_variables;
 
 
-void test() 
+void  init()
+{
+set_save_path ("flight_saves\\saved_throw.csv");
+load_disc_parameters ();
+}
+
+
+void set_save_path(std::string save_path)
+{
+global_variables.save_path = save_path;
+std::cout << " Save file was set to" << save_path << "\n";
+}
+
+
+
+void test()
 { 
-    std::cout << "     This is an example throw\n\n";
+std::cout << "     This is an example throw\n\n";
     
     // Standard test
     //new_throw (AVIAR,location_throwing_height_origin,Eigen::Vector3d(20,0,2), 0.52, 0.1, 70, 0);
@@ -49,25 +62,23 @@ void test()
     // wobble0
     //new_throw (AVIAR,Eigen::Vector3d(-0.2234 * 0,0.7923 * 0,2.3306 * 0 + 1.5),Eigen::Vector3d(8.8370,2.7146,4.7251), fabs(-0.3033), 0.2270, fabs(-22.8755), 0);
     // putt2
-    new_throw (AVIAR,Eigen::Vector3d(0,0,2),Eigen::Vector3d(11.0294,3.5728,1.6619), 0.2241, -0.1919, -45.9233, 0);
+    new_throw (AVIAR,Eigen::Vector3d(0,0,2),Eigen::Vector3d(11.0294,3.5728,1.6619), 0.2241, 0.1919, -45.9233, 0);
     //spin2
     //new_throw (AVIAR,Eigen::Vector3d(-0.1317 * 0,0.5205 * 0,2.0303 * 0 + 1.5),Eigen::Vector3d(5.4661,0.4827,-0.6882), fabs(0.4373), 0.4299, fabs(-42.6808), 0);
 
     simulate_throw();
 }
 
-    
-
 
 
 void  simulate_throw()
 {
-    std::cout << "This is a simulated throw using a " << d_object.mold_name << "\n\n";
-
+    std::cout << "This is a simulated throw using a " << d_object.mold_name << "\n";
+    std::cout << "It is being saved to the file " << global_variables.save_path << "\n\n";
 
     double total_time = 0;
     std::ofstream myfile;
-    myfile.open ("simulated_throw.csv");
+    myfile.open (global_variables.save_path);
     myfile << "time_elapsed,pos_x,pos_y,pos_z,disc_state,orient_x,orient_y,orient_z\n";
     while (d_state.sim_state != SIM_STATE_STOPPED)
     {
@@ -123,7 +134,7 @@ d object
 Does the following things
 */
 {
-    load_disc_parameters ();
+    
 //convert world frame roll/pitch into and orientation vector
 	double x_component = sin (-thrown_disc_pitch) * cos (thrown_disc_roll);
 	double y_component = sin (thrown_disc_roll) * cos (thrown_disc_pitch);
