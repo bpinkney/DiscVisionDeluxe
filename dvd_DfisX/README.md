@@ -16,7 +16,10 @@ must be followed by a number!
  
  -
  
- test||hyzer||pitch||posx||posy||posz||velx||vely||velz||wobble||spinrate||discmold
+ test||hyzer||pitch||posx||posy||posz||velx||vely||velz||wobble||spinrate||discmold||savepath
+ 
+ 
+ note input save path like this **** savepath 1 thisisfilename.csv 1
  
  -
  
