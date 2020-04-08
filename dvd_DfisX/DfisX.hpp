@@ -20,8 +20,13 @@
 
 #define AVIAR 		DANGLE_SS
 
+
+
+
 namespace DfisX
 {
+
+
 
 enum Disc_Mold_Enum
 {
@@ -54,9 +59,6 @@ void simulate_throw();
 
 
 
-//used to 'step' the physics simulation forward once
-
-
 
 
 
@@ -80,6 +82,12 @@ const Disc_State default_hard_throw 	{location_throwing_height_origin,	direction
 const Disc_State default_soft_throw		{location_throwing_height_origin,	direction_up,	Eigen::Vector3d(15,0,0.75),0};
 const Disc_State default_putting_throw 	{location_throwing_height_origin,	direction_up,	Eigen::Vector3d(10,0,0.5),0};
 
+struct Global_Variables
+
+{
+std::string save_path;
+};
+
 
 
 
@@ -100,7 +108,6 @@ Eigen::Vector3d collision_location;
 double collision_torque;
 
 int step_count;
-
 };
 
 
@@ -138,9 +145,6 @@ Disc_Object disc_object;
 };
 
 
-// define extern globals
-extern std::string save_path;
-
 
 
 void step_simulation (Throw_Container &throw_container, float step_time);
@@ -150,6 +154,8 @@ void new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_positi
 	
 */	
 void load_disc_parameters ();
+void  init();
+void  set_save_path(std::string save_path);
 
 
 

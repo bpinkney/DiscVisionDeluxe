@@ -21,11 +21,16 @@ double thrown_disc_wobble = 0;
 Eigen::Vector3d thrown_disc_position;
 Eigen::Vector3d thrown_disc_velocity;
 
-
+std::string save_path;
 
 int main(int argc, char *argv[]) 
 {
     
+
+	DfisX::init();
+	//DfisX::global_variables.save_path = "\\flight_saves\\saved_throw2.csv";
+	 //std::cout << "It is being saved to the file " << DfisX::global_variables;
+
 	for (int count{ 2 }; count < argc; count += 2)
 	{
 
@@ -48,7 +53,17 @@ int main(int argc, char *argv[])
 		else if (arg_value == "wobble") 	thrown_disc_wobble 				= arg_value_value;
 		else if (arg_value == "spinrate") 	thrown_disc_radians_per_second 	= arg_value_value;
 		else if (arg_value == "discmold") 	disc_mold_enum 					= static_cast<DfisX::Disc_Mold_Enum>(arg_value_value);
-											
+		else if (arg_value == "savepath") 	
+		{
+											save_path 						= argv[count+1];
+											DfisX::set_save_path ("flight_saves\\"+save_path);
+											count += 2;
+		}
+		
+		//else if (arg_value == "savepath") 		thrown_disc_roll 				= arg_value_value;
+
+
+
 		else 								std::cout << "\n arg value " << arg_value << " was unable to be passed with the value of " << arg_value_value << "\n";
 		
 	}
@@ -63,7 +78,7 @@ int main(int argc, char *argv[])
 	DfisX::simulate_throw();
 	std::cout << "successfully passed a command line throw \n";
 	}
- 	else if	(disc_mold_enum || thrown_disc_roll || thrown_disc_pitch || thrown_disc_radians_per_second || posz || velx || vely || velz)
+ 	else if	(thrown_disc_radians_per_second ||  velx || vely )
  	{
  	std::cout << "\nERROR: Some values of a new throw were passed as command line args, but not enough to instantiate a throw \n ";	
  	} 

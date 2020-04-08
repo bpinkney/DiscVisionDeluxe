@@ -10,10 +10,10 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 project( dvd_DvisEst )
 
 # add package deps
-find_package( OpenCV REQUIRED )
 find_package( Threads REQUIRED)
 if (UNIX)
   # this only works on linux, for windows, we'll set the INC and LIB directly
+  find_package( OpenCV REQUIRED )
   find_package( apriltag REQUIRED )
 endif (UNIX)
 
@@ -33,6 +33,13 @@ if (WIN32)
   # check external deps with debug messages
   message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
   message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
+
+  # opencv stuff (built with mingw) (this still doesn't work, gah)
+  set(OpenCV_INC "C:/opencv/sources/modules/core/include" "C:/opencv/sources/modules/core/include" "C:/opencv/sources/modules/imgproc/include" "C:/opencv/sources/modules/calib3d/include" "C:/opencv/sources/modules/features2d/include" "C:/opencv/sources/modules/flann/include" "C:/opencv/sources/modules/imgcodecs/include" "C:/opencv/sources/modules/videoio/include" "C:/opencv/sources/modules/highgui/include" "C:/opencv/build")
+
+  # check external deps with debug messages
+  message(INFO "OpenCV_INC = ${OpenCV_INC}" )
+  message(INFO "OpenCV_LIB = ${OpenCV_LIB}" )
 
   # spinnaker stuff
   #set(SPINNAKER_LIB "C:/Program Files/Point Grey Research/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
@@ -58,6 +65,9 @@ endif (UNIX)
 # add project local include files
 target_include_directories(dvd_DvisEst PUBLIC "../common/inc/")
 target_include_directories(dvd_DvisEst PUBLIC inc)
+if (WIN32)
+target_include_directories( dvd_DvisEst PRIVATE ${OpenCV_INC} )
+endif (WIN32)
 target_include_directories( dvd_DvisEst PRIVATE ${APRILTAG_INC} )
 
 # add project local filenames

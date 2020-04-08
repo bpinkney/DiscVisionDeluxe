@@ -17,11 +17,15 @@
 #include <dvd_DvisEst_maths.hpp>
 #include <disc_layouts.hpp>
 
+// define a few physics maximums to help our initial estimates along
+#define MAX_LIN_VEL (37.0)  // m/s
+#define MAX_ANG_VEL (150.0) // rad/s
+
 // define measurement and state structures
 struct pos_vel_var_state_t
 {
-  double      VEC3(pos);    // position 
-  double      VEC3(vel);    // velocity
+  double      pos;          // position 
+  double      vel;          // velocity
   double      MAT2X2(var);  // covariance matrix
 };
 
@@ -31,7 +35,7 @@ struct pos_vel_var_state_t
 // origin is at the ground plane point
 struct dvd_DvisEst_kf_meas_t
 {
-  uint64_t    timestamp_ns;         // Timestamp reported by camera, nanoseconds
+  uint64_t    timestamp_ns;         // Timestamp reported by camera, normalized to our uptime, nanoseconds
   uint32_t    frame_id;             // Frame ID reported by camera, sequential. We'll use this to check against the reserved measurement slots
   double      VEC3(lin_xyz_pos);    // Linear XYZ position measurement (m)
   double      VEC3(ang_hps_pos);    // Angular Hyzer, Pitch, Spin measurement (rad) (recall the special disc-frame definition for spin position here)
@@ -47,11 +51,13 @@ struct dvd_DvisEst_kf_state_t
 };
 
 // Init Kalman filter states and measurement queues
-bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file);
+bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog);
 
 // If we have recent tag detections, suppress frame skipping
 // expires after a long enough hiatus of detections (if the filter isn't active that is)
-bool dvd_DvisEst_estimate_tags_detected(void);
+void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
+
+bool dvd_DvisEst_estimate_get_tags_detected(void);
 
 // check whether the estimation has completed
 bool dvd_DvisEst_estimate_complete(void);
@@ -62,7 +68,7 @@ bool dvd_DvisEst_estimate_complete(void);
 bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id, uint16_t skipped_frames);
 
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id);
+void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame);
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);
@@ -72,5 +78,8 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
 
 // Run the Kalman Filter
 void dvd_DvisEst_estimate_process_filter(void);
+
+// Join Kalman Filter thread
+void dvd_DvisEst_estimate_end_filter(void);
 
 #endif // DVD_DVISEST_ESTIMATE_HPP

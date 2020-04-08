@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <iostream>
+#include <fstream>
 
 // Timer stuff
 #include <unistd.h>
@@ -49,6 +51,12 @@ using namespace cv;
 // for now, let's just have 3 slots, we can expand this later if necessary pending how
 // many concurrent apriltag threads we expect
 
+#define KF_FILTER_PRED_DT_NS (MS_TO_NS(1.0)) // 1.0 ms, 1000Hz for now
+#define KF_FILTER_PRED_DT_S  (NS_TO_S(KF_FILTER_PRED_DT_NS))
+// if the filter isn't active, and we havent had a tag detection for at least this long
+// allow frame skips again
+#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (S_TO_NS(0.25)) // too long for now
+
 //Concatenate preprocessor tokens x and y after macro-expanding them.
 /*#define JOIN_NX(x,y) (x##y)
 #define JOIN(x,y) JOIN_NX(x,y)
@@ -62,13 +70,16 @@ std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 #define MEAS_QUEUE_STATUS(y) (sv_meas_queue_status[y])
 #define MEAS_QUEUE_MEAS(y)   (sv_meas_queue_meas[y])
 
-// current index of measurement queue (atomic since we want to observe it from multiple threads)
-std::atomic<uint8_t> sv_meas_queue_read_idx      (0);
-std::atomic<uint8_t> sv_meas_queue_write_idx     (0);
+// current index of measurement queue
+uint8_t              sv_meas_queue_read_idx      (0);
+uint8_t              sv_meas_queue_write_idx     (0);
+std::mutex           sv_meas_queue_write_mutex;
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
+std::atomic<uint64_t> sv_kf_estimate_tag_detect_time_ns (0);
 
+std::atomic<bool> sv_kf_estimate_active (false);
 // is the estimate ready? we can stop the detection and capture threads then
 std::atomic<bool> sv_kf_estimate_complete (false);
 
@@ -79,10 +90,45 @@ std::thread kf_process_filter;
 cv::Matx33d R_CG = cv::Matx33d(0,0,0,0,0,0,0,0,0);
 cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
+// Kalman Filter statics
+// initial covariances values
+#define LIN_POS_VAR_INIT  (1.0)   //(m^2)
+#define LIN_VEL_VAR_INIT  (50.0)  //(m/s)^2
+#define ANG_POS_VAR_INIT  (1.0)   //(rad)^2
+#define ANG_VEL_VAR_INIT  (50.0)  //(rad/s)^2
+
+// Fixed meas variance for now
+#define LIN_POS_MEAS_VAR  (0.01)
+#define ANG_POS_MEAS_VAR  (0.01)
+
+#define LIN_POS_PROC_VAR  (1.0)
+#define LIN_VEL_PROC_VAR  (200.0)
+#define ANG_POS_PROC_VAR  (1.0)
+#define ANG_VEL_PROC_VAR  (200.0)
+
+dvd_DvisEst_kf_state_t sv_kf_state;
+
 std::atomic<uint32_t> meas_count_populated (0);
 std::atomic<uint32_t> meas_count_empty     (0);
 
-static uint8_t get_next_meas_queue_idx(uint8_t start_idx)
+// log file pointers
+bool log_meas  (false);
+bool log_state (false);
+std::ofstream meas_csvlog;
+std::ofstream state_csvlog;
+
+// Static Funcs
+static bool get_linear_fit(double * slope, double * x, double * y, const uint16_t n);
+static void kf_meas_update_step(void);
+static void kf_prediction_step(void);
+static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD);
+static void kf_get_kalman_gain(const double S2dm, const double MAT2X2(P), double VEC2(K));
+static void kf_apply_meas_update_state(const double VEC2(K), const double innovation, double * pos_state, double * vel_state);
+static void kf_apply_meas_update_var(const double VEC2(K), double MAT2X2(P));
+static void kf_prediction_state(const double dt, double * pos_state, double * vel_state);
+static void kf_prediction_var(const double S2dp, const double S2vp, const double dt, double MAT2X2(P));
+
+static uint8_t get_next_meas_queue_size(uint8_t start_idx)
 {
   uint8_t next_idx = start_idx + 1;
   if(next_idx > MEAS_QUEUE_SIZE - 1)
@@ -119,7 +165,7 @@ void tic() {
 }
 void toc() {
   const uint64_t profile_end_time_ns = nanos();
-  double s_elapsed = (profile_end_time_ns - profile_start_time_ns) * 0.000000001;
+  double s_elapsed = NS_TO_S(profile_end_time_ns - profile_start_time_ns);
   std::cerr << "Time elapsed: "
             << s_elapsed * 1000
             << " ms ("
@@ -141,17 +187,126 @@ void toc() {
   }*/
 }
 
+// write measurements and states to output files
+static void meas_csv_log_open()
+{
+  meas_csvlog.open("meas.csv", std::ios_base::trunc);// discard old file contents each run
+  meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
+}
+
+static void meas_csv_log_close()
+{
+  meas_csvlog.close();
+}
+
+static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time_ns, const bool filter_active)
+{
+  char out[256];
+  sprintf(
+      out, "%0.8f, %0.8f, %u, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %d, %d, %d",
+      NS_TO_MS(state_time_ns),
+      NS_TO_MS(meas->timestamp_ns), 
+      meas->frame_id, 
+      meas->lin_xyz_pos[0], meas->lin_xyz_pos[1], meas->lin_xyz_pos[2], 
+      meas->ang_hps_pos[0], meas->ang_hps_pos[1], meas->ang_hps_pos[2], 
+      meas->disc_index, meas->player, filter_active
+      );
+
+  meas_csvlog << out << endl;
+}
+
+static void state_csv_log_open()
+{
+  state_csvlog.open("state.csv", std::ios_base::trunc);// discard old file contents each run
+  state_csvlog << 
+    "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
+             "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel"
+    << endl;
+}
+
+static void state_csv_log_close()
+{
+  state_csvlog.close();
+}
+
+static void state_csv_log_write(dvd_DvisEst_kf_state_t * state)
+{
+  char out[256];
+  sprintf(
+      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
+      NS_TO_MS(state->timestamp_ns),      
+      state->lin_xyz[0].pos, state->lin_xyz[1].pos, state->lin_xyz[2].pos,
+      state->lin_xyz[0].vel, state->lin_xyz[1].vel, state->lin_xyz[2].vel,
+      state->ang_hps[0].pos, state->ang_hps[1].pos, state->ang_hps[2].pos,
+      state->ang_hps[0].vel, state->ang_hps[1].vel, state->ang_hps[2].vel
+      );
+
+  state_csvlog << out << endl;
+}
+
+// Get the linear fit from a set of x, y points
+static bool get_linear_fit(double * slope, double * x, double * y, const uint16_t n)
+{
+  *slope = 0;
+
+  if( n < 2 ) {
+    // Fail: infinitely many lines passing through this single point
+    return false;
+  }
+
+  double sumX=0, sumY=0, sumXY=0, sumX2=0;
+  for(int i = 0; i < n; i++) 
+  {
+    sumX  += x[i];
+    sumY  += y[i];
+    sumXY += x[i] * y[i];
+    sumX2 += x[i] * x[i];
+  }
+
+  const double xMean = sumX / (double)n;
+  const double yMean = sumY / (double)n;
+  const double denominator = sumX2 - sumX * xMean;
+
+  // You can tune the eps (1e-7) below for your specific task
+  if( std::fabs(denominator) < 1e-7 ) {
+    // Fail: it seems a vertical line
+    return false;
+  }
+  *slope = (sumXY - sumX * yMean) / denominator;
+  // y offset: yInt = yMean - _slope * xMean;
+  return true;
+}
+
 // Init Kalman filter states and measurement queues
-bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
+bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
 {
   cerr << "Call dvd_DvisEst_estimate_init" << endl;
 
   // init structs to zero
+  memset(&sv_kf_state, 0, sizeof(dvd_DvisEst_kf_state_t));
+
   int i;
   for(i = 0; i < MEAS_QUEUE_SIZE; i++)
   {
     MEAS_QUEUE_STATUS(i) = MEAS_QUEUE_STATUS_AVAILABLE;
     memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
+  }
+
+  // enable test logging
+  if(kflog)
+  {
+    log_meas  = true;
+    log_state = true;
+  }
+
+  // init test logs
+  if(log_meas)
+  {
+    meas_csv_log_open();
+  }
+  if(log_state)
+  {
+    state_csv_log_open();
   }
 
   // load ground plane transformation
@@ -194,7 +349,16 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file)
   return true;
 }
 
-bool dvd_DvisEst_estimate_tags_detected()
+void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
+{
+  sv_kf_estimate_tags_detected = tags_detected;
+  if(tags_detected)
+  {
+    sv_kf_estimate_tag_detect_time_ns = uptime_get_ns();
+  }
+}
+
+bool dvd_DvisEst_estimate_get_tags_detected()
 {
   return sv_kf_estimate_tags_detected;
 }
@@ -215,29 +379,35 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
 
   // only give out next slot if it is available
   // only give out next slot to preserve adjacency
-  if(MEAS_QUEUE_STATUS(sv_meas_queue_write_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
-  {
-    (*slot_id) = sv_meas_queue_write_idx;
-  }
 
-  uint8_t next_idx = get_next_meas_queue_idx(sv_meas_queue_write_idx);
+  // mutex access to the measurement queue allocation
+  sv_meas_queue_write_mutex.lock();
+  
+  const uint16_t next_idx = get_next_meas_queue_size(sv_meas_queue_write_idx);
+
   if(MEAS_QUEUE_STATUS(next_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
   {
-    (*slot_id) = next_idx;
     sv_meas_queue_write_idx = next_idx;
+    MEAS_QUEUE_STATUS(next_idx) = MEAS_QUEUE_STATUS_RESERVED;
+    (*slot_id) = next_idx;
+    sv_meas_queue_write_mutex.unlock();
     return true;
   }
+  sv_meas_queue_write_mutex.unlock();
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id)
+void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame)
 {
   // free measurement slot
   //cerr << "Cancel measurement in slot " << (int)slot_id << endl;
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
 
   // indicate that measurement returned empty
-  meas_count_empty++;
+  if(popped_frame)
+  {
+    meas_count_empty++;
+  }
 }
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
@@ -250,13 +420,6 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_
 
   // indicate the measurement returned with a tag detection
   meas_count_populated++;
-}
-
-static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD)
-{
-  *hyzer_angle  = asin(R_GD(1,2));
-  *pitch_angle  = asin(R_GD(0,2));
-  *spin_angle   = atan2(R_GD(0,1), R_GD(0,0));
 }
 
 // Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
@@ -293,40 +456,42 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   }
 }
 
-#define KF_FILTER_PRED_DT_NS (1000000) // 1.0 ms, 1000Hz for now
-// if the filter isn't active, and we havent had a tag detection for at least this long
-// allow frame skips again
-#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (0.25 * 1000000000)
 static void process_filter_thread(void)
 {
   uint64_t last_loop_ns = 0;
   uint64_t now;
 
-  uint64_t tag_detect_time_ns = 0;
-
   bool latch_tic = false;
   bool latch_toc = false;
 
-  while(1)//!sv_kf_estimate_complete)
+  while(!sv_kf_estimate_complete)
   {
     now = uptime_get_ns();
 
     // check whether to reset the frame skip lock-out
-    if((now - tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && sv_kf_estimate_tags_detected)
+    if((now - sv_kf_estimate_tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && dvd_DvisEst_estimate_get_tags_detected())
     {
       std::cerr << "Time out apriltag detects!" << std::endl;
-      sv_kf_estimate_tags_detected = false;
+      dvd_DvisEst_estimate_set_tags_detected(false);
+
+      // Did we already start the filter? token spent then, mark the estimate as complete
+      // (this probably needs to be done in steps to avoid truncating the estimate)
+      if(sv_kf_estimate_active)
+      {
+        sv_kf_estimate_complete = true;
+      }
+    }
+
+    // if we got some cancellations, just skip them and move the read idx forward
+    // for obvious reasons, don't let the read idx surpass the write!!
+    if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE && sv_meas_queue_read_idx != sv_meas_queue_write_idx)
+    {
+      sv_meas_queue_read_idx = get_next_meas_queue_size(sv_meas_queue_read_idx);        
     }
 
     // run at KF_FILTER_PRED_DT_NS intervals
     if((now - last_loop_ns) >= KF_FILTER_PRED_DT_NS)
     {
-      // if we got some cancellations, just skip them
-      if(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_AVAILABLE)
-      {
-        sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);        
-      }
-
       // for now (test), just assume the measurement is consumed right away
       // consume all ready adjacent measurements    
       while(MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) == MEAS_QUEUE_STATUS_POPULATED)
@@ -339,35 +504,343 @@ static void process_filter_thread(void)
           latch_tic = true;
         }
 
-        // mark apriltag detection active to lock out frame skips
-        sv_kf_estimate_tags_detected = true;
-        tag_detect_time_ns           = now;
+        cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << NS_TO_MS(MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns) << " ms (uptime = " << NS_TO_MS(now) << " ms) ";
+        cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[2] << "]" << endl;
 
-        cerr << "Consumed slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns * 0.000001 << " ms (uptime = " << now * 0.000001 << " ms) ";
-        cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << "]" << endl;
+        // perform the measurement update step
+        kf_meas_update_step();
 
-        // TODO: maybe actually do something with the measurement here...
         MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
 
         // be careful about this ++, atomics, amirite?
-        sv_meas_queue_read_idx = get_next_meas_queue_idx(sv_meas_queue_read_idx);
+        //sv_meas_queue_read_idx = get_next_meas_queue_size(sv_meas_queue_read_idx);
+      }
 
-        // after N measurements, let's mark the estimate complete so we can test thread joining
-        // and do some profiling
-        if(dvd_DvisEst_image_capture_image_capture_queue_empty() && !latch_toc)
-        {
-          toc();
-          sv_kf_estimate_complete = true;
-          latch_toc = true;
+      // run the kalman filter prediction step if the filter is active
+      sv_kf_state.timestamp_ns = now;
+      kf_prediction_step();
+
+      // after the queue is empty, let's mark the estimate complete so we can test thread joining
+      // and do some profiling
+      if(dvd_DvisEst_image_capture_image_capture_queue_empty() && latch_tic && !latch_toc)
+      {
+        toc();
+        sv_kf_estimate_complete = true;
+        latch_toc = true;
+      }
+    }
+    else
+    {
+      // sleep for a bit so we don't busy poll
+      usleep(1000);
+    }
+  }
+  cerr << "Estimate Thread completed." << endl;
+}
+
+// Kalman Filter Functions
+#define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(50)) // no older than 50ms
+#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (8)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (5)
+#define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (2.0) // (m/s)^2
+static void kf_meas_update_step()
+{
+  // TODO: Queue the measurement if the filter has not yet initialized
+  // Let's just keep this queue as a local static for now (bad form, but eh)
+  static std::deque<dvd_DvisEst_kf_meas_t> meas_prime_queue;
+
+  // We haven't started the kalman filter yet, keep buffering measurements (and discarding old ones) for now
+  if(!sv_kf_estimate_active)
+  {
+    meas_prime_queue.push_back(MEAS_QUEUE_MEAS(sv_meas_queue_read_idx));
+
+    //cerr << "Meas Prime Queue count is now" << (int)meas_prime_queue.size() << " TStamps [" << 
+    //  (int)meas_prime_queue.back().timestamp_ns << ", " << meas_prime_queue.front().timestamp_ns << "]" << endl;
+
+    // discard old measurements
+    while(!meas_prime_queue.empty())
+    {
+      if((meas_prime_queue.back().timestamp_ns - meas_prime_queue.front().timestamp_ns) > MEAS_PRIME_QUEUE_MAX_AGE_NS)
+      {
+        // ditch old measurements (vs queue head/back)
+        meas_prime_queue.pop_front();
+      }
+      else
+      {
+        // all measurements are within MEAS_PRIME_QUEUE_MAX_AGE_NS
+        break;
+      }
+    }
+
+    // There are 2 conditions used to determine whether we should prime the initial KF state:
+    // 1. Have we queued more than MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES?
+    // OR
+    // 2. Is the velocity variance of the last MEAS_PRIME_QUEUE_PRIME_COUNT entries in the queue less than MEAS_PRIME_QUEUE_PRIME_MIN_VAR?
+    // Ideally we will achieve criteria #2, but failing that, we need to start the filter one way or another
+    if(meas_prime_queue.size() >= MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES)
+    {
+      cerr << "******** Meas Queue Entry Count Target for Kalman Filter prime has been met! ********" << endl;
+      sv_kf_estimate_active = true;
+    }
+
+    // define these out here, since they'll be used later to prime the filter
+    const int queue_size = meas_prime_queue.size()-1;
+    int xyz;
+    double meas_vel_xyz_mean[3] = {0};
+    double meas_vel_hps_mean[3] = {0};
+    double meas_vel_xyz[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+    double meas_vel_hps[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+    double dt[MEAS_PRIME_QUEUE_PRIME_COUNT-1] = {0};
+    if(meas_prime_queue.size() >= MEAS_PRIME_QUEUE_PRIME_COUNT)
+    {
+      // check queue variance for final MEAS_PRIME_QUEUE_PRIME_COUNT entries
+      bool var_target_met = true;
+      int i;
+      
+      // for now, only use the linear variance to determine whether to prime the queue
+      double meas_vel_xyz_var[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+      for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
+      {
+        dt[i] = 
+          max(
+            CLOSE_TO_ZERO, 
+            NS_TO_S((double)(meas_prime_queue[queue_size - i].timestamp_ns - meas_prime_queue[queue_size - i-1].timestamp_ns))
+          );
+          //cerr << "dt = " << meas_prime_queue[queue_size - i].timestamp_ns << " - " << meas_prime_queue[queue_size - i-1].timestamp_ns << " = " << dt << endl;
+        for(xyz = 0; xyz < 3; xyz++)
+        { 
+          meas_vel_xyz[i][xyz] = (meas_prime_queue[queue_size - i].lin_xyz_pos[xyz] - meas_prime_queue[queue_size - i-1].lin_xyz_pos[xyz]) / dt[i];
+          double ang_pos_d = (meas_prime_queue[queue_size - i].ang_hps_pos[xyz] - meas_prime_queue[queue_size - i-1].ang_hps_pos[xyz]);
+          WRAP_2PI(ang_pos_d);
+          meas_vel_hps[i][xyz] = ang_pos_d / dt[i];
+
+          // try to bound these to reasonable, physics-possible limits
+          //BOUND_VARIABLE(meas_vel_xyz[i][xyz], -MAX_LIN_VEL, MAX_LIN_VEL);
+          //BOUND_VARIABLE(meas_vel_hps[i][xyz], -MAX_ANG_VEL, MAX_ANG_VEL);
+
+          //cerr << "VEL i = " << i << "xyz = " << xyz << " is " << meas_vel_xyz[i][xyz] << ", dP = " << meas_prime_queue[queue_size - i].lin_xyz_pos[xyz] << " - " << meas_prime_queue[queue_size - i-1].lin_xyz_pos[xyz] << endl;
+          // calculate mean
+          meas_vel_xyz_mean[xyz] += meas_vel_xyz[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT-1.0));
+          meas_vel_hps_mean[xyz] += meas_vel_hps[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT-1.0));
         }
+      }
+
+      // calculate resulting variance
+      for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
+      {
+        for(xyz = 0; xyz < 3; xyz++)
+        {          
+          double vel_diff = (meas_vel_xyz[i][xyz] - meas_vel_xyz_mean[xyz]);
+          meas_vel_xyz_var[i][xyz] = vel_diff * vel_diff;
+
+          //cerr << "var i = " << i << "xyz = " << xyz << " is " << meas_vel_xyz_var[i][xyz] << " for mean of " << meas_vel_xyz_mean[xyz] << endl;
+
+          if(meas_vel_xyz_var[i][xyz] > MEAS_PRIME_QUEUE_PRIME_MIN_VAR)
+          {
+            var_target_met = false;
+            break;            
+          }
+        }
+        if(!var_target_met)
+        {
+          break;
+        }
+      }
+
+      if(var_target_met)
+      {
+        cerr << "******** Variance Target for Kalman Filter prime has been met! ********" << endl;
+        sv_kf_estimate_active = true;
+      }
+    }
+
+    // We are now ready to prime the initial Kalman filter state! Nice!
+    // Take an average of the queued velocities, and the most recent position state (for now)
+    if(sv_kf_estimate_active)
+    {
+      cerr << "Priming Kalman Filters!" << endl;
+
+      // data can be pretty noisy, and a mean velocity may not be sufficient due to our tiny dt
+      // get a linear fit for each instead
+      // get time series
+      double dt_series[MEAS_PRIME_QUEUE_PRIME_COUNT] = {0};
+      int i;
+      for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
+      {
+        dt_series[i] = dt_series[i+1] + dt[i];
+      }
+
+      for(xyz = 0; xyz < 3; xyz++)
+      {
+        // set init positions to latest meas
+        sv_kf_state.lin_xyz[xyz].pos = meas_prime_queue.back().lin_xyz_pos[xyz];
+        sv_kf_state.ang_hps[xyz].pos = meas_prime_queue.back().ang_hps_pos[xyz];        
+
+        // set init vels to a linear fit since they are too noisy for a mean
+        double lin_pos_series[MEAS_PRIME_QUEUE_PRIME_COUNT] = {0};
+        double ang_pos_series[MEAS_PRIME_QUEUE_PRIME_COUNT] = {0};
+        for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-1; i >= 0; i--)
+        {
+          lin_pos_series[i] = meas_prime_queue[queue_size - i].lin_xyz_pos[xyz];
+          ang_pos_series[i] = meas_prime_queue[queue_size - i].ang_hps_pos[xyz];
+
+          //cerr << "Meas linpos and time [" <<  dt_series[i] << ", " << lin_pos_series[i] << "]" << endl;
+        }
+        // defaults to zero on failure
+        get_linear_fit(&sv_kf_state.lin_xyz[xyz].vel, dt_series, lin_pos_series, MEAS_PRIME_QUEUE_PRIME_COUNT);
+        //get_linear_fit(&sv_kf_state.ang_hps[xyz].vel, dt_series, ang_pos_series, MEAS_PRIME_QUEUE_PRIME_COUNT);
+        // stick with the mean for the angular space since wrapping is a pain for fits
+        sv_kf_state.ang_hps[xyz].vel = meas_vel_hps_mean[xyz];
+
+        cerr << "xyz = " << xyz << 
+            " lin vel [mean,fit] = " << meas_vel_xyz_mean[xyz] << ", " << sv_kf_state.lin_xyz[xyz].vel << "]" <<
+            " ang vel [mean,fit] = " << meas_vel_hps_mean[xyz] << ", " << sv_kf_state.ang_hps[xyz].vel << endl;
+
+        // TODO: We may want to override the initial states for linz, hyzer, and pitch rates (with zero)
+        // since those are axes we expect to be moving slower
+
+        // set initial state covariance values
+        sv_kf_state.lin_xyz[xyz].var[i2x2(0,0)] = LIN_POS_VAR_INIT;
+        sv_kf_state.lin_xyz[xyz].var[i2x2(0,1)] = sv_kf_state.lin_xyz[xyz].var[i2x2(1,0)] = 0; // correlation terms start at zero
+        sv_kf_state.lin_xyz[xyz].var[i2x2(1,1)] = LIN_VEL_VAR_INIT;
+        
+        sv_kf_state.ang_hps[xyz].var[i2x2(0,0)] = ANG_POS_VAR_INIT;
+        sv_kf_state.ang_hps[xyz].var[i2x2(0,1)] = sv_kf_state.ang_hps[xyz].var[i2x2(1,0)] = 0; // correlation terms start at zero
+        sv_kf_state.ang_hps[xyz].var[i2x2(1,1)] = ANG_VEL_VAR_INIT;
       }      
     }
   }
+  else
+  {
+    // If we have already initialized the filter, consume the measurement normally
+    int xyz = 0;
+    double VEC2(K);
+    for(xyz = 0; xyz < 3; xyz++)
+    {
+      // linear states
+      const double lin_innovation = MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[xyz] - sv_kf_state.lin_xyz[xyz].pos;
+      kf_get_kalman_gain(LIN_POS_MEAS_VAR, sv_kf_state.lin_xyz[xyz].var, K);      
+      kf_apply_meas_update_state(K, lin_innovation, &sv_kf_state.lin_xyz[xyz].pos, &sv_kf_state.lin_xyz[xyz].vel);
+      kf_apply_meas_update_var(K, sv_kf_state.lin_xyz[xyz].var);
+
+      // angular states
+      double ang_innovation = MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).ang_hps_pos[xyz] - sv_kf_state.ang_hps[xyz].pos;
+      // wrap innovation for the angular space
+      WRAP_2PI(ang_innovation);
+      kf_get_kalman_gain(ANG_POS_MEAS_VAR, sv_kf_state.ang_hps[xyz].var, K);      
+      kf_apply_meas_update_state(K, ang_innovation, &sv_kf_state.ang_hps[xyz].pos, &sv_kf_state.ang_hps[xyz].vel);
+      kf_apply_meas_update_var(K, sv_kf_state.ang_hps[xyz].var);
+    }
+  }
+
+  // Log all meas, mark if filter is active or not
+  if(log_meas)
+  {
+    meas_csv_log_write(&MEAS_QUEUE_MEAS(sv_meas_queue_read_idx), sv_kf_state.timestamp_ns, sv_kf_estimate_active);
+  }  
 }
+
+static void kf_prediction_step()
+{
+  if(sv_kf_estimate_active)
+  {
+    int xyz = 0;
+    for(xyz = 0; xyz < 3; xyz++)
+    {
+      // linear states
+      kf_prediction_state(KF_FILTER_PRED_DT_S, &sv_kf_state.lin_xyz[xyz].pos, &sv_kf_state.lin_xyz[xyz].vel);
+      kf_prediction_var(LIN_POS_PROC_VAR, LIN_VEL_PROC_VAR, KF_FILTER_PRED_DT_S, sv_kf_state.lin_xyz[xyz].var);
+
+      // angular states
+      kf_prediction_state(KF_FILTER_PRED_DT_S, &sv_kf_state.ang_hps[xyz].pos, &sv_kf_state.ang_hps[xyz].vel);
+      kf_prediction_var(ANG_POS_PROC_VAR, ANG_VEL_PROC_VAR, KF_FILTER_PRED_DT_S, sv_kf_state.ang_hps[xyz].var);
+    }
+
+    // report state to log after prediction step
+    if(log_state)
+    {
+      state_csv_log_write(&sv_kf_state);
+    }
+  }  
+}
+
+// Tranform GroundPlane-to-Disc rotation matrix into hyzer (worldframe X), pitch (worlframe Y), and spin (discframe Z) angles
+static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD)
+{
+  *hyzer_angle  = asin(R_GD(1,2));
+  *pitch_angle  = asin(R_GD(0,2));
+  *spin_angle   = atan2(R_GD(0,1), R_GD(0,0));
+}
+
+// measurement update functions
+static void kf_get_kalman_gain(const double S2dm, const double MAT2X2(P), double VEC2(K))
+{
+  const double denom = max((S2dm + P[i2x2(0,0)]), CLOSE_TO_ZERO);
+
+  K[0] = P[i2x2(0,0)] / denom;
+  K[1] = P[i2x2(1,0)] / denom;
+}
+
+static void kf_apply_meas_update_state(const double VEC2(K), const double innovation, double * pos_state, double * vel_state)
+{
+  // innovation = (dk-dmk)
+  (*pos_state) += K[0] * innovation;
+  (*vel_state) += K[1] * innovation;
+}
+
+static void kf_apply_meas_update_var(const double VEC2(K), double MAT2X2(P))
+{
+  double p11 = P[i2x2(0,0)];
+  double p12 = P[i2x2(0,1)];
+
+  P[i2x2(0,0)] += (-K[0] * p11);
+  P[i2x2(0,1)] += (-K[0] * p12);
+  P[i2x2(1,0)] += (-K[1] * p11);
+  P[i2x2(1,1)] += (-K[1] * p12);
+}
+
+// prediction/propagation functions
+// Constant velocity assumption for the prediction step suffices
+static void kf_prediction_state(const double dt, double * pos_state, double * vel_state)
+{
+  (*pos_state) += (*vel_state) * dt;
+  //(*vel_state) += 0;
+}
+
+static void kf_prediction_var(const double S2dp, const double S2vp, const double dt, double MAT2X2(P))
+{
+  double p12 = P[i2x2(0,1)];
+  double p21 = P[i2x2(1,0)];
+  double p22 = P[i2x2(1,1)];
+
+  double dte2 = dt*dt;
+
+  P[i2x2(0,0)] += (dte2 * p22) + (dt * (p12 + p21)) + (S2dp);
+  P[i2x2(0,1)] += (dt * p22);
+  P[i2x2(1,0)] += (dt * p22);
+  P[i2x2(1,1)] += (S2vp);
+}
+
+// end Kalman Filter Functions
 
 void dvd_DvisEst_estimate_process_filter(void)
 {
   kf_process_filter = std::thread(process_filter_thread);
+}
+
+void dvd_DvisEst_estimate_end_filter(void)
+{
+  kf_process_filter.join();
+
+  // init test logs
+  if(log_meas)
+  {
+    meas_csv_log_close();
+  }
+  if(log_state)
+  {
+    state_csv_log_close();
+  }
 }
 
 // remember that we want to load in a ground-plane, and use that to modify 
