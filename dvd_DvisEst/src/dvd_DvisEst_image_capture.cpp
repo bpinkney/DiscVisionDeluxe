@@ -577,7 +577,9 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 }
 
 // Return the next captured image from the front of the queue
-#define MAX_FRAME_SKIP_COUNT (5)
+// TODO: THERE IS SOMETHING WRONG WITH THIS IMPLEMENTATION WHERE INITIAL APRILTAG DETECTIONS ARE LOST!
+// FIX IT!
+#define MAX_FRAME_SKIP_COUNT (1)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode)
 {
   bool got_frame = true;
@@ -596,14 +598,14 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
 
     // This is the block our scout threads try to stay within
     // If the queue has less than AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT members, start divying up what's left
-    const int32_t scout_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * 5; // fix this
+    const int32_t scout_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT; 
     const int32_t scout_size = min(queue_size, scout_block_max);
     int32_t scout_block = ceil(scout_size / AT_THREAD_COUNT); // always skip at least 1 frame if one is present
 
     scout_index += scout_block;
 
     // Note how purging will only begin once the scout index surpasses 'scout_block_max'
-    int32_t purge_count = max(scout_index - scout_block_max, 0);
+    int32_t purge_count = max(scout_index - (AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT), 0); // fix this
 
     // purge extra frames, scout index will move along from the front as a result
     *skipped_frames = image_queue_purge(purge_count);

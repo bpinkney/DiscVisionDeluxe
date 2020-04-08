@@ -55,7 +55,7 @@ using namespace cv;
 #define KF_FILTER_PRED_DT_S  (NS_TO_S(KF_FILTER_PRED_DT_NS))
 // if the filter isn't active, and we havent had a tag detection for at least this long
 // allow frame skips again
-#define KF_FILTER_TAG_DETECT_RESET_TIME_S (0.2) 
+#define KF_FILTER_TAG_DETECT_RESET_TIME_S (0.1) 
 
 //Concatenate preprocessor tokens x and y after macro-expanding them.
 /*#define JOIN_NX(x,y) (x##y)
@@ -512,7 +512,7 @@ static void process_filter_thread(void)
         sv_kf_estimate_stage = KF_EST_STAGE_PRIME;
       }
 
-      std::cerr << "Time out apriltag detects! Time since apriltag detect(ms): " << apriltag_detect_loss_time_s*1000 << "FIDs [" << sv_last_pop_meas_frame_id << ", " << sv_last_meas_frame_id << "]" << std::endl;
+      std::cerr << "Time out apriltag detects! kfstage = " << (int)sv_kf_estimate_stage << ", Time since apriltag detect(ms): " << apriltag_detect_loss_time_s*1000 << "FIDs [" << sv_last_pop_meas_frame_id << ", " << sv_last_meas_frame_id << "]" << std::endl;
     
       dvd_DvisEst_estimate_set_tags_detected(false);
     }
@@ -586,8 +586,8 @@ static void process_filter_thread(void)
 
 // Kalman Filter Functions
 #define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(100)) // no older than 100ms
-#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (15)
-#define MEAS_PRIME_QUEUE_PRIME_COUNT          (10)
+#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (5)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (5)
 #define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (2.0) // (m/s)^2
 static void kf_meas_update_step()
 {
