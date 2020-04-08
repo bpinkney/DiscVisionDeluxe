@@ -95,7 +95,8 @@ int main(int argc, char** argv )
   // Right now, we're just using a fixed scaling coefficient based on the level
   // of detail lost during the undistort (roughly ~x2 the pixels)
   // This could decrease for a less distorted lens
-  if(!dvd_DvisEst_image_processing_init(camera_cal, (1040.0/720.0)))
+  const double resize_factor = (1040.0/720.0);
+  if(!dvd_DvisEst_image_processing_init(camera_cal, resize_factor))
   {
     cerr << "Could not load camera calibration!" << endl;
     return 1;
@@ -117,7 +118,6 @@ int main(int argc, char** argv )
       return 1;
     }
 
-
     // try to read some images for fun
     if(imgdisp)
     {
@@ -137,6 +137,9 @@ int main(int argc, char** argv )
         {
           // undistort image first
           dvd_DvisEst_image_processing_undistort_image(&image_capture.image_data);
+
+          //cv::Size img_size = image_capture.image_data.size();
+          //cerr << "Image Width: " << img_size.width << ", Height: " << img_size.height << endl;
 
           imshow("Image View", image_capture.image_data);
           if(0)
@@ -169,6 +172,11 @@ int main(int argc, char** argv )
     return 1;
   }
 
+  if(!camera_src)
+  {
+    const bool imgs_queued = dvd_DvisEst_image_capture_load_test_queue(imgdir_src, dt_src);
+  }
+
   // Now let's read the image frames out of our queue, undistort them, and run them through our apriltag detector
   // start estimation thread (Kalman filter)
   // wait for estimation thread to return with a low-variance state
@@ -184,7 +192,7 @@ int main(int argc, char** argv )
   if(!camera_src)
   {
     // run as thread instead to test 'real-time-style' processing
-    dvd_DvisEst_image_capture_load_test_queue_threaded(imgdir_src, dt_src);
+    //dvd_DvisEst_image_capture_load_test_queue_threaded(imgdir_src, dt_src);
   }
 
   // Finally, start the capture thread now that everything is ready

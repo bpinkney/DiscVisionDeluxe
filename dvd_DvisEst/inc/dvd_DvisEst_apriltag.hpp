@@ -9,7 +9,7 @@
 // should this match the meas queue count in the estimate meas queue? probably not
 // in general, it seems like this should be << than the meas queue to account for
 // the variability in apriltag detection speed
-#define AT_THREAD_COUNT     (8)
+#define AT_THREAD_COUNT     (6)
 #define AT_INT_THREAD_COUNT (2)
 
 bool dvd_DvisEst_apriltag_test(void);

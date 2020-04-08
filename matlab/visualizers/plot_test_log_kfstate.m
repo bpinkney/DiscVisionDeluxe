@@ -15,6 +15,10 @@ lin_xyz_pos_state = [M_state(:, 2), M_state(:, 3), M_state(:, 4)];
 lin_xyz_vel_state = [M_state(:, 5), M_state(:, 6), M_state(:, 7)];
 ang_hps_pos_state = [M_state(:, 8), M_state(:, 9), M_state(:, 10)];
 ang_hps_vel_state = [M_state(:, 11), M_state(:, 12), M_state(:, 13)];
+lin_xyz_pos_var_state = [M_state(:, 14), M_state(:, 15), M_state(:, 16)];
+lin_xyz_vel_var_state = [M_state(:, 17), M_state(:, 18), M_state(:, 19)];
+ang_hps_pos_var_state = [M_state(:, 20), M_state(:, 21), M_state(:, 22)];
+ang_hps_vel_var_state = [M_state(:, 23), M_state(:, 24), M_state(:, 25)];
 
 % parse meas
 time_ms_meas        = M_meas(:, 1);
@@ -37,32 +41,51 @@ t_start = time_ms_state(nonzero_idx);
 t_start = t_start(1)
 
 waitidx = figure; hold on;
-plot(time_ms_state, lin_xyz_pos_state, '-')
+plot(time_ms_state, lin_xyz_pos_state, '-', 'LineWidth', 2)
 reset_colours
-plot(meas_time_ms_meas, lin_xyz_pos_meas, '.')
+plot(meas_time_ms_meas, lin_xyz_pos_meas, 'o', 'MarkerSize', 3)
 legend('X', 'Y', 'Z')
 grid on;
 title('Lin Pos Meas and State')
 
 figure; hold on;
 plot(time_ms_state, lin_xyz_vel_state, '-')
+reset_colours
+plot(meas_time_ms_meas(2:end), diff(lin_xyz_pos_meas)./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
 legend('X', 'Y', 'Z')
 grid on;
 title('Lin Vel State')
+ylim([-30, 30])
 
 figure; hold on;
-plot(time_ms_state, ang_hps_pos_state, '-')
+plot(time_ms_state, ang_hps_pos_state, '-', 'LineWidth', 2)
 reset_colours
-plot(meas_time_ms_meas, ang_hps_pos_meas, '.')
+plot(meas_time_ms_meas, ang_hps_pos_meas, 'o', 'MarkerSize', 3)
 legend('HYZER', 'PITCH', 'SPIN')
 grid on;
 title('Ang Pos Meas and State')
 
 figure; hold on;
 plot(time_ms_state, ang_hps_vel_state, '-')
+reset_colours
+dang = wrap2pi(diff(ang_hps_pos_meas));
+plot(meas_time_ms_meas(2:end), dang./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
 legend('HYZER', 'PITCH', 'SPIN')
 grid on;
 title('Ang Vel State')
+ylim([-120, 120])
+
+figure; hold on;
+plot(time_ms_state, lin_xyz_pos_var_state)
+plot(time_ms_state, ang_hps_pos_var_state)
+legend('X', 'Y', 'Z', 'HYZER', 'PITCH', 'SPIN')
+title('Lin and Ang Pos Variance')
+
+figure; hold on;
+plot(time_ms_state, lin_xyz_vel_var_state)
+plot(time_ms_state, ang_hps_vel_var_state)
+legend('X', 'Y', 'Z', 'HYZER', 'PITCH', 'SPIN')
+title('Lin and Ang Vel Variance')
 
 
 %waitfor(waitidx)

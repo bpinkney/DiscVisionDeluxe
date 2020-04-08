@@ -21,6 +21,12 @@
 #define MAX_LIN_VEL (37.0)  // m/s
 #define MAX_ANG_VEL (150.0) // rad/s
 
+#define KF_EST_STAGE_MEAS_COLLECT (0)
+#define KF_EST_STAGE_READY        (1)
+#define KF_EST_STAGE_PRIME        (2)
+#define KF_EST_STAGE_ACTIVE       (3)
+#define KF_EST_STAGE_COMPLETE     (4)
+
 // define measurement and state structures
 struct pos_vel_var_state_t
 {
@@ -59,9 +65,8 @@ void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
 
 bool dvd_DvisEst_estimate_get_tags_detected(void);
 
-bool dvd_DvisEst_estimate_meas_collect(void);
-bool dvd_DvisEst_estimate_ready(void);
-bool dvd_DvisEst_estimate_active(void);
+// get stage of KF
+uint8_t dvd_DvisEst_get_estimate_stage(void);
 bool dvd_DvisEst_estimate_complete(void);
 
 // Indicate that a new frame has been received, and is currently in processing
@@ -70,7 +75,7 @@ bool dvd_DvisEst_estimate_complete(void);
 bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * slot_id, uint16_t skipped_frames);
 
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame);
+void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const bool meas_mode, const uint32_t frame_id);
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);

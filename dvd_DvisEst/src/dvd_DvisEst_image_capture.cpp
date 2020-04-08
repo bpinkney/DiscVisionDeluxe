@@ -16,6 +16,7 @@
 #include "opencv2/highgui.hpp"
 
 #include <stdio.h>
+#include <math.h>
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -48,11 +49,14 @@ using namespace cv;
 // declare static local structures
 std::deque<image_capture_t> sv_image_capture_queue;
 std::mutex                  sv_image_capture_mutex;
+std::mutex                  sv_image_scout_mutex;
 
 std::thread                 capture_thread;
 
 // this is only used for test images for now (since we never expect the camera to stop rolling until told to)
 std::atomic<bool> capture_thread_ready (false);
+
+std::atomic<uint32_t> sv_image_capture_frame_rate (0);
 
 // start thread stuff
 static bool image_queue_empty()
@@ -123,7 +127,7 @@ static bool image_queue_pull(image_capture_t * image_capture, const uint16_t fro
 // always leave one entry
 static uint16_t image_queue_purge(const uint16_t front_offset)
 {
-  if(image_queue_empty())
+  if(image_queue_empty() || front_offset == 0)
   {
     return 0;
   } 
@@ -340,6 +344,7 @@ double camera_settings_configure(INodeMap& nodeMap, const double exposure_scale,
 
     acquisitionResultingFrameRate = static_cast<double>(ptrAcquisitionResultingFrameRate->GetValue());
     cerr << "Max Acquisition Frame Rate: " << acquisitionResultingFrameRate << endl;
+    sv_image_capture_frame_rate = acquisitionResultingFrameRate;
     
   }
   catch (Spinnaker::Exception& e)
@@ -447,6 +452,11 @@ int camera_settings_reset(INodeMap& nodeMap)
 
 // TODO: we need to actually implement all the spinnaker functions and thread handling here
 
+double dvd_DvisEst_image_capture_get_fps()
+{
+  return sv_image_capture_frame_rate;
+}
+
 bool dvd_DvisEst_image_capture_thread_ready()
 {
   return capture_thread_ready;
@@ -505,17 +515,19 @@ void dvd_DvisEst_image_capture_stop(const bool camera_src)
 
   // purge frames here perhaps? Only matters if this is included as a library
 
-  capture_thread.join();
+  //capture_thread.join();
 }
 
 void dvd_DvisEst_image_capture_load_test_queue_threaded(const cv::String imgdir_src, const double dt)
 {
-  capture_thread = std::thread(dvd_DvisEst_image_capture_load_test_queue, imgdir_src, dt);
+  //capture_thread = std::thread(dvd_DvisEst_image_capture_load_test_queue, imgdir_src, dt);
 }
 
 // load test images into the capture queue and return
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt)
 {
+  sv_image_capture_frame_rate = 1.0 / max(CLOSE_TO_ZERO, dt);
+
   // get list of images (for now, just jpgs)
   vector<cv::String> img_filenames;
   glob(imgdir_src + "/*.jpg", img_filenames);
@@ -568,36 +580,48 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 #define MAX_FRAME_SKIP_COUNT (5)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode)
 {
-  static uint16_t scout_index = 0;
   bool got_frame = true;
-
-  //cerr << "Queue Size: " << (int)image_queue_size() << endl;
-
-  const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
 
   // If we're using test images, might want to keep processing until the end of the queue....
   // (fake out meas mode for the last 100 entries for now)
   if(at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
-    // The queue has not yet recovered from the last scout thread
-    // wait around (in the apriltag thread) until this is so to ensure that the scout threads are spaced by at least MAX_FRAME_SKIP_COUNT
-    // add in random *2 right now (for test), maybe we can just use lots of RAM anyhow...
-    if(image_queue_size() < AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * 20.0 && !wrap_things_up_for_test_mode)
-    {
-      *skipped_frames = 0;
-      return false;
-    }
+    // TODO: clean this up
+    // we'll mutex this operation since we need the scout index updated before the next thread tries to scout ahead
+    static int32_t scout_index = 0;
+    sv_image_scout_mutex.lock();
 
-    // For SCOUT mode threads, we deliver the next scout frame, and automatically discard old frames in the queue
-    const uint16_t frames_to_skip = MAX_FRAME_SKIP_COUNT;    
-    *skipped_frames = image_queue_purge(frames_to_skip);
+    const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
+    const int32_t queue_size = image_queue_size();
 
-    if(*skipped_frames > 0 || wrap_things_up_for_test_mode)
+    // This is the block our scout threads try to stay within
+    // If the queue has less than AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT members, start divying up what's left
+    const int32_t scout_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * 5; // fix this
+    const int32_t scout_size = min(queue_size, scout_block_max);
+    int32_t scout_block = ceil(scout_size / AT_THREAD_COUNT); // always skip at least 1 frame if one is present
+
+    scout_index += scout_block;
+
+    // Note how purging will only begin once the scout index surpasses 'scout_block_max'
+    int32_t purge_count = max(scout_index - scout_block_max, 0);
+
+    // purge extra frames, scout index will move along from the front as a result
+    *skipped_frames = image_queue_purge(purge_count);
+    scout_index -= purge_count; // Now that the queue has been shortened, move the scout index as appropriate
+
+    // pull the scout frame, but don't pop it from the queue
+    got_frame = image_queue_pull(image_capture, scout_index, 0);
+
+    //cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count << endl;
+
+    // test mode only to empty end of queue
+    if(wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
     {
-      // techincally the offset here isn't necessary, since we purge the frames first
-      // pop that frame if we're exiting test mode...
-      got_frame = image_queue_pull(image_capture, 0, wrap_things_up_for_test_mode);
+      //cerr << "WRAP PURGE!" << dvd_DvisEst_get_estimate_stage() << endl;
+      //*skipped_frames += image_queue_purge(1);
     }
+    
+    sv_image_scout_mutex.unlock();
   }
   else
   {

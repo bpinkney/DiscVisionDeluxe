@@ -9,7 +9,7 @@ function dvd_DvisEst_plot_disc_meas()
 
   % M = csvread('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv', 1, 0);
 
-  ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv');
+  ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive11fast/csvlog.csv');
 
   % Coordinate frame of an AprilTag:
   % 
@@ -178,6 +178,20 @@ function dvd_DvisEst_plot_disc_meas()
   grid on
   legend('Hyzer rate (about forward vec)', 'Pitch rate (positive up)', 'Spin angle rate(in disc-frame plane)')
 
+  
+  % display data
+  disp_data = 1;
+  if(disp_data)
+  for i=1:time_max_idx    
+    disp(sprintf('%d - %0.2f: [%0.2f, %0.2f, %0.2f]', i, ld.time_s(i)*1000, ld.pos_xyz(i, 1), ld.pos_xyz(i, 2), ld.pos_xyz(i, 3)));
+  end 
+  
+  figure; plot(diff(ld.time_s)*1000)
+  
+  end
+  
+  
+  
 end
 
 function [rad] = wrap2pi(rad)

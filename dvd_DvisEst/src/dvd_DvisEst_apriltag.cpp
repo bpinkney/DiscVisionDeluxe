@@ -113,7 +113,7 @@ int at_detection_thread_run(uint8_t thread_id)
   // How many frames did we skip each sample to meet our real-time criteria?
   uint16_t skipped_frames = 0;
 
-  while(!dvd_DvisEst_estimate_active() && !dvd_DvisEst_estimate_complete())
+  while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
   {
     // Check for thread mode update
     if(!dvd_DvisEst_estimate_get_tags_detected())
@@ -146,6 +146,10 @@ int at_detection_thread_run(uint8_t thread_id)
         // First, undistort the image
         dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data));
 
+        //cv::Size image_size = image_capture.image_data.size();
+
+        //cerr << "Image Size [" << image_size.width << ", " << image_size.height << "]" << endl;
+
         // convert to greyscale
         cvtColor(image_capture.image_data, img_grey, cv::COLOR_RGB2GRAY);
     
@@ -162,6 +166,11 @@ int at_detection_thread_run(uint8_t thread_id)
         zarray_t *detections = apriltag_detector_detect(td, &img_header);
 
         const int detect_num = zarray_size(detections);
+
+        /*if(detect_num > 0)
+        {
+          cerr << "*** GOT TAG ***" << endl;
+        }*/
 
         // Check for scout mode, update apriltag detection timer, update thread mode if applicable.
         // For a scout mode thread, never report a measurement
@@ -235,7 +244,7 @@ int at_detection_thread_run(uint8_t thread_id)
         else
         {
           // No apriltag detections, cancel reservation
-          dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS);
+          dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS, image_capture.frame_id);
         }
 
         apriltag_detections_destroy(detections);

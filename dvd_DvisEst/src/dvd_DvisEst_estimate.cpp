@@ -55,7 +55,7 @@ using namespace cv;
 #define KF_FILTER_PRED_DT_S  (NS_TO_S(KF_FILTER_PRED_DT_NS))
 // if the filter isn't active, and we havent had a tag detection for at least this long
 // allow frame skips again
-#define KF_FILTER_TAG_DETECT_RESET_TIME_NS (S_TO_NS(0.25)) // too long for now
+#define KF_FILTER_TAG_DETECT_RESET_TIME_S (0.2) 
 
 //Concatenate preprocessor tokens x and y after macro-expanding them.
 /*#define JOIN_NX(x,y) (x##y)
@@ -64,7 +64,7 @@ using namespace cv;
 #define MEAS_QUEUE_MEAS(y)   JOIN(sv_meas_queue_meas_,y)*/
 
 // should this match the thread count in the apriltag threadpool? probably not if we can't process frames fast enough
-#define MEAS_QUEUE_SIZE (200)
+#define MEAS_QUEUE_SIZE (2000)
 std::vector<std::atomic<uint8_t>>  sv_meas_queue_status(MEAS_QUEUE_SIZE);
 std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 #define MEAS_QUEUE_STATUS(y) (sv_meas_queue_status[y])
@@ -75,14 +75,12 @@ uint8_t              sv_meas_queue_read_idx      (0);
 uint8_t              sv_meas_queue_write_idx     (0);
 std::mutex           sv_meas_queue_write_mutex;
 
+// filter prime queue (isolated from the apriltag threads)
+std::deque<dvd_DvisEst_kf_meas_t> meas_prime_queue;
+
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
-std::atomic<uint64_t> sv_kf_estimate_tag_detect_time_ns (0);
 
-#define KF_EST_STAGE_MEAS_COLLECT (0)
-#define KF_EST_STAGE_READY        (1)
-#define KF_EST_STAGE_ACTIVE       (2)
-#define KF_EST_STAGE_COMPLETE     (3)
 std::atomic<uint8_t> sv_kf_estimate_stage (KF_EST_STAGE_MEAS_COLLECT);
 
 // filter thread
@@ -94,24 +92,27 @@ cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
 // Kalman Filter statics
 // initial covariances values
-#define LIN_POS_VAR_INIT  (1.0)   //(m^2)
-#define LIN_VEL_VAR_INIT  (50.0)  //(m/s)^2
-#define ANG_POS_VAR_INIT  (1.0)   //(rad)^2
-#define ANG_VEL_VAR_INIT  (50.0)  //(rad/s)^2
+#define LIN_POS_VAR_INIT  (0.1)   //(m^2)
+#define LIN_VEL_VAR_INIT  (20.0)  //(m/s)^2
+#define ANG_POS_VAR_INIT  (0.1)   //(rad)^2
+#define ANG_VEL_VAR_INIT  (20.0)  //(rad/s)^2
 
 // Fixed meas variance for now
 #define LIN_POS_MEAS_VAR  (0.01)
 #define ANG_POS_MEAS_VAR  (0.01)
-
-#define LIN_POS_PROC_VAR  (1.0)
-#define LIN_VEL_PROC_VAR  (200.0)
-#define ANG_POS_PROC_VAR  (1.0)
-#define ANG_VEL_PROC_VAR  (200.0)
+// function of dt
+#define LIN_POS_PROC_VAR  (1.0 * KF_FILTER_PRED_DT_S)
+#define LIN_VEL_PROC_VAR  (200.0 * KF_FILTER_PRED_DT_S)
+#define ANG_POS_PROC_VAR  (1.0 * KF_FILTER_PRED_DT_S)
+#define ANG_VEL_PROC_VAR  (200.0 * KF_FILTER_PRED_DT_S)
 
 dvd_DvisEst_kf_state_t sv_kf_state;
 
 std::atomic<uint32_t> meas_count_populated (0);
 std::atomic<uint32_t> meas_count_empty     (0);
+
+std::atomic<uint32_t> sv_last_meas_frame_id (0);
+std::atomic<uint32_t> sv_last_pop_meas_frame_id (0);
 
 // log file pointers
 bool log_meas  (false);
@@ -168,7 +169,7 @@ void tic() {
 void toc() {
   const uint64_t profile_end_time_ns = nanos();
   double s_elapsed = NS_TO_S(profile_end_time_ns - profile_start_time_ns);
-  std::cerr << "Time elapsed: "
+  std::cerr << "******* Time elapsed: "
             << s_elapsed * 1000
             << " ms ("
             << 1.0/s_elapsed * (int)(meas_count_populated + meas_count_empty)
@@ -178,8 +179,8 @@ void toc() {
             << (int)(meas_count_populated)
             << "/"
             << (int)(meas_count_empty)
-            << "] valid/empty meas"
-            << std::flush;
+            << "] valid/empty meas *******"
+            << endl;
 
 /*  // why is this necessary? do your job flush...
   int i;
@@ -222,7 +223,11 @@ static void state_csv_log_open()
   state_csvlog.open("state.csv", std::ios_base::trunc);// discard old file contents each run
   state_csvlog << 
     "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
-             "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel"
+             "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel, "
+             "lin_x_pos_var, lin_y_pos_var, lin_z_pos_var, "
+             "lin_x_vel_var, lin_y_vel_var, lin_z_vel_var, "
+             "ang_h_pos_var, ang_p_pos_var, ang_s_pos_var, "
+             "ang_h_vel_var, ang_p_vel_var, ang_s_vel_var"
     << endl;
 }
 
@@ -233,14 +238,18 @@ static void state_csv_log_close()
 
 static void state_csv_log_write(dvd_DvisEst_kf_state_t * state)
 {
-  char out[256];
+  char out[512];
   sprintf(
-      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
+      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
       NS_TO_MS(state->timestamp_ns),      
       state->lin_xyz[0].pos, state->lin_xyz[1].pos, state->lin_xyz[2].pos,
       state->lin_xyz[0].vel, state->lin_xyz[1].vel, state->lin_xyz[2].vel,
       state->ang_hps[0].pos, state->ang_hps[1].pos, state->ang_hps[2].pos,
-      state->ang_hps[0].vel, state->ang_hps[1].vel, state->ang_hps[2].vel
+      state->ang_hps[0].vel, state->ang_hps[1].vel, state->ang_hps[2].vel,
+      state->lin_xyz[0].var[i2x2(0,0)], state->lin_xyz[1].var[i2x2(0,0)], state->lin_xyz[2].var[i2x2(0,0)],
+      state->lin_xyz[0].var[i2x2(1,1)], state->lin_xyz[1].var[i2x2(1,1)], state->lin_xyz[2].var[i2x2(1,1)],
+      state->ang_hps[0].var[i2x2(0,0)], state->ang_hps[1].var[i2x2(0,0)], state->ang_hps[2].var[i2x2(0,0)],
+      state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)]
       );
 
   state_csvlog << out << endl;
@@ -353,10 +362,10 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
 
 void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
 {
-  sv_kf_estimate_tags_detected = tags_detected;
-  if(tags_detected)
+  // don't let this update past the ACTIVE stage of the filter
+  if(sv_kf_estimate_stage < KF_EST_STAGE_PRIME)
   {
-    sv_kf_estimate_tag_detect_time_ns = uptime_get_ns();
+    sv_kf_estimate_tags_detected = tags_detected;
   }
 }
 
@@ -365,19 +374,9 @@ bool dvd_DvisEst_estimate_get_tags_detected()
   return sv_kf_estimate_tags_detected;
 }
 
-bool dvd_DvisEst_estimate_meas_collect()
+uint8_t dvd_DvisEst_get_estimate_stage()
 {
-  return (sv_kf_estimate_stage == KF_EST_STAGE_MEAS_COLLECT);
-}
-
-bool dvd_DvisEst_estimate_ready()
-{
-  return (sv_kf_estimate_stage == KF_EST_STAGE_READY);
-}
-
-bool dvd_DvisEst_estimate_active()
-{
-  return (sv_kf_estimate_stage == KF_EST_STAGE_ACTIVE);
+  return sv_kf_estimate_stage;
 }
 
 bool dvd_DvisEst_estimate_complete()
@@ -414,14 +413,20 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
-void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_frame)
+void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const bool meas_mode, const uint32_t frame_id)
 {
+  // If we are returning an empty frame in measurement mode, set the latest frame_id to indicate detection timeouts
+  if(meas_mode && frame_id >= sv_last_pop_meas_frame_id)
+  {
+    sv_last_meas_frame_id = frame_id;
+  }
+
   // free measurement slot
   //cerr << "Cancel measurement in slot " << (int)slot_id << endl;
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
 
-  // indicate that measurement returned empty
-  if(popped_frame)
+  // indicate that measurement returned empty (and thus popped an empty frame)
+  if(meas_mode)
   {
     meas_count_empty++;
   }
@@ -430,6 +435,10 @@ void dvd_DvisEst_estimate_cancel_measurement_slot(uint8_t slot_id, bool popped_f
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas)
 {
+  // Indicate that this frame ID was measured, and populated with an apriltag
+  sv_last_meas_frame_id     = kf_meas->frame_id;
+  sv_last_pop_meas_frame_id = kf_meas->frame_id;
+
   // add measurement to queue
   MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
   // mark measurement slot populated and ready for consumption
@@ -486,9 +495,25 @@ static void process_filter_thread(void)
     now = uptime_get_ns();
 
     // check whether to reset the frame skip lock-out
-    if((now - sv_kf_estimate_tag_detect_time_ns) >= KF_FILTER_TAG_DETECT_RESET_TIME_NS && dvd_DvisEst_estimate_get_tags_detected())
+    // We need a better criteria for timeouts here, since we can't trust that the threads till complete in anything close to real-time
+    // Check the reported frame_id from the image processing queue vs the last apriltag detect frame_id
+    // frame_id_delta * dt > timeout -> trigger the timeout    
+    const double apriltag_detect_loss_time_s = (double)(sv_last_meas_frame_id - sv_last_pop_meas_frame_id) / max(CLOSE_TO_ZERO, dvd_DvisEst_image_capture_get_fps());
+
+    if(
+        (apriltag_detect_loss_time_s >= KF_FILTER_TAG_DETECT_RESET_TIME_S || dvd_DvisEst_image_capture_image_capture_queue_empty()) && 
+        dvd_DvisEst_estimate_get_tags_detected() &&
+        sv_kf_estimate_stage < KF_EST_STAGE_PRIME
+      )
     {
-      std::cerr << "Time out apriltag detects!" << std::endl;
+      // mark filter as ready for prime
+      if(sv_kf_estimate_stage == KF_EST_STAGE_READY)
+      {
+        sv_kf_estimate_stage = KF_EST_STAGE_PRIME;
+      }
+
+      std::cerr << "Time out apriltag detects! Time since apriltag detect(ms): " << apriltag_detect_loss_time_s*1000 << "FIDs [" << sv_last_pop_meas_frame_id << ", " << sv_last_meas_frame_id << "]" << std::endl;
+    
       dvd_DvisEst_estimate_set_tags_detected(false);
     }
 
@@ -517,12 +542,23 @@ static void process_filter_thread(void)
         cerr << "Re-queued slot " << (int)sv_meas_queue_read_idx << ", FID: " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).frame_id << " at " << NS_TO_MS(MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).timestamp_ns) << " ms (uptime = " << NS_TO_MS(now) << " ms) ";
         cerr << "XYZ: [" << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[0] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[1] << ", " << MEAS_QUEUE_MEAS(sv_meas_queue_read_idx).lin_xyz_pos[2] << "]" << endl;
 
-        // perform the measurement update step
-        kf_meas_update_step();
+        // move queue mes over to prime queue
+        dvd_DvisEst_kf_meas_t temp;
+        memcpy(&temp, &MEAS_QUEUE_MEAS(sv_meas_queue_read_idx), sizeof(dvd_DvisEst_kf_meas_t));
+        meas_prime_queue.push_back(temp);
 
         // We may not actually consume this until the Kalman filter starts, but mark it since we've re-queued it to free up the apriltag detection thread queue
         MEAS_QUEUE_STATUS(sv_meas_queue_read_idx) = MEAS_QUEUE_STATUS_AVAILABLE;
+
+        // Go to next entry in the queue
+        if(sv_meas_queue_read_idx != sv_meas_queue_write_idx)
+        {
+          sv_meas_queue_read_idx = get_next_meas_queue_size(sv_meas_queue_read_idx);
+        }
       }
+
+      // perform the measurement update step
+      kf_meas_update_step();
 
       // run the kalman filter prediction step if the filter is active
       //sv_kf_state.timestamp_ns = now;
@@ -530,12 +566,14 @@ static void process_filter_thread(void)
 
       // after the queue is empty, let's mark the estimate complete so we can test thread joining
       // and do some profiling (this is valid for test images only!)
-      if(dvd_DvisEst_image_capture_image_capture_queue_empty() && latch_tic && !latch_toc)
+      if((dvd_DvisEst_image_capture_image_capture_queue_empty() || sv_kf_estimate_stage > KF_EST_STAGE_PRIME) && latch_tic && !latch_toc)
       {
         toc();
         //sv_kf_estimate_complete = true;
         latch_toc = true;
       }
+
+      last_loop_ns = now;
     }
     else
     {
@@ -547,11 +585,10 @@ static void process_filter_thread(void)
 }
 
 // Kalman Filter Functions
-#define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(50)) // no older than 50ms
-#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (8)
-#define MEAS_PRIME_QUEUE_PRIME_COUNT          (5)
+#define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(100)) // no older than 100ms
+#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (15)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (10)
 #define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (2.0) // (m/s)^2
-std::deque<dvd_DvisEst_kf_meas_t> meas_prime_queue;
 static void kf_meas_update_step()
 {
   // TODO: Queue the measurement if the filter has not yet initialized
@@ -563,10 +600,6 @@ static void kf_meas_update_step()
   // We haven't started the kalman filter yet, keep buffering measurements
   if(sv_kf_estimate_stage < KF_EST_STAGE_ACTIVE)
   {
-    dvd_DvisEst_kf_meas_t temp;
-    memcpy(&temp, &MEAS_QUEUE_MEAS(sv_meas_queue_read_idx), sizeof(dvd_DvisEst_kf_meas_t));
-    meas_prime_queue.push_back(temp);
-
     //cerr << "Meas Prime Queue count is now" << (int)meas_prime_queue.size() << " TStamps [" << 
     //  (int)meas_prime_queue.back().timestamp_ns << ", " << meas_prime_queue.front().timestamp_ns << "]" << endl;
 
@@ -618,7 +651,11 @@ static void kf_meas_update_step()
         int i;
         
         // for now, only use the linear variance to determine whether to prime the queue
+        // indexing is 'n from the back of the queue' (meas_prime_queue[queue_size])
         double meas_vel_xyz_var[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+        // reset these to zero each time since they are clumsily defined outside
+        meas_vel_xyz_mean[0] = meas_vel_xyz_mean[1] = meas_vel_xyz_mean[2] = 0;
+        meas_vel_hps_mean[0] = meas_vel_hps_mean[1] = meas_vel_hps_mean[2] = 0;
         for(i = MEAS_PRIME_QUEUE_PRIME_COUNT-2; i >= 0; i--)
         {
           dt[i] = 
@@ -640,8 +677,8 @@ static void kf_meas_update_step()
 
             //cerr << "VEL i = " << i << "xyz = " << xyz << " is " << meas_vel_xyz[i][xyz] << ", dP = " << meas_prime_queue[queue_size - i].lin_xyz_pos[xyz] << " - " << meas_prime_queue[queue_size - i-1].lin_xyz_pos[xyz] << endl;
             // calculate mean
-            meas_vel_xyz_mean[xyz] += meas_vel_xyz[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT-1.0));
-            meas_vel_hps_mean[xyz] += meas_vel_hps[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT-1.0));
+            meas_vel_xyz_mean[xyz] += meas_vel_xyz[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT));
+            meas_vel_hps_mean[xyz] += meas_vel_hps[i][xyz] * (1.0/(MEAS_PRIME_QUEUE_PRIME_COUNT));
           }
         }
 
@@ -679,7 +716,7 @@ static void kf_meas_update_step()
     // Do we have enough measurements to start the filter?
     // Did we stop detecting apriltags?
     // Then we move on, and actually run the Kalman filter
-    if(sv_kf_estimate_stage == KF_EST_STAGE_READY && dvd_DvisEst_estimate_get_tags_detected() == false)
+    if(sv_kf_estimate_stage == KF_EST_STAGE_PRIME)
     {
       // We are now ready to prime the initial Kalman filter state! Nice!      
       cerr << "AprilTags stopped being detected, priming Kalman Filters with queued measurements!" << endl;
@@ -693,6 +730,8 @@ static void kf_meas_update_step()
       {
         dt_series[i] = dt_series[i+1] + dt[i];
       }
+
+      cerr << "Prime IDX = " << prime_idx << endl;
 
       for(xyz = 0; xyz < 3; xyz++)
       {
@@ -731,7 +770,9 @@ static void kf_meas_update_step()
         sv_kf_state.ang_hps[xyz].var[i2x2(0,0)] = ANG_POS_VAR_INIT;
         sv_kf_state.ang_hps[xyz].var[i2x2(0,1)] = sv_kf_state.ang_hps[xyz].var[i2x2(1,0)] = 0; // correlation terms start at zero
         sv_kf_state.ang_hps[xyz].var[i2x2(1,1)] = ANG_VEL_VAR_INIT;
-      } 
+      }
+
+      // mark filter as active
       sv_kf_estimate_stage = KF_EST_STAGE_ACTIVE;
 
       // init state time to last measurement used to prime
@@ -754,12 +795,15 @@ static void kf_meas_update_step()
   {
     // If we have already initialized the filter (KF_EST_STAGE_ACTIVE), consume the measurement normally
     // loop to consume all measurements which 'came in' since the last check against sv_kf_state.timestamp_ns
-    cerr << "Queue prime size = " << meas_prime_queue.size() << endl;
     if(meas_prime_queue.size() > 0)
     {
       uint64_t meas_timestamp_ns = meas_prime_queue.front().timestamp_ns;
+      //cerr << "Queue prime size = " << meas_prime_queue.size() << ", [st,mt] = " << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "]" << endl;
+
       while(sv_kf_state.timestamp_ns > meas_timestamp_ns && meas_prime_queue.size() > 0)
       {
+        cerr << "Consume meas [st,mt] = [" << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "] Queue prime size = " << meas_prime_queue.size() << endl;
+
         dvd_DvisEst_kf_meas_t new_meas = meas_prime_queue.front();
 
         meas_timestamp_ns = new_meas.timestamp_ns;
@@ -780,6 +824,7 @@ static void kf_meas_update_step()
           WRAP_2PI(ang_innovation);
           kf_get_kalman_gain(ANG_POS_MEAS_VAR, sv_kf_state.ang_hps[xyz].var, K);      
           kf_apply_meas_update_state(K, ang_innovation, &sv_kf_state.ang_hps[xyz].pos, &sv_kf_state.ang_hps[xyz].vel);
+          WRAP_2PI(sv_kf_state.ang_hps[xyz].pos);
           kf_apply_meas_update_var(K, sv_kf_state.ang_hps[xyz].var);
         }
 
@@ -815,6 +860,7 @@ static void kf_prediction_step()
 
       // angular states
       kf_prediction_state(KF_FILTER_PRED_DT_S, &sv_kf_state.ang_hps[xyz].pos, &sv_kf_state.ang_hps[xyz].vel);
+      WRAP_2PI(sv_kf_state.ang_hps[xyz].pos);
       kf_prediction_var(ANG_POS_PROC_VAR, ANG_VEL_PROC_VAR, KF_FILTER_PRED_DT_S, sv_kf_state.ang_hps[xyz].var);
     }
 
