@@ -113,7 +113,7 @@ int at_detection_thread_run(uint8_t thread_id)
   // How many frames did we skip each sample to meet our real-time criteria?
   uint16_t skipped_frames = 0;
 
-  while(!dvd_DvisEst_estimate_complete())
+  while(!dvd_DvisEst_estimate_active() && !dvd_DvisEst_estimate_complete())
   {
     // Check for thread mode update
     if(!dvd_DvisEst_estimate_get_tags_detected())

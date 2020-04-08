@@ -28,7 +28,7 @@ filt_active         = M_meas(:, 12);
 
 
 % get delta between meas and state times for better meas plotting (need to sort this)
-dtimemeas = mean(time_ms_meas - meas_time_ms_meas);
+%dtimemeas = mean(time_ms_meas - meas_time_ms_meas);
 
 
 % find first index for non-zero state
@@ -37,15 +37,35 @@ t_start = time_ms_state(nonzero_idx);
 t_start = t_start(1)
 
 waitidx = figure; hold on;
-%plot(time_ms_state, lin_xyz_pos_state, '-')
-
-plot(meas_time_ms_meas + dtimemeas, lin_xyz_pos_meas, '.')
+plot(time_ms_state, lin_xyz_pos_state, '-')
 reset_colours
-plot(time_ms_meas, lin_xyz_pos_meas, 'o')
+plot(meas_time_ms_meas, lin_xyz_pos_meas, '.')
+legend('X', 'Y', 'Z')
 grid on;
+title('Lin Pos Meas and State')
+
+figure; hold on;
+plot(time_ms_state, lin_xyz_vel_state, '-')
+legend('X', 'Y', 'Z')
+grid on;
+title('Lin Vel State')
+
+figure; hold on;
+plot(time_ms_state, ang_hps_pos_state, '-')
+reset_colours
+plot(meas_time_ms_meas, ang_hps_pos_meas, '.')
+legend('HYZER', 'PITCH', 'SPIN')
+grid on;
+title('Ang Pos Meas and State')
+
+figure; hold on;
+plot(time_ms_state, ang_hps_vel_state, '-')
+legend('HYZER', 'PITCH', 'SPIN')
+grid on;
+title('Ang Vel State')
 
 
-waitfor(waitidx)
+%waitfor(waitidx)
 %pause;
 
 

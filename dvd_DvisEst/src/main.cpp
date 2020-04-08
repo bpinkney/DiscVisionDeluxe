@@ -210,8 +210,8 @@ int main(int argc, char** argv )
   dvd_DvisEst_image_capture_stop(camera_src);
 
   // plotting with matlab!
-  cerr << ("Executing Matlab plot...\n") << endl;
-  system ("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
+  //cerr << ("Executing Matlab plot...\n") << endl;
+  //system ("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
 
   // sleep for 200 seconds
   //cout << '\n' << "Sleeping until threads join..." << endl;

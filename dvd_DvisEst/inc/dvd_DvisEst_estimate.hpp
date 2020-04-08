@@ -59,7 +59,9 @@ void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected);
 
 bool dvd_DvisEst_estimate_get_tags_detected(void);
 
-// check whether the estimation has completed
+bool dvd_DvisEst_estimate_meas_collect(void);
+bool dvd_DvisEst_estimate_ready(void);
+bool dvd_DvisEst_estimate_active(void);
 bool dvd_DvisEst_estimate_complete(void);
 
 // Indicate that a new frame has been received, and is currently in processing
