@@ -107,6 +107,7 @@ cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 #define ANG_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S)
 
 dvd_DvisEst_kf_state_t sv_kf_state;
+dvd_DvisEst_kf_state_t sv_kf_ideal_state;
 
 std::atomic<uint32_t> meas_count_populated (0);
 std::atomic<uint32_t> meas_count_empty     (0);
@@ -119,11 +120,14 @@ bool log_meas  (false);
 bool log_state (false);
 std::ofstream meas_csvlog;
 std::ofstream state_csvlog;
+std::ofstream state_out_csvlog;
 
 // Static Funcs
 static bool get_linear_fit(double * slope, double * x, double * y, const uint16_t n);
-static void kf_meas_update_step(void);
+
 static void kf_prediction_step(void);
+static void kf_check_for_ideal_output_state(void);
+static void kf_meas_update_step(void);
 static void angle_hyzer_pitch_spin_from_R(double * hyzer_angle, double * pitch_angle, double * spin_angle, cv::Matx33d R_GD);
 static void kf_get_kalman_gain(const double S2dm, const double MAT2X2(P), double VEC2(K));
 static void kf_apply_meas_update_state(const double VEC2(K), const double innovation, double * pos_state, double * vel_state);
@@ -255,6 +259,43 @@ static void state_csv_log_write(dvd_DvisEst_kf_state_t * state)
   state_csvlog << out << endl;
 }
 
+static void state_out_csv_log_open()
+{
+  state_out_csvlog.open("state_out.csv", std::ios_base::trunc);// discard old file contents each run
+  state_out_csvlog << 
+    "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
+             "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel, "
+             "lin_x_pos_var, lin_y_pos_var, lin_z_pos_var, "
+             "lin_x_vel_var, lin_y_vel_var, lin_z_vel_var, "
+             "ang_h_pos_var, ang_p_pos_var, ang_s_pos_var, "
+             "ang_h_vel_var, ang_p_vel_var, ang_s_vel_var"
+    << endl;
+}
+
+static void state_out_csv_log_close()
+{
+  state_out_csvlog.close();
+}
+
+static void state_out_csv_log_write(dvd_DvisEst_kf_state_t * state)
+{
+  char out[512];
+  sprintf(
+      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
+      NS_TO_MS(state->timestamp_ns),      
+      state->lin_xyz[0].pos, state->lin_xyz[1].pos, state->lin_xyz[2].pos,
+      state->lin_xyz[0].vel, state->lin_xyz[1].vel, state->lin_xyz[2].vel,
+      state->ang_hps[0].pos, state->ang_hps[1].pos, state->ang_hps[2].pos,
+      state->ang_hps[0].vel, state->ang_hps[1].vel, state->ang_hps[2].vel,
+      state->lin_xyz[0].var[i2x2(0,0)], state->lin_xyz[1].var[i2x2(0,0)], state->lin_xyz[2].var[i2x2(0,0)],
+      state->lin_xyz[0].var[i2x2(1,1)], state->lin_xyz[1].var[i2x2(1,1)], state->lin_xyz[2].var[i2x2(1,1)],
+      state->ang_hps[0].var[i2x2(0,0)], state->ang_hps[1].var[i2x2(0,0)], state->ang_hps[2].var[i2x2(0,0)],
+      state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)]
+      );
+
+  state_out_csvlog << out << endl;
+}
+
 // Get the linear fit from a set of x, y points
 static bool get_linear_fit(double * slope, double * x, double * y, const uint16_t n)
 {
@@ -295,6 +336,7 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
 
   // init structs to zero
   memset(&sv_kf_state, 0, sizeof(dvd_DvisEst_kf_state_t));
+  memset(&sv_kf_ideal_state, 0, sizeof(dvd_DvisEst_kf_state_t));
 
   int i;
   for(i = 0; i < MEAS_QUEUE_SIZE; i++)
@@ -599,6 +641,65 @@ static void process_filter_thread(void)
   cerr << "Estimate Thread completed." << endl;
 }
 
+//This implies that we need 'KF_IDEAL_CHECK_QUEUE_SIZE' samples after priming to have a valid estimate
+#define KF_IDEAL_CHECK_QUEUE_SIZE (5)
+static void kf_check_for_ideal_output_state()
+{
+  // Keep a queue of the last KF_IDEAL_CHECK_QUEUE_SIZE entries so we can check the velocity variance
+  // (boy, we're using a lot of queues eh?)
+  static deque<dvd_DvisEst_kf_state_t> kf_ideal_check_queue;
+  static double min_variance_sum = 9999999;
+
+  if(sv_kf_estimate_stage >= KF_EST_STAGE_ACTIVE)
+  {
+    kf_ideal_check_queue.push_back(sv_kf_state);
+    // ditch old entries
+    while(kf_ideal_check_queue.size() > KF_IDEAL_CHECK_QUEUE_SIZE)
+    {
+      kf_ideal_check_queue.pop_front();
+    }
+
+    if(kf_ideal_check_queue.size() >= KF_IDEAL_CHECK_QUEUE_SIZE)
+    {
+      // calculate vel mean
+      double lin_xyz_vel_mean[3] = {0};
+      double lin_xyz_vel_var_sum = 0;
+      uint8_t xyz;
+      uint8_t queue_i;
+      for(xyz = 0; xyz < 3; xyz++)
+      {
+        for(queue_i = 0; queue_i < KF_IDEAL_CHECK_QUEUE_SIZE; queue_i++)
+        {
+          lin_xyz_vel_mean[xyz] += kf_ideal_check_queue[queue_i].lin_xyz[xyz].vel * (1.0 / KF_IDEAL_CHECK_QUEUE_SIZE);
+        }
+        // check variance
+        for(queue_i = 0; queue_i < KF_IDEAL_CHECK_QUEUE_SIZE; queue_i++)
+        {
+          double vel_diff = (kf_ideal_check_queue[queue_i].lin_xyz[xyz].vel - lin_xyz_vel_mean[xyz]);
+          lin_xyz_vel_var_sum += (vel_diff * vel_diff);
+        }        
+      }
+
+      if(lin_xyz_vel_var_sum < min_variance_sum)
+      {
+        min_variance_sum = lin_xyz_vel_var_sum;
+
+        // save state as minimum variance
+        memcpy(&sv_kf_ideal_state, &sv_kf_state, sizeof(dvd_DvisEst_kf_state_t));
+
+        cerr << "Set new ideal state at " << NS_TO_MS(sv_kf_state.timestamp_ns) << " ms! (" << min_variance_sum << ")" << endl;
+
+        if(log_state)
+        {
+          state_out_csv_log_open();
+          state_out_csv_log_write(&sv_kf_ideal_state);
+          state_out_csv_log_close();
+        }
+      }
+    }    
+  }
+}
+
 // Kalman Filter Functions
 #define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(100)) // no older than 100ms
 #define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (20)
@@ -615,25 +716,6 @@ static void kf_meas_update_step()
   // We haven't started the kalman filter yet, keep buffering measurements
   if(sv_kf_estimate_stage < KF_EST_STAGE_ACTIVE)
   {
-    //cerr << "Meas Prime Queue count is now" << (int)meas_prime_queue.size() << " TStamps [" << 
-    //  (int)meas_prime_queue.back().timestamp_ns << ", " << meas_prime_queue.front().timestamp_ns << "]" << endl;
-
-    /*// discard old measurements
-    while(!meas_prime_queue.empty())
-    {
-      if((meas_prime_queue.back().timestamp_ns - meas_prime_queue.front().timestamp_ns) > MEAS_PRIME_QUEUE_MAX_AGE_NS)
-      {
-        // ditch old measurements (vs queue head/back)
-        meas_prime_queue.pop_front();
-      }
-      else
-      {
-        // all measurements are within MEAS_PRIME_QUEUE_MAX_AGE_NS
-        break;
-      }
-    }*/
-
-
     // these are now static so we can save the priming values (had to change now that we can't run the KF real time)
     // TODO: Fix this refactored hack! agh, so messy
     int xyz;
@@ -850,6 +932,11 @@ static void kf_meas_update_step()
         }
 
         meas_prime_queue.pop_front();
+
+        // Now that we have a nice shiny state, let's have a look at what we want to output.
+        // We're only doing this after a measurement update since we know that out state doesn't get better than that
+        kf_check_for_ideal_output_state();
+
       }
     }
 
