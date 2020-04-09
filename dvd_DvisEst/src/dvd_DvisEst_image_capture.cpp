@@ -584,7 +584,7 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 // Return the next captured image from the front of the queue
 // TODO: THERE IS SOMETHING WRONG WITH THIS IMPLEMENTATION WHERE INITIAL APRILTAG DETECTIONS ARE LOST!
 // FIX IT!
-#define MAX_FRAME_SKIP_COUNT (20)
+#define MAX_FRAME_SKIP_COUNT (30)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
 {
   bool got_frame = true;
@@ -629,8 +629,8 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
     image_capture_t ic_front;
     image_queue_pull(&ic_front, 0, 0);
 
-    cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count <<
-    ", FID for scout thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
+    //cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count <<
+    //", FID for scout thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
 
     // test mode only to empty end of queue
     if(queue_size <= scout_block_max && wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
@@ -649,7 +649,7 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
     // reset scout index
     scout_index = 0;
     got_frame = image_queue_pull(image_capture, 0, 1);
-    cerr << "Meas read at FID " << (int)image_capture->frame_id << endl;
+    //cerr << "Meas read at FID " << (int)image_capture->frame_id << endl;
   }  
 
   return got_frame;
