@@ -93,18 +93,18 @@ cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 // Kalman Filter statics
 // initial covariances values
 #define LIN_POS_VAR_INIT  (0.1)   //(m^2)
-#define LIN_VEL_VAR_INIT  (20.0)  //(m/s)^2
+#define LIN_VEL_VAR_INIT  (10.0)  //(m/s)^2
 #define ANG_POS_VAR_INIT  (0.1)   //(rad)^2
-#define ANG_VEL_VAR_INIT  (20.0)  //(rad/s)^2
+#define ANG_VEL_VAR_INIT  (10.0)  //(rad/s)^2
 
 // Fixed meas variance for now
 #define LIN_POS_MEAS_VAR  (0.01)
 #define ANG_POS_MEAS_VAR  (0.01)
 // function of dt
-#define LIN_POS_PROC_VAR  (1.0 * KF_FILTER_PRED_DT_S)
-#define LIN_VEL_PROC_VAR  (200.0 * KF_FILTER_PRED_DT_S)
-#define ANG_POS_PROC_VAR  (1.0 * KF_FILTER_PRED_DT_S)
-#define ANG_VEL_PROC_VAR  (200.0 * KF_FILTER_PRED_DT_S)
+#define LIN_POS_PROC_VAR  (0.5 * KF_FILTER_PRED_DT_S)
+#define LIN_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S)
+#define ANG_POS_PROC_VAR  (0.5 * KF_FILTER_PRED_DT_S)
+#define ANG_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S)
 
 dvd_DvisEst_kf_state_t sv_kf_state;
 
@@ -360,12 +360,20 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
   return true;
 }
 
-void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected)
+void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_id)
 {
   // don't let this update past the ACTIVE stage of the filter
   if(sv_kf_estimate_stage < KF_EST_STAGE_PRIME)
   {
     sv_kf_estimate_tags_detected = tags_detected;
+    if(tags_detected && frame_id > 0)
+    {
+      // Update timestamps, even if we are in Scout mode, to prevent things from automatically timing back out
+      // TODO: Address the race condition here when our frame_skip_max is large enough to time out during frame processing
+      // maybe this isn't a problem since the timeout is based on processed frame ID?
+      sv_last_meas_frame_id     = frame_id;
+      sv_last_pop_meas_frame_id = frame_id;
+    }
   }
 }
 
@@ -421,6 +429,8 @@ void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const b
     sv_last_meas_frame_id = frame_id;
   }
 
+  // If we're in scout mode but the frame, force the timeout
+
   // free measurement slot
   //cerr << "Cancel measurement in slot " << (int)slot_id << endl;
   MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_AVAILABLE;
@@ -435,6 +445,11 @@ void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const b
 // Add the actual measurement output to a previously reserved slot in the incoming queue
 void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas)
 {
+  if(kf_meas->frame_id == 0)
+  {
+    cerr << "************************************************************** frame_id of zero reported to meas queue!" << endl;
+  }
+
   // Indicate that this frame ID was measured, and populated with an apriltag
   sv_last_meas_frame_id     = kf_meas->frame_id;
   sv_last_pop_meas_frame_id = kf_meas->frame_id;
@@ -514,7 +529,7 @@ static void process_filter_thread(void)
 
       std::cerr << "Time out apriltag detects! kfstage = " << (int)sv_kf_estimate_stage << ", Time since apriltag detect(ms): " << apriltag_detect_loss_time_s*1000 << "FIDs [" << sv_last_pop_meas_frame_id << ", " << sv_last_meas_frame_id << "]" << std::endl;
     
-      dvd_DvisEst_estimate_set_tags_detected(false);
+      dvd_DvisEst_estimate_set_tags_detected(false, 0);
     }
 
     // if we got some cancellations, just skip them and move the read idx forward
@@ -586,8 +601,8 @@ static void process_filter_thread(void)
 
 // Kalman Filter Functions
 #define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(100)) // no older than 100ms
-#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (5)
-#define MEAS_PRIME_QUEUE_PRIME_COUNT          (5)
+#define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (20)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (10)
 #define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (2.0) // (m/s)^2
 static void kf_meas_update_step()
 {
@@ -802,7 +817,7 @@ static void kf_meas_update_step()
 
       while(sv_kf_state.timestamp_ns > meas_timestamp_ns && meas_prime_queue.size() > 0)
       {
-        cerr << "Consume meas [st,mt] = [" << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "] Queue prime size = " << meas_prime_queue.size() << endl;
+        //cerr << "Consume meas [st,mt] = [" << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "] Queue prime size = " << meas_prime_queue.size() << endl;
 
         dvd_DvisEst_kf_meas_t new_meas = meas_prime_queue.front();
 

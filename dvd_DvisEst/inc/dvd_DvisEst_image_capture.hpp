@@ -12,6 +12,8 @@
 #include <string>
 #include <iostream>
 
+#include <atomic>
+
 // OpenCV stuff
 #include "opencv2/core.hpp"
 #include <opencv2/core/utility.hpp>
@@ -47,8 +49,9 @@ void dvd_DvisEst_image_capture_stop(const bool camera_src);
 // load test images into the capture queue and return
 void dvd_DvisEst_image_capture_load_test_queue_threaded(const cv::String imgdir_src, const double dt);
 bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, const double dt);
+uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size(void);
 // Return the next captured image from the front of the queue
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode);
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id);
 bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
 
 #endif // DVD_DVISEST_IMAGE_CAPTURE_HPP

@@ -133,7 +133,7 @@ int at_detection_thread_run(uint8_t thread_id)
 
     //test_mutex.lock();
     // Look for a new frame from the camera (or perhaps from loaded test images)
-    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, at_detection_thread_mode[thread_id]);
+    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, &at_detection_thread_mode[thread_id], thread_id);
 
     // did we get a frame? Neat, let's reserve a measurement queue slot until apriltag detection is complete
     if(got_image)
@@ -176,7 +176,7 @@ int at_detection_thread_run(uint8_t thread_id)
         // For a scout mode thread, never report a measurement
         if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_SCOUT)
         {
-          dvd_DvisEst_estimate_set_tags_detected(true);
+          dvd_DvisEst_estimate_set_tags_detected(true, image_capture.frame_id);
         }
 
         if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS)
@@ -260,6 +260,16 @@ int at_detection_thread_run(uint8_t thread_id)
     {
       // sleep for a bit so we don't busy poll
       //test_mutex.unlock();
+      // check for test case (queue is empty due to loaded images)
+      if(dvd_DvisEst_image_capture_thread_ready())
+      {
+        if(dvd_DvisEst_image_capture_get_image_capture_queue_size() < 2)
+        {
+          // end thread
+          break;
+        }
+      }
+
       usleep(1000);
     }
 

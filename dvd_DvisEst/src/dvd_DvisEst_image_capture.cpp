@@ -576,21 +576,32 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
   return true;
 }
 
+uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
+{
+  return image_queue_size();
+}
+
 // Return the next captured image from the front of the queue
 // TODO: THERE IS SOMETHING WRONG WITH THIS IMPLEMENTATION WHERE INITIAL APRILTAG DETECTIONS ARE LOST!
 // FIX IT!
-#define MAX_FRAME_SKIP_COUNT (1)
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, uint8_t at_thread_mode)
+#define MAX_FRAME_SKIP_COUNT (20)
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
 {
   bool got_frame = true;
+  static int32_t scout_index = 0;
+
+  // If any tags have been detected, force subsequent threads out of scout mode
+  if(dvd_DvisEst_estimate_get_tags_detected() && *at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
+  {
+    cerr << "Force Thread #" << (int)thread_id << " into MEAS mode!" << endl; 
+  }
 
   // If we're using test images, might want to keep processing until the end of the queue....
   // (fake out meas mode for the last 100 entries for now)
-  if(at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
+  if(*at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
     // TODO: clean this up
     // we'll mutex this operation since we need the scout index updated before the next thread tries to scout ahead
-    static int32_t scout_index = 0;
     sv_image_scout_mutex.lock();
 
     const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
@@ -614,13 +625,20 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
     // pull the scout frame, but don't pop it from the queue
     got_frame = image_queue_pull(image_capture, scout_index, 0);
 
-    //cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count << endl;
+    // test check:
+    image_capture_t ic_front;
+    image_queue_pull(&ic_front, 0, 0);
+
+    cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count <<
+    ", FID for scout thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
 
     // test mode only to empty end of queue
-    if(wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
+    if(queue_size <= scout_block_max && wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
     {
-      //cerr << "WRAP PURGE!" << dvd_DvisEst_get_estimate_stage() << endl;
-      //*skipped_frames += image_queue_purge(1);
+      cerr << "WRAP PURGE!" << dvd_DvisEst_get_estimate_stage() << endl;
+      *skipped_frames += image_queue_purge(1);
+      sv_image_scout_mutex.unlock();
+      return false;
     }
     
     sv_image_scout_mutex.unlock();
@@ -628,7 +646,10 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
   else
   {
     *skipped_frames = 0;
+    // reset scout index
+    scout_index = 0;
     got_frame = image_queue_pull(image_capture, 0, 1);
+    cerr << "Meas read at FID " << (int)image_capture->frame_id << endl;
   }  
 
   return got_frame;
