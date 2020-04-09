@@ -14,13 +14,13 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
     % prune 3 folders from end of path (where matlab script lives!)
     script_path_parts = script_path_parts(1:length(script_path_parts)-3);
     % generate filepath
-    f = fullfile(script_path_parts{:}, 'dvd_DfisX', 'simulated_throw.csv')
+    f = fullfile(script_path_parts{:}, 'dvd_DfisX', 'flight_saves\saved_throw.csv');
     
     Defaults = {f, 1};
     idx = ~cellfun('isempty',varargin);
     Defaults(idx) = varargin(idx);
     
-    filepath = Defaults{1}
+    filepath = Defaults{1};
     animate  = Defaults{2};
 
     %assume dt for now based on cpp code
@@ -52,7 +52,7 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
     y_centre = (max(pos_xyz(:, 2)) - min(pos_xyz(:, 2)))/2;
     
     % plot all three views (first plot is true 3d)
-    figure();
+    waitidx = figure();
     for i=1:3
       if(i == mainplot)
         figure(mainplot); hold all;
@@ -103,10 +103,10 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
 
     if(animate)
       time_stretch = 1;
-      dt = [0; diff(time_s)]
-      min_step_time = 0.1 % don't step smaller than this to speed things up
+      dt = [0; diff(time_s)];
+      min_step_time = 0.1; % don't step smaller than this to speed things up
 
-      idx_step = round(min_step_time / mean(dt))
+      idx_step = round(min_step_time / mean(dt));
 
       for k = 1:idx_step:length(time_s)
         tic
@@ -148,9 +148,8 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
         pause(max(0.0001, (dt(k) * idx_step * time_stretch) - plottime));
 
       end
-    end
-    
-    %pause
+    end    
+    %waitfor(waitidx);
 end
 
 

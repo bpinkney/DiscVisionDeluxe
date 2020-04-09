@@ -87,6 +87,9 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
 void dvd_DvisEst_estimate_process_filter(void);
 
 // Join Kalman Filter thread
+bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_state);
+
+// Join Kalman Filter thread
 void dvd_DvisEst_estimate_end_filter(void);
 
 #endif // DVD_DVISEST_ESTIMATE_HPP

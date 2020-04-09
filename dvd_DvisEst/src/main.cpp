@@ -49,6 +49,8 @@ int main(int argc, char** argv )
                   "                Defines transformation between camera and ground plane frames wrt camera frame.}"
     "{setgroundplane sgp |false| Place sample AprilTag on the ground, and determine resulting ground plane}"
     "{kflog log      |true       | Generate log files for KF meas and states}"
+    "{matlab ml      |false      | Run some matlab plots using the generated kflog}"
+    "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     ;
 
   cv::CommandLineParser parser(argc, argv, keys);
@@ -68,6 +70,8 @@ int main(int argc, char** argv )
   const cv::String  gnd_plane   = parser.get<cv::String>("groundplane");
   const bool      set_gnd_plane = parser.get<bool>("setgroundplane");
   const bool        kflog       = parser.get<bool>("kflog");
+  const bool        matlab      = parser.get<bool>("matlab");
+  const bool        dfisx       = parser.get<bool>("dfisx");
 
   // check for basic function test call
   if(helloworld)
@@ -220,13 +224,46 @@ int main(int argc, char** argv )
   dvd_DvisEst_apriltag_end();
   dvd_DvisEst_image_capture_stop(camera_src);
 
-  // plotting with matlab!
-  //cerr << ("Executing Matlab plot...\n") << endl;
-  //system ("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
+  // get final output state
+  dvd_DvisEst_kf_state_t kf_state;
+  const bool got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
 
-  // sleep for 200 seconds
-  //cout << '\n' << "Sleeping until threads join..." << endl;
-  //usleep(200 * 1000000);
+  if(!got_output)
+  {
+    cerr << ("Not ouput state! Sorry!\n") << endl;
+    return 0;
+  }
+
+  // plotting with matlab!
+  if(matlab && kflog)
+  {
+    cerr << ("Executing Matlab plot...\n") << endl;
+    system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
+  }
+
+  // run Skinner's stuff
+  if(!matlab && dfisx)
+  {
+    char output_cmd[512] = {0};
+    sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+      kf_state.ang_hps[0].pos,
+      kf_state.ang_hps[1].pos,
+      kf_state.lin_xyz[0].pos,
+      kf_state.lin_xyz[1].pos,
+      kf_state.lin_xyz[2].pos,
+      kf_state.lin_xyz[0].vel,
+      kf_state.lin_xyz[1].vel,
+      kf_state.lin_xyz[2].vel,
+      kf_state.ang_hps[2].vel
+      );
+
+    cerr << "Output String: " << output_cmd << endl;
+
+    system(output_cmd);
+
+    // Let's plot it up boys!
+    system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
+  }
 
   return 0;
 }

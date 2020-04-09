@@ -1041,6 +1041,18 @@ void dvd_DvisEst_estimate_process_filter(void)
   kf_process_filter = std::thread(process_filter_thread);
 }
 
+bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_state)
+{
+  // do we need a memcpy here?
+  memcpy(kf_state, &sv_kf_ideal_state, sizeof(dvd_DvisEst_kf_state_t));
+  //kf_state = &sv_kf_ideal_state;
+  if(kf_state->timestamp_ns > 0)
+  {
+    return true;
+  }
+  return false;
+}
+
 void dvd_DvisEst_estimate_end_filter(void)
 {
   kf_process_filter.join();
