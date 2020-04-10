@@ -150,6 +150,7 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
       end
     end    
     %waitfor(waitidx);
+    pause(5)
 end
 
 
