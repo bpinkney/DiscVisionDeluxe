@@ -265,7 +265,9 @@ int main(int argc, char** argv )
 
     if(matlab)
     {
-      //drive10, 13, 16
+      //drive10, 13, 16, 17
+      //angle 1, 2
+      //putt 2
 
       // Let's plot it up boys!
       system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
