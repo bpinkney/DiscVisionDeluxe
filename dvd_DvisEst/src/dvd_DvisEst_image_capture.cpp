@@ -584,7 +584,7 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 // Return the next captured image from the front of the queue
 // TODO: THERE IS SOMETHING WRONG WITH THIS IMPLEMENTATION WHERE INITIAL APRILTAG DETECTIONS ARE LOST!
 // FIX IT!
-#define MAX_FRAME_SKIP_COUNT (30)
+#define MAX_FRAME_SKIP_COUNT (10)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
 {
   bool got_frame = true;

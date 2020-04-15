@@ -241,26 +241,27 @@ int main(int argc, char** argv )
     system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
   }
 
+
+  char output_cmd[512] = {0};
+  sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+    kf_state.ang_hps[0].pos,
+    kf_state.ang_hps[1].pos,
+    kf_state.lin_xyz[0].pos,
+    kf_state.lin_xyz[1].pos,
+    kf_state.lin_xyz[2].pos,
+    kf_state.lin_xyz[0].vel,
+    kf_state.lin_xyz[1].vel,
+    kf_state.lin_xyz[2].vel,
+    kf_state.ang_hps[2].vel
+    );
+
+  //max((double)kf_state.lin_xyz[2].vel, 0.0),
+
+  cerr << "Output String: " << output_cmd << endl;
+
   // run Skinner's stuff
   if(dfisx)
   {
-    char output_cmd[512] = {0};
-    sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
-      kf_state.ang_hps[0].pos,
-      kf_state.ang_hps[1].pos,
-      kf_state.lin_xyz[0].pos,
-      kf_state.lin_xyz[1].pos,
-      kf_state.lin_xyz[2].pos,
-      kf_state.lin_xyz[0].vel,
-      kf_state.lin_xyz[1].vel,
-      kf_state.lin_xyz[2].vel,
-      kf_state.ang_hps[2].vel
-      );
-
-    //max((double)kf_state.lin_xyz[2].vel, 0.0),
-
-    cerr << "Output String: " << output_cmd << endl;
-
     system(output_cmd);
 
     //cerr << "Output String: " << output_cmd << endl;

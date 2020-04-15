@@ -196,7 +196,7 @@ int main( int argc, char** argv )
   // Init AprilTag Stuff
   // tag parameters used to convert the transformation matrix translations
   // to actual measurements in meters
-  const float tag_size_mm = 109;//52; //width of tag
+  const float tag_size_mm = 109;//52; //width of tag ground plane is 164, std is 109
   // Tag size is the size of the tag in your desired units. I.e., if
   // 0.25. (The homography is computed in terms of *half* the tag
   // size, i.e., that a tag is 2 units wide as it spans from -1 to +1

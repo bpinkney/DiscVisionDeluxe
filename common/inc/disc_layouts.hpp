@@ -9,6 +9,7 @@
 /// @brief Disc Index Enum
 enum DiscIndex
 {
+  GROUNDPLANE,
   PUTTER,
   PUTTER_OS,
   PUTTER_US,
@@ -21,7 +22,7 @@ enum DiscIndex
   DRIVER,
   DRIVER_OS,
   DRIVER_US,
-  SPECIAL
+  SPECIAL  
 };
 
 ///--------------------------------------------------------------------------
@@ -51,9 +52,10 @@ struct disc_layout_t
 
 
 // Disc definitions are statically defined so they can be looked up by all three projects
-#define DISC_LAYOUTS_NUM  (13)
+#define DISC_LAYOUTS_NUM  (14)
 const disc_layout_t DISC_LAYOUTS[DISC_LAYOUTS_NUM] = 
 {
+  {GROUNDPLANE, f36h11, 164, 164, 0},
   {PUTTER,      f36h11, 100, 109, 1},
   {PUTTER_OS,   f36h11, 101, 109, 1},
   {PUTTER_US,   f36h11, 102, 109, 1},
@@ -85,6 +87,7 @@ const std::map<uint16_t, disc_layout_t> disc_layout_by_id
   {DISC_LAYOUTS[10].tag_id, DISC_LAYOUTS[10]},
   {DISC_LAYOUTS[11].tag_id, DISC_LAYOUTS[11]},
   {DISC_LAYOUTS[12].tag_id, DISC_LAYOUTS[12]},
+  {DISC_LAYOUTS[13].tag_id, DISC_LAYOUTS[13]},
 };
 
 
