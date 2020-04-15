@@ -1,0 +1,17 @@
+%YAML:1.0
+---
+# rotation from camera frame to ground-plane frame 
+R_CG: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 0.995908881064753, -0.0850352902640363, 0.0305695931615463,
+           0.0900231889953472, 0.962981164777121, -0.254092703019206,
+          -0.00783109567425684, 0.255805151813269, 0.966696642306329 ]
+# translation from camera frame to ground-plane frame 
+# defined in the pre-rotated frame!
+T_CG: !!opencv-matrix
+   rows: 3
+   cols: 1
+   dt: d
+   data: [0.131037499999999, -0.0695464999999994, -2.20526100000001]
