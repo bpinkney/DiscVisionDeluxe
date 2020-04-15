@@ -148,9 +148,13 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
         pause(max(0.0001, (dt(k) * idx_step * time_stretch) - plottime));
 
       end
-    end    
-    %waitfor(waitidx);
-    pause(5)
+    end  
+    if(0) 
+      pause(5) 
+    else
+      waitfor(waitidx);
+    end
+    
 end
 
 

@@ -47,7 +47,7 @@ ANG_VEL_VAR_INIT = 50; % (rad/s)^2
 max_valid_time_s = dt_pred * 3; % (~3 missed samples)
 
 %% load log and determine measurement count
-ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_spin2/csvlog.csv');
+ld = dvd_DvisEst_load_csv_log('/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/windy_snow0/imgs_groundplane2/csvlog.csv');
 
 ld.unprocessed_measurement = ld.time_s * 0 + 1;
 

@@ -92,17 +92,17 @@ cv::Matx31d T_CG = cv::Matx31d(0,0,0);
 
 // Kalman Filter statics
 // initial covariances values
-#define LIN_POS_VAR_INIT  (0.1)   //(m^2)
+#define LIN_POS_VAR_INIT  (0.05)   //(m^2)
 #define LIN_VEL_VAR_INIT  (10.0)  //(m/s)^2
-#define ANG_POS_VAR_INIT  (0.1)   //(rad)^2
+#define ANG_POS_VAR_INIT  (0.05)   //(rad)^2
 #define ANG_VEL_VAR_INIT  (10.0)  //(rad/s)^2
 
 // Fixed meas variance for now
-#define LIN_POS_MEAS_VAR  (0.01)
+#define LIN_POS_MEAS_VAR  (0.01) // (m^2)
 #define ANG_POS_MEAS_VAR  (0.01)
 // function of dt
-#define LIN_POS_PROC_VAR  (0.5 * KF_FILTER_PRED_DT_S)
-#define LIN_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S)
+#define LIN_POS_PROC_VAR  (0.5 * KF_FILTER_PRED_DT_S) // m^2
+#define LIN_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S) // (m/s)^ = m^2/s^2
 #define ANG_POS_PROC_VAR  (0.5 * KF_FILTER_PRED_DT_S)
 #define ANG_VEL_PROC_VAR  (20.0 * KF_FILTER_PRED_DT_S)
 

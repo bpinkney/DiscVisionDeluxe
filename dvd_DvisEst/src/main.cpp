@@ -253,15 +253,17 @@ int main(int argc, char** argv )
       kf_state.lin_xyz[2].pos,
       kf_state.lin_xyz[0].vel,
       kf_state.lin_xyz[1].vel,
-      max((double)kf_state.lin_xyz[2].vel, 0.0),
+      kf_state.lin_xyz[2].vel,
       kf_state.ang_hps[2].vel
       );
+
+    //max((double)kf_state.lin_xyz[2].vel, 0.0),
 
     cerr << "Output String: " << output_cmd << endl;
 
     system(output_cmd);
 
-    cerr << "Output String: " << output_cmd << endl;
+    //cerr << "Output String: " << output_cmd << endl;
 
     if(matlab)
     {
@@ -271,8 +273,10 @@ int main(int argc, char** argv )
 
       // Let's plot it up boys!
       system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
-      //cerr << "Output String: " << output_cmd << endl;
+      
     }
+
+    cerr << "Output String: " << output_cmd << endl;
   }
 
   return 0;

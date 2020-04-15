@@ -1,5 +1,7 @@
 function ld = dvd_DvisEst_load_csv_log(filepath)
 
+  addpath('~/branches/trunk/embedded_ctrl/matlab/utils/')
+
     M = csvread(filepath, 1, 0);
 
     ld.time_s      = M(:, 1);
@@ -25,7 +27,7 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
     mean(ld.pos_xyz)
     
     use_groundplane   = 1;
-    calc_groundplane  = 0; % only enable this while looking at a ground-plane defining log
+    calc_groundplane  = 1; % only enable this while looking at a ground-plane defining log
     if(use_groundplane)
       % define ground plane and base frame rotation
       % translation is within the ground-plane frame
@@ -61,7 +63,7 @@ function ld = dvd_DvisEst_load_csv_log(filepath)
         % for a given matrix R0N = R01 * R12 * R23 * ... * R(N-1)N
         % our rotation from the camera frame to ground plane is then:
         % RCG = RCGp * RGpG 
-        angle = -90; % this is just because the ground plane image you used last time was rotated!
+        angle = 0;%-90; % this is just because the ground plane image you used last time was rotated!
         R_GpGz = [ ...
                 cosd(angle)  -sind(angle)  0 ; ...
                 sind(angle)   cosd(angle)  0 ; ...
