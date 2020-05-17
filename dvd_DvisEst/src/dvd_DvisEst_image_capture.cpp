@@ -49,7 +49,7 @@ using namespace cv;
 // declare static local structures
 std::deque<image_capture_t> sv_image_capture_queue;
 std::mutex                  sv_image_capture_mutex;
-std::mutex                  sv_image_scout_mutex;
+std::mutex                  sv_image_scerr_mutex;
 
 std::thread                 capture_thread;
 
@@ -138,7 +138,7 @@ static uint16_t image_queue_purge(const uint16_t front_offset)
   int purge_count = 0;
   for(i = 0; i < front_offset; i++)
   {
-    if(sv_image_capture_queue.size() <= 1)
+    if(sv_image_capture_queue.size() < 1)
     {
       break;
     }
@@ -189,8 +189,15 @@ void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_im
 
 #if defined(SPINNAKER_ALLOWED)
 // Disable everything preventing us from achieving the full frame rate
-double camera_settings_configure(INodeMap& nodeMap, const double exposure_scale, const double gain_scale)
+double camera_settings_configure(CameraPtr pCam, const double exposure_scale, const double gain_scale)
 {
+  // Retrieve GenICam nodemaps
+  INodeMap& nodeMap = pCam->GetNodeMap();
+  INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+  INodeMap& nodeMapTLStream = pCam->GetTLStreamNodeMap();
+
+  //PrintDeviceInfo(nodeMapTLDevice);
+
   double acquisitionResultingFrameRate = 0;
 
   cerr << endl << endl << "*** CONFIGURING EXPOSURE, GAIN, WHITE BALANCE, and ADC bitness ***" << endl << endl;
@@ -345,6 +352,71 @@ double camera_settings_configure(INodeMap& nodeMap, const double exposure_scale,
     acquisitionResultingFrameRate = static_cast<double>(ptrAcquisitionResultingFrameRate->GetValue());
     cerr << "Max Acquisition Frame Rate: " << acquisitionResultingFrameRate << endl;
     sv_image_capture_frame_rate = acquisitionResultingFrameRate;
+
+
+
+    //// Set acquisition mode to continuous
+    CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
+    if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+    {
+      cerr << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
+      return -1;
+    }
+
+    CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
+    if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+    {
+      cerr << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
+         << endl;
+      return -1;
+    }
+
+    int64_t acquisitionModeContinuous = ptrAcquisitionModeContinuous->GetValue();
+
+    ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
+
+    cerr << "Acquisition mode set to continuous..." << endl;
+
+    // try to avoid skipping frames with this hack
+    // maybe I need to query the buffers constantly? ehhh
+    // Sounds like we'll just lose frames every time there isn't enough CPU...
+    CEnumerationPtr ptrStreamBufferCountMode = nodeMapTLStream.GetNode("StreamBufferCountMode");
+    if (!IsAvailable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode))
+    {
+      cerr << IsAvailable(ptrStreamBufferCountMode) << ", " << IsWritable(ptrStreamBufferCountMode) << "Unable to set StreamBufferCountMode (node retrieval). Aborting..." << endl << endl;
+      return -1;
+    }
+    CEnumEntryPtr ptrStreamBufferCountMode_Manual = ptrStreamBufferCountMode->GetEntryByName("Manual");
+    if (!IsAvailable(ptrStreamBufferCountMode_Manual) || !IsReadable(ptrStreamBufferCountMode_Manual))
+    {
+      cerr << "Unable to set StreamBufferCountMode (enum entry retrieval). Aborting..." << endl << endl;
+      return -1;
+    }
+    ptrStreamBufferCountMode->SetIntValue(ptrStreamBufferCountMode_Manual->GetValue());
+
+    CIntegerPtr ptrStreamBufferCountManual = nodeMapTLStream.GetNode("StreamBufferCountManual");
+    if (!IsAvailable(ptrStreamBufferCountManual) || !IsWritable(ptrStreamBufferCountManual))
+    {
+      cerr << IsAvailable(ptrStreamBufferCountManual) << "," << IsWritable(ptrStreamBufferCountManual) << "Unable to set StreamBufferCountManual (node retrieval). Aborting..." << endl << endl;
+      return -1;
+    }
+    cerr << "Maximum Buffer Count: " << ptrStreamBufferCountManual->GetMax() << endl;
+    ptrStreamBufferCountManual->SetValue(ptrStreamBufferCountManual->GetMax());
+    
+
+    cerr << "Camera Stream Buffers Jacked Up..." << endl;
+
+    // Retrieve device serial number for filename
+    gcstring deviceSerialNumber("");
+
+    CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
+    if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+    {
+      deviceSerialNumber = ptrStringSerial->GetValue();
+
+      cerr << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
+    }
+    cerr << endl;
     
   }
   catch (Spinnaker::Exception& e)
@@ -361,8 +433,13 @@ double camera_settings_configure(INodeMap& nodeMap, const double exposure_scale,
 #if defined(SPINNAKER_ALLOWED)
 // This function returns the camera to its default state by re-enabling automatic
 // exposure.
-int camera_settings_reset(INodeMap& nodeMap)
+int camera_settings_reset(CameraPtr pCam)
 {
+  // Retrieve GenICam nodemaps
+  INodeMap& nodeMap = pCam->GetNodeMap();
+  INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+  INodeMap& nodeMapTLStream = pCam->GetTLStreamNodeMap();
+
   int result = 0;
   try
   {
@@ -450,7 +527,185 @@ int camera_settings_reset(INodeMap& nodeMap)
 }
 #endif
 
-// TODO: we need to actually implement all the spinnaker functions and thread handling here
+int dvd_DvisEst_image_capture_thread()
+{            
+  int result = 0;
+  int cam_err = 0;
+
+  // Get camera pointer
+  // Retrieve singleton reference to system object
+  SystemPtr system = System::GetInstance();
+
+  // Print out current library version
+  const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
+  cerr << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
+     << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+     << endl;
+
+  // Retrieve list of cameras from the system
+  CameraList camList = system->GetCameras();
+  unsigned int numCameras = camList.GetSize();
+  cerr << "Number of cameras detected: " << numCameras << endl << endl;
+
+  CameraPtr pCam;
+
+  try
+  {
+    // Finish if there are no cameras
+    if(numCameras == 0)
+    {
+      capture_thread_ready = true;
+      cerr << "Not enough cameras! Exiting..." << endl;
+    }
+    else
+    {
+      // continue camera init
+      // just take first camera (why are there 2 plugged in? what?)
+      pCam = camList.GetByIndex(0);
+
+      // Initialize camera
+      pCam->Init();
+
+      // Configure exposure
+      // TODO: Load groundplane auto exposure and gain settings
+      cam_err = camera_settings_configure(pCam, 1.0, 1.0);
+      if (cam_err < 0)
+      {
+        result = cam_err;
+      }
+
+      // Print image format info
+      cerr << endl << "Pixel Format Enum: " << pCam->PixelFormat.GetValue() << " == " << PixelFormat_BayerRG8 << endl;
+
+      cerr << "Acquiring images..." << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+      // Begin acquiring images
+      pCam->BeginAcquisition();
+    }
+
+    uint64_t image_count = 0;
+    uint64_t timestamp_ns;
+    uint64_t init_timestamp_ns = 0;
+    ImagePtr imagePtr;
+    cv::Mat  imageMat;
+
+    while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME && !capture_thread_ready && result == 0)
+    {
+      /*if(image_count > 1000)
+      {
+        // just do this for test for now
+        cerr << "Image capture count met!" << endl;
+        capture_thread_ready = true;
+        break;
+      }*/
+      // capture frames       
+      // Retrieve next received image and ensure image completion
+      imagePtr = pCam->GetNextImage();
+
+      if (imagePtr->IsIncomplete())
+      {
+        cerr << "Image incomplete with image status " << imagePtr->GetImageStatus() << "..." << endl
+           << endl;
+      }
+      else
+      {
+        if(init_timestamp_ns == 0)
+        {
+          init_timestamp_ns = imagePtr->GetTimeStamp();
+        }
+        timestamp_ns = (imagePtr->GetTimeStamp() - init_timestamp_ns);
+
+        // Convert to OpenCV matrix
+        spinnaker_image_to_opencv_mat(imagePtr, &imageMat);
+        // push to IO thread so we can keep grabbing frames
+        uint32_t frame_id = imagePtr->GetFrameID();
+        image_capture_t image_capture = image_capture_t
+        (
+          imageMat,
+          timestamp_ns,
+          frame_id
+        );
+
+        image_queue_push(&image_capture);
+
+        image_count++;
+      }
+      // Free up image memory after OpenCV conversion                
+      imagePtr->Release();
+    }
+    if(numCameras > 0)
+    {
+      // End acquisition
+      pCam->EndAcquisition();
+
+      // Reset exposure (why bother?)
+      //camera_settings_reset(pCam);
+
+      // wait here until camera references are gone (empty queue)
+      bool ready_to_deint_cam = false;
+      while(!ready_to_deint_cam)
+      {
+        ready_to_deint_cam = image_queue_empty();
+        if(!ready_to_deint_cam && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || result != 0))
+        {
+          // looks like we have some left-over frames to purge before we can de-init the camera
+          image_queue_purge(1);
+          //cerr << "Purge old Spinnaker Image! Queue Size: " << (int)image_queue_size() << endl;          
+        }
+        else
+        {
+          usleep(1000);
+        }
+      }
+
+      // Deinitialize camera
+      pCam->DeInit();
+
+      cerr << "---> Done Spinnaker Camera De-Init!" << endl;
+    }
+
+    // Clear camera list before releasing system
+    // This dumb line is required first
+    pCam = nullptr; 
+    camList.Clear();
+    cerr << "---> Done Spinnaker Camlist Clear!" << endl;
+
+    // Release system
+    system->ReleaseInstance();
+    cerr << "---> Done Spinnaker release system instance!" << endl;
+  }
+  catch (Spinnaker::Exception& e)
+  {
+    cerr << "Error: " << e.what() << endl;
+    result = -1;
+  }
+  catch (...)
+  {
+    cerr << "Unexpected Error in IMAGE CAPTURE!" << endl;
+  }
+
+  return result;
+}
 
 double dvd_DvisEst_image_capture_get_fps()
 {
@@ -497,8 +752,23 @@ void dvd_DvisEst_image_capture_init(void)
 void dvd_DvisEst_image_capture_start(void)
 {
   #if defined(SPINNAKER_ALLOWED)
+    
+  capture_thread = std::thread(dvd_DvisEst_image_capture_thread);
 
-  // start a capture thread
+  /*// jack up thread priority for capture (does this actually help?)
+  #ifdef linux
+  sched_param sch;
+  int policy; 
+  pthread_getschedparam(capture_thread.native_handle(), &policy, &sch);
+  sch.sched_priority = 90;
+  if (pthread_setschedparam(capture_thread.native_handle(), SCHED_FIFO, &sch)) 
+  {
+      cerr << "Failed to setschedparam: " << std::strerror(errno) << '\n';
+  }
+  #endif
+  #ifdef _WIN32
+      // figure out how to do thread priority on Windows...
+  #endif*/
 
   #endif
 }
@@ -510,12 +780,13 @@ void dvd_DvisEst_image_capture_stop(const bool camera_src)
   if(camera_src)
   {
 
+
+    // purge frames here perhaps? Only matters if this is included as a library
+
+    capture_thread.join();
+
   }
   #endif
-
-  // purge frames here perhaps? Only matters if this is included as a library
-
-  //capture_thread.join();
 }
 
 void dvd_DvisEst_image_capture_load_test_queue_threaded(const cv::String imgdir_src, const double dt)
@@ -588,9 +859,9 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
 {
   bool got_frame = true;
-  static int32_t scout_index = 0;
+  static int32_t scerr_index = 0;
 
-  // If any tags have been detected, force subsequent threads out of scout mode
+  // If any tags have been detected, force subsequent threads out of scerr mode
   if(dvd_DvisEst_estimate_get_tags_detected() && *at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
     cerr << "Force Thread #" << (int)thread_id << " into MEAS mode!" << endl; 
@@ -601,53 +872,60 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
   if(*at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
     // TODO: clean this up
-    // we'll mutex this operation since we need the scout index updated before the next thread tries to scout ahead
-    sv_image_scout_mutex.lock();
+    // we'll mutex this operation since we need the scerr index updated before the next thread tries to scerr ahead
+    sv_image_scerr_mutex.lock();
 
     const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
     const int32_t queue_size = image_queue_size();
 
-    // This is the block our scout threads try to stay within
+    // This is the block our scerr threads try to stay within
     // If the queue has less than AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT members, start divying up what's left
-    const int32_t scout_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT; 
-    const int32_t scout_size = min(queue_size, scout_block_max);
-    int32_t scout_block = ceil(scout_size / AT_THREAD_COUNT); // always skip at least 1 frame if one is present
+    const int32_t scerr_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT; 
+    const int32_t scerr_size = min(queue_size, scerr_block_max);
+    int32_t scerr_block = ceil(scerr_size / AT_THREAD_COUNT); // always skip at least 1 frame if one is present
 
-    scout_index += scout_block;
+    scerr_index += scerr_block;
 
-    // Note how purging will only begin once the scout index surpasses 'scout_block_max'
-    int32_t purge_count = max(scout_index - (AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT), 0); // fix this
+    // Note how purging will only begin once the scerr index surpasses 'scerr_block_max'
+    int32_t purge_count = max(scerr_index - (AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT), 0); // fix this
 
-    // purge extra frames, scout index will move along from the front as a result
+    // purge extra frames, scerr index will move along from the front as a result
     *skipped_frames = image_queue_purge(purge_count);
-    scout_index -= purge_count; // Now that the queue has been shortened, move the scout index as appropriate
+    scerr_index -= purge_count; // Now that the queue has been shortened, move the scerr index as appropriate
 
-    // pull the scout frame, but don't pop it from the queue
-    got_frame = image_queue_pull(image_capture, scout_index, 0);
+    // pull the scerr frame, but don't pop it from the queue
+    got_frame = image_queue_pull(image_capture, scerr_index, 0);
 
     // test check:
-    image_capture_t ic_front;
-    image_queue_pull(&ic_front, 0, 0);
+    //image_capture_t ic_front;
+    //image_queue_pull(&ic_front, 0, 0);
 
-    //cerr << "Scout index is now " << scout_index << " for a queue size of " << queue_size - purge_count <<
-    //", FID for scout thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
+    //cerr << "Scerr index is now " << scerr_index << " for a queue size of " << queue_size - purge_count <<
+    //", FID for scerr thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
+
+    static uint32_t image_capture_last_print_time_ms = 0;
+    if(NS_TO_MS(image_capture->timestamp_ns) > image_capture_last_print_time_ms + 1000)
+    {
+      image_capture_last_print_time_ms = NS_TO_MS(image_capture->timestamp_ns);
+      cerr << "Image Queue Size: " << (int)queue_size << endl;
+    }
 
     // test mode only to empty end of queue
-    if(queue_size <= scout_block_max && wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
+    if(queue_size <= scerr_block_max && wrap_things_up_for_test_mode && purge_count == 0 && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
     {
       cerr << "WRAP PURGE!" << dvd_DvisEst_get_estimate_stage() << endl;
       *skipped_frames += image_queue_purge(1);
-      sv_image_scout_mutex.unlock();
+      sv_image_scerr_mutex.unlock();
       return false;
     }
     
-    sv_image_scout_mutex.unlock();
+    sv_image_scerr_mutex.unlock();
   }
   else
   {
     *skipped_frames = 0;
-    // reset scout index
-    scout_index = 0;
+    // reset scerr index
+    scerr_index = 0;
     got_frame = image_queue_pull(image_capture, 0, 1);
     //cerr << "Meas read at FID " << (int)image_capture->frame_id << endl;
   }  

@@ -45,7 +45,7 @@ std::mutex                  test_mutex;
 
 // Start apriltag thread (image_capture_t not yet populated)
 // I don't think we need any return values from these right now
-int at_detection_thread_run(uint8_t thread_id)
+int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, const bool calc_groundplane)
 {
   //cerr << "Thread #" << (int)thread_id << " returned right away (for test!)!" << endl;
   //return 0;
@@ -128,7 +128,7 @@ int at_detection_thread_run(uint8_t thread_id)
     {
       // start processing concurrent frames
       at_detection_thread_mode[thread_id] = AT_DETECTION_THREAD_MODE_MEAS;
-      cout << "Thread #" << (int)thread_id << " changed to MEAS mode!" << endl; 
+      cerr << "Thread #" << (int)thread_id << " changed to MEAS mode!" << endl; 
     }
 
     //test_mutex.lock();
@@ -138,7 +138,15 @@ int at_detection_thread_run(uint8_t thread_id)
     // did we get a frame? Neat, let's reserve a measurement queue slot until apriltag detection is complete
     if(got_image)
     {
-      if(dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id, skipped_frames))
+      // always process the frame when setting the ground plane
+      // but don't bother reserving measurement queue slots
+      bool process_frame = calc_groundplane;
+      if(!calc_groundplane)
+      {
+        process_frame = dvd_DvisEst_estimate_reserve_measurement_slot(image_capture.frame_id, &meas_slot_id, skipped_frames);
+      }
+
+      if(process_frame)
       {
         //test_mutex.unlock();
         // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
@@ -151,7 +159,15 @@ int at_detection_thread_run(uint8_t thread_id)
         //cerr << "Image Size [" << image_size.width << ", " << image_size.height << "]" << endl;
 
         // convert to greyscale
-        cvtColor(image_capture.image_data, img_grey, cv::COLOR_RGB2GRAY);
+        // if using spinnaker images, we are converting from bayer
+        if(convert_from_bayer)
+        {
+          cvtColor(image_capture.image_data, img_grey, cv::COLOR_BayerRG2GRAY);
+        }
+        else
+        {
+          cvtColor(image_capture.image_data, img_grey, cv::COLOR_RGB2GRAY);
+        }
     
         //format opencv Mat into apriltag wrapper
         image_u8_t img_header = 
@@ -174,12 +190,14 @@ int at_detection_thread_run(uint8_t thread_id)
 
         // Check for scout mode, update apriltag detection timer, update thread mode if applicable.
         // For a scout mode thread, never report a measurement
-        if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_SCOUT)
+        // Keep things in Scout mode while we set the groundplane, since we want to update it indefinitely while the 
+        // exposure and gain are being set
+        if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_SCOUT && !calc_groundplane)
         {
           dvd_DvisEst_estimate_set_tags_detected(true, image_capture.frame_id);
         }
 
-        if(detect_num > 0 && at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS)
+        if(detect_num > 0 && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
           // TODO: take first detection which falls within our lookup sets
           for (int tag = 0; tag < min(detect_num, 1); tag++) 
@@ -201,7 +219,7 @@ int at_detection_thread_run(uint8_t thread_id)
             uint16_t tag_size_mm = dl.tag_size_mm;
 
             // get homography transform from tag size
-            const float homography_to_m  = tag_size_mm / 2.0 * 0.001;
+            const float homography_to_m  = (float)tag_size_mm / 2.0 * 0.001;
 
             // Using the apriltag measurement, generate a measurement update for our Kalman filter
             dvd_DvisEst_kf_meas_t kf_meas;
@@ -232,16 +250,24 @@ int at_detection_thread_run(uint8_t thread_id)
               MATD_EL(T, 0, 3)*homography_to_m, 
               MATD_EL(T, 1, 3)*homography_to_m, 
               MATD_EL(T, 2, 3)*homography_to_m
-            );          
+            );
 
-            // calculate disc measurements from AprilTag measurements
-            dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
+            if(calc_groundplane && disc_index == GROUNDPLANE)
+            {
+              // Update ground plane
+              dvd_DvisEst_estimate_update_groundplane(R_CD, T_CD);
+            }
+            else if(!calc_groundplane)
+            {
+              // calculate normal disc measurements from AprilTag measurements
+              dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
 
-            // fulfill measurement reservation
-            dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, &kf_meas);
+              // fulfill measurement reservation
+              dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, &kf_meas);
+            }
           }
         }
-        else
+        else if(!calc_groundplane)
         {
           // No apriltag detections, cancel reservation
           dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS, image_capture.frame_id);
@@ -293,7 +319,7 @@ bool dvd_DvisEst_apriltag_test(void)
 }
 
 // Initialize apriltag thread pool (note, this should be called AFTER dvd_DvisEst_image_processing_init so the camera cal is loaded!)
-void dvd_DvisEst_apriltag_init(void)
+void dvd_DvisEst_apriltag_init(const bool convert_from_bayer, const bool calc_groundplane)
 {
   cerr << "Call dvd_DvisEst_apriltag_init" << endl;
 
@@ -304,7 +330,7 @@ void dvd_DvisEst_apriltag_init(void)
   int i;
   for(i = 0; i < AT_THREAD_COUNT; i++)
   {
-    at_detection_thread[i] = std::thread(at_detection_thread_run, i);
+    at_detection_thread[i] = std::thread(at_detection_thread_run, i, convert_from_bayer, calc_groundplane);
   }
 
   // join all threads right away

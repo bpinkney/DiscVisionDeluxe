@@ -83,6 +83,9 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_
 // Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
 void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_CD, dvd_DvisEst_kf_meas_t * kf_meas);
 
+// Update groundplane during ground plane setting runtime
+void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG, cv::Matx31d T_CG);
+
 // Run the Kalman Filter
 void dvd_DvisEst_estimate_process_filter(void);
 

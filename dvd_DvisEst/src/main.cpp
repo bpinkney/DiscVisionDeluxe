@@ -89,14 +89,6 @@ int main(int argc, char** argv )
     return 0;
   }
 
-  // This would be very similar to a standard throw, except that we may enforce a lower variance threshold
-  // (or perhaps a low magnitude velocity state!)
-  // We could also consider changing the filter covariance, and even the veloicty states, with the assumption that this is indeed stationary.
-  if(set_gnd_plane)
-  {
-    cerr << "Sorry! Setting the ground plane isn't implemented yet!" << endl;
-  }
-
   // Init undistort and image processing
   // Right now, we're just using a fixed scaling coefficient based on the level
   // of detail lost during the undistort (roughly ~x2 the pixels)
@@ -172,11 +164,15 @@ int main(int argc, char** argv )
   }
 
   // Init remaining calls
-  // allocate measurement slots and prep Kalman Filter initial states
-  if(!dvd_DvisEst_estimate_init(gnd_plane, kflog))
-  {
-    cerr << "Can't read ground plane, exiting...!" << endl;
-    return 1;
+
+  if(!set_gnd_plane)
+  {  
+    // allocate measurement slots and prep Kalman Filter initial states
+    if(!dvd_DvisEst_estimate_init(gnd_plane, kflog))
+    {
+      cerr << "Can't read ground plane, exiting...!" << endl;
+      return 1;
+    }
   }
 
   if(!camera_src)
@@ -188,10 +184,13 @@ int main(int argc, char** argv )
   // start estimation thread (Kalman filter)
   // wait for estimation thread to return with a low-variance state
   // start this before your detection thread so we're ready to consume!
-  dvd_DvisEst_estimate_process_filter();
+  if(!set_gnd_plane)
+  { 
+    dvd_DvisEst_estimate_process_filter();
+  }
 
   // start apriltag detection thread pool
-  dvd_DvisEst_apriltag_init();
+  dvd_DvisEst_apriltag_init(camera_src, set_gnd_plane);
 
   // to test the apriltag and estimate code correctly, we need to load
   // the test images in in real-time (as if they were being supplied by the camera)
@@ -215,69 +214,93 @@ int main(int argc, char** argv )
     dvd_DvisEst_image_capture_init();
 
     // start image capture thread
+    dvd_DvisEst_image_capture_start();
   }
   
   // We should be calling reverse-order thread join/destroy functions here
   // Once the filter thread returns, we know we can wrap everything up
   cerr << "Waiting Until threads join..." << endl;
-  dvd_DvisEst_estimate_end_filter();
+  bool got_output = false;
+  char output_cmd[512] = {0};
+  dvd_DvisEst_kf_state_t kf_state;
+
+  if(!set_gnd_plane)
+  {
+    dvd_DvisEst_estimate_end_filter();
+
+    // get final output state
+    got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
+    // we should print this state ASAP for consumption by Mike's dvd_DfisX
+    sprintf(output_cmd, "hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+      kf_state.ang_hps[0].pos,
+      kf_state.ang_hps[1].pos,
+      kf_state.lin_xyz[0].pos,
+      kf_state.lin_xyz[1].pos,
+      kf_state.lin_xyz[2].pos,
+      kf_state.lin_xyz[0].vel,
+      kf_state.lin_xyz[1].vel,
+      kf_state.lin_xyz[2].vel,
+      kf_state.ang_hps[2].vel
+      );
+    cerr << endl << endl;
+    // this is the only line is this program which should be printed to stdout
+    cout << output_cmd << endl;
+
+    cerr << endl << endl;
+  }
+
   dvd_DvisEst_apriltag_end();
   dvd_DvisEst_image_capture_stop(camera_src);
 
-  // get final output state
-  dvd_DvisEst_kf_state_t kf_state;
-  const bool got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
-
-  if(!got_output)
+  if(!set_gnd_plane)
   {
-    cerr << ("Not ouput state! Sorry!\n") << endl;
-    return 0;
-  }
-
-  // plotting with matlab!
-  if(matlab && kflog && !dfisx)
-  {
-    cerr << ("Executing Matlab plot...\n") << endl;
-    system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
-  }
-
-
-  char output_cmd[512] = {0};
-  sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
-    kf_state.ang_hps[0].pos,
-    kf_state.ang_hps[1].pos,
-    kf_state.lin_xyz[0].pos,
-    kf_state.lin_xyz[1].pos,
-    kf_state.lin_xyz[2].pos,
-    kf_state.lin_xyz[0].vel,
-    kf_state.lin_xyz[1].vel,
-    kf_state.lin_xyz[2].vel,
-    kf_state.ang_hps[2].vel
-    );
-
-  //max((double)kf_state.lin_xyz[2].vel, 0.0),
-
-  cerr << "Output String: " << output_cmd << endl;
-
-  // run Skinner's stuff
-  if(dfisx)
-  {
-    system(output_cmd);
-
-    //cerr << "Output String: " << output_cmd << endl;
-
-    if(matlab)
+    if(!got_output)
     {
-      //drive10, 13, 16, 17
-      //angle 1, 2
-      //putt 2
-
-      // Let's plot it up boys!
-      system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
-      
+      cerr << ("Not ouput state! Sorry!\n") << endl;
+      return 0;
     }
 
+    // plotting with matlab!
+    if(matlab && kflog && !dfisx)
+    {
+      cerr << ("Executing Matlab plot...\n") << endl;
+      system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
+    }
+
+    sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+      kf_state.ang_hps[0].pos,
+      kf_state.ang_hps[1].pos,
+      kf_state.lin_xyz[0].pos,
+      kf_state.lin_xyz[1].pos,
+      kf_state.lin_xyz[2].pos,
+      kf_state.lin_xyz[0].vel,
+      kf_state.lin_xyz[1].vel,
+      kf_state.lin_xyz[2].vel,
+      kf_state.ang_hps[2].vel
+      );
+
     cerr << "Output String: " << output_cmd << endl;
+
+    // run Skinner's stuff
+    if(dfisx)
+    {
+      system(output_cmd);
+
+      //cerr << "Output String: " << output_cmd << endl;
+
+      if(matlab)
+      {
+        //drive10, 13, 16, 17
+        //angle 1, 2
+        //putt 2
+
+        // Let's plot it up boys!
+        system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
+        
+      }
+
+      cerr << "Output String: " << output_cmd << endl;
+    }
   }
 
   return 0;

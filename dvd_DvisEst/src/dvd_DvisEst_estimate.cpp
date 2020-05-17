@@ -1,5 +1,6 @@
 #include <dvd_DvisEst_estimate.hpp>
 #include <dvd_DvisEst_image_capture.hpp>
+#include <dvd_DvisEst_maths.hpp>
 
 #include <iostream>
 #include <vector>
@@ -529,6 +530,128 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   kf_meas->lin_xyz_pos[0] = T_GD(0, 0);
   kf_meas->lin_xyz_pos[1] = T_GD(1, 0);
   kf_meas->lin_xyz_pos[2] = T_GD(2, 0);
+
+  }
+  catch (...) 
+  {
+    std::exception_ptr p = std::current_exception();
+    std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
+    exit(1);
+  }
+}
+
+void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_CG_in)
+{
+  static uint32_t ground_plane_meas_count = 0;
+  static float Q_CG_mean[4] = {0};
+  static float T_CG_mean[3] = {0};
+  try
+  {
+    // Note that nominally, the AprilTag lib defines rotations
+    //  ___
+    // |   | -> X
+    // |___| x Z
+    //   |
+    //   v Y
+    // but we want
+    //  ___
+    // |   | -> X
+    // |___| . Z
+    //   |
+    //   v  Y
+    // So we need to invert the Z axis here
+    // In order to get our ground plane defined in a 'closer to unity' way, 
+    // We'll add a bit of complexity here, and instead:
+    // - rotate about the X axis by 180 degrees
+    // - then invert the Y axis (defined)
+    const float x_rot_angle = DEG_TO_RAD(180.0);
+    cv::Matx33d R_GpGx
+    ( 
+      1.0,                  0.0,                0.0,
+      0.0,     cos(x_rot_angle),  -sin(x_rot_angle),
+      0.0,     sin(x_rot_angle),   cos(x_rot_angle)
+    );
+
+    R_CG_in = R_CG_in * R_GpGx;
+
+    // get the average value of RCGp by averaging quaternions 
+    // this isn't quite right, but it's a good enough approximation for similar quaternions
+    float Q_CG[4];
+    float MAT3X3(R_CG_float) = 
+    {
+      (float)R_CG_in(0,0), (float)R_CG_in(0,1), (float)R_CG_in(0,2),
+      (float)R_CG_in(1,0), (float)R_CG_in(1,1), (float)R_CG_in(1,2),
+      (float)R_CG_in(2,0), (float)R_CG_in(2,1), (float)R_CG_in(2,2)
+    };
+    R2Q(R_CG_float, Q_CG);
+    norm_quat(Q_CG);
+    Q_CG_mean[0] += Q_CG[0];
+    Q_CG_mean[1] += Q_CG[1];
+    Q_CG_mean[2] += Q_CG[2];
+    Q_CG_mean[3] += Q_CG[3];
+
+    T_CG_mean[0] += (float)T_CG_in(0,0);
+    T_CG_mean[1] += (float)T_CG_in(1,0);
+    T_CG_mean[2] += (float)T_CG_in(2,0);
+
+    ground_plane_meas_count++;
+    
+    // this is probably too many samples... looks like the exposure took too long to settle???
+    // this was even in scouted thread mode
+    if(ground_plane_meas_count > 1000 && sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE)
+    {
+      sv_kf_estimate_stage = KF_EST_STAGE_COMPLETE;
+
+      float divisor = 1.0/(float)ground_plane_meas_count;
+
+      Q_CG_mean[0] = Q_CG_mean[0] * divisor;
+      Q_CG_mean[1] = Q_CG_mean[1] * divisor;
+      Q_CG_mean[2] = Q_CG_mean[2] * divisor;
+      Q_CG_mean[3] = Q_CG_mean[3] * divisor;
+      norm_quat(Q_CG_mean);
+      Q2R(Q_CG_mean, R_CG_float);
+
+      T_CG_mean[0] = T_CG_mean[0] * divisor;
+      T_CG_mean[1] = T_CG_mean[1] * divisor;
+      T_CG_mean[2] = T_CG_mean[2] * divisor;
+
+      char output[512] = {0};
+
+      sprintf(output, "R_CG = \n[\n%0.5f, %0.5f, %0.5f;\n%0.5f, %0.5f, %0.5f;\n%0.5f, %0.5f, %0.5f\n]\n\nT_CG = [%0.5f, %0.5f, %0.5f]\n",
+        R_CG_float[i3x3(0,0)],
+        R_CG_float[i3x3(0,1)],
+        R_CG_float[i3x3(0,2)],
+        R_CG_float[i3x3(1,0)],
+        R_CG_float[i3x3(1,1)],
+        R_CG_float[i3x3(1,2)],
+        R_CG_float[i3x3(2,0)],
+        R_CG_float[i3x3(2,1)],
+        R_CG_float[i3x3(2,2)],
+        T_CG_mean[0],
+        T_CG_mean[1],
+        T_CG_mean[2]
+        );
+
+      // test print ground plane
+      cerr << output << endl;
+    }
+  /*// rotate by base groundplane
+  // R_GD = R_CG * R_CD;
+  cv::Matx33d R_GD = R_CG * R_CD;
+
+  // rotate xyz_CD positions into xyz_GD frame
+  // subtract base xyz offset defined in CG frame
+  cv::Matx31d T_GD = R_CG * (T_CD - T_CG);
+  //T_GD = R_CG * T_GD;
+  // invert the y axis per our axis defs
+  T_GD(1, 0) = -T_GD(1, 0);
+
+  // Get the angular measurement parameters
+  angle_hyzer_pitch_spin_from_R(&kf_meas->ang_hps_pos[0], &kf_meas->ang_hps_pos[1], &kf_meas->ang_hps_pos[2], R_GD);
+
+  kf_meas->lin_xyz_pos[0] = T_GD(0, 0);
+  kf_meas->lin_xyz_pos[1] = T_GD(1, 0);
+  kf_meas->lin_xyz_pos[2] = T_GD(2, 0);*/
 
   }
   catch (...) 

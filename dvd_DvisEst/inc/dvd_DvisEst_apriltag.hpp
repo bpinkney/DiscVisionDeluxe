@@ -14,7 +14,7 @@
 
 bool dvd_DvisEst_apriltag_test(void);
 // Init apriltag threads, etc.
-void dvd_DvisEst_apriltag_init(void);
+void dvd_DvisEst_apriltag_init(const bool convert_from_bayer, const bool calc_groundplane);
 // Join all apriltag threads
 void dvd_DvisEst_apriltag_end(void);
 
