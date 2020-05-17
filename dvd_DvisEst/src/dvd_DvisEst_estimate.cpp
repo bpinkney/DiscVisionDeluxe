@@ -634,25 +634,24 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
 
       // test print ground plane
       cerr << output << endl;
+
+      // write to ground plane file
+      cv::Matx33d R_CG_out = cv::Matx33d(
+        R_CG_float[i3x3(0,0)],R_CG_float[i3x3(0,1)],R_CG_float[i3x3(0,2)],
+        R_CG_float[i3x3(1,0)],R_CG_float[i3x3(1,1)],R_CG_float[i3x3(1,2)],
+        R_CG_float[i3x3(2,0)],R_CG_float[i3x3(2,1)],R_CG_float[i3x3(2,2)]
+        );
+
+      cv::Matx31d T_CG_out = cv::Matx31d(T_CG_mean[0], T_CG_mean[1], T_CG_mean[2]);
+      
+      FileStorage fs("ground_plane_output.yaml", FileStorage::WRITE);
+
+      //fs << "# rotation from camera frame to ground-plane frame";
+      fs << "R_CG" << R_CG_out;
+      //fs << "# translation from camera frame to ground-plane frame"; 
+      //fs << "# defined in the pre-rotated frame!";
+      fs << "T_CG" << T_CG_out;
     }
-  /*// rotate by base groundplane
-  // R_GD = R_CG * R_CD;
-  cv::Matx33d R_GD = R_CG * R_CD;
-
-  // rotate xyz_CD positions into xyz_GD frame
-  // subtract base xyz offset defined in CG frame
-  cv::Matx31d T_GD = R_CG * (T_CD - T_CG);
-  //T_GD = R_CG * T_GD;
-  // invert the y axis per our axis defs
-  T_GD(1, 0) = -T_GD(1, 0);
-
-  // Get the angular measurement parameters
-  angle_hyzer_pitch_spin_from_R(&kf_meas->ang_hps_pos[0], &kf_meas->ang_hps_pos[1], &kf_meas->ang_hps_pos[2], R_GD);
-
-  kf_meas->lin_xyz_pos[0] = T_GD(0, 0);
-  kf_meas->lin_xyz_pos[1] = T_GD(1, 0);
-  kf_meas->lin_xyz_pos[2] = T_GD(2, 0);*/
-
   }
   catch (...) 
   {
