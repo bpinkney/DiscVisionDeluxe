@@ -57,7 +57,7 @@ std::thread                 capture_thread;
 std::atomic<bool> capture_thread_ready (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
-std::atomic<double>   sv_exposure_us (2100);
+std::atomic<double>   sv_exposure_us (1770);
 std::atomic<double>   sv_gain (30.0);
 
 // static funcs
@@ -267,6 +267,17 @@ static double camera_settings_configure(CameraPtr pCam)
 
     // set exposure and gain
     dvd_DvisEst_image_capture_apply_exposure_gain(pCam);
+
+    // Check exposure value
+    CFloatPtr ptrExposureTime = nodeMap.GetNode("ExposureTime");
+    if (!IsAvailable(ptrExposureTime) || !IsWritable(ptrExposureTime))
+    {
+      cerr << "Unable to check exposure time. Aborting..." << endl << endl;
+      return -1;
+    }
+
+    const float exposure = static_cast<float>(ptrExposureTime->GetValue());
+    cerr << "Exposure (us): " << exposure << endl;
 
     // Check gain value
     CFloatPtr ptrGain = nodeMap.GetNode("Gain");
@@ -510,7 +521,7 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid)
   // add a de-rate factor here to account for overhead
   // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
   // tested experimentally at 522fps to be between 6-7%
-  const double frame_capture_overhead_factor = 1.07;
+  const double frame_capture_overhead_factor = 2.07;
 
   const double max_exposure_us = max_exp_time_s * 1000000.0 / frame_capture_overhead_factor;
 

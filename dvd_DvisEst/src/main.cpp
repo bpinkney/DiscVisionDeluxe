@@ -52,8 +52,7 @@ int main(int argc, char** argv )
     "{groundplane gp |           | Ground plane rotation and pre-rot translation.\n"
                   "                Defines transformation between camera and ground plane frames wrt camera frame.}"
     "{setgroundplane sgp |false| Place sample AprilTag on the ground, and determine resulting ground plane}"
-    "{kflog log      |true       | Generate log files for KF meas and states}"
-    "{d debug        |true       | Enable kflog and capture images from apriltag detections for each throw}"
+    "{d debug log    |false      | Enable kflog and capture images from apriltag detections for each throw}"
     "{matlab ml      |false      | Run some matlab plots using the generated kflog}"
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     ;
@@ -75,14 +74,8 @@ int main(int argc, char** argv )
         cv::String  gnd_plane   = parser.get<cv::String>("groundplane");
   const bool      set_gnd_plane = parser.get<bool>("setgroundplane");
   const bool        debug       = parser.get<bool>("debug");
-        bool        kflog       = parser.get<bool>("kflog");
   const bool        matlab      = parser.get<bool>("matlab");
   const bool        dfisx       = parser.get<bool>("dfisx");
-
-  if(debug)
-  {
-    kflog = true;
-  }
 
   // check for basic function test call
   if(helloworld)
@@ -137,6 +130,7 @@ int main(int argc, char** argv )
     cv::utils::fs::createDirectory(log_path);
     log_debug_path = log_path + datestring + "_log_data/";
     cv::utils::fs::createDirectory(log_debug_path);
+    cv::utils::fs::createDirectory(log_debug_path + "images/");
     dvd_DvisEst_estimate_set_log_dir(log_debug_path);
     cerr << "Logging Path: "  << log_debug_path << endl;
   }
@@ -220,7 +214,7 @@ int main(int argc, char** argv )
   if(!set_gnd_plane)
   {  
     // allocate measurement slots and prep Kalman Filter initial states
-    if(!dvd_DvisEst_estimate_init(kflog))
+    if(!dvd_DvisEst_estimate_init(debug))
     {
       cerr << "Can't read ground plane, exiting...!" << endl;
       return 1;
@@ -313,7 +307,7 @@ int main(int argc, char** argv )
     }
 
     // plotting with matlab!
-    if(matlab && kflog && !dfisx)
+    if(matlab && debug && !dfisx)
     {
       cerr << ("Executing Matlab plot...\n") << endl;
       system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");

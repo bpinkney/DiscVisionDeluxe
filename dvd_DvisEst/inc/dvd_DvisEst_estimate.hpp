@@ -61,6 +61,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog);
 
 bool dvd_DvisEst_estimate_set_ground_plane_file(const std::string gnd_plane_filepath);
 bool dvd_DvisEst_estimate_set_log_dir(const std::string log_dir);
+std::string dvd_DvisEst_estimate_get_log_dir(void);
 
 // If we have recent tag detections, suppress frame skipping
 // expires after a long enough hiatus of detections (if the filter isn't active that is)

@@ -237,8 +237,16 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
       if(process_frame)
       {
-        //test_mutex.unlock();
         // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
+
+        // if we're outputting debug logging, save image to output dir
+        // only bother if we're in MEAS thread mode
+        string log_dir = dvd_DvisEst_estimate_get_log_dir();
+        if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS))
+        {
+          string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
+          imwrite(img_filename, image_capture.image_data);
+        }
 
         // First, undistort the image
         dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data));

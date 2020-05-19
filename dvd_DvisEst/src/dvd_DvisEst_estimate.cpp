@@ -423,6 +423,11 @@ bool dvd_DvisEst_estimate_set_log_dir(const string log_dir)
   sv_log_dir = log_dir;
 }
 
+string dvd_DvisEst_estimate_get_log_dir()
+{
+  return sv_log_dir;
+}
+
 void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_id)
 {
   // don't let this update past the ACTIVE stage of the filter
