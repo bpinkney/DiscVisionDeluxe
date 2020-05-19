@@ -57,8 +57,8 @@ std::thread                 capture_thread;
 std::atomic<bool> capture_thread_ready (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
-std::atomic<double>   sv_exposure_us (1770);
-std::atomic<double>   sv_gain (30.0);
+std::atomic<double>   sv_exposure_us (10);//(1770);
+std::atomic<double>   sv_gain (1.0);
 
 // static funcs
 static int dvd_DvisEst_image_capture_apply_exposure_gain(CameraPtr pCam);
@@ -496,13 +496,20 @@ int camera_settings_reset(CameraPtr pCam)
 
 // use pixel centroid from apriltag sample to set new exposure and gain values
 // hard code filters for now
-void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid)
+void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid, const bool at_detect)
 {
   const double des_centroid = 0.5;
   // Under the current assumption that this only gets called during the ground plane setting
   // set the capture thread to complete once the centroid is around 0.5 
   // (simple bi-modal histogram for now, falsely assumes a balance of BW pixels)
-  if(abs(des_centroid - centroid) < 0.01)
+  // Also, keep simple track of detected AprilTag count (only used for groundplanes etting as you may recall)
+  // we'll use this to gate release of the capture instance so we make sure that we get enough samples
+  static uint32_t at_detect_count = 0;
+  if(at_detect)
+  {
+    at_detect_count++;
+  }
+  if(abs(des_centroid - centroid) < 0.01 && at_detect_count >= 1000)
   {
     capture_thread_ready = true;
     return;
@@ -521,7 +528,7 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid)
   // add a de-rate factor here to account for overhead
   // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
   // tested experimentally at 522fps to be between 6-7%
-  const double frame_capture_overhead_factor = 2.07;
+  const double frame_capture_overhead_factor = 1.07;
 
   const double max_exposure_us = max_exp_time_s * 1000000.0 / frame_capture_overhead_factor;
 
@@ -530,31 +537,54 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid)
   const double max_gain = 100;
 
   const double centroid_err = des_centroid - centroid;
+  // accelerate gain when sweeping openloop (helps make up for our lack of linearization here)
+  // TODO: calculate the histogram of the entire scene and use that for the sweep so it is linearized
   const double gain_p       = 0.2;
-  const double exposure_p   = 1.0;
+  const double exposure_p   = (at_detect ? 3.0 : 20.0); 
 
   // NOTE: This is not linear at all! We can fix this later if required
 
   // if things are too dark (centroid_err +ve), try decreasing the exposure
   // if we hit the minimum, try increasing the gain
   // if things are too light, always decrease the exposure time first
-  if(set_exposure_us < max_exposure_us - 0.01 || centroid_err < 0)
+  if(set_exposure_us < max_exposure_us - 0.01)
   {
-    set_exposure_us += centroid_err * exposure_p;
+    const double previous_exposure = set_exposure_us;
+    const double exp_delta = centroid_err * exposure_p;
+    set_exposure_us += exp_delta;
     set_exposure_us = min(set_exposure_us, max_exposure_us);
-    set_gain -= centroid_err * gain_p * 0.25;
+
+    // give leftover change to gain if we hit the limit
+    const double leftover_error = (previous_exposure + exp_delta - set_exposure_us) / exposure_p;
+
+    set_gain += leftover_error * gain_p;
     set_gain = max(1.0, set_gain);
   }
   else
   {
-    set_gain += centroid_err * gain_p;
-    set_exposure_us -= centroid_err * exposure_p * 0.25;
+    const double previous_gain = set_gain;
+    const double gain_delta = centroid_err * gain_p;
+    set_gain += gain_delta;
+    set_gain = max(1.0, set_gain);
+
+    // give leftover change to exposure if we hit the limit
+    const double leftover_error = (previous_gain + gain_delta - set_gain) / gain_p;
+
+    set_exposure_us += leftover_error * exposure_p;
     set_exposure_us = min(set_exposure_us, max_exposure_us);
   }
 
   dvd_DvisEst_image_capture_set_exposure_gain(set_exposure_us, set_gain);
 
-  cerr << "Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
+  if(!at_detect)
+  {
+    cerr << "NODETECT Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
+  }
+  else
+  {
+    cerr << "DETECT! Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
+  }
+  
 }
 
 void dvd_DvisEst_image_capture_set_exposure_gain(const double exposure_us, const double gain)

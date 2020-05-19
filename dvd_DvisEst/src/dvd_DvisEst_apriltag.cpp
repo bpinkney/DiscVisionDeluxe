@@ -47,7 +47,7 @@ std::atomic<float> at_pixel_centroid{0};
 std::mutex                  test_mutex;
 
 // Get intensity centroid of pixels which make up apriltag, normalized to [0,1]
-static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_points[1][4])
+static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_points[1][4], uint64_t timestamp_ns)
 {
   const cv::Point* ppt[1] = { at_corner_points[0] };
   int npt[] = { 4 };
@@ -100,10 +100,10 @@ static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_po
   at_pixel_centroid = (centroid_num / std::max(centroid_den, (float)0.001)) / 255.0;
 
   // TODO: wrap this behind the debug flag
-  static bool already_shown = false;
-  if(!already_shown && abs(at_pixel_centroid - 0.5) < 0.01)
+  static uint64_t last_show_time = 0;
+  if(abs(at_pixel_centroid - 0.5) < 0.01 && timestamp_ns - last_show_time > MS_TO_NS(1000))
   {
-    already_shown = true;
+    last_show_time = timestamp_ns;
     // for debugging, show masked frame
     cv::Mat img_masked;
     img_grey.copyTo(img_masked, img_mask);
@@ -116,14 +116,14 @@ static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_po
               1.0,
               CV_RGB(255, 255, 255), //font color
               2);
-    imshow("Sample", img_masked);
+    imshow("Exposure Gain Search", img_masked);
 
-    cout << "[";
+    /*cout << "[";
     for(i = 0; i <= 255; i++) 
     {
       cout << (int)histogram_256[i] << ", ";
     }
-    cout << "]" << endl;
+    cout << "]" << endl;*/
       
     cv::waitKey(100);
   }
@@ -242,7 +242,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         // if we're outputting debug logging, save image to output dir
         // only bother if we're in MEAS thread mode
         string log_dir = dvd_DvisEst_estimate_get_log_dir();
-        if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS))
+        if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
           string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
           imwrite(img_filename, image_capture.image_data);
@@ -362,8 +362,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               }
               // later, we could add this to the regular tag detection and continue to adjust the 
               // gain/exposure throughout throws. For now, just do it when the ground plane is set.
-              at_calculate_pixel_centroid(img_grey, at_corner_points);
-              dvd_DvisEst_image_capture_calculate_exposure_gain(at_pixel_centroid);
+              at_calculate_pixel_centroid(img_grey, at_corner_points, image_capture.timestamp_ns);
+              dvd_DvisEst_image_capture_calculate_exposure_gain(at_pixel_centroid, true);
             }
             else if(!calc_groundplane)
             {
@@ -379,6 +379,21 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         {
           // No apriltag detections, cancel reservation
           dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS, image_capture.frame_id);
+        }
+        else
+        {
+          // We're setting the ground plane, and the exposure starts from "very dark"
+          // assume that we need to make the scene progressively lighter for now
+          // target is 0.5, so 0.05 of centroid error
+          dvd_DvisEst_image_capture_calculate_exposure_gain(0.45, false);
+          static uint64_t last_show_time = 0;
+
+          if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))
+          {
+            imshow("Exposure Gain Search", img_grey);
+            last_show_time = image_capture.timestamp_ns;
+            cv::waitKey(100);
+          }
         }
 
         apriltag_detections_destroy(detections);
