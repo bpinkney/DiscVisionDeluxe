@@ -71,6 +71,9 @@ std::vector<dvd_DvisEst_kf_meas_t> sv_meas_queue_meas(MEAS_QUEUE_SIZE);
 #define MEAS_QUEUE_STATUS(y) (sv_meas_queue_status[y])
 #define MEAS_QUEUE_MEAS(y)   (sv_meas_queue_meas[y])
 
+string sv_groundplane_filepath;
+string sv_log_dir;
+
 // current index of measurement queue
 uint8_t              sv_meas_queue_read_idx      (0);
 uint8_t              sv_meas_queue_write_idx     (0);
@@ -198,7 +201,7 @@ void toc() {
 // write measurements and states to output files
 static void meas_csv_log_open()
 {
-  meas_csvlog.open("meas.csv", std::ios_base::trunc);// discard old file contents each run
+  meas_csvlog.open(sv_log_dir + "meas.csv", std::ios_base::trunc);// discard old file contents each run
   meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 }
 
@@ -225,7 +228,7 @@ static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time
 
 static void state_csv_log_open()
 {
-  state_csvlog.open("state.csv", std::ios_base::trunc);// discard old file contents each run
+  state_csvlog.open(sv_log_dir + "state.csv", std::ios_base::trunc);// discard old file contents each run
   state_csvlog << 
     "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
              "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel, "
@@ -262,7 +265,7 @@ static void state_csv_log_write(dvd_DvisEst_kf_state_t * state)
 
 static void state_out_csv_log_open()
 {
-  state_out_csvlog.open("state_out.csv", std::ios_base::trunc);// discard old file contents each run
+  state_out_csvlog.open(sv_log_dir + "state_out.csv", std::ios_base::trunc);// discard old file contents each run
   state_out_csvlog << 
     "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
              "ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel, "
@@ -331,7 +334,7 @@ static bool get_linear_fit(double * slope, double * x, double * y, const uint16_
 }
 
 // Init Kalman filter states and measurement queues
-bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
+bool dvd_DvisEst_estimate_init(const bool kflog)
 {
   cerr << "Call dvd_DvisEst_estimate_init" << endl;
 
@@ -365,18 +368,25 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
 
   // load ground plane transformation
   FileStorage fs;
-  fs.open(gnd_plane_file, FileStorage::READ);
+  fs.open(sv_groundplane_filepath, FileStorage::READ);
   if (!fs.isOpened())
   {
-    cerr << "Failed to open gnd_plane_file: " << gnd_plane_file << endl;
+    cerr << "Failed to open gnd_plane_file: " << sv_groundplane_filepath << endl;
     return false;
   }
 
+  // Ground plane data
   FileNode R_CG_fn = fs["R_CG"];
   FileNode T_CG_fn = fs["T_CG"];
+  // Expsoure/gain data
+  FileNode cam_exposure_us_fn = fs["cam_exposure_us"];
+  FileNode cam_gain_fn        = fs["cam_gain"];
 
   try
   {
+    // Try to set exposure and gain
+    dvd_DvisEst_image_capture_set_exposure_gain((double)cam_exposure_us_fn, (double)cam_gain_fn);
+
     // looks like we can just set these directly due to contiguous memory
     R_CG = R_CG_fn.mat();
     T_CG = T_CG_fn.mat();
@@ -401,6 +411,16 @@ bool dvd_DvisEst_estimate_init(cv::String gnd_plane_file, const bool kflog)
   }
 
   return true;
+}
+
+bool dvd_DvisEst_estimate_set_ground_plane_file(const string gnd_plane_filepath)
+{
+  sv_groundplane_filepath = gnd_plane_filepath;
+}
+
+bool dvd_DvisEst_estimate_set_log_dir(const string log_dir)
+{
+  sv_log_dir = log_dir;
 }
 
 void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_id)
@@ -596,10 +616,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
 
     ground_plane_meas_count++;
     
-    // this is probably too many samples... looks like the exposure took too long to settle???
-    // this was even in scouted thread mode
-    if(ground_plane_meas_count > 1000 && sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE)
+    // we need a minimum amount of samples, and the exposure/gain control to have settled
+    if(dvd_DvisEst_image_capture_thread_ready())
     {
+      cerr << "Ground Plane sample count = " << (int)ground_plane_meas_count << endl;
+
       sv_kf_estimate_stage = KF_EST_STAGE_COMPLETE;
 
       float divisor = 1.0/(float)ground_plane_meas_count;
@@ -644,13 +665,21 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
 
       cv::Matx31d T_CG_out = cv::Matx31d(T_CG_mean[0], T_CG_mean[1], T_CG_mean[2]);
       
-      FileStorage fs("ground_plane_output.yaml", FileStorage::WRITE);
+      // get adjusted exposure and gain values
+      double exposure_us;
+      double gain;
+      dvd_DvisEst_image_capture_get_exposure_gain(&exposure_us, &gain);
+
+      FileStorage fs(sv_groundplane_filepath, FileStorage::WRITE);
 
       //fs << "# rotation from camera frame to ground-plane frame";
       fs << "R_CG" << R_CG_out;
       //fs << "# translation from camera frame to ground-plane frame"; 
       //fs << "# defined in the pre-rotated frame!";
       fs << "T_CG" << T_CG_out;
+      // exposure and gain
+      fs << "cam_exposure_us" << exposure_us;
+      fs << "cam_gain" << gain;
     }
   }
   catch (...) 

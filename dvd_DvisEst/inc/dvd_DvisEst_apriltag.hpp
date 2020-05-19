@@ -13,6 +13,8 @@
 #define AT_INT_THREAD_COUNT (2)
 
 bool dvd_DvisEst_apriltag_test(void);
+// Get centroid of apriltag pixel intensities
+float dvd_DvisEst_apriltag_get_at_pixel_centroid(void);
 // Init apriltag threads, etc.
 void dvd_DvisEst_apriltag_init(const bool convert_from_bayer, const bool calc_groundplane);
 // Join all apriltag threads

@@ -41,15 +41,104 @@ double Cy = 0;
 std::vector<std::thread>          at_detection_thread (AT_THREAD_COUNT);
 std::vector<std::atomic<uint8_t>> at_detection_thread_mode (AT_THREAD_COUNT);
 
+// store apriltag pixel centroid for consumption by auto gain/exposure
+std::atomic<float> at_pixel_centroid{0};
+
 std::mutex                  test_mutex;
+
+// Get intensity centroid of pixels which make up apriltag, normalized to [0,1]
+static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_points[1][4])
+{
+  const cv::Point* ppt[1] = { at_corner_points[0] };
+  int npt[] = { 4 };
+  int lineType = 8;
+
+  cv::Mat img_mask;
+  img_grey.copyTo(img_mask);
+
+  // change mask to black
+  img_mask = cv::Scalar(0);
+
+  // fill apriltag bounding box with white pixels
+  fillPoly(img_mask,
+           ppt,
+           npt,
+           1,
+           cv::Scalar( 255, 255, 255 ),
+           lineType);
+
+  vector<cv::Point> indices;
+  const int count = countNonZero(img_mask);
+  if(count > 0)
+  {
+    findNonZero(img_mask, indices);
+  }
+
+  uint8_t histogram_256[256] = {0};
+  cv::Scalar pixel_colour;
+  for(int point = 0; point < count; point++)
+  {
+    // get original colour at point specified within mask
+    pixel_colour = img_grey.at<uchar>(indices[point]);
+
+    // build histogram
+    int bin = (uint8_t)pixel_colour[0];
+    histogram_256[bin]++;
+  }
+
+  // Generate centroid from histogram
+  float centroid_num = 0;
+  float centroid_den = 0;
+  int i;
+  for(i = 0; i <= 255; i++) 
+  {
+      centroid_num += (float)(i+1) * (float)histogram_256[i];
+      centroid_den += (float)histogram_256[i];
+  }
+    
+  // Calculate MSV and Normalize to [0-1]
+  at_pixel_centroid = (centroid_num / std::max(centroid_den, (float)0.001)) / 255.0;
+
+  // TODO: wrap this behind the debug flag
+  static bool already_shown = false;
+  if(!already_shown && abs(at_pixel_centroid - 0.5) < 0.01)
+  {
+    already_shown = true;
+    // for debugging, show masked frame
+    cv::Mat img_masked;
+    img_grey.copyTo(img_masked, img_mask);
+    ostringstream s;
+    s << "Centroid = " << at_pixel_centroid;
+    cv::putText(img_masked, //target image
+              s.str(), //text
+              cv::Point(10, img_masked.rows / 2), //top-left position
+              cv::FONT_HERSHEY_DUPLEX,
+              1.0,
+              CV_RGB(255, 255, 255), //font color
+              2);
+    imshow("Sample", img_masked);
+
+    cout << "[";
+    for(i = 0; i <= 255; i++) 
+    {
+      cout << (int)histogram_256[i] << ", ";
+    }
+    cout << "]" << endl;
+      
+    cv::waitKey(100);
+  }
+
+}
+
+float dvd_DvisEst_apriltag_get_at_pixel_centroid(void)
+{
+  return at_pixel_centroid;
+}
 
 // Start apriltag thread (image_capture_t not yet populated)
 // I don't think we need any return values from these right now
 int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, const bool calc_groundplane)
 {
-  //cerr << "Thread #" << (int)thread_id << " returned right away (for test!)!" << endl;
-  //return 0;
-
   // Local def for image capture
   image_capture_t image_capture;
   // which measurement slot we are assigned
@@ -256,6 +345,17 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             {
               // Update ground plane
               dvd_DvisEst_estimate_update_groundplane(R_CD, T_CD);
+
+              // get pixel intensity centroid from detected apriltag [0,1]
+              cv::Point at_corner_points[1][4];
+              for (int c = 0; c < 4; c++)
+              {
+                at_corner_points[0][c] = cv::Point(det->p[c][0], det->p[c][1]);
+              }
+              // later, we could add this to the regular tag detection and continue to adjust the 
+              // gain/exposure throughout throws. For now, just do it when the ground plane is set.
+              at_calculate_pixel_centroid(img_grey, at_corner_points);
+              dvd_DvisEst_image_capture_calculate_exposure_gain(at_pixel_centroid);
             }
             else if(!calc_groundplane)
             {

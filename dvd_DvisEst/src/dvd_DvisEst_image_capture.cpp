@@ -57,6 +57,11 @@ std::thread                 capture_thread;
 std::atomic<bool> capture_thread_ready (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
+std::atomic<double>   sv_exposure_us (2100);
+std::atomic<double>   sv_gain (30.0);
+
+// static funcs
+static int dvd_DvisEst_image_capture_apply_exposure_gain(CameraPtr pCam);
 
 // start thread stuff
 static bool image_queue_empty()
@@ -189,7 +194,7 @@ void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_im
 
 #if defined(SPINNAKER_ALLOWED)
 // Disable everything preventing us from achieving the full frame rate
-double camera_settings_configure(CameraPtr pCam, const double exposure_scale, const double gain_scale)
+static double camera_settings_configure(CameraPtr pCam)
 {
   // Retrieve GenICam nodemaps
   INodeMap& nodeMap = pCam->GetNodeMap();
@@ -239,44 +244,6 @@ double camera_settings_configure(CameraPtr pCam, const double exposure_scale, co
     ptrExposureAuto->SetIntValue(ptrExposureAutoOff->GetValue());
     cerr << "Automatic exposure disabled..." << endl;
 
-    // We know that the output framerate of the camera is intrinsically limited 
-    // by the exposure setting
-    // Try to calculate this explicitly
-    double des_frame_rate = 522.0;
-    double max_exp_time_s = 1.0 / des_frame_rate;
-
-    // Since the frame capture is composed of more than just the shutter speeed
-    // add a de-rate factor here to account for overhead
-    // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
-    // tested experimentally at 522fps to be between 6-7%
-    const double frame_capture_overhead_factor = 1.07;
-    // Exposure scale (0-1) reduces the exposure further for faster capture
-    // TODO: We should determine a way to set this explicitly with an init function later!
-    const double des_exposure_us = max_exp_time_s * 1000000.0 * exposure_scale / frame_capture_overhead_factor;
-
-    CFloatPtr ptrExposureTime = nodeMap.GetNode("ExposureTime");
-    if (!IsAvailable(ptrExposureTime) || !IsWritable(ptrExposureTime))
-    {
-      cerr << "Unable to set exposure time. Aborting..." << endl << endl;
-      return -1;
-    }
-
-    // Ensure desired exposure time does not exceed the maximum
-    const double exposureTimeMax = ptrExposureTime->GetMax();
-    const double exposureTimeMin = ptrExposureTime->GetMin();
-    double exposureTimeToSet = des_exposure_us;
-
-    if (exposureTimeToSet > exposureTimeMax)
-    {
-      exposureTimeToSet = exposureTimeMax;
-    }
-    if (exposureTimeToSet < exposureTimeMin)
-    {
-      exposureTimeToSet = exposureTimeMin;
-    }
-
-    ptrExposureTime->SetValue(exposureTimeToSet);
-
     // How can we verify that the gain is actually changing here to make up for the low fixed exposure?
     // Perhaps read the gain values out and wait for convergence? (likely)
     // We can now proceed with disabling the remaining frame-rate inhibiting features
@@ -298,7 +265,10 @@ double camera_settings_configure(CameraPtr pCam, const double exposure_scale, co
     ptrGainAuto->SetIntValue(ptrGainAutoOff->GetValue());
     cerr << "Automatic gain disabled..." << endl;
 
-    // set gain
+    // set exposure and gain
+    dvd_DvisEst_image_capture_apply_exposure_gain(pCam);
+
+    // Check gain value
     CFloatPtr ptrGain = nodeMap.GetNode("Gain");
     if (!IsAvailable(ptrGain) || !IsReadable(ptrGain))
     {
@@ -306,20 +276,6 @@ double camera_settings_configure(CameraPtr pCam, const double exposure_scale, co
       return -1;
     }
 
-    double des_gain = 1.0 * gain_scale;    
-    const double gain_max = ptrGain->GetMax();
-    const double gain_min = ptrGain->GetMin();
-    if (des_gain > gain_max)
-    {
-      des_gain = gain_max;
-    }
-    if (des_gain < gain_min)
-    {
-      des_gain = gain_min;
-    }
-    ptrGain->SetValue(des_gain);
-
-    // Check gain value        
     const float gain = static_cast<float>(ptrGain->GetValue());
     cerr << "Gain: " << gain << endl;
 
@@ -527,6 +483,144 @@ int camera_settings_reset(CameraPtr pCam)
 }
 #endif
 
+// use pixel centroid from apriltag sample to set new exposure and gain values
+// hard code filters for now
+void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid)
+{
+  const double des_centroid = 0.5;
+  // Under the current assumption that this only gets called during the ground plane setting
+  // set the capture thread to complete once the centroid is around 0.5 
+  // (simple bi-modal histogram for now, falsely assumes a balance of BW pixels)
+  if(abs(des_centroid - centroid) < 0.01)
+  {
+    capture_thread_ready = true;
+    return;
+  }
+
+  double set_exposure_us = sv_exposure_us;
+  double set_gain        = sv_gain;
+
+  // We know that the output framerate of the camera is intrinsically limited 
+  // by the exposure setting
+  // Try to calculate this explicitly
+  double des_frame_rate = 522.0;
+  double max_exp_time_s = 1.0 / des_frame_rate;
+
+  // Since the frame capture is composed of more than just the shutter speeed
+  // add a de-rate factor here to account for overhead
+  // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
+  // tested experimentally at 522fps to be between 6-7%
+  const double frame_capture_overhead_factor = 1.07;
+
+  const double max_exposure_us = max_exp_time_s * 1000000.0 / frame_capture_overhead_factor;
+
+  // don't bother checking the limits on the other end
+  // just define them for now
+  const double max_gain = 100;
+
+  const double centroid_err = des_centroid - centroid;
+  const double gain_p       = 0.2;
+  const double exposure_p   = 1.0;
+
+  // NOTE: This is not linear at all! We can fix this later if required
+
+  // if things are too dark (centroid_err +ve), try decreasing the exposure
+  // if we hit the minimum, try increasing the gain
+  // if things are too light, always decrease the exposure time first
+  if(set_exposure_us < max_exposure_us - 0.01 || centroid_err < 0)
+  {
+    set_exposure_us += centroid_err * exposure_p;
+    set_exposure_us = min(set_exposure_us, max_exposure_us);
+    set_gain -= centroid_err * gain_p * 0.25;
+    set_gain = max(1.0, set_gain);
+  }
+  else
+  {
+    set_gain += centroid_err * gain_p;
+    set_exposure_us -= centroid_err * exposure_p * 0.25;
+    set_exposure_us = min(set_exposure_us, max_exposure_us);
+  }
+
+  dvd_DvisEst_image_capture_set_exposure_gain(set_exposure_us, set_gain);
+
+  cerr << "Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
+}
+
+void dvd_DvisEst_image_capture_set_exposure_gain(const double exposure_us, const double gain)
+{
+  sv_exposure_us = exposure_us;
+  sv_gain = gain;
+}
+
+void dvd_DvisEst_image_capture_get_exposure_gain(double * exposure_us, double * gain)
+{
+  *exposure_us = sv_exposure_us;
+  *gain        = sv_gain;
+}
+
+static int dvd_DvisEst_image_capture_apply_exposure_gain(CameraPtr pCam)
+{
+  #if defined(SPINNAKER_ALLOWED)
+  // Retrieve GenICam nodemaps
+  INodeMap& nodeMap = pCam->GetNodeMap();
+
+  try
+  {
+    // Set exposure
+    CFloatPtr ptrExposureTime = nodeMap.GetNode("ExposureTime");
+    if (!IsAvailable(ptrExposureTime) || !IsWritable(ptrExposureTime))
+    {
+      cerr << "Unable to set exposure time. Aborting..." << endl << endl;
+      return -1;
+    }
+
+    // Ensure desired exposure time does not exceed the maximum
+    const double exposureTimeMax = ptrExposureTime->GetMax();
+    const double exposureTimeMin = ptrExposureTime->GetMin();
+    double des_exposure = sv_exposure_us;
+
+    if (des_exposure > exposureTimeMax)
+    {
+      des_exposure = exposureTimeMax;
+    }
+    if (des_exposure < exposureTimeMin)
+    {
+      des_exposure = exposureTimeMin;
+    }
+
+    ptrExposureTime->SetValue(des_exposure);
+
+
+    // Set gain
+    CFloatPtr ptrGain = nodeMap.GetNode("Gain");
+    if (!IsAvailable(ptrGain) || !IsReadable(ptrGain))
+    {
+      cerr << "Unable to get/set gain. Aborting..." << endl << endl;
+      return -1;
+    }
+
+    const double gain_max = ptrGain->GetMax();
+    const double gain_min = ptrGain->GetMin();
+    double des_gain = sv_gain;
+    if (des_gain > gain_max)
+    {
+      des_gain = gain_max;
+    }
+    if (des_gain < gain_min)
+    {
+      des_gain = gain_min;
+    }
+
+    ptrGain->SetValue(des_gain);    
+  }
+  catch (Spinnaker::Exception& e)
+  {
+    cerr << "Error: " << e.what() << endl;
+    return -1;
+  }
+  #endif
+}
+
 int dvd_DvisEst_image_capture_thread()
 {            
   int result = 0;
@@ -568,7 +662,7 @@ int dvd_DvisEst_image_capture_thread()
 
       // Configure exposure
       // TODO: Load groundplane auto exposure and gain settings
-      cam_err = camera_settings_configure(pCam, 1.0, 1.0);
+      cam_err = camera_settings_configure(pCam);
       if (cam_err < 0)
       {
         result = cam_err;
@@ -606,18 +700,14 @@ int dvd_DvisEst_image_capture_thread()
     uint64_t image_count = 0;
     uint64_t timestamp_ns;
     uint64_t init_timestamp_ns = 0;
+    uint64_t expgain_adj_timestamp_ns = 0;
+    double   last_exposure_us = sv_exposure_us;
+    double   last_gain        = sv_gain;
     ImagePtr imagePtr;
     cv::Mat  imageMat;
 
     while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME && !capture_thread_ready && result == 0)
     {
-      /*if(image_count > 1000)
-      {
-        // just do this for test for now
-        cerr << "Image capture count met!" << endl;
-        capture_thread_ready = true;
-        break;
-      }*/
       // capture frames       
       // Retrieve next received image and ensure image completion
       imagePtr = pCam->GetNextImage();
@@ -649,6 +739,18 @@ int dvd_DvisEst_image_capture_thread()
         image_queue_push(&image_capture);
 
         image_count++;
+
+        if(timestamp_ns > expgain_adj_timestamp_ns + S_TO_NS(0.5))
+        {
+          expgain_adj_timestamp_ns = timestamp_ns;
+          // see if exposure and gain need to be updated
+          if(abs(sv_exposure_us - last_exposure_us) > 0.001 || abs(sv_gain - last_gain) > 0.001)
+          {
+            last_exposure_us = sv_exposure_us;
+            last_gain        = sv_gain;
+            dvd_DvisEst_image_capture_apply_exposure_gain(pCam);
+          }
+        }
       }
       // Free up image memory after OpenCV conversion                
       imagePtr->Release();
@@ -656,12 +758,16 @@ int dvd_DvisEst_image_capture_thread()
     if(numCameras > 0)
     {
       // End acquisition
+      cerr << "---> Spinnaker End Acquisition" << endl;
+      // ************* TODO: Why is this taking so long? What?
       pCam->EndAcquisition();
+      cerr << "---> Spinnaker End Acquisition, Complete!" << endl;
 
       // Reset exposure (why bother?)
       //camera_settings_reset(pCam);
 
       // wait here until camera references are gone (empty queue)
+      cerr << "---> Spinnaker Purge Stale Image Queue" << endl;
       bool ready_to_deint_cam = false;
       while(!ready_to_deint_cam)
       {
@@ -679,9 +785,10 @@ int dvd_DvisEst_image_capture_thread()
       }
 
       // Deinitialize camera
+      cerr << "---> Spinnaker Camera De-Init" << endl;
       pCam->DeInit();
 
-      cerr << "---> Done Spinnaker Camera De-Init!" << endl;
+      cerr << "---> Spinnaker Camera De-Init, Complete!" << endl;
     }
 
     // Clear camera list before releasing system

@@ -187,7 +187,7 @@ int main( int argc, char** argv )
   cout << "Cx: " << sCx << endl;
   cout << "Cy: " << sCy << endl;
 
-  Mat view, viewGray, viewOverlay;
+  Mat view, viewGray, viewOverlay, viewMask, viewMasked;
 
   // read in first image (use for size ref)
   view = imread(filenames[0], 1);
@@ -402,12 +402,66 @@ int main( int argc, char** argv )
         const Point* ppt[1] = { corner_points[0] };
         int npt[] = { 4 };
         int lineType = 8;
-        fillPoly( viewOverlay,
+
+        // test for finsing pixels in contour
+        if(0)
+        {
+          viewGray.copyTo(viewMask);
+          viewGray.copyTo(viewMasked);
+
+          // change mask to black
+          viewMask   = Scalar(0);
+          viewMasked = Scalar(0);
+
+          fillPoly(viewMask,
+                ppt,
+                npt,
+                1,
+                Scalar( 255, 255, 255 ),
+                lineType);
+
+/*          char c = (char)waitKey();
+          if( c == 27 || c == 'q' || c == 'Q' )
+            break;*/
+
+          vector<Point> indices;
+          int count = countNonZero(viewMask);
+          cerr << "Non Zero points: " << count << endl;
+          if(count > 0)
+          {
+            findNonZero(viewMask, indices);
+          }
+
+          cerr << "masked pixels [" << endl;
+
+          // since we're operating on a small subset of the image, we can compute our own histogram and centroid
+
+          for (int point = 0; point < count; point++)
+          {
+            // get original colour at point specified within mask
+            Scalar colour = viewGray.at<uchar>(indices[point]);
+            cerr << colour[0] << ",";
+          }
+          cerr << "]" << endl;
+          
+          viewGray.copyTo(viewMasked, viewMask);
+
+          imshow("Do it", viewMasked);
+          char c = (char)waitKey();
+          if( c == 27 || c == 'q' || c == 'Q' )
+            break;
+
+          //usleep(1000000000);
+        }
+        else
+        {
+          fillPoly(viewOverlay,
               ppt,
               npt,
               1,
               Scalar( 0, 255, 0 ),
-              lineType );
+              lineType);
+        }
       }
     }
 

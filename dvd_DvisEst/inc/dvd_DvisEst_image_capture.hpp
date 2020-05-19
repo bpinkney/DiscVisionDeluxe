@@ -53,5 +53,8 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size(void);
 // Return the next captured image from the front of the queue
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id);
 bool dvd_DvisEst_image_capture_image_capture_queue_empty(void);
+void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid);
+void dvd_DvisEst_image_capture_set_exposure_gain(const double exposure_us, const double gain);
+void dvd_DvisEst_image_capture_get_exposure_gain(double * exposure_us, double * gain);
 
 #endif // DVD_DVISEST_IMAGE_CAPTURE_HPP
