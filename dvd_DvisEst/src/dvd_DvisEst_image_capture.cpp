@@ -55,6 +55,7 @@ std::thread                 capture_thread;
 
 // this is only used for test images for now (since we never expect the camera to stop rolling until told to)
 std::atomic<bool> capture_thread_ready (false);
+std::atomic<bool> sv_enable_chime (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
 std::atomic<double>   sv_exposure_us (10);//(1770);
@@ -509,11 +510,13 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid, co
   {
     at_detect_count++;
   }
-  if(abs(des_centroid - centroid) < 0.01 && at_detect_count >= 1000)
+  if(abs(des_centroid - centroid) < 0.01 && at_detect_count >= 500)
   {
     capture_thread_ready = true;
     return;
   }
+
+  //cerr << "Ground Plane Count: " << (int)at_detect_count << endl;
 
   double set_exposure_us = sv_exposure_us;
   double set_gain        = sv_gain;
@@ -734,6 +737,12 @@ int dvd_DvisEst_image_capture_thread()
       cerr << "*************** GOGOGOGO! ******************" << endl << endl;
       cerr << "*************** GOGOGOGO! ******************" << endl << endl;
       cerr << "*************** GOGOGOGO! ******************" << endl << endl;
+
+      if(sv_enable_chime)
+      {
+        std::system("ffplay -nodisp -autoexit ../resources/chime.mp3 >/dev/null 2>&1 &");
+      }
+
       // Begin acquiring images
       pCam->BeginAcquisition();
     }
@@ -886,9 +895,11 @@ bool dvd_DvisEst_image_capture_test(void)
 #endif
 }
 
-void dvd_DvisEst_image_capture_init(void)
+void dvd_DvisEst_image_capture_init(const bool chime)
 {
   #if defined(SPINNAKER_ALLOWED)
+
+  sv_enable_chime = chime;
 
   // set camera params
   cerr << "Call dvd_DvisEst_image_capture_init" << endl;

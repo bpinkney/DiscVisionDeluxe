@@ -53,6 +53,7 @@ int main(int argc, char** argv )
                   "                Defines transformation between camera and ground plane frames wrt camera frame.}"
     "{setgroundplane sgp |false| Place sample AprilTag on the ground, and determine resulting ground plane}"
     "{d debug log    |false      | Enable kflog and capture images from apriltag detections for each throw}"
+    "{ch chime       |false      | Play a chime when primed for next throw}"
     "{matlab ml      |false      | Run some matlab plots using the generated kflog}"
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     ;
@@ -74,6 +75,7 @@ int main(int argc, char** argv )
         cv::String  gnd_plane   = parser.get<cv::String>("groundplane");
   const bool      set_gnd_plane = parser.get<bool>("setgroundplane");
   const bool        debug       = parser.get<bool>("debug");
+  const bool        chime       = parser.get<bool>("chime");
   const bool        matlab      = parser.get<bool>("matlab");
   const bool        dfisx       = parser.get<bool>("dfisx");
 
@@ -257,7 +259,7 @@ int main(int argc, char** argv )
     // the initial disc states have stabilized
 
     // Init camera interface
-    dvd_DvisEst_image_capture_init();
+    dvd_DvisEst_image_capture_init(chime);
 
     // start image capture thread
     dvd_DvisEst_image_capture_start();

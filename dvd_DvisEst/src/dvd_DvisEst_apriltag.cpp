@@ -202,6 +202,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
   // How many frames did we skip each sample to meet our real-time criteria?
   uint16_t skipped_frames = 0;
 
+  uint64_t last_frame_detect_ns = 0;
+
   while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
   {
     // Check for thread mode update
@@ -284,6 +286,11 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         {
           cerr << "*** GOT TAG ***" << endl;
         }*/
+
+        if(detect_num > 0)
+        {
+          last_frame_detect_ns = image_capture.timestamp_ns;
+        }
 
         // Check for scout mode, update apriltag detection timer, update thread mode if applicable.
         // For a scout mode thread, never report a measurement
@@ -385,14 +392,18 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           // We're setting the ground plane, and the exposure starts from "very dark"
           // assume that we need to make the scene progressively lighter for now
           // target is 0.5, so 0.05 of centroid error
-          dvd_DvisEst_image_capture_calculate_exposure_gain(0.45, false);
-          static uint64_t last_show_time = 0;
-
-          if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))
+          // wait until we lose detections before trying to sweep
+          if(image_capture.timestamp_ns - last_frame_detect_ns > MS_TO_NS(5000))
           {
-            imshow("Exposure Gain Search", img_grey);
-            last_show_time = image_capture.timestamp_ns;
-            cv::waitKey(100);
+            dvd_DvisEst_image_capture_calculate_exposure_gain(0.45, false);
+            static uint64_t last_show_time = 0;
+
+            if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))
+            {
+              imshow("Exposure Gain Search", img_grey);
+              last_show_time = image_capture.timestamp_ns;
+              cv::waitKey(100);
+            }
           }
         }
 

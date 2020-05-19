@@ -41,7 +41,7 @@ bool dvd_DvisEst_image_capture_thread_ready(void);
 double dvd_DvisEst_image_capture_get_fps(void);
 bool dvd_DvisEst_image_capture_test(void);
 // Init camera inteface
-void dvd_DvisEst_image_capture_init(void);
+void dvd_DvisEst_image_capture_init(const bool chime);
 // Start collecting frames (this also purges remaining frames in the queue)
 void dvd_DvisEst_image_capture_start(void);
 // Stop collecting frames
