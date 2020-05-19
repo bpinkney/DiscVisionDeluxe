@@ -294,6 +294,14 @@ int main(int argc, char** argv )
     // this is the only line is this program which should be printed to stdout
     cout << output_cmd << endl;
 
+    // also pipe this into the metadata file
+    if(debug)
+    {
+      std::stringstream ss_metadata;
+      ss_metadata << "FILEPATH=$(ls " << log_debug_path << "metadata*); echo \"" << output_cmd << "\" >> " << "$FILEPATH";
+      std::system(ss_metadata.str().c_str());
+    }
+
     cerr << endl << endl;
   }
 
