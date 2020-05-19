@@ -784,6 +784,51 @@ static void process_filter_thread(void)
         toc();
         //sv_kf_estimate_complete = true;
         latch_toc = true;
+
+        // Let's write some metadata out to the logging directory now that the filter has begun
+        // I'm just going to hardcode these associations right now or logging's sake
+        const int queue_size = meas_prime_queue.size()-1;
+        if(queue_size > 0)
+        {
+          std::string disc_name_string = "";
+          switch(meas_prime_queue[queue_size].disc_index)
+          {
+            case GROUNDPLANE:
+              disc_name_string = "GROUNDPLANE";
+              break;
+            case PUTTER:
+              disc_name_string = "MAGNET_JAWBREAKER";
+              break;
+            case PUTTER_OS:
+              disc_name_string = "ZONE_JAWBREAKER";
+              break;
+            case DRIVER:
+              disc_name_string = "SKRIKE_STAR";
+              break;
+            case MIDRANGE:
+              disc_name_string = "BUZZZ_BIGZ";
+              break;
+            case FAIRWAY:
+              disc_name_string = "TBIRD_STAR";
+              break;
+            case DRIVER_OS:
+              disc_name_string = "DESTROYER_DX";
+              break;
+            default:
+              disc_name_string = "UNDEFINED";
+              break;    
+          }
+          std::ofstream metadata;
+          metadata.open(sv_log_dir + "metadata_" + disc_name_string + ".txt", std::ios_base::trunc);
+          metadata << disc_name_string << endl;
+          metadata << "GP: " + sv_groundplane_filepath << endl;
+          metadata.close();
+        }
+        else
+        {
+          cerr << "All meas frames were already purged! No metadata for you!" << endl;
+        }
+
       }
 
       last_loop_ns = now;
