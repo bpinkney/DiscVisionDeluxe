@@ -622,8 +622,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
     ground_plane_meas_count++;
     
     // we need a minimum amount of samples, and the exposure/gain control to have settled
-    if(dvd_DvisEst_image_capture_thread_ready())
+    static bool ground_plane_set = false;
+    if(dvd_DvisEst_image_capture_thread_ready() && !ground_plane_set)
     {
+      // Only do this once!!!!
+      ground_plane_set = true;
       cerr << "Ground Plane sample count = " << (int)ground_plane_meas_count << endl;
 
       sv_kf_estimate_stage = KF_EST_STAGE_COMPLETE;

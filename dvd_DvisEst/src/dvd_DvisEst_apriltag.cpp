@@ -330,8 +330,6 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             // get apriltag ID
             const uint16_t apriltag_id = det->id;
 
-            //cerr << "Got apriltag with ID " << (int)apriltag_id << endl;
-
             // Look up apriltag and disc parameters based on apriltag ID
             map<uint16_t, disc_layout_t>::const_iterator dl_lookup = disc_layout_by_id.find(apriltag_id);
             disc_layout_t dl = dl_lookup->second;
@@ -373,6 +371,9 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               MATD_EL(T, 1, 3)*homography_to_m, 
               MATD_EL(T, 2, 3)*homography_to_m
             );
+
+            cerr << "Got apriltag with ID " << (int)apriltag_id << ", Tag Size(mm): " << (int)tag_size_mm << ", T_CD(m) = [" << 
+              T_CD(0, 0) << ", " << T_CD(1, 0) << ", " << T_CD(2, 0) << "]" << endl;
 
             if(calc_groundplane && disc_index == GROUNDPLANE)
             {
