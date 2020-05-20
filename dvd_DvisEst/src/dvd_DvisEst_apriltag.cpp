@@ -246,6 +246,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         string log_dir = dvd_DvisEst_estimate_get_log_dir();
         if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
+          //cerr << "Write frame " << std::to_string(image_capture.frame_id) << endl;
           string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
           imwrite(img_filename, image_capture.image_data);
         }
@@ -303,6 +304,13 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
         if(detect_num > 0 && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
+          /*if(!log_dir.empty())
+          {
+            cerr << "Write frame AGAIN " << std::to_string(image_capture.frame_id) << endl;
+            string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frameAGAIN.jpg";
+            imwrite(img_filename, image_capture.image_data);
+          }*/
+
           // TODO: take first detection which falls within our lookup sets
           for (int tag = 0; tag < min(detect_num, 1); tag++) 
           {

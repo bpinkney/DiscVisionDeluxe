@@ -101,7 +101,7 @@ static void image_queue_push(image_capture_t * image_capture)
   sv_image_capture_mutex.unlock();
 }
 
-static bool image_queue_pull(image_capture_t * image_capture, const uint16_t front_offset, const bool pop_frame)
+static bool image_queue_pull(image_capture_t * image_capture, int32_t * front_offset, const bool pop_frame)
 {   
   // mutex on
   sv_image_capture_mutex.lock();
@@ -111,13 +111,14 @@ static bool image_queue_pull(image_capture_t * image_capture, const uint16_t fro
     sv_image_capture_mutex.unlock();
     image_capture->timestamp_ns = 0;
     image_capture->frame_id     = 0;
+    *front_offset = 0;
     return false;
   }
   else
   {
     // no deep copy required here I think
-    const uint16_t front_offset_idx = max(0, min((int)front_offset, ((int)sv_image_capture_queue.size())-1));
-    (*image_capture) = sv_image_capture_queue[front_offset_idx]; // 0 is the front of the queue
+    *front_offset = max(0, min((int)*front_offset, ((int)sv_image_capture_queue.size())-1));
+    (*image_capture) = sv_image_capture_queue[*front_offset]; // 0 is the front of the queue
     // only pop frames when reading normally for measurements
     if(pop_frame)
     {
@@ -163,7 +164,7 @@ static uint16_t image_queue_purge(const uint16_t front_offset)
 // this requires a deep copy since the Mat constructor doesn't copy the
 // input data
 #if defined(SPINNAKER_ALLOWED)
-void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_image)
+void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_image, uint32_t frame_id)
 {
   try
   {
@@ -184,6 +185,16 @@ void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_im
       );
 
     image_local.copyTo(*opencv_image);
+
+   /* // test purposes for frame tracking
+    cv::putText(*opencv_image, //target image
+      std::to_string(frame_id), //text
+      cv::Point(10, opencv_image->rows / 2), //top-left position
+      cv::FONT_HERSHEY_DUPLEX,
+      1.0,
+      CV_RGB(255, 255, 255), //font color
+      2);*/
+
     image_local.release();
   }
   catch (const std::exception& e)
@@ -754,7 +765,6 @@ int dvd_DvisEst_image_capture_thread()
     double   last_exposure_us = sv_exposure_us;
     double   last_gain        = sv_gain;
     ImagePtr imagePtr;
-    cv::Mat  imageMat;
 
     while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME && !capture_thread_ready && result == 0)
     {
@@ -776,7 +786,9 @@ int dvd_DvisEst_image_capture_thread()
         timestamp_ns = (imagePtr->GetTimeStamp() - init_timestamp_ns);
 
         // Convert to OpenCV matrix
-        spinnaker_image_to_opencv_mat(imagePtr, &imageMat);
+        // Make sure to declare this matrix locally, OPENCV MAT MEMORY HANDLING IS RUDE
+        cv::Mat  imageMat;
+        spinnaker_image_to_opencv_mat(imagePtr, &imageMat, imagePtr->GetFrameID());
         // push to IO thread so we can keep grabbing frames
         uint32_t frame_id = imagePtr->GetFrameID();
         image_capture_t image_capture = image_capture_t
@@ -1012,8 +1024,6 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 }
 
 // Return the next captured image from the front of the queue
-// TODO: THERE IS SOMETHING WRONG WITH THIS IMPLEMENTATION WHERE INITIAL APRILTAG DETECTIONS ARE LOST!
-// FIX IT!
 #define MAX_FRAME_SKIP_COUNT (10)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
 {
@@ -1021,9 +1031,11 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
   static int32_t scerr_index = 0;
 
   // If any tags have been detected, force subsequent threads out of scerr mode
+  // In this case, we wait
   if(dvd_DvisEst_estimate_get_tags_detected() && *at_thread_mode == AT_DETECTION_THREAD_MODE_SCOUT)
   {
-    cerr << "Force Thread #" << (int)thread_id << " into MEAS mode!" << endl; 
+    cerr << "---->>>>>> Force Thread #" << (int)thread_id << " into MEAS mode!" << endl;
+    return false;
   }
 
   // If we're using test images, might want to keep processing until the end of the queue....
@@ -1037,30 +1049,36 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
     const bool wrap_things_up_for_test_mode = dvd_DvisEst_image_capture_thread_ready();
     const int32_t queue_size = image_queue_size();
 
+    // keep more things in the queue to retain older frames
+    const int32_t queue_mult = 1;
+
     // This is the block our scerr threads try to stay within
     // If the queue has less than AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT members, start divying up what's left
     const int32_t scerr_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT; 
     const int32_t scerr_size = min(queue_size, scerr_block_max);
-    int32_t scerr_block = ceil(scerr_size / AT_THREAD_COUNT); // always skip at least 1 frame if one is present
+    int32_t scerr_block = ceil(scerr_size / (AT_THREAD_COUNT)); // always skip at least 1 frame if one is present
 
     scerr_index += scerr_block;
+    // this should not be required...
+    scerr_index = max(min(scerr_index, queue_size - 1), 0);
 
-    // Note how purging will only begin once the scerr index surpasses 'scerr_block_max'
-    int32_t purge_count = max(scerr_index - (AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT), 0); // fix this
+    // Note how purging will only begin once the scerr index surpasses ('scerr_block_max' * queue_mult) 
+    int32_t purge_count = max(scerr_index - (AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * queue_mult), 0); // fix this
+
+    //is this required?
+    if(dvd_DvisEst_estimate_get_tags_detected())
+    {
+      purge_count = 0;
+    }
 
     // purge extra frames, scerr index will move along from the front as a result
     *skipped_frames = image_queue_purge(purge_count);
     scerr_index -= purge_count; // Now that the queue has been shortened, move the scerr index as appropriate
 
     // pull the scerr frame, but don't pop it from the queue
-    got_frame = image_queue_pull(image_capture, scerr_index, 0);
+    got_frame = image_queue_pull(image_capture, &scerr_index, 0);
 
-    // test check:
-    //image_capture_t ic_front;
-    //image_queue_pull(&ic_front, 0, 0);
-
-    //cerr << "Scerr index is now " << scerr_index << " for a queue size of " << queue_size - purge_count <<
-    //", FID for scerr thread is " << (int)image_capture->frame_id << ", and front is " << (int)ic_front.frame_id << endl;
+    //cerr << "Scout mode with scerr_index = " << (int)scerr_index << ", queue size  = " << (int)queue_size << ", purge count = " << (int)purge_count << ", Frame ID = " << (int)image_capture->frame_id << endl;
 
     static uint32_t image_capture_last_print_time_ms = 0;
     if(NS_TO_MS(image_capture->timestamp_ns) > image_capture_last_print_time_ms + 1000)
@@ -1083,12 +1101,21 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
   else
   {
     *skipped_frames = 0;
-    // reset scerr index
+    // reset scerr index?
     scerr_index = 0;
-    got_frame = image_queue_pull(image_capture, 0, 1);
-    //cerr << "Meas read at FID " << (int)image_capture->frame_id << endl;
+    int32_t scerr_index_zero = 0;
+    got_frame = image_queue_pull(image_capture, &scerr_index_zero, 1);
   }  
 
+  /*// test purposes for frame tracking
+    cv::putText(image_capture->image_data, //target image
+      std::to_string(image_capture->frame_id), //text
+      cv::Point(10, image_capture->image_data.rows / 3), //top-left position
+      cv::FONT_HERSHEY_DUPLEX,
+      1.0,
+      CV_RGB(255, 255, 255), //font color
+      2);
+*/
   return got_frame;
 }
 
