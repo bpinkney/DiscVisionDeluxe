@@ -117,6 +117,7 @@ static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_po
               CV_RGB(255, 255, 255), //font color
               2);
     imshow("Exposure Gain Search", img_masked);
+    cv::waitKey(10);
 
     /*cout << "[";
     for(i = 0; i <= 255; i++) 
@@ -124,10 +125,8 @@ static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_po
       cout << (int)histogram_256[i] << ", ";
     }
     cout << "]" << endl;*/
-      
-    cv::waitKey(100);
   }
-
+  
 }
 
 float dvd_DvisEst_apriltag_get_at_pixel_centroid(void)
@@ -372,8 +371,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               MATD_EL(T, 2, 3)*homography_to_m
             );
 
-            cerr << "Got apriltag with ID " << (int)apriltag_id << ", Tag Size(mm): " << (int)tag_size_mm << ", T_CD(m) = [" << 
-              T_CD(0, 0) << ", " << T_CD(1, 0) << ", " << T_CD(2, 0) << "]" << endl;
+            /*cerr << "Got apriltag with ID " << (int)apriltag_id << ", Tag Size(mm): " << (int)tag_size_mm << ", T_CD(m) = [" << 
+              T_CD(0, 0) << ", " << T_CD(1, 0) << ", " << T_CD(2, 0) << "]" << endl;*/
 
             if(calc_groundplane && disc_index == GROUNDPLANE)
             {
@@ -421,9 +420,9 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             {
               imshow("Exposure Gain Search", img_grey);
               last_show_time = image_capture.timestamp_ns;
-              cv::waitKey(100);
+              cv::waitKey(10);
             }
-          }
+          }          
         }
 
         apriltag_detections_destroy(detections);
