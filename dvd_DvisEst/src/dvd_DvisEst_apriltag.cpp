@@ -250,7 +250,14 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
           // can't save Bayer directly, convert to standard RGB
           cv::Mat img_rgb;
-          cvtColor(image_capture.image_data, img_rgb, cv::COLOR_BayerRG2RGB);
+          if(convert_from_bayer)
+          {
+            cvtColor(image_capture.image_data, img_rgb, cv::COLOR_BayerRG2RGB);
+            }
+          else
+          {
+            img_rgb = image_capture.image_data;
+          }
           imwrite(img_filename, img_rgb);
         }
 
