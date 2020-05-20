@@ -248,7 +248,10 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         {
           //cerr << "Write frame " << std::to_string(image_capture.frame_id) << endl;
           string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
-          imwrite(img_filename, image_capture.image_data);
+          // can't save Bayer directly, convert to standard RGB
+          cv::Mat img_rgb;
+          cvtColor(image_capture.image_data, img_rgb, cv::COLOR_BayerRG2RGB);
+          imwrite(img_filename, img_rgb);
         }
 
         // First, undistort the image
