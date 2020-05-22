@@ -510,7 +510,7 @@ int camera_settings_reset(CameraPtr pCam)
 // hard code filters for now
 void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid, const bool at_detect)
 {
-  const double des_centroid = 0.5;
+  const double des_centroid = 0.6;
   // Under the current assumption that this only gets called during the ground plane setting
   // set the capture thread to complete once the centroid is around 0.5 
   // (simple bi-modal histogram for now, falsely assumes a balance of BW pixels)

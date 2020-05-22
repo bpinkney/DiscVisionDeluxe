@@ -1,7 +1,7 @@
 % args are <csv file path>, <animate>
 function ld = dvd_DfisX_plot_disc_trajectory(varargin)
     
-    close all; clc;
+    clc;
 
     % get path back up to test csv in case no path is provided
     script_path = (mfilename('fullpath'));
@@ -28,7 +28,7 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
 
     M = csvread(filepath, 1, 0);
 
-    time_s          = M(:, 1);
+    time_s          = M(:, 1);%*10.0;
     pos_xyz(:, 1)   = M(:, 2); %forward
     pos_xyz(:, 2)   = M(:, 3);
     pos_xyz(:, 3)   = M(:, 4);
