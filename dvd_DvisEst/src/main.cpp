@@ -114,6 +114,7 @@ int main(int argc, char** argv )
   if(!set_gnd_plane && gnd_plane.empty())
   {
     // use latest ground plane in dir
+    cerr << "Using Latest collected groundplane automatically!" << endl;
     gnd_plane = fn[fn.size()-1];
   }
   else if(set_gnd_plane)

@@ -382,6 +382,10 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   FileNode cam_exposure_us_fn = fs["cam_exposure_us"];
   FileNode cam_gain_fn        = fs["cam_gain"];
 
+  cerr << "Ground Plane RotMat is: " << R_CG_fn.mat() << endl;
+
+  cerr << "Ground Plane offset is: " << T_CG_fn.mat() << endl;
+
   try
   {
     // Try to set exposure and gain
@@ -539,13 +543,14 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   try
   {
   // rotate by base groundplane
-  // R_GD = R_CG * R_CD;
-  cv::Matx33d R_GD = R_CG * R_CD;
+  // R_GD = R_CG' * R_CD;
+  cv::Matx33d R_GD = R_CG.t() * R_CD;
+
 
   // rotate xyz_CD positions into xyz_GD frame
   // subtract base xyz offset defined in CG frame
-  cv::Matx31d T_GD = R_CG * (T_CD - T_CG);
-  //T_GD = R_CG * T_GD;
+  cv::Matx31d T_GD = R_CG.t() * (T_CD - T_CG);
+  //T_GD = R_CG' * T_GD;
   // invert the y axis per our axis defs
   T_GD(1, 0) = -T_GD(1, 0);
 
