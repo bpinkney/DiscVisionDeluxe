@@ -201,8 +201,6 @@ void               step_simulation (Throw_Container &throw_container, float step
 
 void               new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
 
-void               new_throw (int disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
-
 void               finish_throw        (Throw_Container &throw_container);
 
 void               load_disc_parameters();
