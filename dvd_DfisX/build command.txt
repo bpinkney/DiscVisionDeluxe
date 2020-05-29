@@ -1,0 +1,5 @@
+g++ main.cpp dfisx.cpp daero.cpp dgyro.cpp dpropagate.cpp -o main
+
+june 20th
+oct 3rd
+june 12th
