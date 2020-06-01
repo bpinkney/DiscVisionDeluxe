@@ -6,7 +6,7 @@ clear all; close all; clc;
 
 %meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 
-log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-05-31_21-35-27_log_data'
+log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-06-01_12-34-34_log_data'
 
 M_state     = csvread([log_dir, '/state.csv'], 1, 0);
 M_state_out = csvread([log_dir, '/state_out.csv'], 1, 0);
@@ -84,7 +84,7 @@ fig.Units='normalized';
 fig.OuterPosition=[0 0 0.4 0.5];
 
 figure; hold on;
-plot(time_ms_state, ang_hps_pos_state, '-', 'LineWidth', 2)
+plot(time_ms_state, ang_hps_pos_state, '.-', 'LineWidth', 2)
 reset_colours
 plot(out_time_ms_state(1), out_ang_hps_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
@@ -129,6 +129,45 @@ fig=gcf;
 fig.Units='normalized';
 fig.OuterPosition=[0.8 0 0.2 0.5];
 
+% meas
+% move to equally spaced
+time_s = (meas_time_ms_meas(1):0.1:meas_time_ms_meas(end))*0.001;
+signal = interp1(meas_time_ms_meas*0.001, ang_hps_pos_meas, time_s, 'linear', 'extrap');
+[hfm, hgm] = calc_fft(time_s, signal(:, 1));
+[pfm, pgm] = calc_fft(time_s, signal(:, 2));
+ 
+% states
+time_s = (time_ms_state(1):0.1:time_ms_state(end))*0.001;
+signal = interp1(time_ms_state*0.001, ang_hps_pos_state, time_s, 'linear', 'extrap');
+[hf, hg] = calc_fft(time_s, signal(:, 1));
+[pf, pg] = calc_fft(time_s, signal(:, 2));
+
+% freqs = [hf, pf, hfm, pfm];
+% pows  = [hg, pg, hgm, pgm];
+% 
+% idx = freqs > 5;
+% size(pows(idx))
+% 
+% peak_pow = max(pows(idx))
+
+% thres = 5; %Hz
+% peak_hgm = max(hgm(hfm > thres));
+% peak_hg  = max(hg (hf  > thres));
+% peak_pgm = max(pgm(pfm > thres));
+% peak_pg  = max(pg (pf  > thres));
+% 
+% peak_max = max([peak_hgm, peak_hg, peak_pgm, peak_pg]);
+
+figure; hold on;
+plot(hfm, hgm);
+plot(pfm, pgm);
+reset_colours
+plot(hf, hg, '.-');
+plot(pf, pg, '.-');
+title('Ang HYZER PITCH FFT')
+xlabel('Freq (Hz)')
+ylabel('Power')
+xlim([0, 80])
 
 %waitfor(waitidx)
 %pause;
@@ -146,6 +185,15 @@ function rad = wrap2pi(rad)
       rad(i) = rad(i)+2*pi;
     end
   end
+end
+
+function reset_colours()
+    if (isOctave())
+      set(gca, 'ColorOrderIndex', 1)
+    else
+      ax = gca;
+      ax.ColorOrderIndex = 1;
+    end
 end
 
 

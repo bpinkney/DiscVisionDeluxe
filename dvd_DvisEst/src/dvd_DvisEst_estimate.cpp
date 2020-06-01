@@ -639,6 +639,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
     };
     R2Q(R_CG_float, Q_CG);
     norm_quat(Q_CG);
+
+    // TODO: a quaternion can have all the signs reversed and represent the same rotation
+    // check the value of qw (Q = [qw, qx, qy, qz]) and flip the sign of required just in case
+    // for this dodgy average
+
     Q_CG_mean[0] += Q_CG[0];
     Q_CG_mean[1] += Q_CG[1];
     Q_CG_mean[2] += Q_CG[2];
@@ -873,7 +878,7 @@ static void process_filter_thread(void)
     else
     {
       // sleep for a bit so we don't busy poll
-      usleep(1000);
+      usleep(200);
     }
   }
   cerr << "Estimate Thread completed." << endl;
@@ -1132,16 +1137,24 @@ static void kf_meas_update_step()
     // loop to consume all measurements which 'came in' since the last check against sv_kf_state.timestamp_ns
     if(meas_prime_queue.size() > 0)
     {
-      uint64_t meas_timestamp_ns = meas_prime_queue.front().timestamp_ns;
-      //cerr << "Queue prime size = " << meas_prime_queue.size() << ", [st,mt] = " << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "]" << endl;
+      uint8_t meas_count = 0;
 
-      while(sv_kf_state.timestamp_ns > meas_timestamp_ns && meas_prime_queue.size() > 0)
+      while(sv_kf_state.timestamp_ns > meas_prime_queue.front().timestamp_ns && meas_prime_queue.size() > 0)
       {
-        //cerr << "Consume meas [st,mt] = [" << NS_TO_MS(sv_kf_state.timestamp_ns) << ", " << NS_TO_MS(meas_timestamp_ns) << "] Queue prime size = " << meas_prime_queue.size() << endl;
-
         dvd_DvisEst_kf_meas_t new_meas = meas_prime_queue.front();
 
-        meas_timestamp_ns = new_meas.timestamp_ns;
+        meas_count++;
+        static double last_timestamp_ms = 0;
+        static double last_hyzer = 0;
+        if(meas_count > 1)
+        {
+          cerr << "**************Consumed multiple measurements! " 
+            << NS_TO_MS(sv_kf_state.timestamp_ns) << " : "
+            << last_timestamp_ms << ", " << NS_TO_MS(new_meas.timestamp_ns) << " - HYZER "
+            << last_hyzer << ", " << new_meas.ang_hps_pos[0] << endl;
+        }
+        last_timestamp_ms = NS_TO_MS(new_meas.timestamp_ns);
+        last_hyzer = new_meas.ang_hps_pos[0];
 
         int xyz = 0;
         double VEC2(K);
@@ -1174,7 +1187,6 @@ static void kf_meas_update_step()
         // Now that we have a nice shiny state, let's have a look at what we want to output.
         // We're only doing this after a measurement update since we know that out state doesn't get better than that
         kf_check_for_ideal_output_state();
-
       }
     }
 
