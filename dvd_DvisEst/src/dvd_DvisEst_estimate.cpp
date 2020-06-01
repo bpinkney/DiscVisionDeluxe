@@ -543,13 +543,37 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   try
   {
   // rotate by base groundplane
+  // Since Rab = Rcb * Rac
+  // We need Rgd = Rcd * Rgc
+  // Rgd = Rcd * Rcg_t ??
+
   // R_GD = R_CG' * R_CD;
   cv::Matx33d R_GD = R_CG.t() * R_CD;
 
+  /*
+  float Q_CD[4];
+  float MAT3X3(R_CD_float) = 
+  {
+    (float)R_CD(0,0), (float)R_CD(0,1), (float)R_CD(0,2),
+    (float)R_CD(1,0), (float)R_CD(1,1), (float)R_CD(1,2),
+    (float)R_CD(2,0), (float)R_CD(2,1), (float)R_CD(2,2)
+  };
+  R2Q(R_CD_float, Q_CD);
+  norm_quat(Q_CD);
+  Q2R(Q_CD, R_CD_float);
+  cv::Matx33d R_CD_quatted
+  ( 
+    R_CD_float[0], R_CD_float[1], R_CD_float[2],
+    R_CD_float[3], R_CD_float[4], R_CD_float[5],
+    R_CD_float[6], R_CD_float[7], R_CD_float[8]
+  );
+
+  cerr << "R_CD_quatted" << R_CD_quatted << endl;
+  */
 
   // rotate xyz_CD positions into xyz_GD frame
   // subtract base xyz offset defined in CG frame
-  cv::Matx31d T_GD = R_CG.t() * (T_CD - T_CG);
+  cv::Matx31d T_GD = R_CG.t() * (T_CD - T_CG); // should this be the transpose matrix? offset from camera frame to ground frame R_cg definedb backward?
   //T_GD = R_CG' * T_GD;
   // invert the y axis per our axis defs
   T_GD(1, 0) = -T_GD(1, 0);
@@ -642,28 +666,33 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
       Q_CG_mean[1] = Q_CG_mean[1] * divisor;
       Q_CG_mean[2] = Q_CG_mean[2] * divisor;
       Q_CG_mean[3] = Q_CG_mean[3] * divisor;
-      norm_quat(Q_CG_mean);
-      Q2R(Q_CG_mean, R_CG_float);
 
-      T_CG_mean[0] = T_CG_mean[0] * divisor;
-      T_CG_mean[1] = T_CG_mean[1] * divisor;
-      T_CG_mean[2] = T_CG_mean[2] * divisor;
+      cerr << "Q_CG_mean/div" << Q_CG_mean[0] << ", "<< Q_CG_mean[1] << ", "<< Q_CG_mean[2] << ", "<< Q_CG_mean[3] << endl;
+
+      norm_quat(Q_CG_mean);
+      float MAT3X3(R_CG_print);
+      Q2R(Q_CG_mean, R_CG_print);
+
+      float T_CG_print[3] = {0};
+      T_CG_print[0] = T_CG_mean[0] * divisor;
+      T_CG_print[1] = T_CG_mean[1] * divisor;
+      T_CG_print[2] = T_CG_mean[2] * divisor;
 
       char output[512] = {0};
 
       sprintf(output, "R_CG = \n[\n%0.5f, %0.5f, %0.5f;\n%0.5f, %0.5f, %0.5f;\n%0.5f, %0.5f, %0.5f\n]\n\nT_CG = [%0.5f, %0.5f, %0.5f]\n",
-        R_CG_float[i3x3(0,0)],
-        R_CG_float[i3x3(0,1)],
-        R_CG_float[i3x3(0,2)],
-        R_CG_float[i3x3(1,0)],
-        R_CG_float[i3x3(1,1)],
-        R_CG_float[i3x3(1,2)],
-        R_CG_float[i3x3(2,0)],
-        R_CG_float[i3x3(2,1)],
-        R_CG_float[i3x3(2,2)],
-        T_CG_mean[0],
-        T_CG_mean[1],
-        T_CG_mean[2]
+        R_CG_print[i3x3(0,0)],
+        R_CG_print[i3x3(0,1)],
+        R_CG_print[i3x3(0,2)],
+        R_CG_print[i3x3(1,0)],
+        R_CG_print[i3x3(1,1)],
+        R_CG_print[i3x3(1,2)],
+        R_CG_print[i3x3(2,0)],
+        R_CG_print[i3x3(2,1)],
+        R_CG_print[i3x3(2,2)],
+        T_CG_print[0],
+        T_CG_print[1],
+        T_CG_print[2]
         );
 
       // test print ground plane
@@ -671,12 +700,12 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
 
       // write to ground plane file
       cv::Matx33d R_CG_out = cv::Matx33d(
-        R_CG_float[i3x3(0,0)],R_CG_float[i3x3(0,1)],R_CG_float[i3x3(0,2)],
-        R_CG_float[i3x3(1,0)],R_CG_float[i3x3(1,1)],R_CG_float[i3x3(1,2)],
-        R_CG_float[i3x3(2,0)],R_CG_float[i3x3(2,1)],R_CG_float[i3x3(2,2)]
+        R_CG_print[i3x3(0,0)],R_CG_print[i3x3(0,1)],R_CG_print[i3x3(0,2)],
+        R_CG_print[i3x3(1,0)],R_CG_print[i3x3(1,1)],R_CG_print[i3x3(1,2)],
+        R_CG_print[i3x3(2,0)],R_CG_print[i3x3(2,1)],R_CG_print[i3x3(2,2)]
         );
 
-      cv::Matx31d T_CG_out = cv::Matx31d(T_CG_mean[0], T_CG_mean[1], T_CG_mean[2]);
+      cv::Matx31d T_CG_out = cv::Matx31d(T_CG_print[0], T_CG_print[1], T_CG_print[2]);
       
       // get adjusted exposure and gain values
       double exposure_us;

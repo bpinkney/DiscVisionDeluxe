@@ -121,7 +121,9 @@ int main(int argc, char** argv )
   {
     // generate new ground plane filename using number of files in dir +1
     const uint32_t ground_plane_fidx = fn.size();
-    gnd_plane = groundplane_path + std::to_string(ground_plane_fidx) + "_" + datestring + "_ground_plane.yaml";
+    std::stringstream gp_filename;
+    gp_filename << groundplane_path << std::setfill('0') << std::setw(8) << std::to_string(ground_plane_fidx) << "_" << datestring << "_ground_plane.yaml";
+    gnd_plane = gp_filename.str();
   }
   cerr << "Ground Plane Path: "  << gnd_plane << endl;
   dvd_DvisEst_estimate_set_ground_plane_file(gnd_plane);
@@ -184,12 +186,13 @@ int main(int argc, char** argv )
         if(got_one)
         {
           // undistort image first
-          dvd_DvisEst_image_processing_undistort_image(&image_capture.image_data);
+          cv::Mat ud_image_data;
+          dvd_DvisEst_image_processing_undistort_image(&image_capture.image_data, &ud_image_data);
 
           //cv::Size img_size = image_capture.image_data.size();
           //cerr << "Image Width: " << img_size.width << ", Height: " << img_size.height << endl;
 
-          imshow("Image View", image_capture.image_data);
+          imshow("Image View", ud_image_data);
           if(0)
           {
             // wait for keypress to proceed through frames

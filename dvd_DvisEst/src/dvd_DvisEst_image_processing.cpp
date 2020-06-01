@@ -77,6 +77,12 @@ bool dvd_DvisEst_image_processing_get_camera_params(double * Fx, double * Fy, do
     return false;
   }
 
+  cerr << "Camera Calibration Pre Parameters: Fx' = " << 
+  sv_camera_matrix.at<double>(0,0) << ", Fy' = " << 
+  sv_camera_matrix.at<double>(1,1) << ", Cx' = " << 
+  sv_camera_matrix.at<double>(0,2) << ", Cy' = " << 
+  sv_camera_matrix.at<double>(1,2) << endl;
+
   *Fx = sv_camera_matrix.at<double>(0,0) * sv_image_scale;
   *Fy = sv_camera_matrix.at<double>(1,1) * sv_image_scale;
   *Cx = sv_camera_matrix.at<double>(0,2) * sv_image_scale;
@@ -86,7 +92,7 @@ bool dvd_DvisEst_image_processing_get_camera_params(double * Fx, double * Fy, do
 }
 
 // Undistort opencv mat image, and output using the same pointer
-void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image)
+void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image_in, cv::Mat * image_out)
 {
   // No cal loaded? return early
   if(sv_camera_matrix.empty())
@@ -96,12 +102,12 @@ void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image)
   }
 
   Mat d_image, ud_image;
-  d_image = *image;
+  d_image = *image_in;
 
   // use re-map to undistort, linear interpolation
   remap(d_image, ud_image, sv_undistort_map0, sv_undistort_map1, INTER_LINEAR);
 
   // point to undistorted image, free memory from extra mat
-  *image = ud_image;
+  *image_out = ud_image;
   d_image.release();
 }

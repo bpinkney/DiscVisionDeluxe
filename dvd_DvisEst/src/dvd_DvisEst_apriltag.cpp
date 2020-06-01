@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <iomanip>
+#include <iostream>
 
 // CPU AprilTags
 #include "apriltag.h"
@@ -245,8 +247,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         string log_dir = dvd_DvisEst_estimate_get_log_dir();
         if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
-          //cerr << "Write frame " << std::to_string(image_capture.frame_id) << endl;
-          string img_filename = log_dir + "images/" + std::to_string(image_capture.frame_id) + "_frame.jpg";
+          std::stringstream img_filename;
+          img_filename << log_dir << "images/" << std::setfill('0') << std::setw(8) << std::to_string(image_capture.frame_id) << "_frame.jpg";
           // can't save Bayer directly, convert to standard RGB
           cv::Mat img_rgb;
           if(convert_from_bayer)
@@ -257,11 +259,12 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           {
             img_rgb = image_capture.image_data;
           }
-          imwrite(img_filename, img_rgb);
+          imwrite(img_filename.str(), img_rgb);
         }
 
         // First, undistort the image
-        dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data));
+        cv::Mat ud_image_capture;
+        dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data), &ud_image_capture);
 
         //cv::Size image_size = image_capture.image_data.size();
 
@@ -271,11 +274,11 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         // if using spinnaker images, we are converting from bayer
         if(convert_from_bayer)
         {
-          cvtColor(image_capture.image_data, img_grey, cv::COLOR_BayerRG2GRAY);
+          cvtColor(ud_image_capture, img_grey, cv::COLOR_BayerRG2GRAY);
         }
         else
         {
-          cvtColor(image_capture.image_data, img_grey, cv::COLOR_RGB2GRAY);
+          cvtColor(ud_image_capture, img_grey, cv::COLOR_RGB2GRAY);
         }
     
         //format opencv Mat into apriltag wrapper
@@ -477,6 +480,8 @@ void dvd_DvisEst_apriltag_init(const bool convert_from_bayer, const bool calc_gr
 
   // Get initial camera calibration parameters
   dvd_DvisEst_image_processing_get_camera_params(&Fx, &Fy, &Cx, &Cy);
+
+  cerr << "Camera Calibration Parameters: Fx = " << Fx << ", Fy = " << Fy << ", Cx = " << Cx << ", Cy = " << Cy << endl;
 
   // initialize detection threads
   int i;

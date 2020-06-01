@@ -16,6 +16,6 @@ bool dvd_DvisEst_image_processing_init(const cv::String camera_cal_file, const d
 // get scaled camera params
 bool dvd_DvisEst_image_processing_get_camera_params(double * Fx, double * Fy, double * Cx, double * Cy);
 // Undistort opencv mat image, and output using the same pointer
-void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image);
+void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image_in, cv::Mat * image_out);
 
 #endif // DVD_DVISEST_IMAGE_PROCESSING_HPP

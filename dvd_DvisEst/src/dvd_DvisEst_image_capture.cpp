@@ -603,8 +603,8 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid, co
 
 void dvd_DvisEst_image_capture_set_exposure_gain(const double exposure_us, const double gain)
 {
-  sv_exposure_us = exposure_us;
-  sv_gain = gain;
+  sv_exposure_us = exposure_us; //1790.38;//
+  sv_gain = gain; //10.0;//
 }
 
 void dvd_DvisEst_image_capture_get_exposure_gain(double * exposure_us, double * gain)
