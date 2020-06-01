@@ -6,7 +6,7 @@ clear all; close all; clc;
 
 %meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 
-log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-06-01_12-34-34_log_data'
+log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-06-01_15-20-17_log_data'
 
 M_state     = csvread([log_dir, '/state.csv'], 1, 0);
 M_state_out = csvread([log_dir, '/state_out.csv'], 1, 0);
@@ -88,6 +88,9 @@ plot(time_ms_state, ang_hps_pos_state, '.-', 'LineWidth', 2)
 reset_colours
 plot(out_time_ms_state(1), out_ang_hps_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
+% average line
+plot(time_ms_state, repmat(time_ms_state.*0, 1, 2)+repmat(out_ang_hps_pos_state(1, 1:2), length(time_ms_state), 1), '--')
+reset_colours
 plot(meas_time_ms_meas, ang_hps_pos_meas, 'o', 'MarkerSize', 3)
 legend('HYZER', 'PITCH', 'SPIN')
 grid on;
@@ -131,14 +134,14 @@ fig.OuterPosition=[0.8 0 0.2 0.5];
 
 % meas
 % move to equally spaced
-time_s = (meas_time_ms_meas(1):0.1:meas_time_ms_meas(end))*0.001;
-signal = interp1(meas_time_ms_meas*0.001, ang_hps_pos_meas, time_s, 'linear', 'extrap');
+time_s = (double(meas_time_ms_meas(1)):1:double(meas_time_ms_meas(end)))*0.001;
+signal = interp1(double(meas_time_ms_meas)*0.001, ang_hps_pos_meas, time_s, 'linear', 'extrap');
 [hfm, hgm] = calc_fft(time_s, signal(:, 1));
 [pfm, pgm] = calc_fft(time_s, signal(:, 2));
  
 % states
-time_s = (time_ms_state(1):0.1:time_ms_state(end))*0.001;
-signal = interp1(time_ms_state*0.001, ang_hps_pos_state, time_s, 'linear', 'extrap');
+time_s = (double(time_ms_state(1)):1:double(time_ms_state(end)))*0.001;
+signal = interp1(double(time_ms_state)*0.001, ang_hps_pos_state, time_s, 'linear', 'extrap');
 [hf, hg] = calc_fft(time_s, signal(:, 1));
 [pf, pg] = calc_fft(time_s, signal(:, 2));
 
@@ -168,6 +171,9 @@ title('Ang HYZER PITCH FFT')
 xlabel('Freq (Hz)')
 ylabel('Power')
 xlim([0, 80])
+grid on
+
+jim = 1
 
 %waitfor(waitidx)
 %pause;

@@ -377,7 +377,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             /*cerr << "Got apriltag with ID " << (int)apriltag_id << ", Tag Size(mm): " << (int)tag_size_mm << ", T_CD(m) = [" << 
               T_CD(0, 0) << ", " << T_CD(1, 0) << ", " << T_CD(2, 0) << "]" << endl;*/
 
-            if(calc_groundplane && disc_index == GROUNDPLANE)
+            if(calc_groundplane && (disc_index == GROUNDPLANE || disc_index == GROUNDPLANE_BIG))
             {
               // Update ground plane
               dvd_DvisEst_estimate_update_groundplane(R_CD, T_CD);

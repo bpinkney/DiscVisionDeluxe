@@ -54,6 +54,8 @@ struct dvd_DvisEst_kf_state_t
   uint64_t    timestamp_ns;              // Timestamp reported by camera, nanoseconds
   pos_vel_var_state_t     VEC3(lin_xyz); // Linear XYZ states: position (m), velocity (m/s), and covariance matrices
   pos_vel_var_state_t     VEC3(ang_hps); // Angular Hyzer, Pitch, Spin states: position (rad), velocity (rad/s), and covariance matrices
+  double      wobble_mag;
+  DiscIndex   disc_index;                // DiscIndex enum
 };
 
 // Init Kalman filter states and measurement queues

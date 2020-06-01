@@ -285,7 +285,7 @@ static void state_out_csv_log_write(dvd_DvisEst_kf_state_t * state)
 {
   char out[512];
   sprintf(
-      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f",
+      out, "%0.8f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.5f, %0.3f, %d",
       NS_TO_MS(state->timestamp_ns),      
       state->lin_xyz[0].pos, state->lin_xyz[1].pos, state->lin_xyz[2].pos,
       state->lin_xyz[0].vel, state->lin_xyz[1].vel, state->lin_xyz[2].vel,
@@ -294,7 +294,9 @@ static void state_out_csv_log_write(dvd_DvisEst_kf_state_t * state)
       state->lin_xyz[0].var[i2x2(0,0)], state->lin_xyz[1].var[i2x2(0,0)], state->lin_xyz[2].var[i2x2(0,0)],
       state->lin_xyz[0].var[i2x2(1,1)], state->lin_xyz[1].var[i2x2(1,1)], state->lin_xyz[2].var[i2x2(1,1)],
       state->ang_hps[0].var[i2x2(0,0)], state->ang_hps[1].var[i2x2(0,0)], state->ang_hps[2].var[i2x2(0,0)],
-      state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)]
+      state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)],
+      state->wobble_mag,
+      state->disc_index
       );
 
   state_out_csvlog << out << endl;
@@ -833,6 +835,7 @@ static void process_filter_thread(void)
         if(queue_size > 0)
         {
           std::string disc_name_string = "";
+          sv_kf_state.disc_index = meas_prime_queue[queue_size].disc_index;
           switch(meas_prime_queue[queue_size].disc_index)
           {
             case GROUNDPLANE:
@@ -923,6 +926,34 @@ static void kf_check_for_ideal_output_state()
         }        
       }
 
+      // Since the 'wobble' can affect our hyzer and pitch states a fair bit
+      // let's take a running average of some of our best states instead
+      // any time lin_xyz_vel_var_sum < min_variance_sum * 4, add another measurement into the average
+      // this technically biases easrly samples, but that is OK for now
+      static float ang_hp_pos_mean[2] = {0};
+      static float ang_hp_pos_max[2] = {-10000};
+      static float ang_hp_pos_min[2] = { 10000};
+      static float ang_hp_mean_count = 0;
+
+      //cerr << "LIN VEL VAR SUM: " << lin_xyz_vel_var_sum << endl;
+
+      // also check for threshold on 1.0 arbitrarily?
+      if(lin_xyz_vel_var_sum < min_variance_sum * 4 || lin_xyz_vel_var_sum < 1.0)
+      {
+        ang_hp_pos_mean[0] += sv_kf_state.ang_hps[0].pos;
+        ang_hp_pos_mean[1] += sv_kf_state.ang_hps[1].pos;
+        //ang_hps_pos_mean[2] += sv_kf_state.ang_hps[2].pos;
+        ang_hp_mean_count++;
+
+        ang_hp_pos_max[0] = max((float)ang_hp_pos_max[0], (float)sv_kf_state.ang_hps[0].pos);
+        ang_hp_pos_max[1] = max((float)ang_hp_pos_max[1], (float)sv_kf_state.ang_hps[1].pos);
+        ang_hp_pos_min[0] = min((float)ang_hp_pos_min[0], (float)sv_kf_state.ang_hps[0].pos);
+        ang_hp_pos_min[1] = min((float)ang_hp_pos_min[1], (float)sv_kf_state.ang_hps[1].pos);
+
+        //cerr << "Min [H, P]  = " << ang_hp_pos_min[0] << ", " << ang_hp_pos_min[1]
+        //  << " - Max [H, P]  = " << ang_hp_pos_max[0] << ", " << ang_hp_pos_max[1] << endl;
+      }
+
       if(lin_xyz_vel_var_sum < min_variance_sum)
       {
         min_variance_sum = lin_xyz_vel_var_sum;
@@ -931,13 +962,24 @@ static void kf_check_for_ideal_output_state()
         memcpy(&sv_kf_ideal_state, &sv_kf_state, sizeof(dvd_DvisEst_kf_state_t));
 
         cerr << "Set new ideal state at " << NS_TO_MS(sv_kf_state.timestamp_ns) << " ms! (" << min_variance_sum << ")" << endl;
+      }
 
-        if(log_state)
-        {
-          state_out_csv_log_open();
-          state_out_csv_log_write(&sv_kf_ideal_state);
-          state_out_csv_log_close();
-        }
+      // overwrite the angular positions with our running 'anti-wobble' average from above
+      // keep updating the ideal state forthes angular terms as we continue to sample
+      sv_kf_ideal_state.ang_hps[0].pos = ang_hp_pos_mean[0] / ang_hp_mean_count;
+      sv_kf_ideal_state.ang_hps[1].pos = ang_hp_pos_mean[1] / ang_hp_mean_count;
+
+      // Let's compute 'wobble' based on the min and max values
+      // For now, a simple linear mapping between +-45 degrees and our min and max values for each axis
+      // so for hyzer_delta = pitch_delta = 90 degrees -> wobble = 1
+      const float angle_delta_rad = ((ang_hp_pos_max[0] - ang_hp_pos_min[0]) + (ang_hp_pos_max[1] - ang_hp_pos_min[1])) * 0.5;
+      sv_kf_ideal_state.wobble_mag = angle_delta_rad / (M_PI * 0.5);
+
+      if(log_state)
+      {
+        state_out_csv_log_open();
+        state_out_csv_log_write(&sv_kf_ideal_state);
+        state_out_csv_log_close();
       }
     }    
   }

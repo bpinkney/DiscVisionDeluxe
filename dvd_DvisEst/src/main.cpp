@@ -283,7 +283,7 @@ int main(int argc, char** argv )
     // get final output state
     got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
     // we should print this state ASAP for consumption by Mike's dvd_DfisX
-    sprintf(output_cmd, "hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+    sprintf(output_cmd, "hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
       kf_state.ang_hps[0].pos,
       kf_state.ang_hps[1].pos,
       kf_state.lin_xyz[0].pos,
@@ -292,7 +292,9 @@ int main(int argc, char** argv )
       kf_state.lin_xyz[0].vel,
       kf_state.lin_xyz[1].vel,
       kf_state.lin_xyz[2].vel,
-      kf_state.ang_hps[2].vel
+      kf_state.ang_hps[2].vel,
+      kf_state.wobble_mag,
+      kf_state.disc_index
       );
     cerr << endl << endl;
     // this is the only line is this program which should be printed to stdout
@@ -327,7 +329,7 @@ int main(int argc, char** argv )
       system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
     }
 
-    sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f discmold 0 posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble 0",
+    sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
       kf_state.ang_hps[0].pos,
       kf_state.ang_hps[1].pos,
       kf_state.lin_xyz[0].pos,
@@ -336,7 +338,9 @@ int main(int argc, char** argv )
       kf_state.lin_xyz[0].vel,
       kf_state.lin_xyz[1].vel,
       kf_state.lin_xyz[2].vel,
-      kf_state.ang_hps[2].vel
+      kf_state.ang_hps[2].vel,
+      kf_state.wobble_mag,
+      kf_state.disc_index
       );
 
     cerr << "Output String: " << output_cmd << endl;
