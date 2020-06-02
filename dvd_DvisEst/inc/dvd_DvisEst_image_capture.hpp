@@ -39,6 +39,7 @@ struct image_capture_t
 // Functions
 bool dvd_DvisEst_image_capture_thread_ready(void);
 double dvd_DvisEst_image_capture_get_fps(void);
+uint32_t dvd_DvisEst_image_capture_get_camera_serial_number(void);
 bool dvd_DvisEst_image_capture_test(void);
 // Init camera inteface
 void dvd_DvisEst_image_capture_init(const bool chime);

@@ -61,6 +61,8 @@ std::atomic<uint32_t> sv_image_capture_frame_rate (0);
 std::atomic<double>   sv_exposure_us (10);//(1770);
 std::atomic<double>   sv_gain (1.0);
 
+std::atomic<uint32_t> sv_camera_serial_number (0);
+
 // static funcs
 static int dvd_DvisEst_image_capture_apply_exposure_gain(CameraPtr pCam);
 
@@ -394,6 +396,10 @@ static double camera_settings_configure(CameraPtr pCam)
       deviceSerialNumber = ptrStringSerial->GetValue();
 
       cerr << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
+
+      std::stringstream ss;
+      ss << deviceSerialNumber;
+      sv_camera_serial_number = std::stoi(ss.str());
     }
     cerr << endl;
     
@@ -881,6 +887,11 @@ double dvd_DvisEst_image_capture_get_fps()
   return sv_image_capture_frame_rate;
 }
 
+uint32_t dvd_DvisEst_image_capture_get_camera_serial_number()
+{
+  return sv_camera_serial_number;
+}
+
 bool dvd_DvisEst_image_capture_thread_ready()
 {
   return capture_thread_ready;
@@ -915,6 +926,71 @@ void dvd_DvisEst_image_capture_init(const bool chime)
 
   // set camera params
   cerr << "Call dvd_DvisEst_image_capture_init" << endl;
+
+  try
+  {
+    // Get camera pointer
+    // Retrieve singleton reference to system object
+    SystemPtr system = System::GetInstance();
+
+    // Retrieve list of cameras from the system
+    CameraList camList = system->GetCameras();
+    unsigned int numCameras = camList.GetSize();
+
+    CameraPtr pCam;
+
+    // Finish if there are no cameras
+    if(numCameras == 0)
+    {
+      capture_thread_ready = true;
+      cerr << "Not enough cameras! Exiting..." << endl;
+    }
+    else
+    {
+      // continue camera init
+      // just take first camera (why are there 2 plugged in? what?)
+      pCam = camList.GetByIndex(0);
+
+      // Initialize camera
+      pCam->Init();
+
+      INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+
+      // Retrieve device serial number for camera cal
+      gcstring deviceSerialNumber("");
+
+      CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
+      if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+      {
+        deviceSerialNumber = ptrStringSerial->GetValue();
+
+        cerr << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
+
+        std::stringstream ss;
+        ss << deviceSerialNumber;
+        sv_camera_serial_number = std::stoi(ss.str());
+      }
+
+      // de-init camera
+      pCam->DeInit();
+    }
+
+    // Clear camera list before releasing system
+    // This dumb line is required first
+    pCam = nullptr; 
+    camList.Clear();
+
+    // Release system
+    system->ReleaseInstance();
+  }
+  catch (Spinnaker::Exception& e)
+  {
+    cerr << "Error: " << e.what() << endl;
+  }
+  catch (...)
+  {
+    cerr << "Unexpected Error in IMAGE CAPTURE INIT!" << endl;
+  }
 
   #endif
 }

@@ -31,40 +31,49 @@ bool dvd_DvisEst_image_processing_test(void)
   return true;
 }
 
-bool dvd_DvisEst_image_processing_init(const cv::String camera_cal_file, const double image_scale)
+static void dvd_DvisEst_image_processing_load_calib(const cv::String camera_cal_file)
 {
-  cerr << "Call dvd_DvisEst_image_processing_init" << endl;
   // get camera cal parameters from .yaml file
   FileStorage fs;
   fs.open(camera_cal_file, FileStorage::READ);
   if (!fs.isOpened())
   {
       cerr << "Failed to open camera cal: " << camera_cal_file << endl;
-      return false;
   }
+  else
+  {
+    FileNode camera_matrix                    = fs["camera_matrix"];
+    FileNode distortion_coefficients          = fs["distortion_coefficients"];
+    FileNode image_width                      = fs["image_width"];
+    FileNode image_height                     = fs["image_height"];
+    //FileNode avg_reprojection_error           = fs["avg_reprojection_error"];
+    //FileNode per_view_reprojection_errors     = fs["per_view_reprojection_errors"];
+    //FileNode extrinsic_parameters             = fs["extrinsic_parameters"];
 
-  FileNode camera_matrix                    = fs["camera_matrix"];
-  FileNode distortion_coefficients          = fs["distortion_coefficients"];
-  FileNode image_width                      = fs["image_width"];
-  FileNode image_height                     = fs["image_height"];
-  //FileNode avg_reprojection_error           = fs["avg_reprojection_error"];
-  //FileNode per_view_reprojection_errors     = fs["per_view_reprojection_errors"];
-  //FileNode extrinsic_parameters             = fs["extrinsic_parameters"];
+    sv_camera_matrix           = camera_matrix.mat();
+    sv_distortion_coefficients = distortion_coefficients.mat();
 
-  sv_camera_matrix           = camera_matrix.mat();
-  sv_distortion_coefficients = distortion_coefficients.mat();
-  sv_image_scale             = image_scale;
+    // Compute optimal undistort tranformation mappings
+    Size image_size     = Size((double)image_width, (double)image_height);
+    Size image_size_out = Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
 
-  // Compute optimal undistort tranformation mappings
-  Size image_size     = Size((double)image_width, (double)image_height);
-  Size image_size_out = Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
+    // Populate map0 and map1 for undistortion
+    initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Mat(),
+                          getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
+                          image_size_out, CV_8UC1, sv_undistort_map0, sv_undistort_map1);
 
-  // Populate map0 and map1 for undistortion
-  initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Mat(),
-                        getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
-                        image_size_out, CV_8UC1, sv_undistort_map0, sv_undistort_map1);
-
+  }
   fs.release();
+}
+
+bool dvd_DvisEst_image_processing_init(const cv::String camera_cal_file, const double image_scale)
+{
+  cerr << "Call dvd_DvisEst_image_processing_init" << endl;
+
+  sv_image_scale = image_scale;
+
+  dvd_DvisEst_image_processing_load_calib(camera_cal_file);
+
   return true;
 }
 
