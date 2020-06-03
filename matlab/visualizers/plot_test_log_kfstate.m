@@ -6,7 +6,7 @@ clear all; close all; clc;
 
 %meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 
-log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-06-01_15-20-17_log_data'
+log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/2020-06-03_15-27-10_log_data'
 
 M_state     = csvread([log_dir, '/state.csv'], 1, 0);
 M_state_out = csvread([log_dir, '/state_out.csv'], 1, 0);

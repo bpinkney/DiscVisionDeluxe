@@ -20,7 +20,7 @@ double  sv_image_scale = 1.0;
 cv::Mat sv_camera_matrix;
 cv::Mat sv_distortion_coefficients;
 
-// Trandformations used for undistortion
+// Transformations used for undistortion
 cv::Mat sv_undistort_map0;
 cv::Mat sv_undistort_map1;
 
@@ -58,9 +58,22 @@ static void dvd_DvisEst_image_processing_load_calib(const cv::String camera_cal_
     Size image_size_out = Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
 
     // Populate map0 and map1 for undistortion
+    const bool fisheye = true;
+    if(fisheye)
+    {
+      Mat new_cam_mat;
+      fisheye::estimateNewCameraMatrixForUndistortRectify(sv_camera_matrix, sv_distortion_coefficients, image_size,
+                                                          Matx33d::eye(), new_cam_mat, 1.0, image_size_out, 1.0);
+      fisheye::initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Matx33d::eye(),
+                            new_cam_mat,
+                            image_size_out, CV_16SC2, sv_undistort_map0, sv_undistort_map1);
+    }
+    else
+    {
     initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Mat(),
                           getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
                           image_size_out, CV_8UC1, sv_undistort_map0, sv_undistort_map1);
+    }
 
   }
   fs.release();
