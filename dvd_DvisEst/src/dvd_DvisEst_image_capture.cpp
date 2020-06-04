@@ -514,9 +514,8 @@ int camera_settings_reset(CameraPtr pCam)
 
 // use pixel centroid from apriltag sample to set new exposure and gain values
 // hard code filters for now
-void dvd_DvisEst_image_capture_calculate_exposure_gain(const double centroid, const bool at_detect)
+void dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid, const double centroid, const bool at_detect)
 {
-  const double des_centroid = 0.6;
   // Under the current assumption that this only gets called during the ground plane setting
   // set the capture thread to complete once the centroid is around 0.5 
   // (simple bi-modal histogram for now, falsely assumes a balance of BW pixels)
@@ -1101,7 +1100,7 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 
 // Return the next captured image from the front of the queue
 #define MAX_FRAME_SKIP_COUNT (10)
-bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id)
+bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id, const bool calc_groundplane)
 {
   bool got_frame = true;
   static int32_t scerr_index = 0;
@@ -1130,7 +1129,8 @@ bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_ca
 
     // This is the block our scerr threads try to stay within
     // If the queue has less than AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT members, start divying up what's left
-    const int32_t scerr_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT; 
+    // if we're calculating the ground plane, let the scout threads skip more frames
+    const int32_t scerr_block_max = AT_THREAD_COUNT * MAX_FRAME_SKIP_COUNT * (calc_groundplane ? 5.0 : 1.0); 
     const int32_t scerr_size = min(queue_size, scerr_block_max);
     int32_t scerr_block = ceil(scerr_size / (AT_THREAD_COUNT)); // always skip at least 1 frame if one is present
 

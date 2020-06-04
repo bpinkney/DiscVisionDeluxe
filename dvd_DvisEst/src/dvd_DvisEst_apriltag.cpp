@@ -49,7 +49,7 @@ std::atomic<float> at_pixel_centroid{0};
 std::mutex                  test_mutex;
 
 // Get intensity centroid of pixels which make up apriltag, normalized to [0,1]
-static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_points[1][4], uint64_t timestamp_ns)
+static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_points[1][4], uint64_t timestamp_ns, const double des_centroid)
 {
   const cv::Point* ppt[1] = { at_corner_points[0] };
   int npt[] = { 4 };
@@ -103,7 +103,7 @@ static void at_calculate_pixel_centroid(cv::Mat img_grey, cv::Point at_corner_po
 
   // TODO: wrap this behind the debug flag
   static uint64_t last_show_time = 0;
-  if(abs(at_pixel_centroid - 0.5) < 0.01 && timestamp_ns - last_show_time > MS_TO_NS(1000))
+  if(abs(at_pixel_centroid - des_centroid) < 0.1 && timestamp_ns - last_show_time > MS_TO_NS(1000))
   {
     last_show_time = timestamp_ns;
     // for debugging, show masked frame
@@ -225,7 +225,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
     //test_mutex.lock();
     // Look for a new frame from the camera (or perhaps from loaded test images)
-    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, &at_detection_thread_mode[thread_id], thread_id);
+    const bool got_image = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, &at_detection_thread_mode[thread_id], thread_id, calc_groundplane);
 
     // did we get a frame? Neat, let's reserve a measurement queue slot until apriltag detection is complete
     if(got_image)
@@ -388,10 +388,20 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               {
                 at_corner_points[0][c] = cv::Point(det->p[c][0], det->p[c][1]);
               }
+
+              // We can be a bit smarter about what the target centroid should be based on the number
+              // of black and white pixels in each apriltag
+              // ideally, these would be chosen to be balanced, but for now, just scratch in some quick math
+              // also an issue if you print things on non-white cardstock like I did..... skip and fudge factors for this for now
+              // GROUNDPLANE     -> tag 386 for 36h11 -> 18 white squares, 46 black squares, des_centroid_for_balance = 18/46 = 0.39
+              // GROUNDPLANE_BIG -> tag 387 for 36h11 -> 15 white squares, 49 black squares, des_centroid_for_balance = 15/49 = 0.31
+              const double des_centroid = (disc_index == GROUNDPLANE ? 0.39 : 0.31);
+
               // later, we could add this to the regular tag detection and continue to adjust the 
               // gain/exposure throughout throws. For now, just do it when the ground plane is set.
-              at_calculate_pixel_centroid(img_grey, at_corner_points, image_capture.timestamp_ns);
-              dvd_DvisEst_image_capture_calculate_exposure_gain(at_pixel_centroid, true);
+              at_calculate_pixel_centroid(img_grey, at_corner_points, image_capture.timestamp_ns, des_centroid);
+
+              dvd_DvisEst_image_capture_calculate_exposure_gain(des_centroid, at_pixel_centroid, true);
             }
             else if(!calc_groundplane)
             {
@@ -416,7 +426,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           // wait until we lose detections before trying to sweep
           if(image_capture.timestamp_ns - last_frame_detect_ns > MS_TO_NS(5000))
           {
-            dvd_DvisEst_image_capture_calculate_exposure_gain(0.45, false);
+            // sweep up with a fixed error
+            dvd_DvisEst_image_capture_calculate_exposure_gain(0.5, 0.35, false);
             static uint64_t last_show_time = 0;
 
             if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))

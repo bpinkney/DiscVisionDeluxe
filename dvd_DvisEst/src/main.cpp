@@ -202,7 +202,7 @@ int main(int argc, char** argv )
       {
         skipped_frames = 888;// quick flag to avoid frame skips
         std::atomic<uint8_t> thread_mode (AT_DETECTION_THREAD_MODE_MEAS);
-        got_one = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, &thread_mode, 0);
+        got_one = dvd_DvisEst_image_capture_get_next_image_capture(&image_capture, &skipped_frames, &thread_mode, 0, false);
 
         if(got_one)
         {
