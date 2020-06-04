@@ -59,7 +59,7 @@ const disc_layout_t DISC_LAYOUTS[DISC_LAYOUTS_NUM] =
 {
   {NONE,        f36h11,   0,   0, 0},
   {GROUNDPLANE, f36h11, 386, 164, 0},
-  {GROUNDPLANE_BIG, f36h11, 387, 164, 0},
+  {GROUNDPLANE_BIG, f36h11, 387, 489, 0},
   {PUTTER,      f36h11, 100, 109, 1},
   {PUTTER_OS,   f36h11, 101, 109, 1},
   {PUTTER_US,   f36h11, 102, 109, 1},
