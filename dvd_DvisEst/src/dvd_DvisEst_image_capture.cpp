@@ -58,6 +58,20 @@ std::atomic<bool> capture_thread_ready (false);
 std::atomic<bool> sv_enable_chime (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
+
+// We know that the output framerate of the camera is intrinsically limited 
+// by the exposure setting
+// Try to calculate this explicitly
+// Since the frame capture is composed of more than just the shutter speeed
+// add a de-rate factor here to account for overhead
+// e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
+// tested experimentally at 522fps to be between 6-7%
+#define MIN_EXPOSURE_US (10)
+#define MAX_EXPOSURE_US ((1.0 / 522.0) * (1000000.0 / 1.07))
+
+#define MIN_GAIN        (1.0)
+#define MAX_GAIN        (100.0)
+
 std::atomic<double>   sv_exposure_us (10);//(1770);
 std::atomic<double>   sv_gain (1.0);
 
@@ -514,7 +528,7 @@ int camera_settings_reset(CameraPtr pCam)
 
 // use pixel centroid from apriltag sample to set new exposure and gain values
 // hard code filters for now
-void dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid, const double centroid, const bool at_detect)
+bool dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid, const double centroid, const bool at_detect)
 {
   // Under the current assumption that this only gets called during the ground plane setting
   // set the capture thread to complete once the centroid is around 0.5 
@@ -522,76 +536,49 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid
   // Also, keep simple track of detected AprilTag count (only used for groundplanes etting as you may recall)
   // we'll use this to gate release of the capture instance so we make sure that we get enough samples
   static uint32_t at_detect_count = 0;
-  if(at_detect)
-  {
-    at_detect_count++;
-  }
-  if(abs(des_centroid - centroid) < 0.01 && at_detect_count >= 500)
-  {
-    capture_thread_ready = true;
-    return;
-  }
-
-  //cerr << "Ground Plane Count: " << (int)at_detect_count << endl;
 
   double set_exposure_us = sv_exposure_us;
   double set_gain        = sv_gain;
-
-  // We know that the output framerate of the camera is intrinsically limited 
-  // by the exposure setting
-  // Try to calculate this explicitly
-  double des_frame_rate = 522.0;
-  double max_exp_time_s = 1.0 / des_frame_rate;
-
-  // Since the frame capture is composed of more than just the shutter speeed
-  // add a de-rate factor here to account for overhead
-  // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
-  // tested experimentally at 522fps to be between 6-7%
-  const double frame_capture_overhead_factor = 1.07;
-
-  const double max_exposure_us = max_exp_time_s * 1000000.0 / frame_capture_overhead_factor;
-
-  // don't bother checking the limits on the other end
-  // just define them for now
-  const double max_gain = 100;
 
   const double centroid_err = des_centroid - centroid;
   // accelerate gain when sweeping openloop (helps make up for our lack of linearization here)
   // TODO: calculate the histogram of the entire scene and use that for the sweep so it is linearized
   const double gain_p       = 0.2;
-  const double exposure_p   = (at_detect ? 3.0 : 20.0); 
+  const double exposure_p   = (at_detect ? 3.0 : 40.0); 
 
   // NOTE: This is not linear at all! We can fix this later if required
 
   // if things are too dark (centroid_err +ve), try decreasing the exposure
   // if we hit the minimum, try increasing the gain
   // if things are too light, always decrease the exposure time first
-  if(set_exposure_us < max_exposure_us - 0.01)
+  if(set_exposure_us < MAX_EXPOSURE_US - 0.01)
   {
     const double previous_exposure = set_exposure_us;
     const double exp_delta = centroid_err * exposure_p;
     set_exposure_us += exp_delta;
-    set_exposure_us = min(set_exposure_us, max_exposure_us);
+    set_exposure_us = min(set_exposure_us, MAX_EXPOSURE_US);
 
     // give leftover change to gain if we hit the limit
     const double leftover_error = (previous_exposure + exp_delta - set_exposure_us) / exposure_p;
 
     set_gain += leftover_error * gain_p;
-    set_gain = max(1.0, set_gain);
   }
   else
   {
     const double previous_gain = set_gain;
     const double gain_delta = centroid_err * gain_p;
     set_gain += gain_delta;
-    set_gain = max(1.0, set_gain);
+    set_gain = max(MIN_GAIN, set_gain);
 
     // give leftover change to exposure if we hit the limit
     const double leftover_error = (previous_gain + gain_delta - set_gain) / gain_p;
 
     set_exposure_us += leftover_error * exposure_p;
-    set_exposure_us = min(set_exposure_us, max_exposure_us);
   }
+
+  // Bound to upper and lower limits
+  BOUND_VARIABLE(set_exposure_us, MIN_EXPOSURE_US, MAX_EXPOSURE_US);
+  BOUND_VARIABLE(set_gain,        MIN_GAIN,        MAX_GAIN);
 
   dvd_DvisEst_image_capture_set_exposure_gain(set_exposure_us, set_gain);
 
@@ -603,7 +590,23 @@ void dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid
   {
     cerr << "DETECT! Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
   }
-  
+
+  // indiocate whether we have run out of dynamic range
+  const bool hit_limits = 
+    (centroid_err > 0 && set_exposure_us == MAX_EXPOSURE_US && set_gain == MAX_GAIN)
+    ||
+    (centroid_err < 0 && set_exposure_us == MIN_EXPOSURE_US && set_gain == MIN_GAIN);
+
+  if(at_detect)
+  {
+    at_detect_count++;
+  }
+  if((abs(des_centroid - centroid) < 0.01 || hit_limits) && at_detect_count >= 500)
+  {
+    capture_thread_ready = true;
+  }
+
+  return capture_thread_ready;  
 }
 
 void dvd_DvisEst_image_capture_set_exposure_gain(const double exposure_us, const double gain)
