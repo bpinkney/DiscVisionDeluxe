@@ -591,7 +591,7 @@ bool dvd_DvisEst_image_capture_calculate_exposure_gain(const double des_centroid
     cerr << "DETECT! Centroid = " << centroid << ", EXP = " << set_exposure_us << ", GAIN = " << set_gain << endl;
   }
 
-  // indiocate whether we have run out of dynamic range
+  // indicate whether we have run out of dynamic range
   const bool hit_limits = 
     (centroid_err > 0 && set_exposure_us == MAX_EXPOSURE_US && set_gain == MAX_GAIN)
     ||

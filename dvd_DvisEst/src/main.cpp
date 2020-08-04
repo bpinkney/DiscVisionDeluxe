@@ -56,6 +56,7 @@ int main(int argc, char** argv )
     "{ch chime       |false      | Play a chime when primed for next throw}"
     "{matlab ml      |false      | Run some matlab plots using the generated kflog}"
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
+    "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
     ;
 
   cv::CommandLineParser parser(argc, argv, keys);
@@ -78,6 +79,7 @@ int main(int argc, char** argv )
   const bool        chime       = parser.get<bool>("chime");
   const bool        matlab      = parser.get<bool>("matlab");
   const bool        dfisx       = parser.get<bool>("dfisx");
+  const bool        gianttext   = parser.get<bool>("gianttext");
 
   // check for basic function test call
   if(helloworld)
@@ -382,6 +384,84 @@ int main(int argc, char** argv )
       }
 
       cerr << "Output String: " << output_cmd << endl;
+    }
+
+    if(gianttext)
+    {
+      // show info for 10s
+      const float vel_mag_kph = sqrt(kf_state.lin_xyz[0].vel*kf_state.lin_xyz[0].vel + kf_state.lin_xyz[1].vel*kf_state.lin_xyz[1].vel + kf_state.lin_xyz[2].vel*kf_state.lin_xyz[2].vel) * 3.6;
+      const float throw_deg_up = RAD_TO_DEG(atan2(kf_state.lin_xyz[2].vel, kf_state.lin_xyz[0].vel));
+      std::string throw_ud = "";
+      if(throw_deg_up > 0)
+      {
+        throw_ud = "UP";
+      }
+      else
+      {
+        throw_ud = "DOWN";
+      }
+      const float throw_deg_right = RAD_TO_DEG(atan2(kf_state.lin_xyz[1].vel, kf_state.lin_xyz[0].vel));
+      std::string throw_left_right = "";
+      if(throw_deg_right < 0)
+      {
+        throw_left_right = "LEFT";
+      }
+      else
+      {
+        throw_left_right = "RIGHT";
+      }
+      const float spin_rad_d = (kf_state.ang_hps[2].vel);
+      std::string throw_spin_dir = "";
+      if(spin_rad_d > 0)
+      {
+        throw_spin_dir = "CCW";
+      }
+      else
+      {
+        throw_spin_dir = "CW";
+      }
+
+      std::string throw_wobble = "";
+      if(kf_state.wobble_mag > 0.8)
+      {
+        throw_wobble = "ULTRA";
+      }
+      else if(kf_state.wobble_mag > 0.6)
+      {
+        throw_wobble = "SUPER";
+      }
+      else if(kf_state.wobble_mag > 0.4)
+      {
+        throw_wobble = "LOTS OF";
+      }
+      else if(kf_state.wobble_mag > 0.2)
+      {
+        throw_wobble = "MODERATE";
+      }
+      else if(kf_state.wobble_mag > 0.1)
+      {
+        throw_wobble = "MILD";
+      }
+      else
+      {
+        throw_wobble = "LOW";
+      }
+
+      // sadly, sm can't handle negative numbers (sigh), so well directionalize everything
+      sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n %0.1f° %s  %0.1f° %s \\r\\n %0.1f rad/s %s\\r\\n %s WOBBLE' > /tmp/disptext; timeout 10s sm -a 1 `cat /tmp/disptext`",
+        vel_mag_kph,
+        fabs(throw_deg_up),
+        throw_ud.c_str(),
+        fabs(throw_deg_right),
+        throw_left_right.c_str(),
+        fabs(spin_rad_d),
+        throw_spin_dir.c_str(),
+        throw_wobble.c_str()
+        );
+
+      cerr << output_cmd << endl;
+
+      system(output_cmd);
     }
   }
 
