@@ -1358,6 +1358,8 @@ void dvd_DvisEst_estimate_end_filter(void)
   {
     state_csv_log_close();
   }
+
+  cerr << "dvd_DvisEst_estimate_end_filter thread has finished joining!" << endl; 
 }
 
 // remember that we want to load in a ground-plane, and use that to modify 

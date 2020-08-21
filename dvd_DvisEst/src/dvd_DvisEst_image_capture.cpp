@@ -26,6 +26,14 @@
 #include "SpinGenApi/SpinnakerGenApi.h"
 #endif
 
+// Timer stuff
+#include <unistd.h>
+#include <chrono>
+#define _BSD_SOURCE
+#include <sys/time.h>
+#include <stack>
+#include <ctime>
+
 // threading stuff
 #include <thread>
 #include <future>
@@ -45,6 +53,26 @@ using namespace Spinnaker::GenICam;
 
 using namespace std;
 using namespace cv;
+
+// Get time stamp in nanoseconds.
+static uint64_t nanos()
+{
+  uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::
+          now().time_since_epoch()).count();
+  return ns; 
+}
+
+// Get boot-time stamp in nanoseconds.
+static uint64_t uptime_get_ns()
+{
+  static uint64_t start_time_ns = 0;
+  if(start_time_ns == 0)
+  {
+    start_time_ns = nanos();
+  }
+
+  return (nanos() - start_time_ns); 
+}
 
 // declare static local structures
 std::deque<image_capture_t> sv_image_capture_queue;
@@ -828,16 +856,16 @@ int dvd_DvisEst_image_capture_thread()
     if(numCameras > 0)
     {
       // End acquisition
-      cerr << "---> Spinnaker End Acquisition" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker End Acquisition" << endl;
       // ************* TODO: Why is this taking so long? What?
       pCam->EndAcquisition();
-      cerr << "---> Spinnaker End Acquisition, Complete!" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker End Acquisition, Complete!" << endl;
 
       // Reset exposure (why bother?)
       //camera_settings_reset(pCam);
 
       // wait here until camera references are gone (empty queue)
-      cerr << "---> Spinnaker Purge Stale Image Queue" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker Purge Stale Image Queue" << endl;
       bool ready_to_deint_cam = false;
       while(!ready_to_deint_cam)
       {
@@ -845,8 +873,8 @@ int dvd_DvisEst_image_capture_thread()
         if(!ready_to_deint_cam && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || result != 0))
         {
           // looks like we have some left-over frames to purge before we can de-init the camera
-          image_queue_purge(1);
-          //cerr << "Purge old Spinnaker Image! Queue Size: " << (int)image_queue_size() << endl;          
+          image_queue_purge(65535);
+          cerr << NS_TO_MS(uptime_get_ns()) << " ---> Purge old Spinnaker Image! Queue Size: " << (int)image_queue_size() << endl;          
         }
         else
         {
@@ -855,21 +883,21 @@ int dvd_DvisEst_image_capture_thread()
       }
 
       // Deinitialize camera
-      cerr << "---> Spinnaker Camera De-Init" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker Camera De-Init" << endl;
       pCam->DeInit();
 
-      cerr << "---> Spinnaker Camera De-Init, Complete!" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker Camera De-Init, Complete!" << endl;
     }
 
     // Clear camera list before releasing system
     // This dumb line is required first
-    pCam = nullptr; 
+    pCam = nullptr;
     camList.Clear();
-    cerr << "---> Done Spinnaker Camlist Clear!" << endl;
+    cerr << NS_TO_MS(uptime_get_ns()) << " ---> Done Spinnaker Camlist Clear!" << endl;
 
     // Release system
     system->ReleaseInstance();
-    cerr << "---> Done Spinnaker release system instance!" << endl;
+    cerr << NS_TO_MS(uptime_get_ns()) << " ---> Done Spinnaker release system instance!" << endl;
   }
   catch (Spinnaker::Exception& e)
   {
@@ -1031,8 +1059,8 @@ void dvd_DvisEst_image_capture_stop(const bool camera_src)
 
 
     // purge frames here perhaps? Only matters if this is included as a library
-
     capture_thread.join();
+    cerr << NS_TO_MS(uptime_get_ns()) << " ---> dvd_DvisEst_image_capture_stop thread has finished joining!" << endl; 
 
   }
   #endif

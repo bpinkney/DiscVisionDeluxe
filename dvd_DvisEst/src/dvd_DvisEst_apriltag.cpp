@@ -518,4 +518,6 @@ void dvd_DvisEst_apriltag_end(void)
   {
     at_detection_thread[i].join();
   }
+
+  cerr << "dvd_DvisEst_apriltag_end threads have finished joining!" << endl;
 }

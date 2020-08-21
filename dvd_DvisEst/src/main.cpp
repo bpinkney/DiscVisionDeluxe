@@ -332,7 +332,6 @@ int main(int argc, char** argv )
   }
 
   dvd_DvisEst_apriltag_end();
-  dvd_DvisEst_image_capture_stop(camera_src);
 
   if(!set_gnd_plane)
   {
@@ -411,14 +410,32 @@ int main(int argc, char** argv )
         throw_left_right = "RIGHT";
       }
       const float spin_rad_d = (kf_state.ang_hps[2].vel);
+      const float hyzer_rad  = RAD_TO_DEG(kf_state.ang_hps[0].pos);
       std::string throw_spin_dir = "";
+      std::string hyzer_dir = "";
       if(spin_rad_d > 0)
       {
         throw_spin_dir = "CCW";
+        if(hyzer_rad < 0)
+        {
+          hyzer_dir = "ANHYZER";
+        }
+        else
+        {
+          hyzer_dir = "HYZER";
+        }
       }
       else
       {
         throw_spin_dir = "CW";
+        if(hyzer_rad > 0)
+        {
+          hyzer_dir = "ANHYZER";
+        }
+        else
+        {
+          hyzer_dir = "HYZER";
+        }
       }
 
       std::string throw_wobble = "";
@@ -448,12 +465,14 @@ int main(int argc, char** argv )
       }
 
       // sadly, sm can't handle negative numbers (sigh), so well directionalize everything
-      sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n %0.1f° %s  %0.1f° %s \\r\\n %0.1f rad/s %s\\r\\n %s WOBBLE' > /tmp/disptext; timeout 10s sm -a 1 `cat /tmp/disptext`",
+      sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n%0.1f° %s  %0.1f° %s \\r\\n%0.1f° %s\\r\\n%0.1f rad/s %s\\r\\n%s WOBBLE' > /tmp/disptext; timeout 12s sm -a 1 `cat /tmp/disptext` &",
         vel_mag_kph,
         fabs(throw_deg_up),
         throw_ud.c_str(),
         fabs(throw_deg_right),
         throw_left_right.c_str(),
+        fabs(hyzer_rad),
+        hyzer_dir.c_str(),
         fabs(spin_rad_d),
         throw_spin_dir.c_str(),
         throw_wobble.c_str()
@@ -464,6 +483,9 @@ int main(int argc, char** argv )
       system(output_cmd);
     }
   }
+
+  // do this at the end since it takes a while and we could be showing off text...
+  dvd_DvisEst_image_capture_stop(camera_src);
 
   // if we didn't log anything, delete the logging dir
   if(debug && !log_debug_path.empty())
