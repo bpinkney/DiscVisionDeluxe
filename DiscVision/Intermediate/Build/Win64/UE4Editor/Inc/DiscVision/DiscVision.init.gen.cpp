@@ -21,8 +21,8 @@ void EmptyLinkFunctionForGeneratedCodeDiscVision_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0xA6623B75,
-				0x4DA3322F,
+				0x067881F3,
+				0x88C84D59,
 				METADATA_PARAMS(nullptr, 0)
 			};
 			UE4CodeGen_Private::ConstructUPackage(ReturnPackage, PackageParams);

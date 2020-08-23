@@ -1,5 +1,5 @@
-C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\Definitions.DiscVision.h
+C:\Users\frogg\Documents\DiscVisionDeluxe\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\Definitions.DiscVision.h
 C:\Program Files\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
 C:\Program Files\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-C:\Users\frogg\Documents\Unreal Projects\DiscVision\Source\DiscVision/DiscProjectile.h
-C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Inc\DiscVision\DiscProjectile.generated.h
+C:\Users\frogg\Documents\DiscVisionDeluxe\DiscVision\Source\DiscVision/DiscProjectile.h
+C:\Users\frogg\Documents\DiscVisionDeluxe\DiscVision\Intermediate\Build\Win64\UE4Editor\Inc\DiscVision\DiscProjectile.generated.h

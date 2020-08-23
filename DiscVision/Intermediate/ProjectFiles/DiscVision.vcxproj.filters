@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\DiscVision.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{21558FD6-DA8B-4A73-965D-F5DB49A519EA}</UniqueIdentifier>
+      <UniqueIdentifier>{CB98E6C5-7E9D-417F-94E7-17FAF9A4E189}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\DiscVision.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{09807A5D-E00C-4306-AAA9-B8D8C84EB9CB}</UniqueIdentifier>
+      <UniqueIdentifier>{3B2B6626-9236-463F-BF3F-97052BB0B1B8}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -27,8 +27,14 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\DiscVision">
-      <UniqueIdentifier>{C5D95572-8B41-4F25-970B-BC68543A6292}</UniqueIdentifier>
+      <UniqueIdentifier>{DC415949-C219-45D0-8D6F-D37E31C77DC0}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\DiscVision\DiscPlayer.cpp">
+      <Filter>Source\DiscVision</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\DiscVision\DiscPlayer.h">
+      <Filter>Source\DiscVision</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\DiscVision\DiscProjectile.cpp">
       <Filter>Source\DiscVision</Filter>
     </ClCompile>
@@ -42,6 +48,12 @@
       <Filter>Source\DiscVision</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\DiscVision\DiscVision.h">
+      <Filter>Source\DiscVision</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\DiscVision\FPSCharacter.cpp">
+      <Filter>Source\DiscVision</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\DiscVision\FPSCharacter.h">
       <Filter>Source\DiscVision</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,4 +24,3 @@ void ADiscProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
