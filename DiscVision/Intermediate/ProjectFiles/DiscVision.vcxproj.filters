@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\DiscVision.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{21558FD6-DA8B-4A73-965D-F5DB49A519EA}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\DiscVision.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\DiscVisionEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{09807A5D-E00C-4306-AAA9-B8D8C84EB9CB}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\DiscVision">
+      <UniqueIdentifier>{C5D95572-8B41-4F25-970B-BC68543A6292}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\DiscVision\DiscProjectile.cpp">
+      <Filter>Source\DiscVision</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\DiscVision\DiscProjectile.h">
+      <Filter>Source\DiscVision</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\DiscVision\DiscVision.Build.cs">
+      <Filter>Source\DiscVision</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\DiscVision\DiscVision.cpp">
+      <Filter>Source\DiscVision</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\DiscVision\DiscVision.h">
+      <Filter>Source\DiscVision</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

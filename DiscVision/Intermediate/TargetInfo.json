@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "DiscVision",
+			"Path": "C:\\Users\\frogg\\Documents\\Unreal Projects\\DiscVision\\Source\\DiscVision.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "DiscVisionEditor",
+			"Path": "C:\\Users\\frogg\\Documents\\Unreal Projects\\DiscVision\\Source\\DiscVisionEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

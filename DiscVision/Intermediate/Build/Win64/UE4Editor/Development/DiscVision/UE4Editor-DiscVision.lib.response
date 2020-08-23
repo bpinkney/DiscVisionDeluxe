@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-DiscVision.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\DiscVisionEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\DiscProjectile.cpp.obj"
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\DiscVision.cpp.obj"
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\DiscProjectile.gen.cpp.obj"
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\DiscVision.init.gen.cpp.obj"
+"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\Default.rc2.res"
+/OUT:"C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\UE4Editor-DiscVision.lib"
+/INCLUDE:IMPLEMENT_MODULE_DiscVision

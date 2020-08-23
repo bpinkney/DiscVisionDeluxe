@@ -1,0 +1,3 @@
+C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Development\DiscVision\Definitions.DiscVision.h
+C:\Users\frogg\Documents\Unreal Projects\DiscVision\Source\DiscVision\DiscProjectile.h
+C:\Users\frogg\Documents\Unreal Projects\DiscVision\Intermediate\Build\Win64\UE4Editor\Inc\DiscVision\DiscProjectile.generated.h
