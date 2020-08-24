@@ -245,6 +245,7 @@ void spinnaker_image_to_opencv_mat(ImagePtr spinnaker_image, cv::Mat * opencv_im
   {
     cerr << endl << endl << "*** Could not convert Spinnaker Image Pointer to OpenCV MAT! ***" << endl << endl;
   }
+  spinnaker_image->Release();
 }
 #endif
 
@@ -812,6 +813,9 @@ int dvd_DvisEst_image_capture_thread()
       {
         cerr << "Image incomplete with image status " << imagePtr->GetImageStatus() << "..." << endl
            << endl;
+
+        // Free up image memory after OpenCV conversion                
+        imagePtr->Release();
       }
       else
       {
@@ -824,9 +828,11 @@ int dvd_DvisEst_image_capture_thread()
         // Convert to OpenCV matrix
         // Make sure to declare this matrix locally, OPENCV MAT MEMORY HANDLING IS RUDE
         cv::Mat  imageMat;
-        spinnaker_image_to_opencv_mat(imagePtr, &imageMat, imagePtr->GetFrameID());
-        // push to IO thread so we can keep grabbing frames
         uint32_t frame_id = imagePtr->GetFrameID();
+        // free imagePtr in this function
+        spinnaker_image_to_opencv_mat(imagePtr, &imageMat, frame_id);
+        // push to IO thread so we can keep grabbing frames
+        
         image_capture_t image_capture = image_capture_t
         (
           imageMat,
@@ -851,12 +857,13 @@ int dvd_DvisEst_image_capture_thread()
         }
       }
       // Free up image memory after OpenCV conversion                
-      imagePtr->Release();
+      //imagePtr->Release();
+      //cerr << NS_TO_MS(uptime_get_ns()) << " ---> imagePtr->Release();" << endl;
     }
     if(numCameras > 0)
     {
       // End acquisition
-      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker End Acquisition" << endl;
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker End Acquisition START" << endl;
       // ************* TODO: Why is this taking so long? What?
       pCam->EndAcquisition();
       cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker End Acquisition, Complete!" << endl;
