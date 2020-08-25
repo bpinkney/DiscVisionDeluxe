@@ -10,11 +10,11 @@ Sequence of dvd_visEst routine:
 
 To build with CMAKE:
 
-Linux:
+## Linux:
 
 You can just cmake install opencv, apriltag, and eigen easy!
 
-1. Install openCV
+### 1. Install openCV
 - 'cd' to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/opencv' directory
 - get rid of placeholder file
 ``` bash
@@ -35,7 +35,7 @@ make -j7
 sudo make install
 ```
 
-2. Install apriltag
+### 2. Install apriltag
 - cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/apriltag' directory
 - get rid of placeholder file
 ``` bash
@@ -56,7 +56,7 @@ make -j7
 sudo make install
 ```
 
-3. Install eigen
+### 3. Install eigen
 - cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/eigen' directory
 - get rid of placeholder file
 ``` bash
@@ -77,20 +77,20 @@ make -j7
 sudo make install
 ```
 
-4. To build dvd_DvisEst using CMake:
+### 4. Build dvd_DvisEst using CMake
 ``` bash
 cd build/
 cmake ..
 make
 ```
-These commands are in the 'DiscVisionDeluxe/dvd_DvisEst/dothemake' script for convenience
+(These commands are in the 'DiscVisionDeluxe/dvd_DvisEst/dothemake' script for convenience)
 
 
 
 
-Windows:
+## Windows:
 
-1. Install OpenCV
+### 1. Install OpenCV
 - you can just the binaries distributed here: 
   https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html
   http://sourceforge.net/projects/opencvlibrary/files/opencv-win/
@@ -100,10 +100,10 @@ Windows:
 - Edit the system PATH, and add the entry:
     %OPENCV_DIR%../bin
 
-2. Install CMAKE
+### 2. Install CMAKE
 cmake.org/download/
 
-3. Install MSYS2 (and MINGW64 through it) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
+### 3. Install MSYS2 (and MINGW64 through it) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
 - grab the installer from https://www.msys2.org/
 - in mysy2 prompt:
 ``` bash
@@ -113,7 +113,7 @@ pacman -S mingw-w64-x86_64-python-numpy
 pacman -S mingw-w64-x86_64-cmake
 ```
 
-3. Install apriltags (On WINDOWS, wooooo) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
+### 3. Install apriltags (On WINDOWS, wooooo) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
 - check out apriltag from github to C:\apriltag
   (cd C:\ ; git clone https://github.com/AprilRobotics/apriltag.git;)
 - Open a MSYS2 mingw64 prompt, and navigate to C:\apriltag
@@ -125,7 +125,7 @@ mingw32-make.exe
 ```
 - (You should have a libapriltag.so file in C:\apriltag now)
 
-4. Build the dvd_DvisEst test app (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
+### 4. Build the dvd_DvisEst test app (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
 - cd to dvd_DvisEst in your git checkout
 ``` bash
 mkdir build
@@ -135,7 +135,7 @@ mingw32-make.exe
 ```
 - copy the libapriltag.so file to your .exe bin dir (cp C:\apriltag\libapriltag.so DiscVisionDeluxe\bin\)
 
-5. Run dvd_DvisEst.exe! woot!
+### 5. Run dvd_DvisEst.exe! woot!
 
 
 There might have to be some visual studio stuff soon:
