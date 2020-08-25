@@ -28,7 +28,7 @@ git clone https://github.com/opencv/opencv.git
 mkdir build; cd build
 cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
 ```
-- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
+- make and install (Set jN to as many processors as you can spare)
 ``` bash
 make -j7
 sudo make install
@@ -49,7 +49,7 @@ git clone https://github.com/AprilRobotics/apriltag.git
 mkdir build; cd build
 cmake ..
 ```
-- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
+- make and install (Set jN to as many processors as you can spare)
 ``` bash
 make -j7
 sudo make install
@@ -70,7 +70,7 @@ git clone https://github.com/AprilRobotics/apriltag.git
 mkdir build; cd build
 cmake ..
 ```
-- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
+- make and install (Set jN to as many processors as you can spare)
 ``` bash
 make -j7
 sudo make install
