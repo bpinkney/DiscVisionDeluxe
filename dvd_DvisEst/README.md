@@ -16,84 +16,64 @@ You can just cmake install opencv, apriltag, and eigen easy!
 
 1. Install openCV
 - 'cd' to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/opencv' directory
-- ``` bash
+- get rid of placeholder file
+``` bash
 rm *
 ```
- to get rid of placeholder file
-- 
+- clone repo
 ``` bash
 git clone https://github.com/opencv/opencv.git
 ```
-- 
+- build with cmake
 ``` bash
 mkdir build; cd build
-```
-- 
-``` bash
 cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
 ```
-- 
+- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
 ``` bash
 make -j7
-```
-- 
-``` bash
 sudo make install
 ```
 
 2. Install apriltag
 - cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/apriltag' directory
-- 
+- get rid of placeholder file
 ``` bash
 rm *
 ```
-to get rid of placeholder file
-- 
+- clone repo
 ``` bash
 git clone https://github.com/AprilRobotics/apriltag.git
 ```
-- 
+- build with cmake
 ``` bash
 mkdir build; cd build
-```
-- 
-``` bash
 cmake ..
 ```
-- 
+- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
 ``` bash
 make -j7
-```
-- 
-``` bash
 sudo make install
 ```
 
 3. Install eigen
 - cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/eigen' directory
-- 
+- get rid of placeholder file
 ``` bash
 rm *
 ```
-to get rid of placeholder file
-- 
+- clone repo
 ``` bash
 git clone https://github.com/AprilRobotics/apriltag.git
 ```
-- 
+- build with cmake
 ``` bash
 mkdir build; cd build
-```
-- 
-``` bash
 cmake ..
 ```
-- 
+- make and install (change jN to your 'number fo processors-1' if you still want to do other stuff)
 ``` bash
 make -j7
-```
-- 
-``` bash
 sudo make install
 ```
 
