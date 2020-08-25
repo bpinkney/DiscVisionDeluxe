@@ -82,7 +82,7 @@ sudo make install
 (make sure to do the permanent steps in the 'USB RELATED NOTES' section)
 (don't bother with the 'GIGE CAMERA SETUP' stuff since we are using the USB3 version)
 - At this point you can try using the 'SpinView' application to check if your camera is working
-You should see 'SuperSpeed' USB under the streaming parameters (2nd high-level accordion) if your USB port supports PCIE2.1 (required)
+You should see 'SuperSpeed' USB under the streaming parameters (2nd high-level accordion) if your USB port supports PCIE2.1 (this is required, sometimes machines have a mix of PCIE2.0 and PCIE2.1 USB ports, so try them all and label them)
 
 ### 5. Build dvd_DvisEst using CMake
 ``` bash
