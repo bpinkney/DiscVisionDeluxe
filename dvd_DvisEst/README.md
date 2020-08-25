@@ -14,10 +14,10 @@ Sequence of dvd_visEst routine:
 You can just cmake install opencv, apriltag, and eigen; easy!
 
 ### 1. Install openCV
-- 'cd' to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/opencv' directory
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
 - get rid of placeholder file
 ``` bash
-rm *
+rm opencv/*
 ```
 - clone repo
 ``` bash
@@ -35,10 +35,10 @@ sudo make install
 ```
 
 ### 2. Install apriltag
-- cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/apriltag' directory
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
 - get rid of placeholder file
 ``` bash
-rm *
+rm apriltag/*
 ```
 - clone repo
 ``` bash
@@ -56,14 +56,14 @@ sudo make install
 ```
 
 ### 3. Install eigen
-- cd to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/eigen' directory
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
 - get rid of placeholder file
 ``` bash
-rm *
+rm eigen/*
 ```
 - clone repo
 ``` bash
-git clone https://github.com/AprilRobotics/apriltag.git
+git clone https://gitlab.com/libeigen/eigen.git
 ```
 - build with cmake
 ``` bash
