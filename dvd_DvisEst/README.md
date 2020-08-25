@@ -16,8 +16,7 @@ You can just cmake install opencv, apriltag, and eigen easy!
 
 1. Install openCV
 - 'cd' to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/opencv' directory
-- 
-``` bash
+- ``` bash
 rm *
 ```
  to get rid of placeholder file
