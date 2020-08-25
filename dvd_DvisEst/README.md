@@ -76,7 +76,13 @@ make -j7
 sudo make install
 ```
 
-### 4. Build dvd_DvisEst using CMake
+### 4. Install the FLIR Spinnaker SDK
+- Grab the SDK from https://www.flir.ca/products/spinnaker-sdk/
+- Follow the instructions in the README 
+(make sure to do the permanent steps in the 'USB RELATED NOTES' section)
+(don't bother with the 'GIGE CAMERA SETUP' stuff since we are using the USB3 version)
+
+### 5. Build dvd_DvisEst using CMake
 ``` bash
 cd build/
 cmake ..
@@ -84,7 +90,7 @@ make
 ```
 (These commands are in the 'DiscVisionDeluxe/dvd_DvisEst/dothemake' script for convenience)
 
-### 5. Run dvd_DvisEst!
+### 6. Run dvd_DvisEst!
 ``` bash
 ../bin/dvd_DvisEst -h
 ```
