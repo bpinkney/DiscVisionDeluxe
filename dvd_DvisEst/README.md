@@ -8,11 +8,10 @@ Sequence of dvd_visEst routine:
 - Update state estimate throughout disc flight to obtain confident states and derivatives (Thread N+1)
 - Serve finalized initial state to dvd_DfisX and dvd_DgrafX (Main Thread)
 
-To build with CMAKE:
 
 ## Linux:
 
-You can just cmake install opencv, apriltag, and eigen easy!
+You can just cmake install opencv, apriltag, and eigen; easy!
 
 ### 1. Install openCV
 - 'cd' to the empty 'DiscVisionDeluxe/dvd_DvisEst/lib/opencv' directory
@@ -85,6 +84,14 @@ make
 ```
 (These commands are in the 'DiscVisionDeluxe/dvd_DvisEst/dothemake' script for convenience)
 
+### 5. Run dvd_DvisEst!
+``` bash
+../bin/dvd_DvisEst -h
+```
+e.g.
+``` bash
+../bin/dvd_DvisEst -d -chime -gt
+```
 
 
 
