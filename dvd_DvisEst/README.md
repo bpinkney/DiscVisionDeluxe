@@ -22,6 +22,7 @@ rm opencv/*
 - clone repo
 ``` bash
 git clone https://github.com/opencv/opencv.git
+cd opencv
 ```
 - build with cmake
 ``` bash
@@ -43,6 +44,7 @@ rm apriltag/*
 - clone repo
 ``` bash
 git clone https://github.com/AprilRobotics/apriltag.git
+cd apriltag
 ```
 - build with cmake
 ``` bash
@@ -64,6 +66,7 @@ rm eigen/*
 - clone repo
 ``` bash
 git clone https://gitlab.com/libeigen/eigen.git
+cd eigen
 ```
 - build with cmake
 ``` bash
