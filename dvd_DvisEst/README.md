@@ -13,6 +13,13 @@ Sequence of dvd_visEst routine:
 
 You can just cmake install opencv, apriltag, and eigen; easy!
 
+### 0. Required Libs
+``` bash
+sudo apt-get install gcc-5 g++-5
+sudo apt-get install cmake
+sudo pip2 install numpy-stl
+```
+
 ### 1. Install openCV
 - 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
 - get rid of placeholder file
@@ -102,6 +109,9 @@ make
 e.g.
 ``` bash
 ../bin/dvd_DvisEst -d -chime -gt
+
+#or for test images
+../bin/dvd_DvisEst -camcal="../bin/camera_calibrations/19501670.yaml" -gp="../bin/ground_planes/00000010_2020-08-20_22-12-22_ground_plane.yaml" -fi="../bin/logs/test_throw_0/images/"
 ```
 
 
