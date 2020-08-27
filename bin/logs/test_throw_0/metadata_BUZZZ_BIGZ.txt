@@ -1,0 +1,3 @@
+BUZZZ_BIGZ
+GP: ../bin/ground_planes/00000010_2020-08-20_22-12-22_ground_plane.yaml
+hyzer -0.07308 pitch -0.05958 posx -0.240 posy -0.423 posz 1.995 velx 9.852 vely 1.295 velz 0.112 spinrate -43.18872 wobble 0.237 discmold 6
