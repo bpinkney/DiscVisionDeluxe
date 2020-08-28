@@ -1,0 +1,2 @@
+time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel, lin_x_pos_var, lin_y_pos_var, lin_z_pos_var, lin_x_vel_var, lin_y_vel_var, lin_z_vel_var, ang_h_pos_var, ang_p_pos_var, ang_s_pos_var, ang_h_vel_var, ang_p_vel_var, ang_s_vel_var
+5314.97437600, -0.257, -0.823, 2.076, 16.676, -5.094, -8.371, -0.37926, 0.27012, -0.33766, 6.48220, -3.94917, -79.97721, 0.00306, 0.00306, 0.00306, 9.83805, 9.83805, 9.83805, 0.00306, 0.00306, 0.00306, 9.83805, 9.83805, 9.83805, 0.168, 12

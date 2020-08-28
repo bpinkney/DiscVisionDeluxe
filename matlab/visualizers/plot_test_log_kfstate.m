@@ -1,12 +1,18 @@
-function plot_test_log_kfstate()
+%#!/usr/bin/env octave
+% Prevent Octave from thinking that this
+% is a function file:
+%1;
+function plot_test_log_kfstate(log_dir)
 
-clear all; close all; clc;
+close all; clc;
 %state = "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
 % ang_h_pos, ang_p_pos, ang_s_pos, ang_h_vel, ang_p_vel, ang_s_vel"
 
 %meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 
-log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/garret_init_logs/2020-08-20_22-22-21_log_data'
+%log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/garret_init_logs/2020-08-20_22-22-21_log_data'
+
+log_dir
 
 M_state     = csvread([log_dir, '/state.csv'], 1, 0);
 M_state_out = csvread([log_dir, '/state_out.csv'], 1, 0);
@@ -134,16 +140,16 @@ fig.OuterPosition=[0.8 0 0.2 0.5];
 
 % meas
 % move to equally spaced
-time_s = (double(meas_time_ms_meas(1)):1:double(meas_time_ms_meas(end)))*0.001;
-signal = interp1(double(meas_time_ms_meas)*0.001, ang_hps_pos_meas, time_s, 'linear', 'extrap');
-[hfm, hgm] = calc_fft(time_s, signal(:, 1));
-[pfm, pgm] = calc_fft(time_s, signal(:, 2));
+% time_s = (double(meas_time_ms_meas(1)):1:double(meas_time_ms_meas(end)))*0.001;
+% signal = interp1(double(meas_time_ms_meas)*0.001, ang_hps_pos_meas, time_s, 'linear', 'extrap');
+% [hfm, hgm] = calc_fft(time_s, signal(:, 1));
+% [pfm, pgm] = calc_fft(time_s, signal(:, 2));
  
 % states
-time_s = (double(time_ms_state(1)):1:double(time_ms_state(end)))*0.001;
-signal = interp1(double(time_ms_state)*0.001, ang_hps_pos_state, time_s, 'linear', 'extrap');
-[hf, hg] = calc_fft(time_s, signal(:, 1));
-[pf, pg] = calc_fft(time_s, signal(:, 2));
+% time_s = (double(time_ms_state(1)):1:double(time_ms_state(end)))*0.001;
+% signal = interp1(double(time_ms_state)*0.001, ang_hps_pos_state, time_s, 'linear', 'extrap');
+% [hf, hg] = calc_fft(time_s, signal(:, 1));
+% [pf, pg] = calc_fft(time_s, signal(:, 2));
 
 % freqs = [hf, pf, hfm, pfm];
 % pows  = [hg, pg, hgm, pgm];
@@ -161,21 +167,19 @@ signal = interp1(double(time_ms_state)*0.001, ang_hps_pos_state, time_s, 'linear
 % 
 % peak_max = max([peak_hgm, peak_hg, peak_pgm, peak_pg]);
 
-figure; hold on;
-plot(hfm, hgm);
-plot(pfm, pgm);
-reset_colours
-plot(hf, hg, '.-');
-plot(pf, pg, '.-');
-title('Ang HYZER PITCH FFT')
-xlabel('Freq (Hz)')
-ylabel('Power')
-xlim([0, 80])
-grid on
+% figure; hold on;
+% plot(hfm, hgm);
+% plot(pfm, pgm);
+% reset_colours
+% plot(hf, hg, '.-');
+% plot(pf, pg, '.-');
+% title('Ang HYZER PITCH FFT')
+% xlabel('Freq (Hz)')
+% ylabel('Power')
+% xlim([0, 80])
+% grid on
 
-jim = 1
-
-%waitfor(waitidx)
+waitfor(waitidx)
 %pause;
 
 end
@@ -201,9 +205,3 @@ function reset_colours()
       ax.ColorOrderIndex = 1;
     end
 end
-
-
-
-
-
-

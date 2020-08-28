@@ -1,0 +1,5 @@
+SKRIKE_STAR
+GP: ../bin/ground_planes/00000003_2020-06-05_08-51-05_ground_plane.yaml
+hyzer -0.37926 pitch 0.27012 posx -0.257 posy -0.823 posz 2.076 velx 16.676 vely -5.094 velz -8.371 spinrate -79.97721 wobble 0.168 discmold 12
+
+60m

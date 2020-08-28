@@ -112,7 +112,7 @@ e.g.
 ../bin/dvd_DvisEst -d -chime -gt
 
 #or for test images
-../bin/dvd_DvisEst -camcal="../bin/camera_calibrations/19501670.yaml" -gp="../bin/ground_planes/00000010_2020-08-20_22-12-22_ground_plane.yaml" -fi="../bin/logs/test_throw_0/images/"
+../bin/dvd_DvisEst -gp="../bin/logs/test_throw_1/1_2020-05-21_09-01-37_ground_plane.yaml" -fi="../bin/logs/test_throw_1/images/" -cc -cc="../bin/camera_calibrations/19508898.yaml"
 ```
 
 
