@@ -231,7 +231,10 @@ void               finish_throw        (Throw_Container &throw_container)
     std::cout << "\n         The throw spent " << test_time_aloft << "s in the air";
     Eigen::Vector3d throw_distance_vector = active_throw.disc_state_array[0].disc_location - active_throw.disc_state_array[active_throw.disc_state_array.size()-1].disc_location;
     double throw_distance_magnitude = throw_distance_vector.norm();
-    std::cout << "\n         The throw went " << throw_distance_magnitude << "m  (" << 3.28*throw_distance_vector.norm() << "feet)\n";
+    std::cout << "\n         The throw went " << throw_distance_magnitude << "m  (" << 3.28*throw_distance_magnitude << "feet)";
+    Eigen::Vector3d throw_velocity_vector = active_throw.disc_state_array[0].disc_velocity;
+    double throw_velocity_magnitude = throw_velocity_vector.norm();
+    std::cout << "\n         The throw's max speed was " << throw_velocity_magnitude << "m/s  (" << 3.28*throw_velocity_magnitude << "feet/s)\n";
 
 
     std::cout << std::setprecision(3) << "\nThe throw simulated " << d_forces.step_count << " steps before ending normally.";

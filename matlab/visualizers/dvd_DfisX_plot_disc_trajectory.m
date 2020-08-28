@@ -24,11 +24,12 @@ function ld = dvd_DfisX_plot_disc_trajectory(varargin)
     animate  = Defaults{2};
 
     %assume dt for now based on cpp code
-    dt = 0.01;
+    %dt = 0.01;
 
     M = csvread(filepath, 1, 0);
 
-    time_s          = M(:, 1);%*10.0;
+    time_s          = M(:, 1);
+    dt = mean(diff(time_s));%*10.0;
     pos_xyz(:, 1)   = M(:, 2); %forward
     pos_xyz(:, 2)   = M(:, 3);
     pos_xyz(:, 3)   = M(:, 4);

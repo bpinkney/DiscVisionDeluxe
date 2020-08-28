@@ -31,7 +31,7 @@ namespace DfisX
 
 const bool basic_console_logging = true;
 const bool verbose_console_logging = false;
-const double step_time_global = 0.1;
+const double step_time_global = 0.01;
 
 enum Disc_Mold_Enum
 {
