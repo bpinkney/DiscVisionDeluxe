@@ -14,9 +14,9 @@ double velx = 0;
 double vely = 0;
 double velz = 0;
 
-double windx = 1;
-double windy = 2;
-double windz = 3;
+double windx = 0;
+double windy = 0;
+double windz = 0;
 
 double thrown_disc_roll = 0;
 double thrown_disc_pitch = 0;
