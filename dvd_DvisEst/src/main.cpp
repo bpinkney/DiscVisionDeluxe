@@ -345,7 +345,14 @@ int main(int argc, char** argv )
     if(matlab && debug && !dfisx)
     {
       cerr << ("Executing Matlab plot...\n") << endl;
-      system("cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate\" &");
+
+      // get abs path
+      char abs_path[512];
+      realpath(log_debug_path.c_str(), abs_path);
+
+      sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate('%s')\" &",
+        abs_path);
+      system(output_cmd);
     }
 
     sprintf(output_cmd, "cd ~/disc_vision_deluxe/DiscVisionDeluxe/dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",

@@ -18,6 +18,7 @@ You can just cmake install opencv, apriltag, and eigen; easy!
 sudo apt-get install gcc-5 g++-5
 sudo apt-get install cmake
 sudo pip2 install numpy-stl
+sudo apt-get install libgtkmm-2.4-dev
 ```
 
 ### 1. Install openCV
