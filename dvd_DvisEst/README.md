@@ -23,9 +23,9 @@ sudo apt-get install libgtkmm-2.4-dev
 
 ### 1. Install openCV
 - 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
-- get rid of placeholder file
+- get rid of placeholder file and folder
 ``` bash
-rm opencv/*
+rm -rf opencv
 ```
 - clone repo
 ``` bash
@@ -45,9 +45,9 @@ sudo make install
 
 ### 2. Install apriltag
 - 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
-- get rid of placeholder file
+- get rid of placeholder file and folder
 ``` bash
-rm apriltag/*
+rm -rf apriltag
 ```
 - clone repo
 ``` bash
@@ -67,9 +67,9 @@ sudo make install
 
 ### 3. Install eigen
 - 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
-- get rid of placeholder file
+- get rid of placeholder file and folder
 ``` bash
-rm eigen/*
+rm -rf eigen
 ```
 - clone repo
 ``` bash
