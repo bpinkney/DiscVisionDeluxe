@@ -1,6 +1,7 @@
+cls
 cd build/
 rm -rf *
 cmake ..
 cmake --build .
 cd ..
-../bin/dvd_DwinTest.exe -hw
+REM ../bin/dvd_DwinTest.exe -hw
