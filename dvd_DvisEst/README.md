@@ -123,10 +123,31 @@ e.g.
 
 ## Windows:
 
-### 1. Install git from https://git-scm.com/download/win
+### 0. Install Various Crap
+- Install git from https://git-scm.com/download/win
+- Install the FLIR Spinnaker SDK (including the VS support)
+- Install Visual Studio 2015 Community or onward with C++ and Cmake support
 
-
-
+### 1. Install openCV
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
+- get rid of placeholder file and folder
+``` bash
+rm -rf opencv
+```
+- clone repo
+``` bash
+git clone https://github.com/opencv/opencv.git
+cd opencv
+```
+- build with cmake
+``` bash
+mkdir build; cd build
+cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
+```
+- make and install (using cmake this time?)
+``` bash
+cmake --build . --target INSTALL --config Release
+```
 
 
 
