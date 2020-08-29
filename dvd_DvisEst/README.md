@@ -126,7 +126,7 @@ e.g.
 ### 0. Install Various Crap
 - Install git from https://git-scm.com/download/win
 - Install the FLIR Spinnaker SDK (including the VS support)
-- Install Visual Studio 2015 Community or onward with C++ and Cmake support
+- Install Visual Studio 2019 Community or onward with C++ and Cmake (3.1.5) support
 
 ### 1. Install openCV
 - 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
@@ -149,14 +149,68 @@ cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INST
 cmake --build . --target INSTALL --config Release
 ```
 
+### 2. Install apriltag
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
+- get rid of placeholder file and folder
+``` bash
+rm -rf apriltag
+```
+- clone repo
+``` bash
+git clone https://github.com/AprilRobotics/apriltag.git
+cd apriltag
+```
+- build with cmake
+This part is a real pain, but oh well
+Option 1: (easier) Grab libpthread stuff from the DiscVisionDeluxe repo
+
+Option 2: Create a new visual studio project, and use the nuget package manager to install 'pthreads', then grab the libpthread.so and include headers and move them somewhere you can reference for building apriltags (and eventually dvd_DvisEst)
+
+- Open your copied pthread.h and add 
+``` c
+#define HAVE_STRUCT_TIMESPEC
+```
+- Open the apriltag/CMakeLists.txt file and replace the if(MSVC)andelse block with the following:
+(replace with the pthread dir you made above if not using the checked in files)
+```
+    target_include_directories(${PROJECT_NAME} PUBLIC "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64")
+
+    set(PTHREAD_LIBRARIES "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64/libpthread.lib")
+    SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-allow-multiple-definition ")
+
+    target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARIES} winmm)
+```
+- Change the add_library CMake command from:
+```
+add_library(${PROJECT_NAME} SHARED ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
+```
+to
+```
+add_library(${PROJECT_NAME} STATIC ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
+```
+- remove things which reference unistd.c in the examples folder, but the leave the file intact so it still builds a .lib
+- I just removed the unistd.h include in apriltag_demo.c, and got rid of everything between the tag family constructors/descructors
+- remove the entire #Examples section from the bottom of CMakeLists.txt
+
+- Now actually make
+``` bash
+mkdir build; cd build
+cmake ..
+```
+- make and install (Set jN to as many processors as you can spare)
+``` bash
+cmake --build . --config Release
+```
+- verify the lib file exists with
+``` bash
+dir /s *lib
+```
 
 
 
 
 
-
-
-OLD
+#OLD
 ### 1. Install OpenCV
 - you can just the binaries distributed here: 
   https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html
