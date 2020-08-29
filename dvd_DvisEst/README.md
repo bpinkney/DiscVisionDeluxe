@@ -19,6 +19,10 @@ sudo apt-get install gcc-5 g++-5
 sudo apt-get install cmake
 sudo pip2 install numpy-stl
 sudo apt-get install libgtkmm-2.4-dev
+sudo apt-get install git
+cd ~/
+git clone https://github.com/bpinkney/DiscVisionDeluxe.git
+cd DiscVisionDeluxe
 ```
 
 ### 1. Install openCV
@@ -119,6 +123,19 @@ e.g.
 
 ## Windows:
 
+### 1. Install git from https://git-scm.com/download/win
+
+
+
+
+
+
+
+
+
+
+
+OLD
 ### 1. Install OpenCV
 - you can just the binaries distributed here: 
   https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html
