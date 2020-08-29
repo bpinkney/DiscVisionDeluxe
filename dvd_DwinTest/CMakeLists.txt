@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.15) # needed for nuGet pthreads on windows
 
 # Add a bin directory at the top level for this project (ooh, special)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../lib)
@@ -40,7 +40,8 @@ if (WIN32)
 
   # this path is set explicitly here on windows (so change it to your checkout location for apriltag)
   set(APRILTAG_INC "${APRILTAG_GIT_DIR}")
-  set(APRILTAG_LIB "${APRILTAG_GIT_DIR}/libapriltag.so")
+  #set(APRILTAG_LIB "${APRILTAG_GIT_DIR}/libapriltag.so")
+  set(APRILTAG_LIB "${APRILTAG_GIT_DIR}/build/Release/apriltag.dll")
 
   # check external deps with debug messages
   message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
@@ -55,7 +56,7 @@ if (WIN32)
   message(INFO "OpenCV_LIB = ${OpenCV_LIB}" )
 
   # spinnaker stuff
-#  #set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
+  set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker.lib")
 
 endif (WIN32)
 
@@ -64,9 +65,18 @@ add_executable( dvd_DwinTest src/main.cpp )
 
 #Windows includes
 #if (WIN32)
- target_include_directories(dvd_DwinTest PRIVATE "C:/Program Files/FLIR Systems/Spinnaker/include")
- # fix for janky windows pthreads (shame!) (only mingw?)
- #add_compile_definitions(HAVE_STRUCT_TIMESPEC)
+  #pthread stuff for windows
+  target_include_directories(${PROJECT_NAME} PUBLIC "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64")
+
+  set(PTHREAD_LIBRARIES "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64/libpthread.lib")
+  SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-allow-multiple-definition ")
+
+  target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARIES} winmm)
+  #end pthread stuff for windows
+
+  target_include_directories(dvd_DwinTest PRIVATE "C:/Program Files/FLIR Systems/Spinnaker/include")
+  # fix for janky windows pthreads (shame!) (only mingw?)
+  #add_compile_definitions(HAVE_STRUCT_TIMESPEC)
 #endif (WIN32)
 
 #Linux includes
@@ -97,7 +107,7 @@ target_link_libraries( dvd_DwinTest ${OpenCV_LIBS} )
 target_link_libraries( dvd_DwinTest ${APRILTAG_LIB} )
 target_link_libraries( dvd_DwinTest Threads::Threads )
 #if (WIN32)
-#target_link_libraries( dvd_DwinTest ${SPINNAKER_LIB} )
+target_link_libraries( dvd_DwinTest ${SPINNAKER_LIB} )
 #endif (WIN32)
 #if (UNIX)
 target_link_libraries( dvd_DwinTest Spinnaker )
