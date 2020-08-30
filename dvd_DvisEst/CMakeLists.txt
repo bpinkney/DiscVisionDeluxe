@@ -10,15 +10,6 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 if (WIN32)
   set(APRILTAG_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/apriltag")
   set(OPENCV_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/opencv")
-
-  # use latest c++
-  if (MSVC_VERSION GREATER_EQUAL "1900")
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
-    if (_cpp_latest_flag_supported)
-        add_compile_options("/std:c++latest")
-    endif()
-  endif()
 endif (WIN32)
 
 #define project
@@ -83,6 +74,10 @@ if (WIN32)
   target_include_directories(dvd_DvisEst PRIVATE "C:/Program Files/FLIR Systems/Spinnaker/include")
   # fix for janky windows pthreads (shame!)
   add_compile_definitions(HAVE_STRUCT_TIMESPEC)
+
+  # use latest c++
+  target_set_property(dvd_DvisEst PROPERTY CXX_STANDARD 17)
+  target_set_property(dvd_DvisEst PROPERTY CXX_STANDARD_REQUIRED ON)
 endif (WIN32)
 
 #Linux includes
