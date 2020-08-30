@@ -147,7 +147,6 @@ mkdir build; cd build
 cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
 ```
 - make and install
- --target INSTALL required here?
 ``` bash
 cmake --build . --config Release
 ```
@@ -205,7 +204,7 @@ add_library(${PROJECT_NAME} STATIC ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
 mkdir build; cd build
 cmake  -G "Visual Studio 16 2019" -A x64 ..
 ```
-- make and install (Set jN to as many processors as you can spare)
+- make and install
 ``` bash
 cmake --build . --config Release 
 ```
