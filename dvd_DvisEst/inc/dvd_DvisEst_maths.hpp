@@ -29,6 +29,10 @@
 #define MS_TO_NS(ms)      ((ms) * 1000000.0)
 #define NS_TO_MS(ns)      ((ns) * 0.000001)
 
+#if !defined(M_PI)
+#define M_PI (3.14159265359)
+#endif
+
 #define DEG_TO_RAD(deg)                 ((deg) * M_PI / 180.0)
 #define RAD_TO_DEG(rad)                 ((rad) * 180.0 / M_PI)
 
