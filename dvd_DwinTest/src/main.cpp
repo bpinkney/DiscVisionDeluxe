@@ -2,13 +2,13 @@
 #define IS_WINDOWS
 #endif
 
-#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
+//#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
 // be together on windows...
-#else
+//#else
 #define SPINNAKER_ALLOWED
-#endif
+//#endif
 
 #include <string>
 #include <iostream>
@@ -41,21 +41,8 @@ using namespace cv;
 
 int main(int argc, char** argv )
 {
-  // Note: values which are not proceeded by a flag can be defined by @arg
-  const cv::String keys =
-    "{help h usage ? |           | Print this help message   }"
-    "{helloworld hw  |true      | Call basic test functions to ensure libraries are loading correctly}"
-    ;
-
-  cv::CommandLineParser parser(argc, argv, keys);
-  if (parser.has("help"))
-  {
-    parser.printMessage();
-    return 0;
-  }
-
   // grab commandline args
-  const bool        helloworld  = parser.get<bool>("helloworld");
+  const bool        helloworld  = true;
 
   // check for basic function test call
   if(helloworld)
