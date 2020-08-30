@@ -2,5 +2,5 @@ cls
 cd build/
 rm -rf *
 cmake ..
-cmake --build .
+cmake --build . --config Release
 cd ..
