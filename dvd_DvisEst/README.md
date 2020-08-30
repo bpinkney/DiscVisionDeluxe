@@ -8,8 +8,7 @@ Sequence of dvd_visEst routine:
 - Update state estimate throughout disc flight to obtain confident states and derivatives (Thread N+1)
 - Serve finalized initial state to dvd_DfisX and dvd_DgrafX (Main Thread)
 
-
-## Linux:
+## Setting up a Linux build env:
 
 You can just cmake install opencv, apriltag, and eigen; easy!
 
@@ -121,7 +120,7 @@ e.g.
 
 
 
-## Windows:
+## Setting up a Windows build env (This actually works now!):
 
 Note: We are going to build everything here 64 bit!
 "Visual Studio 16 2019" is 64-bit by default on 64 bit hosts, so you will need to change some of the paths here for 32 bit if you want it
@@ -166,6 +165,7 @@ cd apriltag
 ```
 - build with cmake
 This part is a real pain, but oh well
+
 Option 1: (easier) Grab libpthread stuff from the DiscVisionDeluxe repo
 
 Option 2: Create a new visual studio project, and use the nuget package manager to install 'pthreads', then grab the libpthread.so and include headers and move them somewhere you can reference for building apriltags (and eventually dvd_DvisEst)
@@ -209,72 +209,3 @@ cmake --build . --config Release
 ``` bash
 dir /s *lib
 ```
-
-
-
-
-
-# OLD
-### 1. Install OpenCV
-- you can just the binaries distributed here: 
-  https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html
-  http://sourceforge.net/projects/opencvlibrary/files/opencv-win/
-- Use the installer to install to C:/opencv
-- Add the following entry to your environment variables"
-    OpenCV_DIR C:/opencv/build/x64/vc15/lib
-- Edit the system PATH, and add the entry:
-    %OPENCV_DIR%../bin
-
-### 2. Install CMAKE
-cmake.org/download/
-
-### 3. Install MSYS2 (and MINGW64 through it) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
-- grab the installer from https://www.msys2.org/
-- in mysy2 prompt:
-``` bash
-pacman -Syu a couple times (close and re-open shell when prompted, then run it again)
-pacman -S mingw-w64-x86_64-toolchain
-pacman -S mingw-w64-x86_64-python-numpy
-pacman -S mingw-w64-x86_64-cmake
-```
-
-### 3. Install apriltags (On WINDOWS, wooooo) (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
-- check out apriltag from github to C:\apriltag
-  (cd C:\ ; git clone https://github.com/AprilRobotics/apriltag.git;)
-- Open a MSYS2 mingw64 prompt, and navigate to C:\apriltag
-``` bash
-mkdir build
-cd build
-cmake -G "MinGW Makefiles" ..
-mingw32-make.exe
-```
-- (You should have a libapriltag.so file in C:\apriltag now)
-
-### 4. Build the dvd_DvisEst test app (THIS NEEDS TO BE CHANGED TO THE VS COMPILER)
-- cd to dvd_DvisEst in your git checkout
-``` bash
-mkdir build
-cd build
-cmake -G "MinGW Makefiles" ..
-mingw32-make.exe
-```
-- copy the libapriltag.so file to your .exe bin dir (cp C:\apriltag\libapriltag.so DiscVisionDeluxe\bin\)
-
-### 5. Run dvd_DvisEst.exe! woot!
-
-
-There might have to be some visual studio stuff soon:
-VS stuff (darn you Spinnaker...):
-In Visual Studio
-Project -> Manage Nuget Packages
-In browse Tab search for 'pthread'
-Select Install for the pthreads lib
-
-OR
-
-vcpkg.exe install pthread?
-vcpkg.exe integrate install?
-
-This works for dvd_DvisEst, but not for apriltags, drat
-WORK IN PROGRESS!
-
