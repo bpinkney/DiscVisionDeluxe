@@ -420,7 +420,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   catch (...) 
   {
     cerr << "Setting exposure and gain, or parsing groundplane matrices failed!" << endl;
-    #ifndef(IS_WINDOWS)
+    #if !defined(IS_WINDOWS)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
@@ -602,7 +602,7 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
   catch (...) 
   {
     cerr << "Adjusting measurement to groundplane failed!" << endl;
-    #ifndef(IS_WINDOWS)
+    #if !defined(IS_WINDOWS)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
@@ -748,7 +748,7 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
   catch (...) 
   {
     cerr << "Setting groundplane failed!" << endl;
-    #ifndef(IS_WINDOWS)
+    #if !defined(IS_WINDOWS)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
