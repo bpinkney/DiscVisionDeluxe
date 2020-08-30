@@ -48,7 +48,7 @@ using namespace std;
 #if defined(IS_WINDOWS)
 #include <windows.h>
 
-void usleep(__int64 usec) 
+static void usleep(__int64 usec) 
 { 
     HANDLE timer; 
     LARGE_INTEGER ft; 
