@@ -1,6 +1,0 @@
-cd build/
-rm -rf *
-cmake -G "MinGW Makefiles" ..
-mingw32-make.exe
-cd ..
-../bin/dvd_DvisEst.exe -hw
