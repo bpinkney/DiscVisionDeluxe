@@ -77,6 +77,7 @@ if (WIN32)
 
   # use latest c++
   target_compile_features(dvd_DvisEst PRIVATE cxx_std_17)
+  target_compile_options(dvd_DvisEst PRIVATE "/W4")
 endif (WIN32)
 
 #Linux includes
