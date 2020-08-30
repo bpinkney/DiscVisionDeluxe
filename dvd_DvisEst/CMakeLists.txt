@@ -76,7 +76,7 @@ if (WIN32)
   add_compile_definitions(HAVE_STRUCT_TIMESPEC)
 
   # use latest c++
-  target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
+  target_compile_features(dvd_DvisEst PRIVATE cxx_std_17)
 endif (WIN32)
 
 #Linux includes
