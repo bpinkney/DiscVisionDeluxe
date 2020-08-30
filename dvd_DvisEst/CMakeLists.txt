@@ -10,6 +10,15 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 if (WIN32)
   set(APRILTAG_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/apriltag")
   set(OPENCV_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/opencv")
+
+  # use latest c++
+  if (MSVC_VERSION GREATER_EQUAL "1900")
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
+    if (_cpp_latest_flag_supported)
+        add_compile_options("/std:c++latest")
+    endif()
+  endif()
 endif (WIN32)
 
 #define project
