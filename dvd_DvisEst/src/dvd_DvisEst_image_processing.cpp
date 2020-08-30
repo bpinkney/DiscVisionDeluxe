@@ -2,6 +2,10 @@
 #define IS_WINDOWS
 #endif
 
+#if defined(IS_WINDOWS)
+#include <windows.h>
+#endif
+
 #include "opencv2/core.hpp"
 #include <opencv2/core/utility.hpp>
 #include "opencv2/imgproc.hpp"

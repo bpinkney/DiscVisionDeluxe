@@ -2,6 +2,10 @@
 #define IS_WINDOWS
 #endif
 
+#if defined(IS_WINDOWS)
+#include <windows.h>
+#endif
+
 #include <dvd_DvisEst_estimate.hpp>
 #include <dvd_DvisEst_image_capture.hpp>
 #include <dvd_DvisEst_maths.hpp>
@@ -42,11 +46,8 @@
 // More opencv stuff
 #include <opencv2/core/matx.hpp>
 
-using namespace std;
-
 // timer overloads for windows
 #if defined(IS_WINDOWS)
-#include <windows.h>
 
 static void usleep(__int64 usec) 
 { 
@@ -61,6 +62,9 @@ static void usleep(__int64 usec)
     CloseHandle(timer); 
 }
 #endif
+
+using namespace std;
+
 
 // Define macros for our measurement queue
 // Queue states are:

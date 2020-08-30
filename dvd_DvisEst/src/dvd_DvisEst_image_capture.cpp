@@ -2,6 +2,10 @@
 #define IS_WINDOWS
 #endif
 
+#if defined(IS_WINDOWS)
+#include <windows.h>
+#endif
+
 //#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
@@ -59,11 +63,8 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 #endif
 
-using namespace std;
-
 // timer overloads for windows
 #if defined(IS_WINDOWS)
-#include <windows.h>
 
 static void usleep(__int64 usec) 
 { 
@@ -78,6 +79,8 @@ static void usleep(__int64 usec)
     CloseHandle(timer); 
 }
 #endif
+
+using namespace std;
 
 // Get time stamp in nanoseconds.
 static uint64_t nanos()
