@@ -420,7 +420,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   catch (...) 
   {
     cerr << "Setting exposure and gain, or parsing groundplane matrices failed!" << endl;
-    #ifndef IS_WINDOWS
+    #if !defined(IS_WINDOWS)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
@@ -433,11 +433,13 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
 bool dvd_DvisEst_estimate_set_ground_plane_file(const string gnd_plane_filepath)
 {
   sv_groundplane_filepath = gnd_plane_filepath;
+  return true;
 }
 
 bool dvd_DvisEst_estimate_set_log_dir(const string log_dir)
 {
   sv_log_dir = log_dir;
+  return true;
 }
 
 string dvd_DvisEst_estimate_get_log_dir()
