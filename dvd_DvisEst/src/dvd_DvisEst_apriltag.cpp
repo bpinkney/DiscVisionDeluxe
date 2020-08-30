@@ -287,6 +287,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         }
     
         //format opencv Mat into apriltag wrapper
+        #if !defined(IS_WINDOWS)
         image_u8_t img_header = 
         {     
           .width  = img_grey.cols,
@@ -294,6 +295,13 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           .stride = img_grey.cols,
           .buf    = img_grey.data
         };
+        #else
+        image_u8_t img_header;
+        img_header.width  = img_grey.cols;
+        img_header.height = img_grey.rows;
+        img_header.stride = img_grey.cols;
+        img_header.buf    = img_grey.data;
+        #endif
 
         // detect those apriltags
         zarray_t *detections = apriltag_detector_detect(td, &img_header);
