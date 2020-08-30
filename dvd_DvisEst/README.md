@@ -123,6 +123,9 @@ e.g.
 
 ## Windows:
 
+Note: We are going to build everything here 64 bit!
+"Visual Studio 16 2019" is 64-bit by default on 64 bit hosts, so you will need to change some of the paths here for 32 bit if you want it
+
 ### 0. Install Various Crap
 - Install git from https://git-scm.com/download/win
 - Install the FLIR Spinnaker SDK (including the VS support)
@@ -139,14 +142,15 @@ rm -rf opencv
 git clone https://github.com/opencv/opencv.git
 cd opencv
 ```
-- build with cmake
+- build with cmake (for some reason you need to force cmake to pick up the x64 libs here?)
 ``` bash
 mkdir build; cd build
-cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
+cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
 ```
-- make and install (using cmake this time?)
+- make and install
+ --target INSTALL required here?
 ``` bash
-cmake --build . --target INSTALL --config Release
+cmake --build . --config Release
 ```
 
 ### 2. Install apriltag
@@ -195,11 +199,11 @@ add_library(${PROJECT_NAME} STATIC ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
 - Now actually make
 ``` bash
 mkdir build; cd build
-cmake ..
+cmake  -G "Visual Studio 16 2019" -A x64 ..
 ```
 - make and install (Set jN to as many processors as you can spare)
 ``` bash
-cmake --build . --config Release
+cmake --build . --config Release 
 ```
 - verify the lib file exists with
 ``` bash
@@ -210,7 +214,7 @@ dir /s *lib
 
 
 
-#OLD
+# OLD
 ### 1. Install OpenCV
 - you can just the binaries distributed here: 
   https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html
