@@ -76,8 +76,8 @@ if (WIN32)
   add_compile_definitions(HAVE_STRUCT_TIMESPEC)
 
   # use latest c++
-  target_set_property(dvd_DvisEst PROPERTY CXX_STANDARD 17)
-  target_set_property(dvd_DvisEst PROPERTY CXX_STANDARD_REQUIRED ON)
+  set_target_properties(dvd_DvisEst PROPERTIES CXX_STANDARD 17)
+  set_target_properties(dvd_DvisEst PROPERTIES CXX_STANDARD_REQUIRED ON)
 endif (WIN32)
 
 #Linux includes
