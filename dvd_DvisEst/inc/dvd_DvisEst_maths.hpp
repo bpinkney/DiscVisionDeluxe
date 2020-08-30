@@ -160,7 +160,7 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
 #if defined(IS_WINDOWS)
 #include <windows.h>
 
-/*void usleep(__int64 usec) 
+void usleep(__int64 usec) 
 { 
     HANDLE timer; 
     LARGE_INTEGER ft; 
@@ -171,7 +171,7 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
     CloseHandle(timer); 
-}*/
+}
 #endif
 
 #endif // DVD_DVISEST_MATHS_HPP
