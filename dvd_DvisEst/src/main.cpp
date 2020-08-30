@@ -354,6 +354,9 @@ int main(int argc, char** argv )
     // plotting with matlab!
     if(matlab && debug && !dfisx)
     {
+      #if defined(IS_WINDOWS)
+      cerr << ("Matlab plots not supported on Windows just yet...\n") << endl;
+      #else
       cerr << ("Executing Matlab plot...\n") << endl;
 
       // get abs path
@@ -363,6 +366,7 @@ int main(int argc, char** argv )
       sprintf(output_cmd, "cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate('%s')\" &",
         abs_path);
       system(output_cmd);
+      #endif
     }
 
     sprintf(output_cmd, "cd ../dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
