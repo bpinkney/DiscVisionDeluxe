@@ -296,10 +296,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           .buf    = img_grey.data
         };
         #else
-        image_u8_t img_header;
-        img_header.width  = img_grey.cols;
-        img_header.height = img_grey.rows;
-        img_header.stride = img_grey.cols;
+        image_u8_t img_header = *image_u8_create_stride(img_grey.cols, img_grey.rows, img_grey.cols);
         img_header.buf    = img_grey.data;
         #endif
 
