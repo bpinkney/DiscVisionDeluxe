@@ -46,27 +46,27 @@ if (WIN32)
   message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
   message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
 
-  set(OpenCV_INC \
-    "${OPENCV_GIT_DIR}/modules/core/include" \
-    "${OPENCV_GIT_DIR}/modules/imgproc/include" \
-    "${OPENCV_GIT_DIR}/modules/calib3d/include" \
-    "${OPENCV_GIT_DIR}/modules/features2d/include" \
-    "${OPENCV_GIT_DIR}/modules/flann/include" \
-    "${OPENCV_GIT_DIR}/modules/imgcodecs/include" \
-    "${OPENCV_GIT_DIR}/modules/videoio/include" \
-    "${OPENCV_GIT_DIR}/modules/highgui/include" \
-    "${OPENCV_GIT_DIR}/build" \
-    "${OPENCV_GIT_DIR}/build/include" \
-    "${OPENCV_GIT_DIR}/build/include/opencv" \
+  set(OpenCV_INC 
+    "${OPENCV_GIT_DIR}/modules/core/include" 
+    "${OPENCV_GIT_DIR}/modules/imgproc/include" 
+    "${OPENCV_GIT_DIR}/modules/calib3d/include" 
+    "${OPENCV_GIT_DIR}/modules/features2d/include" 
+    "${OPENCV_GIT_DIR}/modules/flann/include" 
+    "${OPENCV_GIT_DIR}/modules/imgcodecs/include" 
+    "${OPENCV_GIT_DIR}/modules/videoio/include" 
+    "${OPENCV_GIT_DIR}/modules/highgui/include" 
+    "${OPENCV_GIT_DIR}/build" 
+    "${OPENCV_GIT_DIR}/build/include" 
+    "${OPENCV_GIT_DIR}/build/include/opencv" 
     "${OPENCV_GIT_DIR}/build/include/opencv/opencv2")
-  set(OpenCV_LIB \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_core440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgproc440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_calib3d440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_features2d440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_flann440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgcodecs440.lib" \
-    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_videoio440.lib" \
+  set(OpenCV_LIB 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_core440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgproc440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_calib3d440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_features2d440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_flann440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgcodecs440.lib" 
+    "${OPENCV_GIT_DIR}/build/lib/Release/opencv_videoio440.lib" 
     "${OPENCV_GIT_DIR}/build/lib/Release/opencv_highgui440.lib")
 
   # check external deps with debug messages
