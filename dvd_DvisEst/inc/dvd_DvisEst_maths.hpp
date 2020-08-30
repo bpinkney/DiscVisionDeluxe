@@ -151,27 +151,4 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
   R[i3x3(2,2)] = 1.0-(q1q1 + q2q2);
 }
 
-// timer overloads for windows
-
-#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(WIN64) || defined(_WIN64) || defined(__WIN64))
-#define IS_WINDOWS
-#endif
-
-#if defined(IS_WINDOWS)
-#include <windows.h>
-
-void usleep(__int64 usec) 
-{ 
-    HANDLE timer; 
-    LARGE_INTEGER ft; 
-
-    ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
-
-    timer = CreateWaitableTimer(NULL, TRUE, NULL); 
-    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
-    WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
-}
-#endif
-
 #endif // DVD_DVISEST_MATHS_HPP
