@@ -115,7 +115,7 @@ e.g.
 ../bin/dvd_DvisEst -d -chime -gt
 
 #or for test images
-../bin/dvd_DvisEst -gp="../bin/logs/test_throw_1/1_2020-05-21_09-01-37_ground_plane.yaml" -fi="../bin/logs/test_throw_1/images/" -cc -cc="../bin/camera_calibrations/19508898.yaml"
+../bin/dvd_DvisEst -gp="../bin/logs/test_throw_1/1_2020-05-21_09-01-37_ground_plane.yaml" -fi="../bin/logs/test_throw_1/images/" -cc="../bin/camera_calibrations/19508898.yaml"
 ```
 
 
@@ -150,6 +150,11 @@ cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release -D OPENCV_G
  --target INSTALL required here?
 ``` bash
 cmake --build . --config Release
+```
+- verify the lib and dll files exists with
+``` bash
+dir /s *lib
+dir /s *dll
 ```
 
 ### 2. Install apriltag
@@ -193,8 +198,7 @@ to
 add_library(${PROJECT_NAME} STATIC ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
 ```
 - remove things which reference unistd.c in the examples folder, but the leave the file intact so it still builds a .lib
-- I just removed the unistd.h include in apriltag_demo.c, and got rid of everything between the tag family constructors/descructors
-- remove the entire #Examples section from the bottom of CMakeLists.txt
+- I just removed the unistd.h include in apriltag_demo.c, and got rid of everything between the tag family constructors/detsructors
 
 - Now actually make
 ``` bash
@@ -205,7 +209,27 @@ cmake  -G "Visual Studio 16 2019" -A x64 ..
 ``` bash
 cmake --build . --config Release 
 ```
-- verify the lib file exists with
+- verify the lib and dll files exists with
 ``` bash
 dir /s *lib
+dir /s *dll
+```
+
+### 5. Build dvd_DvisEst using CMake
+``` bash
+mkdir build; cd build/
+rm -rf *
+cmake ..
+cmake --build . --config Release
+cd ..
+```
+(These commands are in the 'DiscVisionDeluxe/dvd_DvisEst/dothemakewin.bat' script for convenience)
+
+### 6. Run dvd_DvisEst!
+``` bash
+..\bin\Release\dvd_DvisEst -h
+```
+e.g.
+``` bash
+..\bin\Release\dvd_DvisEst -d
 ```
