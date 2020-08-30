@@ -49,10 +49,12 @@ if (WIN32)
   # gosh, is there a good way to do multiple lines in a CMakeLists.txt?
   set(OpenCV_INC "${OPENCV_GIT_DIR}/modules/core/include" "${OPENCV_GIT_DIR}/modules/imgproc/include" "${OPENCV_GIT_DIR}/modules/calib3d/include" "${OPENCV_GIT_DIR}/modules/features2d/include" "${OPENCV_GIT_DIR}/modules/flann/include" "${OPENCV_GIT_DIR}/modules/imgcodecs/include" "${OPENCV_GIT_DIR}/modules/videoio/include" "${OPENCV_GIT_DIR}/modules/highgui/include" "${OPENCV_GIT_DIR}/build" "${OPENCV_GIT_DIR}/build/include" "${OPENCV_GIT_DIR}/build/include/opencv" "${OPENCV_GIT_DIR}/build/include/opencv/opencv2")
   set(OpenCV_LIB "${OPENCV_GIT_DIR}/build/lib/Release/opencv_core440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgproc440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_calib3d440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_features2d440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_flann440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgcodecs440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_videoio440.lib" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_highgui440.lib")
-
+  set(OpenCV_DLL "${OPENCV_GIT_DIR}/build/lib/Release/opencv_core440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgproc440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_calib3d440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_features2d440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_flann440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_imgcodecs440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_videoio440.dll" "${OPENCV_GIT_DIR}/build/lib/Release/opencv_highgui440.dll")
+  
   # check external deps with debug messages
-  message(INFO "OpenCV_INC = ${OpenCV_INC}" )
-  message(INFO "OpenCV_LIB = ${OpenCV_LIB}" )
+  message(INFO "OpenCV_INC = ${OpenCV_INC}")
+  message(INFO "OpenCV_LIB = ${OpenCV_LIB}")
+  message(INFO "OpenCV_DLL = ${OpenCV_DLL}")
 
   # spinnaker stuff
   set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
@@ -113,6 +115,8 @@ endif (UNIX)
 if (WIN32)
 # this is the manual path we must build for Windows (above)
 target_link_libraries( dvd_DvisEst ${OpenCV_LIB} )
+# we also need to copy .dll files (gosh Windows, I mean really)
+file(COPY ${OpenCV_DLL} DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
 endif (WIN32)
 target_link_libraries( dvd_DvisEst ${APRILTAG_LIB} )
 target_link_libraries( dvd_DvisEst Threads::Threads )
