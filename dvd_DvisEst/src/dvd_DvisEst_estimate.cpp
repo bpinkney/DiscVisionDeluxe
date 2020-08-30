@@ -22,7 +22,9 @@
 #endif
 #include <chrono>
 #define _BSD_SOURCE
-#include <sys/time.h>
+#if !defined(IS_WINDOWS)
+  #include <sys/time.h>
+#endif
 #include <stack>
 #include <ctime>
 
