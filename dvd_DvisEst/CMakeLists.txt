@@ -70,7 +70,7 @@ if (WIN32)
   target_include_directories(${PROJECT_NAME} PUBLIC "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64")
 
   set(PTHREAD_LIBRARIES "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64/libpthread.lib")
-  SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-allow-multiple-definition ")
+  #SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-allow-multiple-definition ")
 
   target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARIES} winmm)
   #end pthread stuff for windows
@@ -117,6 +117,7 @@ if (WIN32)
 target_link_libraries( dvd_DvisEst ${OpenCV_LIB} )
 # we also need to copy .dll files (gosh Windows, I mean really)
 file(COPY ${OpenCV_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release)
+file(COPY "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64/libpthread.dll" DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release)
 endif (WIN32)
 target_link_libraries( dvd_DvisEst ${APRILTAG_LIB} )
 target_link_libraries( dvd_DvisEst Threads::Threads )
