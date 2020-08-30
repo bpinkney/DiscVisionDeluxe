@@ -3,7 +3,7 @@
 
 #include <windows.h>
 // option to disable all warnings (does this work? NOPE)
-//#pragma warning(push, 0)
+#pragma warning(push, 0)
 
 // fix for garbage MSVC c++17 support (c'mon guys, sweet christ)
 #define _HAS_STD_BYTE 0
