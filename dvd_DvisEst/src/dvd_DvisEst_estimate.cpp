@@ -1,3 +1,7 @@
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(WIN64) || defined(_WIN64) || defined(__WIN64))
+#define IS_WINDOWS
+#endif
+
 #include <dvd_DvisEst_estimate.hpp>
 #include <dvd_DvisEst_image_capture.hpp>
 #include <dvd_DvisEst_maths.hpp>
@@ -13,7 +17,9 @@
 #include <fstream>
 
 // Timer stuff
-#include <unistd.h>
+#if !defined(IS_WINDOWS)
+  #include <unistd.h>
+#endif
 #include <chrono>
 #define _BSD_SOURCE
 #include <sys/time.h>
