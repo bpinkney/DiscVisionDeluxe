@@ -1,14 +1,18 @@
 #if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(WIN64) || defined(_WIN64) || defined(__WIN64))
 #define IS_WINDOWS
+
+// option to disable all warnings (does this work?)
+#pragma warning(push, 0) 
+
 #endif
 
-#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
+//#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
 // be together on windows...
-#else
+//#elsed
 #define SPINNAKER_ALLOWED
-#endif
+//#endif
 
 #include <string>
 #include <iostream>

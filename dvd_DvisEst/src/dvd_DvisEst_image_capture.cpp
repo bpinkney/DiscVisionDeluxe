@@ -2,13 +2,13 @@
 #define IS_WINDOWS
 #endif
 
-#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
+//#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
 // be together on windows...
-#else
+//#else
 #define SPINNAKER_ALLOWED
-#endif
+//#endif
 
 // OpenCV stuff
 #include "opencv2/core.hpp"
