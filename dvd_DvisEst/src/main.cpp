@@ -42,7 +42,6 @@
 #include <dvd_DvisEst_estimate.hpp>
 
 using namespace std;
-using namespace cv;
 
 int main(int argc, char** argv )
 {

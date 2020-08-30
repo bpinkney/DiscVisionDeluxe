@@ -43,7 +43,6 @@
 #include <opencv2/core/matx.hpp>
 
 using namespace std;
-using namespace cv;
 
 // timer overloads for windows
 #if defined(IS_WINDOWS)
@@ -395,8 +394,8 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   }
 
   // load ground plane transformation
-  FileStorage fs;
-  fs.open(sv_groundplane_filepath, FileStorage::READ);
+  cv::FileStorage fs;
+  fs.open(sv_groundplane_filepath, cv::FileStorage::READ);
   if (!fs.isOpened())
   {
     cerr << "Failed to open gnd_plane_file: " << sv_groundplane_filepath << endl;
@@ -404,11 +403,11 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   }
 
   // Ground plane data
-  FileNode R_CG_fn = fs["R_CG"];
-  FileNode T_CG_fn = fs["T_CG"];
+  cv::FileNode R_CG_fn            = fs["R_CG"];
+  cv::FileNode T_CG_fn            = fs["T_CG"];
   // Expsoure/gain data
-  FileNode cam_exposure_us_fn = fs["cam_exposure_us"];
-  FileNode cam_gain_fn        = fs["cam_gain"];
+  cv::FileNode cam_exposure_us_fn = fs["cam_exposure_us"];
+  cv::FileNode cam_gain_fn        = fs["cam_gain"];
 
   cerr << "Ground Plane RotMat is: " << R_CG_fn.mat() << endl;
 
@@ -753,7 +752,7 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
       double gain;
       dvd_DvisEst_image_capture_get_exposure_gain(&exposure_us, &gain);
 
-      FileStorage fs(sv_groundplane_filepath, FileStorage::WRITE);
+      cv::FileStorage fs(sv_groundplane_filepath, cv::FileStorage::WRITE);
 
       //fs << "# rotation from camera frame to ground-plane frame";
       fs << "R_CG" << R_CG_out;

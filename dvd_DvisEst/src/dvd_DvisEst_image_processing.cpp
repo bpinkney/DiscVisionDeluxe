@@ -16,7 +16,6 @@
 #include <time.h>
 #include <iostream>
 
-using namespace cv;
 using namespace std;
 
 // define local statics
@@ -30,7 +29,7 @@ cv::Mat sv_undistort_map1;
 
 bool dvd_DvisEst_image_processing_test(void)
 {
-  Mat *view = new Mat();
+  cv::Mat *view = new cv::Mat();
 
   return true;
 }
@@ -38,18 +37,18 @@ bool dvd_DvisEst_image_processing_test(void)
 static void dvd_DvisEst_image_processing_load_calib(const cv::String camera_cal_file)
 {
   // get camera cal parameters from .yaml file
-  FileStorage fs;
-  fs.open(camera_cal_file, FileStorage::READ);
+  cv::FileStorage fs;
+  fs.open(camera_cal_file, cv::FileStorage::READ);
   if (!fs.isOpened())
   {
       cerr << "Failed to open camera cal: " << camera_cal_file << endl;
   }
   else
   {
-    FileNode camera_matrix                    = fs["camera_matrix"];
-    FileNode distortion_coefficients          = fs["distortion_coefficients"];
-    FileNode image_width                      = fs["image_width"];
-    FileNode image_height                     = fs["image_height"];
+    cv::FileNode camera_matrix                    = fs["camera_matrix"];
+    cv::FileNode distortion_coefficients          = fs["distortion_coefficients"];
+    cv::FileNode image_width                      = fs["image_width"];
+    cv::FileNode image_height                     = fs["image_height"];
     //FileNode avg_reprojection_error           = fs["avg_reprojection_error"];
     //FileNode per_view_reprojection_errors     = fs["per_view_reprojection_errors"];
     //FileNode extrinsic_parameters             = fs["extrinsic_parameters"];
@@ -58,24 +57,24 @@ static void dvd_DvisEst_image_processing_load_calib(const cv::String camera_cal_
     sv_distortion_coefficients = distortion_coefficients.mat();
 
     // Compute optimal undistort tranformation mappings
-    Size image_size     = Size((double)image_width, (double)image_height);
-    Size image_size_out = Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
+    cv::Size image_size     = cv::Size((double)image_width, (double)image_height);
+    cv::Size image_size_out = cv::Size(sv_image_scale * image_size.width, sv_image_scale * image_size.height);
 
     // Populate map0 and map1 for undistortion
     const bool fisheye = true;
     if(fisheye)
     {
-      Mat new_cam_mat;
-      fisheye::estimateNewCameraMatrixForUndistortRectify(sv_camera_matrix, sv_distortion_coefficients, image_size,
-                                                          Matx33d::eye(), new_cam_mat, 1.0, image_size_out, 1.0);
-      fisheye::initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Matx33d::eye(),
+      cv::Mat new_cam_mat;
+      cv::fisheye::estimateNewCameraMatrixForUndistortRectify(sv_camera_matrix, sv_distortion_coefficients, image_size,
+                                                          cv::Matx33d::eye(), new_cam_mat, 1.0, image_size_out, 1.0);
+      cv::fisheye::initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, cv::Matx33d::eye(),
                             new_cam_mat,
                             image_size_out, CV_16SC2, sv_undistort_map0, sv_undistort_map1);
     }
     else
     {
-    initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, Mat(),
-                          getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
+    cv::initUndistortRectifyMap(sv_camera_matrix, sv_distortion_coefficients, cv::Mat(),
+                          cv::getOptimalNewCameraMatrix(sv_camera_matrix, sv_distortion_coefficients, image_size, 1, image_size_out, 0),
                           image_size_out, CV_8UC1, sv_undistort_map0, sv_undistort_map1);
     }
 
@@ -127,11 +126,11 @@ void dvd_DvisEst_image_processing_undistort_image(cv::Mat * image_in, cv::Mat * 
     return;
   }
 
-  Mat d_image, ud_image;
+  cv::Mat d_image, ud_image;
   d_image = *image_in;
 
   // use re-map to undistort, linear interpolation
-  remap(d_image, ud_image, sv_undistort_map0, sv_undistort_map1, INTER_LINEAR);
+  cv::remap(d_image, ud_image, sv_undistort_map0, sv_undistort_map1, cv::INTER_LINEAR);
 
   // point to undistorted image, free memory from extra mat
   *image_out = ud_image;

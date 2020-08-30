@@ -60,7 +60,6 @@ using namespace Spinnaker::GenICam;
 #endif
 
 using namespace std;
-using namespace cv;
 
 // Get time stamp in nanoseconds.
 static uint64_t nanos()
@@ -1093,7 +1092,7 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
 
   // get list of images (for now, just jpgs)
   vector<cv::String> img_filenames;
-  glob(imgdir_src + "/*.jpg", img_filenames);
+  cv::glob(imgdir_src + "/*.jpg", img_filenames);
 
   if(img_filenames.size() < 1)
   {
@@ -1112,7 +1111,7 @@ bool dvd_DvisEst_image_capture_load_test_queue(const cv::String imgdir_src, cons
   {
     //cerr << "Loading " << img_filenames[i] << " into image queue..." << endl;
     
-    image = imread(img_filenames[i], 1);
+    image = cv::imread(img_filenames[i], 1);
 
     if(image.empty())
     {
