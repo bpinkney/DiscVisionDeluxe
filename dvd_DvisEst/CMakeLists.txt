@@ -1,10 +1,16 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.1) # 3.15 needed for nuGet pthreads on windows
 
 # Add a bin directory at the top level for this project (ooh, special)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../bin)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+# set windows locations for opencv, apriltags
+if (WIN32)
+  set(APRILTAG_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/apriltag")
+  set(OPENCV_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/opencv")
+endif (WIN32)
 
 #define project
 project( dvd_DvisEst )
@@ -17,6 +23,12 @@ if (UNIX)
   find_package( apriltag REQUIRED )
 endif (UNIX)
 
+if(WIN32)
+
+  set(OpenCV_DIR "${OPENCV_GIT_DIR}/build")
+
+endif (WIN32)
+
 if (UNIX)
 
   # find apriltag inc and lib stuff
@@ -27,22 +39,21 @@ endif (UNIX)
 if (WIN32)
 
   # this path is set explicitly here on windows (so change it to your checkout location for apriltag)
-  set(APRILTAG_INC "C:/apriltag")
-  set(APRILTAG_LIB "C:/apriltag/libapriltag.so")
+  set(APRILTAG_INC "${APRILTAG_GIT_DIR}")
+  set(APRILTAG_LIB "${APRILTAG_GIT_DIR}/build/lib/Release/apriltag.lib")
 
   # check external deps with debug messages
   message(INFO "APRILTAG_INC = ${APRILTAG_INC}" )
   message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
 
-  # opencv stuff (built with mingw) (this still doesn't work, gah)
-  set(OpenCV_INC "C:/opencv/sources/modules/core/include" "C:/opencv/sources/modules/core/include" "C:/opencv/sources/modules/imgproc/include" "C:/opencv/sources/modules/calib3d/include" "C:/opencv/sources/modules/features2d/include" "C:/opencv/sources/modules/flann/include" "C:/opencv/sources/modules/imgcodecs/include" "C:/opencv/sources/modules/videoio/include" "C:/opencv/sources/modules/highgui/include" "C:/opencv/build")
+  set(OpenCV_INC "${OPENCV_GIT_DIR}/modules/core/include" "${OPENCV_GIT_DIR}/modules/core/include" "${OPENCV_GIT_DIR}/modules/imgproc/include" "${OPENCV_GIT_DIR}/modules/calib3d/include" "${OPENCV_GIT_DIR}/modules/features2d/include" "${OPENCV_GIT_DIR}/modules/flann/include" "${OPENCV_GIT_DIR}/modules/imgcodecs/include" "${OPENCV_GIT_DIR}/modules/videoio/include" "${OPENCV_GIT_DIR}/modules/highgui/include" "${OPENCV_GIT_DIR}/build" "${OPENCV_GIT_DIR}/build/include" "${OPENCV_GIT_DIR}/build/include/opencv" "${OPENCV_GIT_DIR}/build/include/opencv/opencv2")
 
   # check external deps with debug messages
   message(INFO "OpenCV_INC = ${OpenCV_INC}" )
   message(INFO "OpenCV_LIB = ${OpenCV_LIB}" )
 
   # spinnaker stuff
-  #set(SPINNAKER_LIB "C:/Program Files/Point Grey Research/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
+  set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker.lib")
 
 endif (WIN32)
 
@@ -51,9 +62,18 @@ add_executable( dvd_DvisEst src/main.cpp )
 
 #Windows includes
 if (WIN32)
- #target_include_directories(dvd_DvisEst PRIVATE "C:/Program Files/Point Grey Research/Spinnaker/include")
- # fix for janky windows pthreads (shame!)
- #add_compile_definitions(HAVE_STRUCT_TIMESPEC)
+  #pthread stuff for windows
+  target_include_directories(${PROJECT_NAME} PUBLIC "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64")
+
+  set(PTHREAD_LIBRARIES "C:/DiscVisionDeluxe/dvd_DvisEst/lib/winlibpthread64/libpthread.lib")
+  SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-allow-multiple-definition ")
+
+  target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARIES} winmm)
+  #end pthread stuff for windows
+
+  target_include_directories(dvd_DvisEst PRIVATE "C:/Program Files/FLIR Systems/Spinnaker/include")
+  # fix for janky windows pthreads (shame!)
+  add_compile_definitions(HAVE_STRUCT_TIMESPEC)
 endif (WIN32)
 
 #Linux includes
