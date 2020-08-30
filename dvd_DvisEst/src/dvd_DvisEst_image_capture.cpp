@@ -742,6 +742,7 @@ static int dvd_DvisEst_image_capture_apply_exposure_gain(CameraPtr pCam)
     return -1;
   }
   #endif
+  return 1;
 }
 
 int dvd_DvisEst_image_capture_thread()

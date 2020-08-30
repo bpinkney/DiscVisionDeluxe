@@ -47,13 +47,14 @@ if (WIN32)
   message(INFO "APRILTAG_LIB = ${APRILTAG_LIB}" )
 
   set(OpenCV_INC "${OPENCV_GIT_DIR}/modules/core/include" "${OPENCV_GIT_DIR}/modules/core/include" "${OPENCV_GIT_DIR}/modules/imgproc/include" "${OPENCV_GIT_DIR}/modules/calib3d/include" "${OPENCV_GIT_DIR}/modules/features2d/include" "${OPENCV_GIT_DIR}/modules/flann/include" "${OPENCV_GIT_DIR}/modules/imgcodecs/include" "${OPENCV_GIT_DIR}/modules/videoio/include" "${OPENCV_GIT_DIR}/modules/highgui/include" "${OPENCV_GIT_DIR}/build" "${OPENCV_GIT_DIR}/build/include" "${OPENCV_GIT_DIR}/build/include/opencv" "${OPENCV_GIT_DIR}/build/include/opencv/opencv2")
+  set(OpenCV_LIB "${OPENCV_GIT_DIR}/build/lib/Release/opencv_core440.lib")
 
   # check external deps with debug messages
   message(INFO "OpenCV_INC = ${OpenCV_INC}" )
   message(INFO "OpenCV_LIB = ${OpenCV_LIB}" )
 
   # spinnaker stuff
-  set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker.lib")
+  set(SPINNAKER_LIB "C:/Program Files/FLIR Systems/Spinnaker/lib64/vs2015/Spinnaker_v140.lib")
 
 endif (WIN32)
 
@@ -104,7 +105,7 @@ target_sources(dvd_DvisEst
 )
 
 # link libs
-target_link_libraries( dvd_DvisEst ${OpenCV_LIBS} )
+target_link_libraries( dvd_DvisEst ${OpenCV_LIB} )
 target_link_libraries( dvd_DvisEst ${APRILTAG_LIB} )
 target_link_libraries( dvd_DvisEst Threads::Threads )
 if (WIN32)
