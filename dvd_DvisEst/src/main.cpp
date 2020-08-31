@@ -151,6 +151,7 @@ int main(int argc, char** argv )
     log_debug_path = log_path + datestring + "_log_data/";
     cv::utils::fs::createDirectory(log_debug_path);
     cv::utils::fs::createDirectory(log_debug_path + "images/");
+    //cv::utils::fs::createDirectory(log_debug_path + "images_undist/");
     dvd_DvisEst_estimate_set_log_dir(log_debug_path);
     cerr << "Logging Path: "  << log_debug_path << endl;
   }

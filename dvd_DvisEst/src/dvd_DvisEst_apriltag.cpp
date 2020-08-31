@@ -227,6 +227,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
   // Define housing for grayscale tag
   cv::Mat img_grey;
+  cv::Mat img_grey_dist;
 
   // How many frames did we skip each sample to meet our real-time criteria?
   uint16_t skipped_frames = 0;
@@ -268,7 +269,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
       if(process_frame)
       {
-        // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!
+        // Cool, we have an image now, and a measurement slot reserved, let's perform the AprilTag detection!    
 
         // if we're outputting debug logging, save image to output dir
         // only bother if we're in MEAS thread mode
@@ -282,7 +283,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           if(convert_from_bayer)
           {
             cvtColor(image_capture.image_data, img_rgb, cv::COLOR_BayerRG2RGB);
-            }
+          }
           else
           {
             img_rgb = image_capture.image_data;
@@ -290,25 +291,33 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           imwrite(img_filename.str(), img_rgb);
         }
 
-        // First, undistort the image
-        cv::Mat ud_image_capture;
-        dvd_DvisEst_image_processing_undistort_image(&(image_capture.image_data), &ud_image_capture);
+        // if using spinnaker images, we are converting from bayer
+        // Make sure to convert before undistorting!!
+        if(convert_from_bayer)
+        {
+          cvtColor(image_capture.image_data, img_grey_dist, cv::COLOR_BayerRG2GRAY);
+        }
+        else
+        {
+          cvtColor(image_capture.image_data, img_grey_dist, cv::COLOR_RGB2GRAY);
+        }
+
+        // undistort the grey image
+        dvd_DvisEst_image_processing_undistort_image(&img_grey_dist, &img_grey);
+
+        // log undistorted image if desired
+        //if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
+        //{
+        //  std::stringstream img_filename;
+        //  img_filename << log_dir << "images_undist/" << std::setfill('0') << std::setw(8) << std::to_string(image_capture.frame_id) << "_frame.jpg";
+        //  imwrite(img_filename.str(), img_grey);
+        //}
 
         //cv::Size image_size = image_capture.image_data.size();
 
         //cerr << "Image Size [" << image_size.width << ", " << image_size.height << "]" << endl;
 
         // convert to greyscale
-        // if using spinnaker images, we are converting from bayer
-        if(convert_from_bayer)
-        {
-          cvtColor(ud_image_capture, img_grey, cv::COLOR_BayerRG2GRAY);
-        }
-        else
-        {
-          cvtColor(ud_image_capture, img_grey, cv::COLOR_RGB2GRAY);
-        }
-    
         //format opencv Mat into apriltag wrapper
         #if !defined(IS_WINDOWS)
         image_u8_t img_header = 
