@@ -83,6 +83,7 @@ static cv::String get_executable_path(void)
     path = cv::String(buff);
     auto pos = path.rfind('/');
     if (pos != std::string::npos)
+    {
       path.erase(pos);
     }
   }  
@@ -91,12 +92,12 @@ static cv::String get_executable_path(void)
   #endif
 }
 
-static void replace_slashes_linux_to_windows(std::string * linux_path)
+/*static void replace_slashes_linux_to_windows(std::string * linux_path)
 {
   #if defined(IS_WINDOWS)
   //std::replace(*linux_path.begin(), *linux_path.end(), '/', '\\');
   #endif
-}
+}*/
 
 
 int main(int argc, char** argv )
@@ -177,8 +178,12 @@ int main(int argc, char** argv )
   cv::String executable_path = get_executable_path();
 
   // set groundplane path
+  #if defined(IS_WINDOWS)
+  std::string groundplane_path = executable_path + "\\ground_planes\\";
+  #else
   std::string groundplane_path = executable_path + "/ground_planes/";
-  replace_slashes_linux_to_windows(&groundplane_path);
+  #endif
+  //replace_slashes_linux_to_windows(&groundplane_path);
   cv::utils::fs::createDirectory(groundplane_path);
   cv::glob(groundplane_path,fn,false);
   if(!set_gnd_plane && gnd_plane.empty())
@@ -201,14 +206,26 @@ int main(int argc, char** argv )
   std::string log_debug_path;
   if(debug)
   {
+    #if defined(IS_WINDOWS)
+    std::string log_path = executable_path + "\\logs\\";
+    #else
     std::string log_path = executable_path + "/logs/";
-    replace_slashes_linux_to_windows(&log_path);
+    #endif
+    //replace_slashes_linux_to_windows(&log_path);
     cv::utils::fs::createDirectory(log_path);
+    #if defined(IS_WINDOWS)
+    log_debug_path = log_path + datestring + "_log_data\\";
+    #else
     log_debug_path = log_path + datestring + "_log_data/";
-    replace_slashes_linux_to_windows(&log_debug_path);
+    #endif
+    //replace_slashes_linux_to_windows(&log_debug_path);
     cv::utils::fs::createDirectory(log_debug_path);
+    #if defined(IS_WINDOWS)
+    std::string log_path_images = log_debug_path + "images\\";
+    #else
     std::string log_path_images = log_debug_path + "images/";
-    replace_slashes_linux_to_windows(&log_path_images);
+    #endif
+    //replace_slashes_linux_to_windows(&log_path_images);
     cv::utils::fs::createDirectory(log_path_images);
     dvd_DvisEst_estimate_set_log_dir(log_debug_path);
     cerr << "Logging Path: "  << log_debug_path << endl;
@@ -223,8 +240,12 @@ int main(int argc, char** argv )
     const uint32_t camera_serial_num = dvd_DvisEst_image_capture_get_camera_serial_number();
     if(camera_serial_num > 0 && camera_cal.empty())
     {
+      #if defined(IS_WINDOWS)
+      camera_cal = executable_path + "\\camera_calibrations\\" + std::to_string(camera_serial_num) + ".yaml";
+      #else
       camera_cal = executable_path + "/camera_calibrations/" + std::to_string(camera_serial_num) + ".yaml";
-      replace_slashes_linux_to_windows(&camera_cal);
+      #endif
+      //replace_slashes_linux_to_windows(&camera_cal);
       cerr << "Automatically retrieved camera calibration using camera serial number: " << endl << camera_cal <<  endl;
     }
   }
@@ -233,8 +254,12 @@ int main(int argc, char** argv )
   {
     // Use a default cal if none is provided (bad practice!)
     cerr << "USING DEFAULT CAMERA CAL, THIS IS DISCOURAGED!" << endl;
+    #if defined(IS_WINDOWS)
+    camera_cal = executable_path + "\\camera_calibrations/19508898_camera_cal4001.yaml";
+    #else
     camera_cal = executable_path + "/camera_calibrations/19508898_camera_cal4001.yaml";
-    replace_slashes_linux_to_windows(&camera_cal);
+    #endif
+    //replace_slashes_linux_to_windows(&camera_cal);
   }
 
   // Init undistort and image processing
