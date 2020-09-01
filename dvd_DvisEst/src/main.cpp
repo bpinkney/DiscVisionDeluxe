@@ -47,6 +47,41 @@
 
 using namespace std;
 
+// get path of current executable in linux and windows for logging purposes
+static cv::String get_executable_path(void)
+{
+  #if defined(IS_WINDOWS)
+  char ownPth[PATH_MAX];
+
+  // When NULL is passed to GetModuleHandle, the handle of the exe itself is returned
+  HMODULE hModule = GetModuleHandle(NULL);
+  if (hModule != NULL)
+  {
+     // Use GetModuleFileName() with module handle to get the path
+     GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
+     return cv::String(ownPth);
+  }
+  else
+  {
+     cout << "Executable path handle is NULL" << endl ;
+     return "";
+  }
+  #else
+  cv::String path = "";
+  char buff[PATH_MAX];
+  ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff)-1);
+  if (len != -1) 
+  {
+    buff[len] = '\0';
+    path = cv::String(buff);
+  }
+  path.erase(path.rfind('/'));
+  cerr << "Executable path: " << path.c_str() << endl;
+  return path;
+  #endif
+}
+
+
 int main(int argc, char** argv )
 {
   // Note: values which are not proceeded by a flag can be defined by @arg
@@ -121,6 +156,8 @@ int main(int argc, char** argv )
   cerr << "Current DateTime: " << datestring << endl;
 
   vector<string> fn;
+
+  cv::String executable_path = get_executable_path();
 
   // set groundplane path
   std::string groundplane_path = "../bin/ground_planes/";
