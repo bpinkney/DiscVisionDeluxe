@@ -162,7 +162,7 @@ int main(int argc, char** argv )
   cv::String executable_path = get_executable_path();
 
   // set groundplane path
-  std::string groundplane_path = "../bin/ground_planes/";
+  std::string groundplane_path = executable_path + "/ground_planes/";
   cv::utils::fs::createDirectory(groundplane_path);
   cv::glob(groundplane_path,fn,false);
   if(!set_gnd_plane && gnd_plane.empty())
@@ -185,7 +185,7 @@ int main(int argc, char** argv )
   std::string log_debug_path;
   if(debug)
   {
-    std::string log_path = "../bin/logs/";
+    std::string log_path = executable_path + "/logs/";
     cv::utils::fs::createDirectory(log_path);
     log_debug_path = log_path + datestring + "_log_data/";
     cv::utils::fs::createDirectory(log_debug_path);
@@ -204,7 +204,7 @@ int main(int argc, char** argv )
     const uint32_t camera_serial_num = dvd_DvisEst_image_capture_get_camera_serial_number();
     if(camera_serial_num > 0 && camera_cal.empty())
     {
-      camera_cal = "../bin/camera_calibrations/" + std::to_string(camera_serial_num) + ".yaml";
+      camera_cal = executable_path + "/camera_calibrations/" + std::to_string(camera_serial_num) + ".yaml";
       cerr << "Automatically retrieved camera calibration using camera serial number: " << endl << camera_cal <<  endl;
     }
   }
@@ -213,7 +213,7 @@ int main(int argc, char** argv )
   {
     // Use a default cal if none is provided (bad practice!)
     cerr << "USING DEFAULT CAMERA CAL, THIS IS DISCOURAGED!" << endl;
-    camera_cal = "../bin/camera_calibrations/19508898_camera_cal4001.yaml";
+    camera_cal = executable_path + "/camera_calibrations/19508898_camera_cal4001.yaml";
   }
 
   // Init undistort and image processing
