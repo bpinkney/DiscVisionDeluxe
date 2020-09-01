@@ -60,7 +60,12 @@ static cv::String get_executable_path(void)
     // Use GetModuleFileName() with module handle to get the path
     GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
     path = cv::String(ownPth);
-    path.erase(path.rfind('\\'));
+    // make sure it exists since windows crashes the program otherwise.....
+    auto pos = path.rfind("\\");
+    if (pos != std::string::npos)
+    {
+      path.erase(pos);
+    }
   }
   else
   {
