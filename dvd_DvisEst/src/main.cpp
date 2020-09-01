@@ -81,7 +81,10 @@ static cv::String get_executable_path(void)
   {
     buff[len] = '\0';
     path = cv::String(buff);
-    path.erase(path.rfind('/'));
+    auto pos = path.rfind('/');
+    if (pos != std::string::npos)
+      path.erase(pos);
+    }
   }  
   cerr << "Executable path: " << path.c_str() << endl;
   return path;
