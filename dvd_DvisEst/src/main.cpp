@@ -83,6 +83,13 @@ static cv::String get_executable_path(void)
   #endif
 }
 
+static void replace_slashes_linux_to_windows(std::string * linux_path)
+{
+  #if defined(IS_WINDOWS)
+  std::replace(*linux_path.begin(), *linux_path.end(), '/', '\\');
+  #endif
+}
+
 
 int main(int argc, char** argv )
 {
@@ -163,6 +170,7 @@ int main(int argc, char** argv )
 
   // set groundplane path
   std::string groundplane_path = executable_path + "/ground_planes/";
+  replace_slashes_linux_to_windows(&groundplane_path);
   cv::utils::fs::createDirectory(groundplane_path);
   cv::glob(groundplane_path,fn,false);
   if(!set_gnd_plane && gnd_plane.empty())
@@ -186,10 +194,14 @@ int main(int argc, char** argv )
   if(debug)
   {
     std::string log_path = executable_path + "/logs/";
+    replace_slashes_linux_to_windows(&log_path);
     cv::utils::fs::createDirectory(log_path);
     log_debug_path = log_path + datestring + "_log_data/";
+    replace_slashes_linux_to_windows(&log_debug_path);
     cv::utils::fs::createDirectory(log_debug_path);
-    cv::utils::fs::createDirectory(log_debug_path + "images/");
+    std::string log_path_images = log_debug_path + "images/";
+    replace_slashes_linux_to_windows(&log_path_images);
+    cv::utils::fs::createDirectory(log_path_images);
     //cv::utils::fs::createDirectory(log_debug_path + "images_undist/");
     dvd_DvisEst_estimate_set_log_dir(log_debug_path);
     cerr << "Logging Path: "  << log_debug_path << endl;
@@ -205,6 +217,7 @@ int main(int argc, char** argv )
     if(camera_serial_num > 0 && camera_cal.empty())
     {
       camera_cal = executable_path + "/camera_calibrations/" + std::to_string(camera_serial_num) + ".yaml";
+      replace_slashes_linux_to_windows(&camera_cal);
       cerr << "Automatically retrieved camera calibration using camera serial number: " << endl << camera_cal <<  endl;
     }
   }
@@ -214,6 +227,7 @@ int main(int argc, char** argv )
     // Use a default cal if none is provided (bad practice!)
     cerr << "USING DEFAULT CAMERA CAL, THIS IS DISCOURAGED!" << endl;
     camera_cal = executable_path + "/camera_calibrations/19508898_camera_cal4001.yaml";
+    replace_slashes_linux_to_windows(&camera_cal);
   }
 
   // Init undistort and image processing
