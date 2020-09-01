@@ -57,14 +57,14 @@ static cv::String get_executable_path(void)
   HMODULE hModule = GetModuleHandle(NULL);
   if (hModule != NULL)
   {
-     // Use GetModuleFileName() with module handle to get the path
-     GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
-     //path = cv::String(ownPth);
-     //path.erase(path.rfind('/'));
+    // Use GetModuleFileName() with module handle to get the path
+    GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
+    path = cv::String(ownPth);
+    path.erase(path.rfind('\\'));
   }
   else
   {
-     cerr << "Executable path handle is NULL" << endl ;
+    cerr << "Executable path handle is NULL" << endl ;
   }
   cerr << "Executable path: " << path.c_str() << endl;
   return path;
