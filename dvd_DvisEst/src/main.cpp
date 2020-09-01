@@ -86,7 +86,7 @@ static cv::String get_executable_path(void)
 static void replace_slashes_linux_to_windows(std::string * linux_path)
 {
   #if defined(IS_WINDOWS)
-  std::replace(*linux_path.begin(), *linux_path.end(), '/', '\\');
+  //std::replace(*linux_path.begin(), *linux_path.end(), '/', '\\');
   #endif
 }
 
@@ -202,7 +202,6 @@ int main(int argc, char** argv )
     std::string log_path_images = log_debug_path + "images/";
     replace_slashes_linux_to_windows(&log_path_images);
     cv::utils::fs::createDirectory(log_path_images);
-    //cv::utils::fs::createDirectory(log_debug_path + "images_undist/");
     dvd_DvisEst_estimate_set_log_dir(log_debug_path);
     cerr << "Logging Path: "  << log_debug_path << endl;
   }
