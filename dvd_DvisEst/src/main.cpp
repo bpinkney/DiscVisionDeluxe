@@ -51,21 +51,22 @@ using namespace std;
 static cv::String get_executable_path(void)
 {
   #if defined(IS_WINDOWS)
+  cv::String path = "";
   char ownPth[1024];
-
   // When NULL is passed to GetModuleHandle, the handle of the exe itself is returned
   HMODULE hModule = GetModuleHandle(NULL);
   if (hModule != NULL)
   {
      // Use GetModuleFileName() with module handle to get the path
      GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
-     return cv::String(ownPth);
+     path = cv::String(ownPth);
   }
   else
   {
-     cout << "Executable path handle is NULL" << endl ;
-     return "";
+     cerr << "Executable path handle is NULL" << endl ;
   }
+  cerr << "Executable path: " << path.c_str() << endl;
+  return path;
   #else
   cv::String path = "";
   char buff[PATH_MAX];
