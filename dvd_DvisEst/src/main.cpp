@@ -60,6 +60,7 @@ static cv::String get_executable_path(void)
      // Use GetModuleFileName() with module handle to get the path
      GetModuleFileName(hModule, ownPth, (sizeof(ownPth))); 
      path = cv::String(ownPth);
+     path.erase(path.rfind('/'));
   }
   else
   {
@@ -75,8 +76,8 @@ static cv::String get_executable_path(void)
   {
     buff[len] = '\0';
     path = cv::String(buff);
-  }
-  path.erase(path.rfind('/'));
+    path.erase(path.rfind('/'));
+  }  
   cerr << "Executable path: " << path.c_str() << endl;
   return path;
   #endif
