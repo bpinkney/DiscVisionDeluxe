@@ -3,7 +3,9 @@
 #include <string> 
 #include <sstream>
 
-
+/*
+    Default Values for command line arg passing
+*/
 bool run_test = 0;
 DfisX::Disc_Mold_Enum disc_mold_enum; 
 
