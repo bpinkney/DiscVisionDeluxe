@@ -39,7 +39,7 @@ namespace DfisX
     set_save_path ("flight_saves\\saved_throw.csv");
     global_variables.global_wind_vel = Eigen::Vector3d(0,0,0);
     global_variables.matlab_export   = false;
-    global_variables.install_path    = "C:\\Users\\Crom\\Documents\\GitHub\\DiscVisionDeluxe";
+    global_variables.install_path    = "C:\\DiscVisionDeluxe";
     load_disc_parameters ();
   }
 
