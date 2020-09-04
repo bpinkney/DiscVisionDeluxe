@@ -138,13 +138,41 @@ rm -rf opencv
 ```
 - clone repo
 ``` bash
+git clone https://gitlab.com/libeigen/eigen.git
+cd eigen
+```
+- build with cmake (for some reason you need to force cmake to pick up the x64 libs here?)
+``` bash
+mkdir build
+cd build
+cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release ..
+```
+- make and install
+``` bash
+cmake --build . --config Release
+```
+- verify the lib and dll files exists with
+``` bash
+dir /s *lib
+dir /s *dll
+```
+
+### 1.5. Install eigen
+- 'cd' to the 'DiscVisionDeluxe/dvd_DvisEst/lib/' directory
+- get rid of placeholder file and folder
+``` bash
+rm -rf eigen
+```
+- clone repo
+``` bash
 git clone https://github.com/opencv/opencv.git
 cd opencv
 ```
 - build with cmake (for some reason you need to force cmake to pick up the x64 libs here?)
 ``` bash
-mkdir build; cd build
-cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
+mkdir build
+cd build
+cmake  -G "Visual Studio 16 2019" -A x64 -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES ..
 ```
 - make and install
 ``` bash
@@ -201,7 +229,8 @@ add_library(${PROJECT_NAME} STATIC ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
 
 - Now actually make
 ``` bash
-mkdir build; cd build
+mkdir build
+cd build
 cmake  -G "Visual Studio 16 2019" -A x64 ..
 ```
 - make and install
@@ -216,7 +245,8 @@ dir /s *dll
 
 ### 5. Build dvd_DvisEst using CMake
 ``` bash
-mkdir build; cd build/
+mkdir build
+cd build/
 rm -rf *
 cmake ..
 cmake --build . --config Release
