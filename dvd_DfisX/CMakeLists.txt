@@ -16,6 +16,7 @@ project( dvd_DfisX )
 
 # add package deps
 find_package( Threads REQUIRED)
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 if (UNIX)
   # this only works on linux, for windows, we'll set the INC and LIB directly
   find_package( OpenCV REQUIRED )
@@ -81,10 +82,10 @@ target_sources(dvd_DfisX
 )
 
 # link libs
+target_link_libraries( dvd_DfisX Eigen3::Eigen )
 if (UNIX)
 # this is opencv's built in LIBS path, which works on linux
 target_link_libraries( dvd_DfisX ${OpenCV_LIBS} )
-target_link_libraries( dvd_DfisX Eigen3::Eigen )
 #target_link_libraries( dvd_DfisX ${Eigen_LIBS} )
 endif (UNIX)
 if (WIN32)
