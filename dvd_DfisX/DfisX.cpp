@@ -18,6 +18,7 @@
 #include "Daero.hpp"
 #include "Dgyro.hpp"
 #include "Dpropagate.hpp"
+#include "Dio.hpp"
 
 namespace DfisX
 {
@@ -242,7 +243,10 @@ void               finish_throw        (Throw_Container &throw_container)
     if (global_variables.matlab_export)
     {
       if (basic_console_logging) std::cout << "\nSending output file to matlab for viewing\n";
-      system("matlab -nosplash -nodesktop -r \"cd('C:\\src\\disc param tests'); dvd_DfisX_plot_disc_trajectory('C:\\src\\flight_saves\\saved_throw.csv'); exit\"");
+      //Need help making this install path independant   
+      std::string install_path = "C:\\Users\\Crom\\Documents\\GitHub\\DiscVisionDeluxe";
+      std::string system_call = ("matlab -nosplash -nodesktop -r \"cd('" + install_path + "\\matlab\\visualizers'); dvd_DfisX_plot_disc_trajectory('" + install_path + "\\dvd_DfisX\\" + global_variables.save_path + "'); exit\"");
+      system(system_call.c_str());
     }
 }
 
