@@ -77,6 +77,7 @@ target_sources(dvd_DfisX
       Dgyro.cpp
       Daero.cpp
       DfisX.cpp
+      Dio.cpp
 )
 
 # link libs
