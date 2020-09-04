@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../bin)
 
 # set windows locations for opencv, apriltags
 if (WIN32)
-  set(OPENCV_GIT_DIR "C:/DiscVisionDeluxe/dvd_DfisX/lib/opencv")
+  set(OPENCV_GIT_DIR "C:/DiscVisionDeluxe/dvd_DvisEst/lib/opencv")
 endif (WIN32)
 
 #define project
