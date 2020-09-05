@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+dvd_DgrafX/DiscVisionDeluxeUE.sln
+dvd_DgrafX/Binaries/
+dvd_DgrafX/Intermediate/
+dvd_DgrafX/Saved/
