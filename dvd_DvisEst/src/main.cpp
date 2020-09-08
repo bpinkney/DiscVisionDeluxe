@@ -132,54 +132,92 @@ static void dvd_DvisEst_get_desktop_resolution(int * horizontal, int * vertical)
 
 static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s)
 {
-
-
-/*  //! [pattern_found]
-  //----------------------------- Output Text ------------------------------------------------
-  //! [output_text]
-  string msg = (mode == CAPTURING) ? "100/100" :
-                mode == CALIBRATED ? "Calibrated" : "Press 'g' to start";
-  int baseLine = 0;
-  Size textSize = getTextSize(msg, 1, 1, 1, &baseLine);
-  Point textOrigin(view.cols - 2*textSize.width - 10, view.rows - 2*baseLine - 10);
-
-  if( mode == CAPTURING )
-  {
-      if(s.showUndistorsed)
-          msg = format( "%d/%d Undist", (int)imagePoints.size(), s.nrFrames );
-      else
-          msg = format( "%d/%d", (int)imagePoints.size(), s.nrFrames );
-  }
-
-  putText( view, msg, textOrigin, 1, 1, mode == CALIBRATED ?  GREEN : RED);*/
-
-
   int res_x;
   int res_y;
   dvd_DvisEst_get_desktop_resolution(&res_x, &res_y);
   cerr << "Res: " << res_x << ", " << res_y << endl;
 
   // build stats display matrix
-  cv::Mat throw_stats(cv::Size(res_x, res_y), CV_64FC1);
-  throw_stats = 230;
+  // set background to light grey
+  cv::Mat throw_stats(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(240,240,240));
 
   // for idx,lbl in enumerate(lbls):
   //  cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
 
-  const float text_size = 20.0;
+  // assuming this scales linearly, we can use it to determine the max font size for each line
+  const float text_size = 1.0;
+  const float text_thickness = text_size * 2.0/3.0;
 
-  for(int idx = 0; idx < 2; idx++)
+  int text_baseline = 0;
+  const cv::Size text_pixels_10 = cv::getTextSize("TENLETTERS", cv::FONT_HERSHEY_PLAIN, text_size, text_thickness, &text_baseline);
+  const float base_letter_width  = ((float)text_pixels_10.width) * 0.1;
+  const float base_letter_height = ((float)text_pixels_10.height);
+
+  int baseline_sum = 0;
+  for(int idx = 0; idx < num_strings; idx++)
   {
-    cv::putText(throw_stats, //target image
-      text_to_show[idx], //text
-      cv::Point(0, text_size*idx), //top-left position //throw_stats.rows / 2
-      cv::FONT_HERSHEY_DUPLEX, 
-      1.0,
-      CV_RGB(0, 0, 0), //font color
-      1);
+    // get length of string
+    const std::string next_line = text_to_show[idx];
+    const float base_line_length = base_letter_width * next_line.length();
+    const float width_mult = (float)res_x / base_line_length;
+
+    const int baseline = (int)((text_baseline + text_thickness) * width_mult * 3.0);
+    baseline_sum += baseline;
+
+    // tack on some extra at the end here for the height scale
+    if(idx == num_strings-1)
+    {
+      baseline_sum += baseline * 0.5;
+    }
   }
 
-  
+  // now figure out what our 'height scale' needs to be
+  // this is wasteful, but meh, I don't want dynamically sized arrays
+
+  float height_scale = (float)res_y / (float)baseline_sum;
+  // don't bother blowing up the letters if there aren't enough lines
+  height_scale = height_scale > 1 ? 1.0 : height_scale;
+
+  baseline_sum = 0;
+  cv::Scalar rgb;
+  for(int idx = 0; idx < num_strings; idx++)
+  {
+    // get length of string
+    const std::string next_line = text_to_show[idx];
+    const float base_line_length = base_letter_width * next_line.length();
+    const float width_mult = (float)res_x / base_line_length * height_scale;
+
+    const int baseline = (int)((text_baseline + text_thickness) * width_mult * 3.0);
+    baseline_sum += baseline;
+
+    switch(idx)
+    {
+      case 0:
+      default:
+        rgb = CV_RGB(0, 0, 0);
+      break;
+      case 1:
+        rgb = CV_RGB(230, 30, 30);
+      break;
+      case 2:
+        rgb = CV_RGB(30, 200, 30);
+      break;
+      case 3:
+        rgb = CV_RGB(30, 30, 200);
+      break;
+      case 4:
+        rgb = CV_RGB(200, 150, 0);
+      break;
+    }
+
+    cv::putText(throw_stats, //target image
+      next_line, //text
+      cv::Point(0, baseline_sum), //top-left position //throw_stats.rows / 2
+      cv::FONT_HERSHEY_PLAIN, 
+      text_size * width_mult,
+      rgb, //font color
+      text_thickness * width_mult);
+  }  
 
   cv::imshow("Throw Stats", throw_stats);
   cv::waitKey(time_s*1000);
@@ -215,11 +253,6 @@ int main(int argc, char** argv )
   if (parser.has("help"))
   {
     parser.printMessage();
-
-    //const int num_strings = 5;
-    //std::string text_to_show[num_strings] = {"TEST", "YEBOI", "LINE 3333333333333333333", "LINE $44444444444444444$$", "LINE $44444444444444444$$"};
-    //dvd_DvisEst_display_text(text_to_show, 4);
-
     return 0;
   }
 
@@ -665,8 +698,10 @@ int main(int argc, char** argv )
         throw_wobble = "LOW";
       }
 
+      // deprecated, and replaced with the more generic 'dvd_DvisEst_display_text'
+
       // sadly, sm can't handle negative numbers (sigh), so well directionalize everything
-      sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n%0.1f° %s  %0.1f° %s \\r\\n%0.1f° %s\\r\\n%0.1f rad/s %s\\r\\n%s WOBBLE' > /tmp/disptext; timeout 12s sm -a 1 `cat /tmp/disptext` &",
+      /*sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n%0.1f° %s  %0.1f° %s \\r\\n%0.1f° %s\\r\\n%0.1f rad/s %s\\r\\n%s WOBBLE' > /tmp/disptext; timeout 12s sm -a 1 `cat /tmp/disptext` &",
         vel_mag_kph,
         fabs(throw_deg_up),
         throw_ud.c_str(),
@@ -678,10 +713,37 @@ int main(int argc, char** argv )
         throw_spin_dir.c_str(),
         throw_wobble.c_str()
         );
+      */
 
-      cerr << output_cmd << endl;
+      const int num_strings = 5;
+      
+      std::string text_to_show[num_strings] = {""};
+      sprintf(output_cmd, "%0.1f kph SPEED", 
+        vel_mag_kph);
+      text_to_show[0] = output_cmd;
 
-      system(output_cmd);
+      sprintf(output_cmd, "%0.1f deg %s  %0.1f deg %s", 
+        fabs(throw_deg_up),
+        throw_ud.c_str(),
+        fabs(throw_deg_right),
+        throw_left_right.c_str());
+      text_to_show[1] = output_cmd;
+
+      sprintf(output_cmd, "%0.1f deg %s", 
+        fabs(hyzer_rad),
+        hyzer_dir.c_str());
+      text_to_show[2] = output_cmd;
+
+      sprintf(output_cmd, "%0.1f rad/s %s", 
+        fabs(spin_rad_d),
+        throw_spin_dir.c_str());
+      text_to_show[3] = output_cmd;
+
+      sprintf(output_cmd, "%s WOBBLE", 
+        throw_wobble.c_str());
+      text_to_show[4] = output_cmd;
+
+      dvd_DvisEst_display_text(text_to_show, num_strings, 10);
     }
   }
 
