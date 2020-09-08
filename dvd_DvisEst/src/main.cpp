@@ -22,12 +22,15 @@
 #include <iostream>
 #if !defined(IS_WINDOWS)
   #include <unistd.h>
+#else
+  #include "wtypes.h"
 #endif
 #include <iomanip>
 #include <chrono>
 #include <ctime>
-
 #include <atomic>
+#include <cstdlib>
+#include <fstream>
 
 // OpenCV stuff
 #include "opencv2/core.hpp"
@@ -99,6 +102,89 @@ static cv::String get_executable_path(void)
   #endif
 }*/
 
+// Get the horizontal and vertical screen sizes in pixel
+static void dvd_DvisEst_get_desktop_resolution(int * horizontal, int * vertical)
+{
+  #if defined(IS_WINDOWS)
+  RECT desktop;
+  // Get a handle to the desktop window
+  const HWND hDesktop = GetDesktopWindow();
+  // Get the size of screen to the variable desktop
+  GetWindowRect(hDesktop, &desktop);
+  // The top left corner will have coordinates (0,0)
+  // and the bottom right corner will have coordinates
+  // (horizontal, vertical)
+  *horizontal = desktop.right;
+  *vertical = desktop.bottom;
+  #else
+  std::system("xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\\1/' > /tmp/getres");
+  std::ostringstream ss;
+  ss << std::ifstream("/tmp/getres").rdbuf();
+  std::string res_s = ss.str(); 
+  //cerr << ss.str() << endl;
+  std::string delimiter = "x";
+  size_t dpos = res_s.find(delimiter);
+  *horizontal = stoi(res_s.substr(0, dpos));
+  res_s.erase(0, dpos + delimiter.length());
+  *vertical   = stoi(res_s);
+  #endif
+}
+
+static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s)
+{
+
+
+/*  //! [pattern_found]
+  //----------------------------- Output Text ------------------------------------------------
+  //! [output_text]
+  string msg = (mode == CAPTURING) ? "100/100" :
+                mode == CALIBRATED ? "Calibrated" : "Press 'g' to start";
+  int baseLine = 0;
+  Size textSize = getTextSize(msg, 1, 1, 1, &baseLine);
+  Point textOrigin(view.cols - 2*textSize.width - 10, view.rows - 2*baseLine - 10);
+
+  if( mode == CAPTURING )
+  {
+      if(s.showUndistorsed)
+          msg = format( "%d/%d Undist", (int)imagePoints.size(), s.nrFrames );
+      else
+          msg = format( "%d/%d", (int)imagePoints.size(), s.nrFrames );
+  }
+
+  putText( view, msg, textOrigin, 1, 1, mode == CALIBRATED ?  GREEN : RED);*/
+
+
+  int res_x;
+  int res_y;
+  dvd_DvisEst_get_desktop_resolution(&res_x, &res_y);
+  cerr << "Res: " << res_x << ", " << res_y << endl;
+
+  // build stats display matrix
+  cv::Mat throw_stats(cv::Size(res_x, res_y), CV_64FC1);
+  throw_stats = 230;
+
+  // for idx,lbl in enumerate(lbls):
+  //  cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
+
+  const float text_size = 20.0;
+
+  for(int idx = 0; idx < 2; idx++)
+  {
+    cv::putText(throw_stats, //target image
+      text_to_show[idx], //text
+      cv::Point(0, text_size*idx), //top-left position //throw_stats.rows / 2
+      cv::FONT_HERSHEY_DUPLEX, 
+      1.0,
+      CV_RGB(0, 0, 0), //font color
+      1);
+  }
+
+  
+
+  cv::imshow("Throw Stats", throw_stats);
+  cv::waitKey(time_s*1000);
+}
+
 
 int main(int argc, char** argv )
 {
@@ -129,6 +215,11 @@ int main(int argc, char** argv )
   if (parser.has("help"))
   {
     parser.printMessage();
+
+    //const int num_strings = 5;
+    //std::string text_to_show[num_strings] = {"TEST", "YEBOI", "LINE 3333333333333333333", "LINE $44444444444444444$$", "LINE $44444444444444444$$"};
+    //dvd_DvisEst_display_text(text_to_show, 4);
+
     return 0;
   }
 
@@ -610,3 +701,4 @@ int main(int argc, char** argv )
 
   return 0;
 }
+
