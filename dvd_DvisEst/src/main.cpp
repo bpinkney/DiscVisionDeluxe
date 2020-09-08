@@ -220,6 +220,7 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   }  
 
   cv::imshow("Throw Stats", throw_stats);
+  cv::moveWindow("Throw Stats",0,0);
   cv::waitKey(time_s*1000);
 }
 
