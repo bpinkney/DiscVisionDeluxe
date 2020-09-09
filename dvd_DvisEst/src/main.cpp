@@ -206,7 +206,11 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   const float catchphrase_width_mult = (float)res_x / catchphrase_line_length * 0.95;// * height_scale;
   // Create and rotate the text
   cv::Mat catchphrase_text(cv::Size(res_x, res_y), CV_8UC3);
+  #if defined(IS_WINDOWS)
+  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols*2/3), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(10,10,10), 2.0 * text_thickness * catchphrase_width_mult);
+  #else
   cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols/2), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(10,10,10), 2.0 * text_thickness * catchphrase_width_mult);
+  #endif
   //const int rot_dir = (rand() % 2)*2-1;
   dvd_DvisEst_display_rotate_mat(catchphrase_text, catchphrase_text, -45.0 * (float)res_y/(float)res_x);
   // Sum the images (add the text to the original img)
@@ -594,7 +598,7 @@ int main(int argc, char** argv )
 
   if(!set_gnd_plane)
   {
-    if(!got_output)
+    if(!got_output && !gianttext)
     {
       cerr << ("Not ouput state! Sorry!\n") << endl;
       return 0;
