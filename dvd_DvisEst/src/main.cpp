@@ -130,6 +130,13 @@ static void dvd_DvisEst_get_desktop_resolution(int * horizontal, int * vertical)
   #endif
 }
 
+static void dvd_DvisEst_display_rotate_mat(cv::Mat& src, cv::Mat& dst, double angle)
+{
+  cv::Point2f ptCp(src.cols, src.rows*0.5);
+  cv::Mat M = cv::getRotationMatrix2D(ptCp, angle, 1.0);
+  cv::warpAffine(src, dst, M, src.size(), cv::INTER_CUBIC); //Nearest is too rough, 
+}
+
 static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s)
 {
   int res_x;
@@ -177,6 +184,34 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   float height_scale = (float)res_y / (float)baseline_sum;
   // don't bother blowing up the letters if there aren't enough lines
   height_scale = height_scale > 1 ? 1.0 : height_scale;
+
+  // add a pointless catchphrase behind the output text for no reason
+  srand(time(NULL));
+  const int catchphrase_lotto = rand() % 9;
+  const std::string catchphrases[9] = 
+  {
+    " MONDO COOL",
+    " SIC THRO BRO",
+    " ACE RUN BOYZZ",
+    " YO, RAD DISC'N",
+    " MANDO COOL",
+    " GIT SUM!",
+    " TREE-MENDOUS!",
+    " FROLF IT UP SON",
+    " GIT'N PRINGLED!"
+  };
+  const std::string catchphrase = catchphrases[catchphrase_lotto];
+  //cerr << "catch: " << catchphrase_lotto << " -> " << catchphrase << endl;
+  const float catchphrase_line_length = base_letter_width * catchphrase.length();
+  const float catchphrase_width_mult = (float)res_x / catchphrase_line_length * 0.95;// * height_scale;
+  // Create and rotate the text
+  cv::Mat catchphrase_text(cv::Size(res_x, res_y), CV_8UC3);
+  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols/2), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(10,10,10), 2.0 * text_thickness * catchphrase_width_mult);
+  //const int rot_dir = (rand() % 2)*2-1;
+  dvd_DvisEst_display_rotate_mat(catchphrase_text, catchphrase_text, -45.0 * (float)res_y/(float)res_x);
+  // Sum the images (add the text to the original img)
+  throw_stats = throw_stats + catchphrase_text;
+  // end pointless catchphrase
 
   baseline_sum = 0;
   cv::Scalar rgb;
