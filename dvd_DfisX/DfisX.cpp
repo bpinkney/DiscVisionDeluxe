@@ -33,6 +33,9 @@ namespace DfisX
   bool   verbose_console_logging = false;
   double step_time_global        = 0.01;
 
+
+
+
   void  init()
 
   {
@@ -109,7 +112,7 @@ void step_simulation (Throw_Container &active_throw, float step_time)
     d_state.sim_state = SIM_STATE_STOPPED;
   }
 
-} /// end of step_simulation (Throw_Container &active_throw, float step_time)
+} 
 
 
 

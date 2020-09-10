@@ -167,8 +167,6 @@ struct Global_Variables
 
 
 
-
-
 //Disc Object
 //contains the name and the aerodynamic properties of a disc mold
 struct Disc_Object
