@@ -18,7 +18,7 @@ namespace DfisX
 		//double Im = mass * (0.9*disc.radius)**2  
 		//double Im = d_object.mass * (0.9*0.105)*(0.9*0.105);
 		///below is set as a constant because k and disc.radius are amalgamated into Disc_Object properties
-		double Im = d_object.mass * 0.00893025
+		double Im = d_object.mass * 0.00893025;
 		double Wp = 0;
 		Eigen::Vector3d orientation_change (0,0,0);
 

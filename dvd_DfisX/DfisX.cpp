@@ -56,7 +56,7 @@ void  simulate_throw()
 
 {
     if (basic_console_logging) std::cout << "\n This is a simulated throw using a " << d_object.mold_name;
-    if (basic_console_logging) std::cout << "\n It is being saved to the file " << global_variables.save_path;
+    if (basic_console_logging) std::cout << "\n It is being saved to the file " << global_variables.save_path<<"\n";
 
     double total_time = 0;
     std::ofstream myfile;
@@ -108,7 +108,7 @@ void step_simulation (Throw_Container &active_throw, float step_time)
     //in case of a hang
   else if (d_forces.step_count > 10000)
   {
-    std::cout << "\nThe throw simulation aborted due to reaching maximum steps (10000)";
+    std::cout << "The throw simulation aborted due to reaching maximum steps (10000)\n";
     d_state.sim_state = SIM_STATE_STOPPED;
   }
 
@@ -133,17 +133,36 @@ void finish_throw (Throw_Container &throw_container)
     std::cout << "\n         The throw went " << throw_distance_magnitude << "m  (" << 3.28*throw_distance_magnitude << "feet)";
     Eigen::Vector3d throw_velocity_vector = active_throw.disc_state_array[0].disc_velocity;
     double throw_velocity_magnitude = throw_velocity_vector.norm();
-    std::cout << "\n         The throw's max speed was " << throw_velocity_magnitude << "m/s  (" << 3.28*throw_velocity_magnitude << "feet/s)\n";
+    std::cout << "\n         The throw's max speed was " << throw_velocity_magnitude << "m/s  (" << 2.236*throw_velocity_magnitude << "mph)\n";
 
 
-    std::cout << std::setprecision(3) << "\nThe throw simulated " << d_forces.step_count << " steps before ending normally.";
+    std::cout << std::setprecision(3) << "The throw simulated " << d_forces.step_count << " steps before ending normally.\n";
     d_state.sim_state = SIM_STATE_STOPPED;
     if (global_variables.matlab_export)
     {
-      if (basic_console_logging) std::cout << "\nSending output file to matlab for viewing\n";   
+      if (basic_console_logging) std::cout << "\nSending output file to matlab for viewing...\n";   
       std::string system_call = ("matlab -nosplash -nodesktop -r \"cd('" + global_variables.install_path + "\\matlab\\visualizers'); dvd_DfisX_plot_disc_trajectory('" + global_variables.install_path + "\\dvd_DfisX\\" + global_variables.save_path + "'); exit\"");
       system(system_call.c_str());
     }
+}
+
+
+
+
+
+//
+bool                is_finished_simulating (Throw_Container &throw_container)
+
+{
+  if (d_state.sim_state == SIM_STATE_STOPPED) return true;
+  else                                        return false;
+}
+
+
+std::vector <Disc_State> get_disc_state_array (Throw_Container &throw_container)
+
+{
+ return throw_container.disc_state_array;
 }
 
 
@@ -206,7 +225,7 @@ Does the following things
 void load_disc_parameters ()
 
 {
-    if (basic_console_logging) std::cout << "Loading disc params\n";
+    if (basic_console_logging) std::cout << "Loading disc params...\n";
     std::ifstream disc_params;
     disc_params.open ("disc_params.csv");
      
@@ -270,13 +289,13 @@ void load_disc_parameters ()
 void set_save_path(std::string save_path)
 {
 global_variables.save_path = save_path;
-if (basic_console_logging) std::cout << "\n Save file was set to" << save_path << "\n";
+if (basic_console_logging) std::cout << "\nSave file was set to" << save_path << "\n\n";
 }
 
 void set_global_wind_vel (Eigen::Vector3d global_wind_vel)
 {
 global_variables.global_wind_vel = global_wind_vel;
-if (basic_console_logging) std::cout << "\n Global wind was set to  x: " << global_wind_vel[0] << " y: " << global_wind_vel[1] << " z: " << global_wind_vel[2] <<"\n";
+if (basic_console_logging) std::cout << "\nGlobal wind was set to  x: " << global_wind_vel[0] << " y: " << global_wind_vel[1] << " z: " << global_wind_vel[2] <<"\n";
 }
 
 Eigen::Vector3d get_global_wind_vel ()
