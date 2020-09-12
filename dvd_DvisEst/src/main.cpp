@@ -191,17 +191,17 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   cv::Mat disc_ellipse(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(255,255,255));
 
   // main disc body
-  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.02)), 0 + RAD_TO_DEG(hyzer_rad), 0, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, cv::FILLED, 0);
+  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.04)), 0 + RAD_TO_DEG(hyzer_rad), 0, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, cv::FILLED, 0);
   // lippy drop shadow
-  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.05)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
+  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.06)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
   
   if(pitch_rad > 0)
   {
-    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.02) - 0.02)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, 8, 0);
+    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.04) - 0.04)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, 8, 0);
   }
   else
   {
-    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.02) - 0.02)), 180 + RAD_TO_DEG(hyzer_rad), 0, 180, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
+    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.04) - 0.04)), 180 + RAD_TO_DEG(hyzer_rad), 0, 180, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
   }
   // darken with ellipse
   throw_stats = min(throw_stats, disc_ellipse);
