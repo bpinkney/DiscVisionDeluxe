@@ -807,7 +807,7 @@ int main(int argc, char** argv )
         throw_wobble.c_str());
       text_to_show[4] = output_cmd;
 
-      dvd_DvisEst_display_text(text_to_show, num_strings, 5, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos);
+      dvd_DvisEst_display_text(text_to_show, num_strings, 10, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos);
     }
   }
 
