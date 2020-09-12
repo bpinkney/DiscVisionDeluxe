@@ -137,7 +137,7 @@ static void dvd_DvisEst_display_rotate_mat(cv::Mat& src, cv::Mat& dst, double an
   cv::warpAffine(src, dst, M, src.size(), cv::INTER_CUBIC); //Nearest is too rough, 
 }
 
-static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s)
+static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s, const float hyzer_rad, const float pitch_rad)
 {
   int res_x;
   int res_y;
@@ -146,7 +146,9 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
 
   // build stats display matrix
   // set background to light grey
-  cv::Mat throw_stats(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(240,240,240));
+  const int base_colour = 240;
+
+  cv::Mat throw_stats(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(base_colour,base_colour,base_colour));
 
   // for idx,lbl in enumerate(lbls):
   //  cv2.putText(frame, str(lbl), (x,y+offset*idx), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
@@ -185,6 +187,27 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   // don't bother blowing up the letters if there aren't enough lines
   height_scale = height_scale > 1 ? 1.0 : height_scale;
 
+  // add ellipse behind text to denote disc angle (hyzer and pitch)
+  cv::Mat disc_ellipse(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(255,255,255));
+
+  // main disc body
+  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.02)), 0 + RAD_TO_DEG(hyzer_rad), 0, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, cv::FILLED, 0);
+  // lippy drop shadow
+  cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * max(abs(sin(pitch_rad)), (float)0.05)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
+  
+  if(pitch_rad > 0)
+  {
+    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.02) - 0.02)), 180 + RAD_TO_DEG(hyzer_rad), 180, 360, cv::Scalar(base_colour-30,base_colour-30,base_colour-30), -1, 8, 0);
+  }
+  else
+  {
+    cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.02) - 0.02)), 180 + RAD_TO_DEG(hyzer_rad), 0, 180, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
+  }
+  // darken with ellipse
+  throw_stats = min(throw_stats, disc_ellipse);
+  // end disc ellipse
+
+
   // add a pointless catchphrase behind the output text for no reason
   srand(time(NULL));
   const int catchphrase_lotto = rand() % 9;
@@ -205,16 +228,17 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   const float catchphrase_line_length = base_letter_width * catchphrase.length();
   const float catchphrase_width_mult = (float)res_x / catchphrase_line_length * 0.95;// * height_scale;
   // Create and rotate the text
-  cv::Mat catchphrase_text(cv::Size(res_x, res_y), CV_8UC3);
+  cv::Mat catchphrase_text(cv::Size(res_x, res_y), CV_8UC3, cv::Scalar(0,0,0));
   #if defined(IS_WINDOWS)
-  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols*2/3), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(10,10,10), 2.0 * text_thickness * catchphrase_width_mult);
+  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols*2/3), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(base_colour+10,base_colour+10,base_colour+10), 2.0 * text_thickness * catchphrase_width_mult);
   #else
-  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols/2), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(10,10,10), 2.0 * text_thickness * catchphrase_width_mult);
+  cv::putText(catchphrase_text, catchphrase, cv::Point(0, throw_stats.cols/2), cv::FONT_HERSHEY_PLAIN, text_size * catchphrase_width_mult, cv::Scalar(base_colour+10,base_colour+10,base_colour+10), 2.0 * text_thickness * catchphrase_width_mult);
   #endif
   //const int rot_dir = (rand() % 2)*2-1;
   dvd_DvisEst_display_rotate_mat(catchphrase_text, catchphrase_text, -45.0 * (float)res_y/(float)res_x);
   // Sum the images (add the text to the original img)
-  throw_stats = throw_stats + catchphrase_text;
+  // brighten with text
+  throw_stats = max(throw_stats, catchphrase_text);
   // end pointless catchphrase
 
   baseline_sum = 0;
@@ -783,7 +807,7 @@ int main(int argc, char** argv )
         throw_wobble.c_str());
       text_to_show[4] = output_cmd;
 
-      dvd_DvisEst_display_text(text_to_show, num_strings, 10);
+      dvd_DvisEst_display_text(text_to_show, num_strings, 5, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos);
     }
   }
 
