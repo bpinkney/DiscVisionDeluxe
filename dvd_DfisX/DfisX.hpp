@@ -167,8 +167,6 @@ struct Global_Variables
 
 
 
-
-
 //Disc Object
 //contains the name and the aerodynamic properties of a disc mold
 struct Disc_Object
@@ -215,6 +213,11 @@ struct Throw_Container
   std::vector <Disc_State> disc_state_array;  //array of disc states: used to hold the flight data of a simulated throw
 };
 
+
+
+bool                is_finished_simulating (Throw_Container &throw_container);
+
+std::vector <Disc_State> get_disc_state_array (Throw_Container &throw_container);
 
 
 void                test(Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity,double thrown_disc_roll,double thrown_disc_pitch,double thrown_disc_radians_per_second,double thrown_disc_wobble);
