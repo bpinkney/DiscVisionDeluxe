@@ -137,7 +137,7 @@ static void dvd_DvisEst_display_rotate_mat(cv::Mat& src, cv::Mat& dst, double an
   cv::warpAffine(src, dst, M, src.size(), cv::INTER_CUBIC); //Nearest is too rough, 
 }
 
-static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s, const float hyzer_rad, const float pitch_rad)
+static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s, const float hyzer_rad, const float pitch_rad, const float VEC3(lin_vel_xyz))
 {
   int res_x;
   int res_y;
@@ -203,10 +203,27 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   {
     cv::ellipse(disc_ellipse,cv::Point(res_x/2, res_y/2), cv::Size(res_x/3, res_x/3 * (max(abs(sin(pitch_rad)), (float)0.04) - 0.04)), 180 + RAD_TO_DEG(hyzer_rad), 0, 180, cv::Scalar(base_colour-60,base_colour-60,base_colour-60), -1, 8, 0);
   }
+
   // darken with ellipse
   throw_stats = min(throw_stats, disc_ellipse);
   // end disc ellipse
 
+  // add an arrow to denote the linear throw vector
+  const float vel_mag = sqrt(lin_vel_xyz[0]*lin_vel_xyz[0] + lin_vel_xyz[1]*lin_vel_xyz[1] + lin_vel_xyz[2]*lin_vel_xyz[2]);
+  const float base_arrow_length_3d = res_y;
+  const float arrow_length_camx_wfy = lin_vel_xyz[1] / vel_mag * base_arrow_length_3d;
+  const float arrow_length_camy_wfz = -lin_vel_xyz[2] / vel_mag * base_arrow_length_3d;
+  const float max_speed = 30.0; // m/s base speed to adjust colours to
+  const float factor = max(max_speed - vel_mag, (float)0.0) / max_speed;
+  const int red  = (int)((1.0 - factor) * 255.0);
+  const int blue = (int)(factor * 255.0);
+
+
+  // aspect the arrowhead size based on how forward the shot is
+  const float arrowhead_tip_scale = sqrt(lin_vel_xyz[1]*lin_vel_xyz[1] + lin_vel_xyz[2]*lin_vel_xyz[2]) / MAX(fabs(lin_vel_xyz[0]), CLOSE_TO_ZERO);
+
+  cv::arrowedLine(throw_stats, cv::Point(res_x/2, res_y/2), cv::Point(res_x/2 + arrow_length_camx_wfy, res_y/2 + arrow_length_camy_wfz), CV_RGB(red, 0, blue), 3, 8, 0, arrowhead_tip_scale);
+  // end throw vector arrow
 
   // add a pointless catchphrase behind the output text for no reason
   srand(time(NULL));
@@ -807,7 +824,13 @@ int main(int argc, char** argv )
         throw_wobble.c_str());
       text_to_show[4] = output_cmd;
 
-      dvd_DvisEst_display_text(text_to_show, num_strings, 10, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos);
+      const float VEC3(lin_vel_xyz) = 
+      {
+        (float)kf_state.lin_xyz[0].vel,
+        (float)kf_state.lin_xyz[1].vel,
+        (float)kf_state.lin_xyz[2].vel
+      };
+      dvd_DvisEst_display_text(text_to_show, num_strings, 10, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos, lin_vel_xyz);
     }
   }
 
