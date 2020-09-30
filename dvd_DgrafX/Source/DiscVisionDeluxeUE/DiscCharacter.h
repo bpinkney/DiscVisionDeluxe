@@ -38,6 +38,7 @@ public:
 	UFUNCTION()
 		void Fire();
 
+
 	// Gun muzzle's offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector MuzzleOffset;

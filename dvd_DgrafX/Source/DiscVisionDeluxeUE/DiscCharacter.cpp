@@ -10,6 +10,7 @@ ADiscCharacter::ADiscCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+
 }
 
 // Called when the game starts or when spawned
@@ -20,7 +21,7 @@ void ADiscCharacter::BeginPlay()
 	if (GEngine)
 	{
 		// Put up a debug message for five seconds. The -1 "Key" value (first argument) indicates that we will never need to update or refresh this message.
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using FPSCharacter."));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using DiscCharacter."));
 	}
 	
 }
@@ -43,6 +44,9 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Set up "action" bindings.
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
+    PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
+    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+
 }
 
 void ADiscCharacter::MoveForward(float Value)
@@ -54,11 +58,20 @@ void ADiscCharacter::MoveForward(float Value)
 
 void ADiscCharacter::MoveRight(float Value)
 {
-	// Find out which way is "right" and record that the player wants to move that way.
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, Value);
+    // Find out which way is "right" and record that the player wants to move that way.
+    FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+    AddMovementInput(Direction, Value);
 }
 
+
+/*
+void ADiscCharacter::ZoomCamera(float Value)
+{
+    // Find out which way is "right" and record that the player wants to move that way.
+    FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+    AddMovementInput(Direction, Value);
+}
+*/
 void ADiscCharacter::Fire()
 {
     // Attempt to fire a projectile.

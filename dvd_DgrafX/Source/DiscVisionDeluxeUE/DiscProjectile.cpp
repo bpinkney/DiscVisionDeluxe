@@ -26,7 +26,7 @@ ADiscProjectile::ADiscProjectile()
 	// Use this component to drive this projectile's movement.
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-	ProjectileMovementComponent->InitialSpeed = 1.0f;
+	ProjectileMovementComponent->InitialSpeed = 2000.0f;
 	//ProjectileMovementComponent->MaxSpeed = 5000.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->bShouldBounce = true;
