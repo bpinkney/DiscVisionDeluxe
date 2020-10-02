@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "DfisX.hpp"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "DiscCharacter.generated.h"

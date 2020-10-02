@@ -3,6 +3,7 @@
 #include "DiscCharacter.h"
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
+#include "DfisX\DfisX.hpp"
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -17,6 +18,9 @@ ADiscCharacter::ADiscCharacter()
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+    DfisX::init();
+   
+
 
 	if (GEngine)
 	{

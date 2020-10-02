@@ -9,6 +9,6 @@ public class DiscVisionDeluxeUETarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "DiscVisionDeluxeUE" } );
+		ExtraModuleNames.AddRange( new string[] { "DiscVisionDeluxeUE"} );
 	}
 }
