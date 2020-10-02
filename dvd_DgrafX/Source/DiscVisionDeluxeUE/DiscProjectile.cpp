@@ -19,15 +19,17 @@ ADiscProjectile::ADiscProjectile()
 
 	//Dies after 5 seconds.
 	InitialLifeSpan = 15.0f;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Curve)
-		//UCurveFloat* FlightCurve;
+	
+	
+	
 }
 
 // Called when the game starts or when spawned
 void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	
+
 
 }
 
@@ -36,10 +38,17 @@ void ADiscProjectile::BeginPlay()
 void ADiscProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	SetDiscPosRot(FVector (0.0,0.0,100.0));
 }
-
+/*
+void SetDiscPosRot(FVector posrot)
+{
+	;
+}
+*/
 // Function that initializes the projectile's velocity in the shoot direction.
 void ADiscProjectile::FireInDirection(const FVector& ShootDirection)
 {
 	//ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+
 }

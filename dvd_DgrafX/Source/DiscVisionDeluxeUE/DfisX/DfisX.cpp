@@ -25,7 +25,7 @@ namespace DfisX
 
 
 //Various inilizations
-  Throw_Container global_active_throw;
+  Throw_Container global_active_throw = {};
   std::vector<DfisX::Disc_Object> disc_object_array;
   Global_Variables global_variables;
 
@@ -64,7 +64,7 @@ void  simulate_throw()
     myfile << "time_elapsed,pos_x,pos_y,pos_z,disc_state,orient_x,orient_y,orient_z\n";
     while (global_active_throw.current_disc_state.sim_state != SIM_STATE_STOPPED)
     {
-      DfisX::step_simulation (DfisX::global_active_throw, step_time_global);
+      DfisX::step_simulation (step_time_global);
 
 /* logging disable while integrating with ue4
       //file saving here temporarily
@@ -90,9 +90,10 @@ void  simulate_throw()
 
 //Step Simulation
 //used to simulate one 'step' of physics
-void step_simulation (Throw_Container &stepper_active_throw, float step_time)
+void step_simulation ( float step_time)
 
 {
+  Throw_Container &stepper_active_throw = global_active_throw;
   step_Daero (stepper_active_throw, step_time);
 //step_Dcollision (active_throw, step_time);
   step_Dgyro (stepper_active_throw, step_time);
@@ -189,6 +190,7 @@ Does the following things
 */
 {  
 //convert world frame roll/pitch into and orientation vector
+
   double x_component = sin (-thrown_disc_pitch) * cos (thrown_disc_roll);
   double y_component = sin (thrown_disc_roll)   * cos (thrown_disc_pitch);
   double z_component = cos (thrown_disc_pitch)  * cos (thrown_disc_roll);
@@ -204,9 +206,13 @@ Does the following things
   global_active_throw.previous_disc_state = {};
 
 
+
+
   global_active_throw.disc_object = disc_object_array[disc_mold_enum];
   global_active_throw.disc_object.mass = 0.175;
   global_active_throw.disc_object.diameter = 0.25;
+
+
   global_active_throw.disc_object.radius = global_active_throw.disc_object.diameter / 2;
   global_active_throw.disc_object.area = 3.1415 * global_active_throw.disc_object.radius * global_active_throw.disc_object.radius;
 
@@ -315,7 +321,7 @@ void test ()
 { 
 //potentially unused for now
 //commented out code here was moved to bottom of file temporarily for neatness
-std::cout << "TESTTTTTTTTTTT";
+new_throw (MIDRANGE,Eigen::Vector3d(0,0,2),Eigen::Vector3d(20,0,2), 0.52, 0.1, 70, 0);
 
 }
 

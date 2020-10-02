@@ -12,6 +12,7 @@ ADiscCharacter::ADiscCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 
+
 }
 
 // Called when the game starts or when spawned
@@ -19,6 +20,7 @@ void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
     DfisX::init();
+    
    
 
 
@@ -34,6 +36,7 @@ void ADiscCharacter::BeginPlay()
 void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    DfisX::step_simulation (DeltaTime);
 
 }
 
@@ -102,8 +105,10 @@ void ADiscCharacter::Fire()
             if (Projectile)
             {
                 // Set the projectile's initial trajectory.
-                FVector LaunchDirection = MuzzleRotation.Vector();
-                Projectile->FireInDirection(LaunchDirection);
+                //DfisX::new_throw (DfisX::MIDRANGE,Eigen::Vector3d (0.0,0.0,1.5),Eigen::Vector3d (30.0,0.4,6.5), 1, 0.08, 130.0, 0.0);
+                DfisX::test ();
+                //FVector LaunchDirection = MuzzleRotation.Vector();
+                
             }
         }
     }

@@ -228,7 +228,7 @@ void                test ();
 void                simulate_throw();
 
 //Steps the aero simulation forward one step
-void                step_simulation (Throw_Container &throw_container, float step_time);
+void                step_simulation (float step_time);
 
 //Instantiates a new throw, ready to be stepped or simulated
 void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
