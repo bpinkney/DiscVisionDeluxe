@@ -238,14 +238,15 @@ void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thr
 void                finish_throw        (Throw_Container &throw_container);
 
 //used to load all of the disc_object aero properties from a csv file into and array
-void                load_disc_parameters();
+void                load_disc_parameters   ();
 
 //initializes the DfisX simulator during statup
-void                init                ();
+void                init                   ();
 
 void                set_save_path       (std::string save_path);
 void                set_global_wind_vel (Eigen::Vector3d global_wind_vel);
-Eigen::Vector3d     get_global_wind_vel ();
+Eigen::Vector3d     get_global_wind_vel    ();
+Disc_State          get_disc_state         ();
 void                activate_matlab_export ();
 
 

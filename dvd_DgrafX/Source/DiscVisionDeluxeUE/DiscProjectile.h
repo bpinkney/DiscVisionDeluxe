@@ -27,7 +27,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-	void SetDiscPosRot(FVector posrot);
+	void SetDiscPosRot(FVector position,FRotator rotation);
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)

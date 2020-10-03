@@ -93,7 +93,7 @@ void ADiscCharacter::Fire()
         FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
         FRotator MuzzleRotation = CameraRotation;
         // Skew the aim to be slightly upwards.
-        MuzzleRotation.Pitch += 10.0f;
+        
         UWorld* World = GetWorld();
         if (World)
         {
@@ -105,8 +105,23 @@ void ADiscCharacter::Fire()
             if (Projectile)
             {
                 // Set the projectile's initial trajectory.
-                //DfisX::new_throw (DfisX::MIDRANGE,Eigen::Vector3d (0.0,0.0,1.5),Eigen::Vector3d (30.0,0.4,6.5), 1, 0.08, 130.0, 0.0);
-                DfisX::test ();
+                FVector fire_direction = MuzzleRotation.Vector();
+                fire_direction *= 15;
+                double throw_pitch;
+                double throw_roll;
+                if (MuzzleRotation.Pitch/57.3  > 0)
+                {
+                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
+                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
+                }
+                else
+                {
+                throw_pitch  = 0.0 ;
+                throw_roll  = 0;
+                }
+                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 70.0, 0.0);
+                
+                //DfisX::test ();
                 //FVector LaunchDirection = MuzzleRotation.Vector();
                 
             }
