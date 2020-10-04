@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
+
 #include "DiscCharacter.h"
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
@@ -106,20 +108,24 @@ void ADiscCharacter::Fire()
             {
                 // Set the projectile's initial trajectory.
                 FVector fire_direction = MuzzleRotation.Vector();
-                fire_direction *= 15;
+                fire_direction *= 18;
                 double throw_pitch;
                 double throw_roll;
-                if (MuzzleRotation.Pitch/57.3  > 0)
+                if (MuzzleRotation.Pitch>180)
                 {
-                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
-                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
+                    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("My Location is: %s"), *MuzzleRotation.ToString()));
+                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch-360)/57.3;
+                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch-360)/57.3;
                 }
                 else
                 {
-                throw_pitch  = 0.0 ;
-                throw_roll  = 0;
+                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
+                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;    
                 }
-                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 70.0, 0.0);
+                
+                
+                
+                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 90.0, 0.0);
                 
                 //DfisX::test ();
                 //FVector LaunchDirection = MuzzleRotation.Vector();
