@@ -7,6 +7,7 @@
 #include <typeinfo>   
 #include <iomanip>
 #include <stdio.h>
+#include <stdexcept>
 
 //lib includes
 #include <Eigen/Dense>
@@ -18,6 +19,8 @@
 #include "Dpropagate.hpp"
 #include "Dio.hpp"
 
+#include "disc_params.hpp"
+
 
 namespace DfisX
 {
@@ -26,7 +29,7 @@ namespace DfisX
 
 //Various inilizations
   Throw_Container global_active_throw = {};
-  std::vector<DfisX::Disc_Object> disc_object_array;
+  
   Global_Variables global_variables;
 
   bool   basic_console_logging   = true;
@@ -208,7 +211,13 @@ Does the following things
 
 
 
+
   global_active_throw.disc_object = disc_object_array[disc_mold_enum];
+
+
+
+
+
   global_active_throw.disc_object.mass = 0.175;
   global_active_throw.disc_object.diameter = 0.25;
 
@@ -229,6 +238,7 @@ Does the following things
 void load_disc_parameters ()
 
 {
+  /*
     if (basic_console_logging) std::cout << "Loading disc params...\n";
     std::ifstream disc_params;
     disc_params.open ("disc_params.csv");
@@ -281,7 +291,7 @@ void load_disc_parameters ()
       }
 
     }
-    disc_params.close();
+    disc_params.close();*/
 }  //end of load_disc_parameters ()
 
 
@@ -307,6 +317,11 @@ Eigen::Vector3d get_global_wind_vel ()
 return global_variables.global_wind_vel;
 }
 
+Disc_State get_disc_state ()
+{
+return global_active_throw.current_disc_state;
+}
+
 void activate_matlab_export () 
 {
 global_variables.matlab_export = true;
@@ -321,7 +336,7 @@ void test ()
 { 
 //potentially unused for now
 //commented out code here was moved to bottom of file temporarily for neatness
-new_throw (MIDRANGE,Eigen::Vector3d(0,0,2),Eigen::Vector3d(20,0,2), 0.52, 0.1, 70, 0);
+//new_throw (MIDRANGE,Eigen::Vector3d(0,0,2),Eigen::Vector3d(-20,0,2), -0.52, -0.1, 70, 0);
 
 }
 
