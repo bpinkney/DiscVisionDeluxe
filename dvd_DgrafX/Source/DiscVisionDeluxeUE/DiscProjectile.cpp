@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include <math.h>  
 #include "DiscProjectile.h"
+#include <math.h>
 #include "DfisX\DfisX.hpp"
 //#include "Components/SphereComponent.h"
 //#include "GameFramework/ProjectileMovementComponent.h"
