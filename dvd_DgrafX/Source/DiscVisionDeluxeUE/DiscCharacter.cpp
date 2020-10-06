@@ -81,16 +81,11 @@ void ADiscCharacter::ZoomCamera(float Value)
     AddMovementInput(Direction, Value);
 }
 */
-void DestroyDiscs()
-{
-    ;
-}
 void ADiscCharacter::Fire()
 {
     // Attempt to fire a projectile.
     if (ProjectileClass)
     {
-        DestroyDiscs();
         // Get the camera transform.
         FVector CameraLocation;
         FRotator CameraRotation;
@@ -98,7 +93,6 @@ void ADiscCharacter::Fire()
 
         // Transform MuzzleOffset from camera space to world space.
         FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-        MuzzleLocation += FVector (0.0,0.0,-80.0);
         FRotator MuzzleRotation = CameraRotation;
         // Skew the aim to be slightly upwards.
         
@@ -114,25 +108,24 @@ void ADiscCharacter::Fire()
             {
                 // Set the projectile's initial trajectory.
                 FVector fire_direction = MuzzleRotation.Vector();
-                fire_direction *= 21;
+                fire_direction *= 18;
                 double throw_pitch;
                 double throw_roll;
-                double aim_up = 10.0;
-                if ((MuzzleRotation.Pitch+aim_up)>180)
+                if (MuzzleRotation.Pitch>180)
                 {
-                    
-                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
-                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
+                    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("My Location is: %s"), *MuzzleRotation.ToString()));
+                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch-360)/57.3;
+                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch-360)/57.3;
                 }
                 else
                 {
-                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;
-                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;    
+                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;
+                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * MuzzleRotation.Pitch/57.3;    
                 }
                 
                 
                 
-                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 95.0, 0.0);
+                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 90.0, 0.0);
                 
                 //DfisX::test ();
                 //FVector LaunchDirection = MuzzleRotation.Vector();

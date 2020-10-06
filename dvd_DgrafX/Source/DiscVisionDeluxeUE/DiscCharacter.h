@@ -39,9 +39,6 @@ public:
 	UFUNCTION()
 		void Fire();
 
-	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-	void DestroyDiscs();
-
 
 	// Gun muzzle's offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)

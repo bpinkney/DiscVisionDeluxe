@@ -51,7 +51,6 @@ void ADiscProjectile::BeginPlay()
 void ADiscProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Disc Location is: %s"), *MuzzleRotation.ToString()));
 
 }
 
