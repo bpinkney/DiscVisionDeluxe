@@ -1,0 +1,1 @@
+g++ -I /usr/include/eigen3/ DfisX.cpp Daero.cpp Dgyro.cpp Dpropagate.cpp main.cpp -o dfisx
