@@ -4,13 +4,13 @@
 #include <iostream> 
 #include <math.h>
 
-
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
 
 namespace DfisX
 {
-
-
-
 	void step_Dgyro (Throw_Container &active_throw, float step_time)
 	{
 		

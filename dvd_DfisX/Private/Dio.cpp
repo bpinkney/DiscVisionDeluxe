@@ -14,12 +14,10 @@
   Do me a wrong, youre a bringer of errors "
 */
 
-
-
-
-
-
-
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
 
 void parse_cl (int argc, char *argv[]) 
 {

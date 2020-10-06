@@ -12,6 +12,12 @@ Handles the aerodynamic forces of disc simulation.
 Also gravity.
 
 */
+
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
+
 namespace DfisX
 {
 ///for display purposes     see Sim_State

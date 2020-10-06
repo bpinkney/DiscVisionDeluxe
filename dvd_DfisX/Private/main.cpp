@@ -4,6 +4,11 @@
 #include <string> 
 #include <sstream>
 
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
+
 
 int main(int argc, char *argv[]) 
 {

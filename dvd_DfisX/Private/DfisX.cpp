@@ -21,6 +21,10 @@
 
 #include "disc_params.hpp"
 
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
 
 namespace DfisX
 {

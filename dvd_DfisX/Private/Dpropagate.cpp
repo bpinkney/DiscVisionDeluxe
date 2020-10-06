@@ -3,10 +3,11 @@
 #include "Dpropagate.hpp"
 #include "DfisX.hpp"
 
-/*
+// unreal junk
+#include "ModuleManager.h"
+IMPLEMENT_MODULE(FDefaultModuleImpl, dvd_DfisX);
+// unreal junk
 
-
-*/
 namespace DfisX
 {
 const double hacky_spin_drag_rate = 5.0;
