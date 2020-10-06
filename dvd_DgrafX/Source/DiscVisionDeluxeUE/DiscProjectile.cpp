@@ -38,7 +38,7 @@ void ADiscProjectile::BeginPlay()
 // Called every frame
 void ADiscProjectile::Tick(float DeltaTime)
 {
-	
+	Super::Tick(DeltaTime);
 	DfisX::Disc_State disc_state = DfisX::get_disc_state ();
 	float xx = disc_state.disc_location[0]*100;
 	float yy = disc_state.disc_location[1]*100;
@@ -57,9 +57,6 @@ void ADiscProjectile::Tick(float DeltaTime)
 
 
 	SetDiscPosRot(disc_position,disc_rotation);
-	Super::Tick(DeltaTime);
-
-	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, FString::Printf(TEXT("Disc Location is: %s"), *disc_position.ToString()));
 }
 /*
 void SetDiscPosRot(FVector posrot)
