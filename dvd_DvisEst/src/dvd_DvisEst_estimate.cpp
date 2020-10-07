@@ -114,9 +114,25 @@ std::mutex           sv_meas_queue_write_mutex;
 // filter prime queue (isolated from the apriltag threads)
 std::deque<dvd_DvisEst_kf_meas_t> meas_prime_queue;
 
+// marlk where the queue priming should begin from (offset from the front (oldest) of the queue)
+static uint16_t prime_idx = 0;
+
+// Keep a queue of the last KF_IDEAL_CHECK_QUEUE_SIZE entries so we can check the velocity variance
+// (boy, we're using a lot of queues eh?)
+static deque<dvd_DvisEst_kf_state_t> kf_ideal_check_queue;
+static double min_variance_sum = 9999999;
+
+// Since the 'wobble' can affect our hyzer and pitch states a fair bit
+// let's take a running average of some of our best states instead
+// any time lin_xyz_vel_var_sum < min_variance_sum * 4, add another measurement into the average
+// this technically biases easrly samples, but that is OK for now
+static float ang_hp_pos_mean[2] = {0};
+static float ang_hp_pos_max[2] = {-10000};
+static float ang_hp_pos_min[2] = { 10000};
+static float ang_hp_mean_count = 0;
+
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
-
 std::atomic<uint8_t> sv_kf_estimate_stage (KF_EST_STAGE_MEAS_COLLECT);
 
 // filter thread
@@ -382,6 +398,23 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
     MEAS_QUEUE_STATUS(i) = MEAS_QUEUE_STATUS_AVAILABLE;
     memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
   }
+
+  sv_meas_queue_read_idx = 0;
+  sv_meas_queue_write_idx = 0;
+
+  meas_prime_queue.clear();
+  prime_idx = 0;
+
+  kf_ideal_check_queue.clear();
+  min_variance_sum = 9999999;
+
+  ang_hp_pos_mean[0] = ang_hp_pos_mean[1]   = 0;
+  ang_hp_pos_max[0] = ang_hp_pos_max[1]     = -10000;
+  ang_hp_pos_min[0] = ang_hp_pos_min[1]     = 10000;
+  ang_hp_mean_count = 0;
+
+  sv_kf_estimate_tags_detected = false;
+  sv_kf_estimate_stage = KF_EST_STAGE_MEAS_COLLECT;
 
   // enable test logging
   if(kflog)
@@ -790,7 +823,7 @@ static void process_filter_thread(void)
   bool latch_tic = false;
   bool latch_toc = false;
 
-  while(sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE)
+  while(sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode)
   {
     now = uptime_get_ns();
 
@@ -920,6 +953,7 @@ static void process_filter_thread(void)
       }
 
       last_loop_ns = now;
+      usleep(NS_TO_US(KF_FILTER_PRED_DT_NS/2));
     }
     else
     {
@@ -934,11 +968,6 @@ static void process_filter_thread(void)
 #define KF_IDEAL_CHECK_QUEUE_SIZE (5)
 static void kf_check_for_ideal_output_state()
 {
-  // Keep a queue of the last KF_IDEAL_CHECK_QUEUE_SIZE entries so we can check the velocity variance
-  // (boy, we're using a lot of queues eh?)
-  static deque<dvd_DvisEst_kf_state_t> kf_ideal_check_queue;
-  static double min_variance_sum = 9999999;
-
   if(sv_kf_estimate_stage >= KF_EST_STAGE_ACTIVE)
   {
     kf_ideal_check_queue.push_back(sv_kf_state);
@@ -968,15 +997,6 @@ static void kf_check_for_ideal_output_state()
           lin_xyz_vel_var_sum += (vel_diff * vel_diff);
         }        
       }
-
-      // Since the 'wobble' can affect our hyzer and pitch states a fair bit
-      // let's take a running average of some of our best states instead
-      // any time lin_xyz_vel_var_sum < min_variance_sum * 4, add another measurement into the average
-      // this technically biases easrly samples, but that is OK for now
-      static float ang_hp_pos_mean[2] = {0};
-      static float ang_hp_pos_max[2] = {-10000};
-      static float ang_hp_pos_min[2] = { 10000};
-      static float ang_hp_mean_count = 0;
 
       //cerr << "LIN VEL VAR SUM: " << lin_xyz_vel_var_sum << endl;
 
@@ -1037,21 +1057,37 @@ static void kf_meas_update_step()
 {
   // TODO: Queue the measurement if the filter has not yet initialized
   // Let's just keep this queue as a local static for now (bad form, but eh)
-  
-  // marlk where the queue priming should begin from (offset from the front (oldest) of the queue)
-  static uint16_t prime_idx = 0;
 
   // We haven't started the kalman filter yet, keep buffering measurements
+
+  static double meas_vel_hps_mean[3] = {0};
+  static double meas_vel_xyz[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
+  static double dt[MEAS_PRIME_QUEUE_PRIME_COUNT-1] = {0};
+
+  if(sv_kf_estimate_stage >= KF_EST_STAGE_ACTIVE)
+  {
+    meas_vel_hps_mean[0] = meas_vel_hps_mean[1] = meas_vel_hps_mean[2] = 0;
+    int i;
+    for(i = 0; i < MEAS_PRIME_QUEUE_PRIME_COUNT-1; i++)
+    {
+      meas_vel_xyz[i][0] = meas_vel_xyz[i][1] = meas_vel_xyz[i][2] = 0;
+      dt[i] = 0;
+    }
+  }
+
+  static double last_timestamp_ms = 0;
+  static double last_hyzer = 0;
+
   if(sv_kf_estimate_stage < KF_EST_STAGE_ACTIVE)
   {
+    last_timestamp_ms = 0;
+    last_hyzer = 0;
+
     // these are now static so we can save the priming values (had to change now that we can't run the KF real time)
     // TODO: Fix this refactored hack! agh, so messy
     int xyz;
-           double meas_vel_xyz_mean[3] = {0};
-    static double meas_vel_hps_mean[3] = {0};
-    static double meas_vel_xyz[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
-           double meas_vel_hps[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};
-    static double dt[MEAS_PRIME_QUEUE_PRIME_COUNT-1] = {0};
+    double meas_vel_xyz_mean[3] = {0};    
+    double meas_vel_hps[MEAS_PRIME_QUEUE_PRIME_COUNT-1][3] = {0};    
     const int queue_size = meas_prime_queue.size()-1;
 
     if(sv_kf_estimate_stage < KF_EST_STAGE_READY)
@@ -1229,8 +1265,6 @@ static void kf_meas_update_step()
         dvd_DvisEst_kf_meas_t new_meas = meas_prime_queue.front();
 
         meas_count++;
-        static double last_timestamp_ms = 0;
-        static double last_hyzer = 0;
         if(meas_count > 1)
         {
           cerr << "**************Consumed multiple measurements! " 

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <atomic>
 
 // OpenCV stuff
 #include "opencv2/core.hpp"
@@ -26,6 +27,8 @@
 #define KF_EST_STAGE_PRIME        (2)
 #define KF_EST_STAGE_ACTIVE       (3)
 #define KF_EST_STAGE_COMPLETE     (4)
+
+extern std::atomic<bool> gv_force_continuous_mode;
 
 // define measurement and state structures
 struct pos_vel_var_state_t

@@ -19,6 +19,7 @@
 //#endif
 
 #include <string>
+#include <csignal>
 #include <iostream>
 #if !defined(IS_WINDOWS)
   #include <unistd.h>
@@ -49,6 +50,18 @@
 #include <dvd_DvisEst_estimate.hpp>
 
 using namespace std;
+
+std::atomic<bool> gv_force_continuous_mode (false);
+
+void signal_handler(int signum) 
+{
+  cerr << "Interrupt signal (" << signum << ") received.\n";
+  dvd_DvisEst_image_capture_set_force_capture_thread_closure(true);
+  dvd_DvisEst_apriltag_end();
+  dvd_DvisEst_image_capture_stop(true);
+
+  exit(signum);
+}
 
 // get path of current executable in linux and windows for logging purposes
 static cv::String get_executable_path(void)
@@ -304,6 +317,46 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   cv::waitKey(time_s*1000);
 }
 
+static std::string get_datestring(void)
+{
+  // get date string for logging
+  std::time_t now = std::time(NULL);
+  std::tm * ptm = std::localtime(&now);
+  string datestring;// = std::ctime(&end_time);
+  char buffer[32];
+  std::strftime(buffer, 32, "%Y-%m-%d_%H-%M-%S", ptm);
+  datestring = buffer;
+  return datestring;
+}
+
+static void set_logging_dir(void)
+{
+  cv::String executable_path = get_executable_path();
+  std::string datestring = get_datestring();
+  #if defined(IS_WINDOWS)
+  std::string log_path = executable_path + "\\logs\\";
+  #else
+  std::string log_path = executable_path + "/logs/";
+  #endif
+  //replace_slashes_linux_to_windows(&log_path);
+  cv::utils::fs::createDirectory(log_path);
+  #if defined(IS_WINDOWS)
+  std::string log_debug_path = log_path + datestring + "_log_data\\";
+  #else
+  std::string log_debug_path = log_path + datestring + "_log_data/";
+  #endif
+  //replace_slashes_linux_to_windows(&log_debug_path);
+  cv::utils::fs::createDirectory(log_debug_path);
+  #if defined(IS_WINDOWS)
+  std::string log_path_images = log_debug_path + "images\\";
+  #else
+  std::string log_path_images = log_debug_path + "images/";
+  #endif
+  //replace_slashes_linux_to_windows(&log_path_images);
+  cv::utils::fs::createDirectory(log_path_images);
+  dvd_DvisEst_estimate_set_log_dir(log_debug_path);
+  cerr << "Logging Path: "  << log_debug_path << endl;
+}
 
 int main(int argc, char** argv )
 {
@@ -328,6 +381,7 @@ int main(int argc, char** argv )
     "{matlab ml      |false      | Run some matlab plots using the generated kflog}"
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
+    "{contrun cr     |false      | Keep outputting values, and resetting the estimate thread states, until a SIGINT is recieved}"
     ;
 
   cv::CommandLineParser parser(argc, argv, keys);
@@ -351,6 +405,13 @@ int main(int argc, char** argv )
   const bool        matlab      = parser.get<bool>("matlab");
   const bool        dfisx       = parser.get<bool>("dfisx");
   const bool        gianttext   = parser.get<bool>("gianttext");
+  const bool        contrun     = parser.get<bool>("contrun");
+
+  // register signal SIGINT and signal handler if we need to de-init camera
+  if(camera_src)
+  { 
+    signal(SIGINT, signal_handler);
+  }
 
   // check for basic function test call
   if(helloworld)
@@ -369,17 +430,9 @@ int main(int argc, char** argv )
   }
 
   // Set up directories
-  // get date string for logging
-  std::time_t now = std::time(NULL);
-  std::tm * ptm = std::localtime(&now);
-  string datestring;// = std::ctime(&end_time);
-  char buffer[32];
-  std::strftime(buffer, 32, "%Y-%m-%d_%H-%M-%S", ptm);
-  datestring = buffer;
+  string datestring = get_datestring();
   cerr << "Current DateTime: " << datestring << endl;
-
   vector<string> fn;
-
   cv::String executable_path = get_executable_path();
 
   // set groundplane path
@@ -409,33 +462,6 @@ int main(int argc, char** argv )
   dvd_DvisEst_estimate_set_ground_plane_file(gnd_plane);
 
   std::string log_debug_path;
-  if(debug)
-  {
-    #if defined(IS_WINDOWS)
-    std::string log_path = executable_path + "\\logs\\";
-    #else
-    std::string log_path = executable_path + "/logs/";
-    #endif
-    //replace_slashes_linux_to_windows(&log_path);
-    cv::utils::fs::createDirectory(log_path);
-    #if defined(IS_WINDOWS)
-    log_debug_path = log_path + datestring + "_log_data\\";
-    #else
-    log_debug_path = log_path + datestring + "_log_data/";
-    #endif
-    //replace_slashes_linux_to_windows(&log_debug_path);
-    cv::utils::fs::createDirectory(log_debug_path);
-    #if defined(IS_WINDOWS)
-    std::string log_path_images = log_debug_path + "images\\";
-    #else
-    std::string log_path_images = log_debug_path + "images/";
-    #endif
-    //replace_slashes_linux_to_windows(&log_path_images);
-    cv::utils::fs::createDirectory(log_path_images);
-    dvd_DvisEst_estimate_set_log_dir(log_debug_path);
-    cerr << "Logging Path: "  << log_debug_path << endl;
-  }
-
 
   if(camera_src)
   {
@@ -542,7 +568,11 @@ int main(int argc, char** argv )
     }
   }
 
-  // Init remaining calls
+  // Init remaining calls and loop if required
+  if(debug)
+  {
+    set_logging_dir();
+  }
 
   if(!set_gnd_plane)
   {  
@@ -593,249 +623,310 @@ int main(int argc, char** argv )
     dvd_DvisEst_image_capture_start();
   }
   
-  // We should be calling reverse-order thread join/destroy functions here
-  // Once the filter thread returns, we know we can wrap everything up
-  cerr << "Waiting Until threads join..." << endl;
-  bool got_output = false;
-  char output_cmd[512] = {0};
-  dvd_DvisEst_kf_state_t kf_state;
-
-  if(!set_gnd_plane)
+  if(contrun)
   {
-    dvd_DvisEst_estimate_end_filter();
-
-    // get final output state
-    got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
-    // we should print this state ASAP for consumption by Mike's dvd_DfisX
-    sprintf(output_cmd, "hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
-      kf_state.ang_hps[0].pos,
-      kf_state.ang_hps[1].pos,
-      kf_state.lin_xyz[0].pos,
-      kf_state.lin_xyz[1].pos,
-      kf_state.lin_xyz[2].pos,
-      kf_state.lin_xyz[0].vel,
-      kf_state.lin_xyz[1].vel,
-      kf_state.lin_xyz[2].vel,
-      kf_state.ang_hps[2].vel,
-      kf_state.wobble_mag,
-      kf_state.disc_index
-      );
-    cerr << endl << endl;
-    // this is the only line is this program which should be printed to stdout
-    cout << output_cmd << endl;
-
-    // also pipe this into the metadata file
-    if(debug)
-    {
-      std::stringstream ss_metadata;
-      ss_metadata << "FILEPATH=$(ls " << log_debug_path << "metadata*); echo \"" << output_cmd << "\" >> " << "$FILEPATH";
-      std::system(ss_metadata.str().c_str());
-    }
-
-    cerr << endl << endl;
+    cerr  << endl << endl << endl << endl << endl << "CONTINUOUS RUN IS ENABLED!!!!" << endl << endl << endl << endl << endl;
+    // force threads to keep running in continuous mode
+    gv_force_continuous_mode = true;
   }
 
-  dvd_DvisEst_apriltag_end();
-
-  if(!set_gnd_plane)
+  while(1)
   {
-    if(!got_output && !gianttext)
+    if(contrun && !set_gnd_plane)
     {
-      cerr << ("Not ouput state! Sorry!\n") << endl;
-      return 0;
-    }
-
-    // plotting with matlab!
-    if(matlab && debug && !dfisx)
-    {
-      #if defined(IS_WINDOWS)
-      cerr << ("Matlab plots not supported on Windows just yet...\n") << endl;
-      #else
-      cerr << ("Executing Matlab plot...\n") << endl;
-
-      // get abs path
-      char abs_path[512];
-      realpath(log_debug_path.c_str(), abs_path);
-
-      sprintf(output_cmd, "cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate('%s')\" &",
-        abs_path);
-      system(output_cmd);
-      #endif
-    }
-
-    sprintf(output_cmd, "cd ../dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
-      kf_state.ang_hps[0].pos,
-      kf_state.ang_hps[1].pos,
-      kf_state.lin_xyz[0].pos,
-      kf_state.lin_xyz[1].pos,
-      kf_state.lin_xyz[2].pos,
-      kf_state.lin_xyz[0].vel,
-      kf_state.lin_xyz[1].vel,
-      kf_state.lin_xyz[2].vel,
-      kf_state.ang_hps[2].vel,
-      kf_state.wobble_mag*0,
-      kf_state.disc_index*0 + 1
-      );
-
-    cerr << "Output String: " << output_cmd << endl;
-
-    // run Skinner's stuff
-    if(dfisx)
-    {
-      system(output_cmd);
-
-      //cerr << "Output String: " << output_cmd << endl;
-
-      if(matlab)
+      // re-allocate measurement slots and prep Kalman Filter initial states
+      if(!dvd_DvisEst_estimate_init(debug))
       {
-        //drive10, 13, 16, 17
-        //angle 1, 2
-        //putt 2
+        cerr << "Can't read ground plane, exiting...!" << endl;
+        return 1;
+      }
+    }
 
-        // Let's plot it up boys!
-        system("cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
+    // We should be calling reverse-order thread join/destroy functions here
+    // Once the filter thread returns, we know we can wrap everything up
+    cerr << "Waiting Until threads join..." << endl;
+    bool got_output = false;
+    char output_cmd[512] = {0};
+    dvd_DvisEst_kf_state_t kf_state;
+
+    if(!set_gnd_plane)
+    {
+      // wait here until estimate thread is complete
+      if(contrun)
+      {
+        while(1)
+        {
+          // we're holding threads open for continuous mode, so just check the state of the estimate before continuing
+          if(dvd_DvisEst_estimate_complete())
+          {
+            cerr << "ESTIMATECOMPLETE!!!!" << endl;
+            break;
+          }
+          // sleep for a bit so we don't busy poll
+          usleep(200);
+        }
+      }
+      else
+      {
+        // we are not holding this therad open if in single-run mode, so just wait for the join
+        dvd_DvisEst_estimate_end_filter();
+      }
+
+      // get final output state
+      got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
+
+      if(got_output)
+      {
+        // we should print this state ASAP for consumption by Mike's dvd_DfisX
+        sprintf(output_cmd, "hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
+          kf_state.ang_hps[0].pos,
+          kf_state.ang_hps[1].pos,
+          kf_state.lin_xyz[0].pos,
+          kf_state.lin_xyz[1].pos,
+          kf_state.lin_xyz[2].pos,
+          kf_state.lin_xyz[0].vel,
+          kf_state.lin_xyz[1].vel,
+          kf_state.lin_xyz[2].vel,
+          kf_state.ang_hps[2].vel,
+          kf_state.wobble_mag,
+          kf_state.disc_index
+          );
+        cerr << endl << endl;
+        // this is the only line is this program which should be printed to stdout
+        cout << output_cmd << endl << endl;
+      }
+      else
+      {
+        cout << "NO OUTPUT!" << endl << endl;
+      }
+
+      // also pipe this into the metadata file
+      if(debug)
+      {
+        std::stringstream ss_metadata;
+        ss_metadata << "FILEPATH=$(ls " << log_debug_path << "metadata*); echo \"" << output_cmd << "\" >> " << "$FILEPATH";
+        std::system(ss_metadata.str().c_str());
+      }
+
+      cerr << endl << endl;
+    }
+
+    if(!contrun)
+    {
+      dvd_DvisEst_apriltag_end();
+    }
+
+    if(!set_gnd_plane)
+    {
+      if(!got_output && !gianttext)
+      {
+        cerr << ("No ouput state! Sorry!\n") << endl;
+      }
+
+      // plotting with matlab!
+      if(matlab && debug && !dfisx && !contrun && got_output)
+      {
+        #if defined(IS_WINDOWS)
+        cerr << ("Matlab plots not supported on Windows just yet...\n") << endl;
+        #else
+        cerr << ("Executing Matlab plot...\n") << endl;
+
+        // get abs path
+        char abs_path[512];
+        realpath(log_debug_path.c_str(), abs_path);
+
+        sprintf(output_cmd, "cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate('%s')\" &",
+          abs_path);
+        system(output_cmd);
+        #endif
+      }
+
+      if(got_output)
+      {
+        sprintf(output_cmd, "cd ../dvd_DfisX/; ./dfisx hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
+          kf_state.ang_hps[0].pos,
+          kf_state.ang_hps[1].pos,
+          kf_state.lin_xyz[0].pos,
+          kf_state.lin_xyz[1].pos,
+          kf_state.lin_xyz[2].pos,
+          kf_state.lin_xyz[0].vel,
+          kf_state.lin_xyz[1].vel,
+          kf_state.lin_xyz[2].vel,
+          kf_state.ang_hps[2].vel,
+          kf_state.wobble_mag*0,
+          kf_state.disc_index*0 + 1
+          );
+
+        cerr << "Output String: " << output_cmd << endl;
+      }
+
+      // run Skinner's stuff
+      if(dfisx && !contrun && got_output)
+      {
+        system(output_cmd);
+
+        //cerr << "Output String: " << output_cmd << endl;
+
+        if(matlab)
+        {
+          //drive10, 13, 16, 17
+          //angle 1, 2
+          //putt 2
+
+          // Let's plot it up boys!
+          system("cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"dvd_DfisX_plot_disc_trajectory\" &");
+          
+        }
+
+        cerr << "Output String: " << output_cmd << endl;
+      }
+
+      if(gianttext && got_output)
+      {
+        // show info for 10s
+        const float vel_mag_kph = sqrt(kf_state.lin_xyz[0].vel*kf_state.lin_xyz[0].vel + kf_state.lin_xyz[1].vel*kf_state.lin_xyz[1].vel + kf_state.lin_xyz[2].vel*kf_state.lin_xyz[2].vel) * 3.6;
+        const float throw_deg_up = RAD_TO_DEG(atan2(kf_state.lin_xyz[2].vel, kf_state.lin_xyz[0].vel));
+        std::string throw_ud = "";
+        if(throw_deg_up > 0)
+        {
+          throw_ud = "UP";
+        }
+        else
+        {
+          throw_ud = "DOWN";
+        }
+        const float throw_deg_right = RAD_TO_DEG(atan2(kf_state.lin_xyz[1].vel, kf_state.lin_xyz[0].vel));
+        std::string throw_left_right = "";
+        if(throw_deg_right < 0)
+        {
+          throw_left_right = "LEFT";
+        }
+        else
+        {
+          throw_left_right = "RIGHT";
+        }
+        const float spin_rad_d = (kf_state.ang_hps[2].vel);
+        const float hyzer_rad  = RAD_TO_DEG(kf_state.ang_hps[0].pos);
+        std::string throw_spin_dir = "";
+        std::string hyzer_dir = "";
+        if(spin_rad_d > 0)
+        {
+          throw_spin_dir = "CCW";
+          if(hyzer_rad < 0)
+          {
+            hyzer_dir = "ANHYZER";
+          }
+          else
+          {
+            hyzer_dir = "HYZER";
+          }
+        }
+        else
+        {
+          throw_spin_dir = "CW";
+          if(hyzer_rad > 0)
+          {
+            hyzer_dir = "ANHYZER";
+          }
+          else
+          {
+            hyzer_dir = "HYZER";
+          }
+        }
+
+        std::string throw_wobble = "";
+        if(kf_state.wobble_mag > 0.8)
+        {
+          throw_wobble = "ULTRA";
+        }
+        else if(kf_state.wobble_mag > 0.6)
+        {
+          throw_wobble = "SUPER";
+        }
+        else if(kf_state.wobble_mag > 0.4)
+        {
+          throw_wobble = "LOTS OF";
+        }
+        else if(kf_state.wobble_mag > 0.2)
+        {
+          throw_wobble = "MODERATE";
+        }
+        else if(kf_state.wobble_mag > 0.1)
+        {
+          throw_wobble = "MILD";
+        }
+        else
+        {
+          throw_wobble = "LOW";
+        }
+
+        // deprecated, and replaced with the more generic 'dvd_DvisEst_display_text'
+
+        // sadly, sm can't handle negative numbers (sigh), so well directionalize everything
+        /*sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n%0.1f° %s  %0.1f° %s \\r\\n%0.1f° %s\\r\\n%0.1f rad/s %s\\r\\n%s WOBBLE' > /tmp/disptext; timeout 12s sm -a 1 `cat /tmp/disptext` &",
+          vel_mag_kph,
+          fabs(throw_deg_up),
+          throw_ud.c_str(),
+          fabs(throw_deg_right),
+          throw_left_right.c_str(),
+          fabs(hyzer_rad),
+          hyzer_dir.c_str(),
+          fabs(spin_rad_d),
+          throw_spin_dir.c_str(),
+          throw_wobble.c_str()
+          );
+        */
+
+        const int num_strings = 5;
         
-      }
+        std::string text_to_show[num_strings] = {""};
+        sprintf(output_cmd, "%0.1f kph SPEED", 
+          vel_mag_kph);
+        text_to_show[0] = output_cmd;
 
-      cerr << "Output String: " << output_cmd << endl;
+        sprintf(output_cmd, "%0.1f deg %s  %0.1f deg %s", 
+          fabs(throw_deg_up),
+          throw_ud.c_str(),
+          fabs(throw_deg_right),
+          throw_left_right.c_str());
+        text_to_show[1] = output_cmd;
+
+        sprintf(output_cmd, "%0.1f deg %s", 
+          fabs(hyzer_rad),
+          hyzer_dir.c_str());
+        text_to_show[2] = output_cmd;
+
+        sprintf(output_cmd, "%0.1f rad/s %s", 
+          fabs(spin_rad_d),
+          throw_spin_dir.c_str());
+        text_to_show[3] = output_cmd;
+
+        sprintf(output_cmd, "%s WOBBLE", 
+          throw_wobble.c_str());
+        text_to_show[4] = output_cmd;
+
+        const float VEC3(lin_vel_xyz) = 
+        {
+          (float)kf_state.lin_xyz[0].vel,
+          (float)kf_state.lin_xyz[1].vel,
+          (float)kf_state.lin_xyz[2].vel
+        };
+        dvd_DvisEst_display_text(text_to_show, num_strings, 10, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos, lin_vel_xyz);
+      }
     }
 
-    if(gianttext)
+    // do this at the end since it takes a while and we could be showing off text...
+    if(!contrun)
     {
-      // show info for 10s
-      const float vel_mag_kph = sqrt(kf_state.lin_xyz[0].vel*kf_state.lin_xyz[0].vel + kf_state.lin_xyz[1].vel*kf_state.lin_xyz[1].vel + kf_state.lin_xyz[2].vel*kf_state.lin_xyz[2].vel) * 3.6;
-      const float throw_deg_up = RAD_TO_DEG(atan2(kf_state.lin_xyz[2].vel, kf_state.lin_xyz[0].vel));
-      std::string throw_ud = "";
-      if(throw_deg_up > 0)
-      {
-        throw_ud = "UP";
-      }
-      else
-      {
-        throw_ud = "DOWN";
-      }
-      const float throw_deg_right = RAD_TO_DEG(atan2(kf_state.lin_xyz[1].vel, kf_state.lin_xyz[0].vel));
-      std::string throw_left_right = "";
-      if(throw_deg_right < 0)
-      {
-        throw_left_right = "LEFT";
-      }
-      else
-      {
-        throw_left_right = "RIGHT";
-      }
-      const float spin_rad_d = (kf_state.ang_hps[2].vel);
-      const float hyzer_rad  = RAD_TO_DEG(kf_state.ang_hps[0].pos);
-      std::string throw_spin_dir = "";
-      std::string hyzer_dir = "";
-      if(spin_rad_d > 0)
-      {
-        throw_spin_dir = "CCW";
-        if(hyzer_rad < 0)
-        {
-          hyzer_dir = "ANHYZER";
-        }
-        else
-        {
-          hyzer_dir = "HYZER";
-        }
-      }
-      else
-      {
-        throw_spin_dir = "CW";
-        if(hyzer_rad > 0)
-        {
-          hyzer_dir = "ANHYZER";
-        }
-        else
-        {
-          hyzer_dir = "HYZER";
-        }
-      }
+      dvd_DvisEst_image_capture_stop(camera_src);
+    }
 
-      std::string throw_wobble = "";
-      if(kf_state.wobble_mag > 0.8)
-      {
-        throw_wobble = "ULTRA";
-      }
-      else if(kf_state.wobble_mag > 0.6)
-      {
-        throw_wobble = "SUPER";
-      }
-      else if(kf_state.wobble_mag > 0.4)
-      {
-        throw_wobble = "LOTS OF";
-      }
-      else if(kf_state.wobble_mag > 0.2)
-      {
-        throw_wobble = "MODERATE";
-      }
-      else if(kf_state.wobble_mag > 0.1)
-      {
-        throw_wobble = "MILD";
-      }
-      else
-      {
-        throw_wobble = "LOW";
-      }
-
-      // deprecated, and replaced with the more generic 'dvd_DvisEst_display_text'
-
-      // sadly, sm can't handle negative numbers (sigh), so well directionalize everything
-      /*sprintf(output_cmd, "echo '%0.1f kph SPEED \\r\\n%0.1f° %s  %0.1f° %s \\r\\n%0.1f° %s\\r\\n%0.1f rad/s %s\\r\\n%s WOBBLE' > /tmp/disptext; timeout 12s sm -a 1 `cat /tmp/disptext` &",
-        vel_mag_kph,
-        fabs(throw_deg_up),
-        throw_ud.c_str(),
-        fabs(throw_deg_right),
-        throw_left_right.c_str(),
-        fabs(hyzer_rad),
-        hyzer_dir.c_str(),
-        fabs(spin_rad_d),
-        throw_spin_dir.c_str(),
-        throw_wobble.c_str()
-        );
-      */
-
-      const int num_strings = 5;
-      
-      std::string text_to_show[num_strings] = {""};
-      sprintf(output_cmd, "%0.1f kph SPEED", 
-        vel_mag_kph);
-      text_to_show[0] = output_cmd;
-
-      sprintf(output_cmd, "%0.1f deg %s  %0.1f deg %s", 
-        fabs(throw_deg_up),
-        throw_ud.c_str(),
-        fabs(throw_deg_right),
-        throw_left_right.c_str());
-      text_to_show[1] = output_cmd;
-
-      sprintf(output_cmd, "%0.1f deg %s", 
-        fabs(hyzer_rad),
-        hyzer_dir.c_str());
-      text_to_show[2] = output_cmd;
-
-      sprintf(output_cmd, "%0.1f rad/s %s", 
-        fabs(spin_rad_d),
-        throw_spin_dir.c_str());
-      text_to_show[3] = output_cmd;
-
-      sprintf(output_cmd, "%s WOBBLE", 
-        throw_wobble.c_str());
-      text_to_show[4] = output_cmd;
-
-      const float VEC3(lin_vel_xyz) = 
-      {
-        (float)kf_state.lin_xyz[0].vel,
-        (float)kf_state.lin_xyz[1].vel,
-        (float)kf_state.lin_xyz[2].vel
-      };
-      dvd_DvisEst_display_text(text_to_show, num_strings, 10, kf_state.ang_hps[0].pos, kf_state.ang_hps[1].pos, lin_vel_xyz);
+    // don't look for ground plane, or for non-continueous running
+    if(set_gnd_plane || !contrun)
+    {
+      break;
     }
   }
-
-  // do this at the end since it takes a while and we could be showing off text...
-  dvd_DvisEst_image_capture_stop(camera_src);
 
   // if we didn't log anything, delete the logging dir
   if(debug && !log_debug_path.empty())

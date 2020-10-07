@@ -234,7 +234,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
   uint64_t last_frame_detect_ns = 0;
 
-  while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME)
+  while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode)
   {
     // Check for thread mode update
     if(!dvd_DvisEst_estimate_get_tags_detected())
@@ -482,6 +482,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         }
 
         apriltag_detections_destroy(detections);
+        // can we afford to sleep here? CPU usage for these threads it getting to be a bit much....
+        usleep(1000);
       }
       else
       {
@@ -506,7 +508,6 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
       usleep(1000);
     }
-
   }
 
   // clean up apriltag objects

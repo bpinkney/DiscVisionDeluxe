@@ -37,6 +37,8 @@ struct image_capture_t
 };
 
 // Functions
+void dvd_DvisEst_image_capture_set_force_capture_thread_closure(const bool force_close);
+void dvd_DvisEst_image_capture_set_capture_thread_ready(void);
 bool dvd_DvisEst_image_capture_thread_ready(void);
 double dvd_DvisEst_image_capture_get_fps(void);
 uint32_t dvd_DvisEst_image_capture_get_camera_serial_number(void);

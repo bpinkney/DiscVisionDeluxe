@@ -114,6 +114,7 @@ std::thread                 capture_thread;
 
 // this is only used for test images for now (since we never expect the camera to stop rolling until told to)
 std::atomic<bool> capture_thread_ready (false);
+std::atomic<bool> sv_force_purge_frames (false);
 std::atomic<bool> sv_enable_chime (false);
 
 std::atomic<uint32_t> sv_image_capture_frame_rate (0);
@@ -234,6 +235,16 @@ static uint16_t image_queue_purge(const uint16_t front_offset)
 }
 
 //end thread stuff
+
+void dvd_DvisEst_image_capture_set_force_capture_thread_closure(const bool force_close)
+{
+  sv_force_purge_frames = force_close;
+}
+
+void dvd_DvisEst_image_capture_set_capture_thread_ready(void)
+{
+  capture_thread_ready = true;
+}
 
 // convert Spinnaker frame to OpenCV Mat
 // this requires a deep copy since the Mat constructor doesn't copy the
@@ -835,7 +846,7 @@ int dvd_DvisEst_image_capture_thread()
     double   last_gain        = sv_gain;
     ImagePtr imagePtr;
 
-    while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME && !capture_thread_ready && result == 0)
+    while(!capture_thread_ready && result == 0 && !sv_force_purge_frames && (dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode))
     {
       // capture frames       
       // Retrieve next received image and ensure image completion
@@ -888,6 +899,15 @@ int dvd_DvisEst_image_capture_thread()
           }
         }
       }
+      // purge frames between continuous runs
+      if(dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME && gv_force_continuous_mode)
+      {
+        // keep at least one frame so things don't go weird?
+        if(image_queue_size() > 1)
+        {
+          image_queue_purge(image_queue_size()-1);
+        }
+      }
       // Free up image memory after OpenCV conversion                
       //imagePtr->Release();
       //cerr << NS_TO_MS(uptime_get_ns()) << " ---> imagePtr->Release();" << endl;
@@ -909,7 +929,7 @@ int dvd_DvisEst_image_capture_thread()
       while(!ready_to_deint_cam)
       {
         ready_to_deint_cam = image_queue_empty();
-        if(!ready_to_deint_cam && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || result != 0))
+        if(!ready_to_deint_cam && result != 0 && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || sv_force_purge_frames))
         {
           // looks like we have some left-over frames to purge before we can de-init the camera
           image_queue_purge(65535);

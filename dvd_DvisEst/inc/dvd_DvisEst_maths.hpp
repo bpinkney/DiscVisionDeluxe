@@ -28,6 +28,7 @@
 #define S_TO_NS(s)        ((s)  * 1000000000.0)
 #define MS_TO_NS(ms)      ((ms) * 1000000.0)
 #define NS_TO_MS(ns)      ((ns) * 0.000001)
+#define NS_TO_US(ns)      ((ns) * 0.001)
 
 #ifndef M_PI
 #define M_PI (3.14159265359)
