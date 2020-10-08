@@ -2,11 +2,14 @@
 
 #pragma once
 
+#include "DiscVisionDeluxeUE.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"		
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "FollowFlight.h"
 #include "DiscProjectile.generated.h"
+
 
 
 UCLASS()
@@ -39,6 +42,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Curve)
 	UCurveFloat* FlightCurve;
+
+	//UPROPERTY()
+	//AFollowFlight* followflight;
+
+	UPROPERTY(EditDefaultsOnly, Category = FollowFlight)
+	TSubclassOf<class AFollowFlight> FollowFlightBP;
 
 	// Function that initializes the projectile's velocity in the shoot direction.
 	void FireInDirection(const FVector& ShootDirection);

@@ -113,6 +113,7 @@ void ADiscCharacter::Fire()
             if (Projectile)
             {
                 // Set the projectile's initial trajectory.
+                
                 FVector fire_direction = MuzzleRotation.Vector();
                 fire_direction *= 21;
                 double throw_pitch;
@@ -129,13 +130,9 @@ void ADiscCharacter::Fire()
                 throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;
                 throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;    
                 }
-                
-                
-                
+
                 DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, 95.0, 0.0);
-                
-                //DfisX::test ();
-                //FVector LaunchDirection = MuzzleRotation.Vector();
+
                 
             }
         }

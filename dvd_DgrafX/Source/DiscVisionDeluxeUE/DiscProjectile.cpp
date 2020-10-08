@@ -6,7 +6,7 @@
 //#include "Components/SphereComponent.h"
 //#include "GameFramework/ProjectileMovementComponent.h"
 
-
+AFollowFlight* fflight;
 
 // Sets default values
 ADiscProjectile::ADiscProjectile()
@@ -29,7 +29,16 @@ ADiscProjectile::ADiscProjectile()
 void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    UWorld* World = GetWorld();
+    FVector thisLocation = FVector (0.0,0.0,0.0);
+    FRotator thisRotation = FRotator (0.0,0.0,0.0);
+	fflight = World->SpawnActor<AFollowFlight>(FollowFlightBP, thisLocation, thisRotation, SpawnParams);
 	
+
 
 
 }
@@ -57,6 +66,7 @@ void ADiscProjectile::Tick(float DeltaTime)
 
 
 	SetDiscPosRot(disc_position,disc_rotation);
+	fflight->log_position ();
 	Super::Tick(DeltaTime);
 
 	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, FString::Printf(TEXT("Disc Location is: %s"), *disc_position.ToString()));
