@@ -28,6 +28,8 @@
 #define KF_EST_STAGE_ACTIVE       (3)
 #define KF_EST_STAGE_COMPLETE     (4)
 
+#define KF_EST_MAX_MEAS_FRAMES (500)
+
 extern std::atomic<bool> gv_force_continuous_mode;
 
 // define measurement and state structures
@@ -87,7 +89,7 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
 void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const bool meas_mode, const uint32_t frame_id);
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
-void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas);
+void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const uint32_t frame_id, dvd_DvisEst_kf_meas_t * kf_meas);
 
 // Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
 void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_CD, dvd_DvisEst_kf_meas_t * kf_meas);

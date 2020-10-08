@@ -133,6 +133,7 @@ static float ang_hp_mean_count = 0;
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
+std::atomic<DiscIndex> sv_kf_estimate_disc_index (NONE);
 std::atomic<uint8_t> sv_kf_estimate_stage (KF_EST_STAGE_MEAS_COLLECT);
 
 // filter thread
@@ -414,6 +415,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   ang_hp_mean_count = 0;
 
   sv_kf_estimate_tags_detected = false;
+  sv_kf_estimate_disc_index = NONE;
   sv_kf_estimate_stage = KF_EST_STAGE_MEAS_COLLECT;
 
   // enable test logging
@@ -510,7 +512,11 @@ void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_i
   if(sv_kf_estimate_stage < KF_EST_STAGE_PRIME)
   {
     sv_kf_estimate_tags_detected = tags_detected;
-    if(tags_detected && frame_id > 0)
+    if(!tags_detected)
+    {
+      sv_kf_estimate_disc_index = NONE;
+    }
+    else if(tags_detected && frame_id > 0)
     {
       // Update timestamps, even if we are in Scout mode, to prevent things from automatically timing back out
       // TODO: Address the race condition here when our frame_skip_max is large enough to time out during frame processing
@@ -587,24 +593,44 @@ void dvd_DvisEst_estimate_cancel_measurement_slot(const uint8_t slot_id, const b
 }
 
 // Add the actual measurement output to a previously reserved slot in the incoming queue
-void dvd_DvisEst_estimate_fulfill_measurement_slot(uint8_t slot_id, dvd_DvisEst_kf_meas_t * kf_meas)
+void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const uint32_t frame_id, dvd_DvisEst_kf_meas_t * kf_meas)
 {
   if(kf_meas->frame_id == 0)
   {
     cerr << "************************************************************** frame_id of zero reported to meas queue!" << endl;
   }
 
-  // Indicate that this frame ID was measured, and populated with an apriltag
-  sv_last_meas_frame_id     = kf_meas->frame_id;
-  sv_last_pop_meas_frame_id = kf_meas->frame_id;
+  if(sv_kf_estimate_disc_index == NONE)
+  {
+    // Update tag we're tracking right now
+    // Any subsequent measurements which do not match this tag are rejected until a detection reset
+    sv_kf_estimate_disc_index = kf_meas->disc_index;
 
-  // add measurement to queue
-  MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
-  // mark measurement slot populated and ready for consumption
-  MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
+    // output to stdout to indicate that a new tag id has been detected
+    cout << "discmold:" << sv_kf_estimate_disc_index << endl << endl;
+  }
 
-  // indicate the measurement returned with a tag detection
-  meas_count_populated++;
+  // don't proceed if the disc index doesn't match
+  // also reject measurements if we are at KF_EST_STAGE_PRIME or greater
+  if(kf_meas->disc_index == sv_kf_estimate_disc_index && sv_kf_estimate_stage < KF_EST_STAGE_PRIME)
+  {
+    // Indicate that this frame ID was measured, and populated with an apriltag
+    sv_last_meas_frame_id     = kf_meas->frame_id;
+    sv_last_pop_meas_frame_id = kf_meas->frame_id;
+
+    // add measurement to queue
+    MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
+    // mark measurement slot populated and ready for consumption
+    MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
+
+    // indicate the measurement returned with a tag detection
+    meas_count_populated++;
+  }
+  else
+  {
+    // If the tag id doesn't match, just cancel the measurement slot
+    dvd_DvisEst_estimate_cancel_measurement_slot(slot_id, true, frame_id);
+  }
 }
 
 // Transform Apriltag measurement into KF disc measurement (includes ground plane transformation)
@@ -834,7 +860,7 @@ static void process_filter_thread(void)
     const double apriltag_detect_loss_time_s = (double)(sv_last_meas_frame_id - sv_last_pop_meas_frame_id) / max(CLOSE_TO_ZERO, dvd_DvisEst_image_capture_get_fps());
 
     if(
-        (apriltag_detect_loss_time_s >= KF_FILTER_TAG_DETECT_RESET_TIME_S || dvd_DvisEst_image_capture_image_capture_queue_empty()) && 
+        (apriltag_detect_loss_time_s >= KF_FILTER_TAG_DETECT_RESET_TIME_S || meas_count_populated > KF_EST_MAX_MEAS_FRAMES || dvd_DvisEst_image_capture_image_capture_queue_empty()) && 
         dvd_DvisEst_estimate_get_tags_detected() &&
         sv_kf_estimate_stage < KF_EST_STAGE_PRIME
       )
@@ -1037,6 +1063,7 @@ static void kf_check_for_ideal_output_state()
       // so for hyzer_delta = pitch_delta = 90 degrees -> wobble = 1
       const float angle_delta_rad = ((ang_hp_pos_max[0] - ang_hp_pos_min[0]) + (ang_hp_pos_max[1] - ang_hp_pos_min[1])) * 0.5;
       sv_kf_ideal_state.wobble_mag = angle_delta_rad / (M_PI * 0.5);
+      sv_kf_ideal_state.disc_index = sv_kf_estimate_disc_index;
 
       if(log_state)
       {

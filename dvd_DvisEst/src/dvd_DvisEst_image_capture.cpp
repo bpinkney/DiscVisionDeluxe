@@ -846,8 +846,24 @@ int dvd_DvisEst_image_capture_thread()
     double   last_gain        = sv_gain;
     ImagePtr imagePtr;
 
+    bool ready_to_throw = false;
+
     while(!capture_thread_ready && result == 0 && !sv_force_purge_frames && (dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode))
     {
+      if(!ready_to_throw && dvd_DvisEst_get_estimate_stage() == KF_EST_STAGE_MEAS_COLLECT)
+      {
+        ready_to_throw = true;
+        //print status update
+        cout << "ready:1" << endl << endl;
+      }
+
+      if(ready_to_throw && dvd_DvisEst_get_estimate_stage() > KF_EST_STAGE_MEAS_COLLECT)
+      {
+        ready_to_throw = false;
+        //print status update
+        cout << "ready:0" << endl << endl;
+      }
+
       // capture frames       
       // Retrieve next received image and ensure image completion
       imagePtr = pCam->GetNextImage();

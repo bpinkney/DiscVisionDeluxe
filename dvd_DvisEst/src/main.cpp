@@ -675,29 +675,44 @@ int main(int argc, char** argv )
       // get final output state
       got_output = dvd_DvisEst_estimate_get_ideal_output_state(&kf_state);
 
+      // gate output reporting on minimum speed of 10kph
+      const float lin_vel_mag_kph = 
+        sqrt(
+          kf_state.lin_xyz[0].vel*kf_state.lin_xyz[0].vel +
+          kf_state.lin_xyz[1].vel*kf_state.lin_xyz[1].vel +
+          kf_state.lin_xyz[2].vel*kf_state.lin_xyz[2].vel
+          ) * 3.6;
+      if(got_output)
+      {
+        if(lin_vel_mag_kph < 5.0)
+        {
+          got_output = false;
+        }
+      }
+
       if(got_output)
       {
         // we should print this state ASAP for consumption by Mike's dvd_DfisX
-        sprintf(output_cmd, "hyzer %0.5f pitch %0.5f posx %0.3f posy %0.3f posz %0.3f velx %0.3f vely %0.3f velz %0.3f spinrate %0.5f wobble %0.3f discmold %d",
-          kf_state.ang_hps[0].pos,
-          kf_state.ang_hps[1].pos,
+        sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d",
           kf_state.lin_xyz[0].pos,
           kf_state.lin_xyz[1].pos,
           kf_state.lin_xyz[2].pos,
           kf_state.lin_xyz[0].vel,
           kf_state.lin_xyz[1].vel,
           kf_state.lin_xyz[2].vel,
+          kf_state.ang_hps[0].pos,
+          kf_state.ang_hps[1].pos,
           kf_state.ang_hps[2].vel,
           kf_state.wobble_mag,
           kf_state.disc_index
           );
         cerr << endl << endl;
-        // this is the only line is this program which should be printed to stdout
+        // stdout!
         cout << output_cmd << endl << endl;
       }
       else
       {
-        cout << "NO OUTPUT!" << endl << endl;
+        //cout << "NO OUTPUT!" << endl << endl;
       }
 
       // also pipe this into the metadata file

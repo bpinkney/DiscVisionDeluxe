@@ -451,7 +451,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
 
               // fulfill measurement reservation
-              dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, &kf_meas);
+              dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, image_capture.frame_id, &kf_meas);
             }
           }
         }
