@@ -30,7 +30,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-	void SetDiscPosRot(FVector position,FRotator rotation);
+	void SetDiscPosRot(FVector position,FRotator rotation, FVector velocity, float disc_spin);
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
@@ -50,7 +50,7 @@ public:
 	TSubclassOf<class AFollowFlight> FollowFlightBP;
 
 	// Function that initializes the projectile's velocity in the shoot direction.
-	void FireInDirection(const FVector& ShootDirection);
+
 
 	
 
