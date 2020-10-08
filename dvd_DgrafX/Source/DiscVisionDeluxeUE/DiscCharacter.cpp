@@ -5,6 +5,7 @@
 #include "DiscCharacter.h"
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
+#include "Kismet/GameplayStatics.h"
 #include "DfisX\DfisX.hpp"
 
 // Sets default values
@@ -18,11 +19,23 @@ ADiscCharacter::ADiscCharacter()
 }
 
 // Called when the game starts or when spawned
+ACameraManager* camera_manager;
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
     DfisX::init();
-    
+
+
+
+
+    ///Camera manager init
+    //UWorld* World = GetWorld();
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+    camera_manager->set_player_target(PC);
    
 
 
@@ -110,6 +123,7 @@ void ADiscCharacter::Fire()
             SpawnParams.Instigator = GetInstigator();
             // Spawn the projectile at the muzzle.
             ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+            camera_manager->focus_on_disc(Projectile);
             if (Projectile)
             {
                 // Set the projectile's initial trajectory.

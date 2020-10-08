@@ -5,7 +5,7 @@
 #include "DfisX.hpp"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "CameraManager.h"
 #include "DiscCharacter.generated.h"
 
 UCLASS()
@@ -51,4 +51,7 @@ public:
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ADiscProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Camera Manager")
+		TSubclassOf<class ACameraManager> CameraManagerBP;
 };
