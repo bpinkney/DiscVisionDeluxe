@@ -111,7 +111,9 @@ const std::map<uint16_t, disc_layout_t> disc_layout_by_id
 enum class dvd_DvisEst_error
 {
   NONE,
-  EST_QUEUE_FULL
+  EST_QUEUE_FULL,
+  NO_CAMERA_DETECTED,
+  PROGRAM_TERMINATED
 };
 
 // Define static getter/setter for key:value pair lookups used in dvd_DvisEst outputs

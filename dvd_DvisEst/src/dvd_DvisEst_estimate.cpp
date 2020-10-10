@@ -22,6 +22,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <csignal>
 
 // Timer stuff
 #if !defined(IS_WINDOWS)
@@ -489,7 +490,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 
   return true;
@@ -708,7 +709,7 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 }
 
@@ -854,11 +855,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 }
 
-static void process_filter_thread(void)
+int process_filter_thread(void)
 {
   uint64_t last_loop_ns = 0;
   uint64_t now;
@@ -866,7 +867,7 @@ static void process_filter_thread(void)
   bool latch_tic = false;
   bool latch_toc = false;
 
-  while(sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode)
+  while((sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode) && !gv_force_complete_threads)
   {
     now = uptime_get_ns();
 
@@ -1004,7 +1005,11 @@ static void process_filter_thread(void)
       usleep(200);
     }
   }
+  
+  cerr << "Estimate Thread completed, waiting for join." << endl;
+  wait();
   cerr << "Estimate Thread completed." << endl;
+  return 0;
 }
 
 //This implies that we need 'KF_IDEAL_CHECK_QUEUE_SIZE' samples after priming to have a valid estimate
@@ -1468,7 +1473,15 @@ bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_sta
 
 void dvd_DvisEst_estimate_end_filter(void)
 {
-  kf_process_filter.join();
+  if(kf_process_filter.joinable())
+  {
+    kf_process_filter.join();
+    cerr << "dvd_DvisEst_estimate_end_filter thread has finished joining!" << endl; 
+  }
+  else 
+  {
+    cerr << "dvd_DvisEst_estimate_end_filter thread has already joined!" << endl; 
+  }  
 
   // init test logs
   if(log_meas)
@@ -1479,8 +1492,6 @@ void dvd_DvisEst_estimate_end_filter(void)
   {
     state_csv_log_close();
   }
-
-  cerr << "dvd_DvisEst_estimate_end_filter thread has finished joining!" << endl; 
 }
 
 // remember that we want to load in a ground-plane, and use that to modify 

@@ -31,6 +31,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <csignal>
 
 #if defined(SPINNAKER_ALLOWED)
 #include "Spinnaker.h"
@@ -785,6 +786,8 @@ int dvd_DvisEst_image_capture_thread()
     {
       capture_thread_ready = true;
       cerr << "Not enough cameras! Exiting..." << endl;
+      cout << "error:" << (int)dvd_DvisEst_error::NO_CAMERA_DETECTED << endl << endl;
+      raise(SIGINT);
     }
     else
     {
@@ -848,7 +851,7 @@ int dvd_DvisEst_image_capture_thread()
 
     bool ready_to_throw = false;
 
-    while(!capture_thread_ready && result == 0 && !sv_force_purge_frames && (dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode))
+    while(!capture_thread_ready && result == 0 && !sv_force_purge_frames && (dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode) && !gv_force_complete_threads)
     {
       if(!ready_to_throw && dvd_DvisEst_get_estimate_stage() == KF_EST_STAGE_MEAS_COLLECT)
       {
@@ -942,10 +945,11 @@ int dvd_DvisEst_image_capture_thread()
       // wait here until camera references are gone (empty queue)
       cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker Purge Stale Image Queue" << endl;
       bool ready_to_deint_cam = false;
-      while(!ready_to_deint_cam)
+      while(!ready_to_deint_cam) // omit gv_force_complete_threads here to ensure camera is resolved correctly
       {
         ready_to_deint_cam = image_queue_empty();
-        if(!ready_to_deint_cam && result != 0 && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || sv_force_purge_frames))
+        cerr << NS_TO_MS(uptime_get_ns()) << " ---> Spinnaker Try To Purge Stale Image [" << (int)ready_to_deint_cam << ", " << result << ", " << (int)dvd_DvisEst_get_estimate_stage() << ", " << (int)sv_force_purge_frames << "] " << (int)image_queue_size() << endl;
+        if(!ready_to_deint_cam && result == 0 && (dvd_DvisEst_get_estimate_stage() >= KF_EST_STAGE_PRIME || sv_force_purge_frames))
         {
           // looks like we have some left-over frames to purge before we can de-init the camera
           image_queue_purge(65535);
@@ -983,6 +987,8 @@ int dvd_DvisEst_image_capture_thread()
   {
     cerr << "Unexpected Error in IMAGE CAPTURE!" << endl;
   }
+
+  wait();
 
   return result;
 }
@@ -1131,12 +1137,12 @@ void dvd_DvisEst_image_capture_stop(const bool camera_src)
   #if defined(SPINNAKER_ALLOWED)
   if(camera_src)
   {
-
-
     // purge frames here perhaps? Only matters if this is included as a library
-    capture_thread.join();
-    cerr << NS_TO_MS(uptime_get_ns()) << " ---> dvd_DvisEst_image_capture_stop thread has finished joining!" << endl; 
-
+    if(capture_thread.joinable())
+    {
+      capture_thread.join();
+      cerr << NS_TO_MS(uptime_get_ns()) << " ---> dvd_DvisEst_image_capture_stop thread has finished joining!" << endl;
+    }
   }
   #endif
 }

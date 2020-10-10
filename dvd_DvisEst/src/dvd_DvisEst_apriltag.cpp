@@ -234,7 +234,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
   uint64_t last_frame_detect_ns = 0;
 
-  while(dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode)
+  while((dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode) && !gv_force_complete_threads)
   {
     // Check for thread mode update
     if(!dvd_DvisEst_estimate_get_tags_detected())
@@ -511,10 +511,15 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
   }
 
   // clean up apriltag objects
+  //cerr << "Destroy AT detector" << endl;
   apriltag_detector_destroy(td);
+  //cerr << "Destroy AT family" << endl;
   tag36h11_destroy(tf);
 
   cerr << "AprilTag Thread#" << (int)thread_id << " completed." << endl;
+
+  wait();
+
   return 0;
 }
 
@@ -543,12 +548,6 @@ void dvd_DvisEst_apriltag_init(const bool convert_from_bayer, const bool calc_gr
   {
     at_detection_thread[i] = std::thread(at_detection_thread_run, i, convert_from_bayer, calc_groundplane);
   }
-
-  // join all threads right away
-  for(i = 0; i < AT_THREAD_COUNT; i++)
-  {
-    //at_detection_thread[i].join();
-  }
 }
 
 void dvd_DvisEst_apriltag_end(void)
@@ -559,7 +558,10 @@ void dvd_DvisEst_apriltag_end(void)
   int i;
   for(i = 0; i < AT_THREAD_COUNT; i++)
   {
-    at_detection_thread[i].join();
+    if(at_detection_thread[i].joinable())
+    {
+      at_detection_thread[i].join();
+    }
   }
 
   cerr << "dvd_DvisEst_apriltag_end threads have finished joining!" << endl;

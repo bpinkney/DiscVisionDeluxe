@@ -52,13 +52,26 @@
 using namespace std;
 
 std::atomic<bool> gv_force_continuous_mode (false);
+std::atomic<bool> gv_force_complete_threads (false);
+
+bool gv_handle_camera_on_sigint (false);
 
 void signal_handler(int signum) 
 {
   cerr << "Interrupt signal (" << signum << ") received.\n";
-  dvd_DvisEst_image_capture_set_force_capture_thread_closure(true);
+  cout << "ready:0" << endl << endl;
+  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << endl << endl;
+  gv_force_complete_threads = true;
+  if(gv_handle_camera_on_sigint)
+  {
+    dvd_DvisEst_image_capture_set_force_capture_thread_closure(true);
+  }
   dvd_DvisEst_apriltag_end();
-  dvd_DvisEst_image_capture_stop(true);
+  if(gv_handle_camera_on_sigint)
+  {
+    dvd_DvisEst_image_capture_stop(true);
+  }
+  dvd_DvisEst_estimate_end_filter();
 
   exit(signum);
 }
@@ -431,11 +444,10 @@ int main(int argc, char** argv )
   const int         randmeas    = parser.get<int>("randmeas");
   const bool        nocam       = parser.get<bool>("nocam");
 
-  // register signal SIGINT and signal handler if we need to de-init camera
-  if(camera_src)
-  { 
-    signal(SIGINT, signal_handler);
-  }
+  // register signal SIGINT and signal handler if we need to de-init camera 
+  signal(SIGINT, signal_handler);
+
+  gv_handle_camera_on_sigint = camera_src && !nocam;
 
   // check for basic function test call
   if(helloworld)
@@ -564,7 +576,7 @@ int main(int argc, char** argv )
       image_capture_t image_capture;
       bool got_one;
       uint16_t skipped_frames = 0; 
-      while(1)
+      while(!gv_force_complete_threads)
       {
         skipped_frames = 888;// quick flag to avoid frame skips
         std::atomic<uint8_t> thread_mode (AT_DETECTION_THREAD_MODE_MEAS);
@@ -664,7 +676,7 @@ int main(int argc, char** argv )
     gv_force_continuous_mode = true;
   }
 
-  while(1)
+  while(!gv_force_complete_threads)
   {
     if(contrun && !set_gnd_plane)
     {
@@ -690,7 +702,7 @@ int main(int argc, char** argv )
       {
         uint32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns());
         bool ready_rm = true;
-        while(1)
+        while(!gv_force_complete_threads)
         {
           // we're holding threads open for continuous mode, so just check the state of the estimate before continuing
           if(dvd_DvisEst_estimate_complete())
@@ -730,7 +742,7 @@ int main(int argc, char** argv )
                 DEG_TO_RAD((float)(rand() % 30) - 30/2), // +- 15 deg pitch
                 spin_d, // 60 +- 20 rad/s either positive or negative
                 ((float)(rand() % 600)) * 0.001,
-                (rand() % 12 + 3)
+                (rand() % 10 + 3)
                 );
               // stdout!
               cout << output_cmd << endl << endl;
