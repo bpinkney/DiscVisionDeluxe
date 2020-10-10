@@ -8,7 +8,7 @@
 
 ///--------------------------------------------------------------------------
 /// @brief Disc Index Enum
-enum DiscIndex
+enum class DiscIndex
 {
   NONE,
   GROUNDPLANE,
@@ -30,7 +30,7 @@ enum DiscIndex
 
 ///--------------------------------------------------------------------------
 /// @brief AprilTag Families
-enum TagFamily
+enum class TagFamily
 {
   f16h5,
   f36h11,
@@ -68,22 +68,22 @@ struct disc_init_state_t
 #define DISC_LAYOUTS_NUM  (16)
 const disc_layout_t DISC_LAYOUTS[DISC_LAYOUTS_NUM] = 
 {
-  {NONE,        f36h11,   0,   0, 0},
-  {GROUNDPLANE, f36h11, 386, 164, 0},
-  {GROUNDPLANE_BIG, f36h11, 387, 489, 0},
-  {PUTTER,      f36h11, 100, 109, 1},
-  {PUTTER_OS,   f36h11, 101, 109, 1},
-  {PUTTER_US,   f36h11, 102, 109, 1},
-  {MIDRANGE,    f36h11, 103, 109, 1},
-  {MIDRANGE_OS, f36h11, 104, 109, 1},
-  {MIDRANGE_US, f36h11, 105, 109, 1},
-  {FAIRWAY,     f36h11, 106, 109, 1},
-  {FAIRWAY_OS,  f36h11, 107, 109, 1},
-  {FAIRWAY_US,  f36h11, 108, 109, 1},
-  {DRIVER,      f36h11, 109, 109, 1},
-  {DRIVER_OS,   f36h11, 110, 109, 1},
-  {DRIVER_US,   f36h11, 111, 109, 1},
-  {SPECIAL,     f36h11, 112, 109, 1}
+  {DiscIndex::NONE,        f36h11,   0,   0, 0},
+  {DiscIndex::GROUNDPLANE, f36h11, 386, 164, 0},
+  {DiscIndex::GROUNDPLANE_BIG, f36h11, 387, 489, 0},
+  {DiscIndex::PUTTER,      f36h11, 100, 109, 1},
+  {DiscIndex::PUTTER_OS,   f36h11, 101, 109, 1},
+  {DiscIndex::PUTTER_US,   f36h11, 102, 109, 1},
+  {DiscIndex::MIDRANGE,    f36h11, 103, 109, 1},
+  {DiscIndex::MIDRANGE_OS, f36h11, 104, 109, 1},
+  {DiscIndex::MIDRANGE_US, f36h11, 105, 109, 1},
+  {DiscIndex::FAIRWAY,     f36h11, 106, 109, 1},
+  {DiscIndex::FAIRWAY_OS,  f36h11, 107, 109, 1},
+  {DiscIndex::FAIRWAY_US,  f36h11, 108, 109, 1},
+  {DiscIndex::DRIVER,      f36h11, 109, 109, 1},
+  {DiscIndex::DRIVER_OS,   f36h11, 110, 109, 1},
+  {DiscIndex::DRIVER_US,   f36h11, 111, 109, 1},
+  {DiscIndex::SPECIAL,     f36h11, 112, 109, 1}
 };
 
 // Define a map so we can look up disc_layout from the detected AprilTag ID

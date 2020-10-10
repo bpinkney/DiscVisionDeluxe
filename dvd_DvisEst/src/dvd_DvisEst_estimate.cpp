@@ -133,7 +133,7 @@ static float ang_hp_mean_count = 0;
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
-std::atomic<DiscIndex> sv_kf_estimate_disc_index (NONE);
+std::atomic<DiscIndex> sv_kf_estimate_disc_index (DiscIndex::NONE);
 std::atomic<uint8_t> sv_kf_estimate_stage (KF_EST_STAGE_MEAS_COLLECT);
 
 // filter thread
@@ -269,7 +269,7 @@ static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time
       meas->frame_id, 
       meas->lin_xyz_pos[0], meas->lin_xyz_pos[1], meas->lin_xyz_pos[2], 
       meas->ang_hps_pos[0], meas->ang_hps_pos[1], meas->ang_hps_pos[2], 
-      meas->disc_index, meas->player, filter_active
+      (int)meas->disc_index, meas->player, filter_active
       );
 
   meas_csvlog << out << endl;
@@ -345,7 +345,7 @@ static void state_out_csv_log_write(dvd_DvisEst_kf_state_t * state)
       state->ang_hps[0].var[i2x2(0,0)], state->ang_hps[1].var[i2x2(0,0)], state->ang_hps[2].var[i2x2(0,0)],
       state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)],
       state->wobble_mag,
-      state->disc_index
+      (int)state->disc_index
       );
 
   state_out_csvlog << out << endl;
@@ -415,7 +415,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   ang_hp_mean_count = 0;
 
   sv_kf_estimate_tags_detected = false;
-  sv_kf_estimate_disc_index = NONE;
+  sv_kf_estimate_disc_index = DiscIndex::NONE;
   sv_kf_estimate_stage = KF_EST_STAGE_MEAS_COLLECT;
 
   meas_count_populated      = 0;
@@ -520,7 +520,7 @@ void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_i
     sv_kf_estimate_tags_detected = tags_detected;
     if(!tags_detected)
     {
-      sv_kf_estimate_disc_index = NONE;
+      sv_kf_estimate_disc_index = DiscIndex::NONE;
     }
     else if(tags_detected && frame_id > 0)
     {
@@ -616,14 +616,15 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const 
     cerr << "************************************************************** frame_id of zero reported to meas queue!" << endl;
   }
 
-  if(sv_kf_estimate_disc_index == NONE)
+  if(sv_kf_estimate_disc_index == DiscIndex::NONE)
   {
     // Update tag we're tracking right now
     // Any subsequent measurements which do not match this tag are rejected until a detection reset
     sv_kf_estimate_disc_index = kf_meas->disc_index;
 
     // output to stdout to indicate that a new tag id has been detected
-    cout << "discmold:" << sv_kf_estimate_disc_index << endl << endl;
+    const DiscIndex disc_index = sv_kf_estimate_disc_index;
+    cout << "discmold:" << (int)disc_index << endl << endl;
   }
 
   // don't proceed if the disc index doesn't match
@@ -956,25 +957,25 @@ static void process_filter_thread(void)
           sv_kf_state.disc_index = meas_prime_queue[queue_size].disc_index;
           switch(meas_prime_queue[queue_size].disc_index)
           {
-            case GROUNDPLANE:
+            case DiscIndex::GROUNDPLANE:
               disc_name_string = "GROUNDPLANE";
               break;
-            case PUTTER:
+            case DiscIndex::PUTTER:
               disc_name_string = "MAGNET_JAWBREAKER";
               break;
-            case PUTTER_OS:
+            case DiscIndex::PUTTER_OS:
               disc_name_string = "ZONE_JAWBREAKER";
               break;
-            case DRIVER:
+            case DiscIndex::DRIVER:
               disc_name_string = "SKRIKE_STAR";
               break;
-            case MIDRANGE:
+            case DiscIndex::MIDRANGE:
               disc_name_string = "BUZZZ_BIGZ";
               break;
-            case FAIRWAY:
+            case DiscIndex::FAIRWAY:
               disc_name_string = "TBIRD_STAR";
               break;
-            case DRIVER_OS:
+            case DiscIndex::DRIVER_OS:
               disc_name_string = "DESTROYER_DX";
               break;
             default:

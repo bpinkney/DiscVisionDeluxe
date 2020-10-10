@@ -419,7 +419,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             /*cerr << "Got apriltag with ID " << (int)apriltag_id << ", Tag Size(mm): " << (int)tag_size_mm << ", T_CD(m) = [" << 
               T_CD(0, 0) << ", " << T_CD(1, 0) << ", " << T_CD(2, 0) << "]" << endl;*/
 
-            if(calc_groundplane && (disc_index == GROUNDPLANE || disc_index == GROUNDPLANE_BIG))
+            if(calc_groundplane && (disc_index == DiscIndex::GROUNDPLANE || disc_index == DiscIndex::GROUNDPLANE_BIG))
             {
               // Update ground plane
               dvd_DvisEst_estimate_update_groundplane(R_CD, T_CD);
@@ -437,7 +437,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               // also an issue if you print things on non-white cardstock like I did..... skip and fudge factors for this for now
               // GROUNDPLANE     -> tag 386 for 36h11 -> 18 white squares, 46 black squares, des_centroid_for_balance = 18/46 = 0.39
               // GROUNDPLANE_BIG -> tag 387 for 36h11 -> 15 white squares, 49 black squares, des_centroid_for_balance = 15/49 = 0.31
-              const double des_centroid = (disc_index == GROUNDPLANE ? 0.39 : 0.31);
+              const double des_centroid = (disc_index == DiscIndex::GROUNDPLANE ? 0.39 : 0.31);
 
               // later, we could add this to the regular tag detection and continue to adjust the 
               // gain/exposure throughout throws. For now, just do it when the ground plane is set.

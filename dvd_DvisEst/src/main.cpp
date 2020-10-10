@@ -704,7 +704,7 @@ int main(int argc, char** argv )
           kf_state.ang_hps[1].pos,
           kf_state.ang_hps[2].vel,
           kf_state.wobble_mag,
-          kf_state.disc_index
+          (int)kf_state.disc_index
           );
         cerr << endl << endl;
         // stdout!
@@ -768,8 +768,8 @@ int main(int argc, char** argv )
           kf_state.lin_xyz[1].vel,
           kf_state.lin_xyz[2].vel,
           kf_state.ang_hps[2].vel,
-          kf_state.wobble_mag*0,
-          kf_state.disc_index*0 + 1
+          kf_state.wobble_mag,
+          (int)kf_state.disc_index
           );
 
         cerr << "Output String: " << output_cmd << endl;
