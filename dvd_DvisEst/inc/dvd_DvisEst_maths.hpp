@@ -30,12 +30,16 @@
 #define NS_TO_MS(ns)      ((ns) * 0.000001)
 #define NS_TO_US(ns)      ((ns) * 0.001)
 
+#define MM_TO_M(mm)       ((mm) * 0.001)
+#define M_TO_MM(m)        ((m)  * 1000.0)
+
 #ifndef M_PI
 #define M_PI (3.14159265359)
 #endif
 
 #define DEG_TO_RAD(deg)                 ((deg) * M_PI / 180.0)
 #define RAD_TO_DEG(rad)                 ((rad) * 180.0 / M_PI)
+#define MRAD_TO_RAD(mrad)               ((mrad) * 0.001)
 
 #define WRAP_2PI(rad)     \
   while ((rad) > M_PI)    \
