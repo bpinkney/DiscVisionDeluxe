@@ -107,6 +107,13 @@ const std::map<uint16_t, disc_layout_t> disc_layout_by_id
   {DISC_LAYOUTS[15].tag_id, DISC_LAYOUTS[15]},
 };
 
+// enumerate error codes for eve_DvisEst
+enum class dvd_DvisEst_error
+{
+  NONE,
+  EST_QUEUE_FULL
+};
+
 // Define static getter/setter for key:value pair lookups used in dvd_DvisEst outputs
 // this enum and hash function allow indirect use of 'switch/case' using strings
 enum disc_init_state_string_code {

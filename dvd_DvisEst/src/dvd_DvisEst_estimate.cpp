@@ -418,6 +418,12 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   sv_kf_estimate_disc_index = NONE;
   sv_kf_estimate_stage = KF_EST_STAGE_MEAS_COLLECT;
 
+  meas_count_populated      = 0;
+  meas_count_empty          = 0;
+
+  sv_last_meas_frame_id     = 0;
+  sv_last_pop_meas_frame_id = 0;
+
   // enable test logging
   if(kflog)
   {
@@ -567,7 +573,17 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
     sv_meas_queue_write_mutex.unlock();
     return true;
   }
+  // If the queue is full, something has gone horribly wrong.
+  // flush the entire contents to restore runnability
+  // output an appropriate error code to mark the failure
+  int i;
+  for(i = 0; i < MEAS_QUEUE_SIZE; i++)
+  {
+    MEAS_QUEUE_STATUS(i) = MEAS_QUEUE_STATUS_AVAILABLE;
+    memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
+  }
   sv_meas_queue_write_mutex.unlock();
+  cout << "error:" << (int)dvd_DvisEst_error::EST_QUEUE_FULL << endl << endl;
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
