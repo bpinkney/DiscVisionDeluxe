@@ -1,0 +1,56 @@
+ui:
+---debug menu buttons (with throw options --nose up/down)
+
+--Dvisest display (green yellow red)
+-wind readout (speed/gustiness)
+-disc readout pre flight (expected stats, previous result / follow flights highlighting)
+--post flight stats
+
+--Carry distance + Total distance
+-lateral travel distance / degrees
+
+
+important initial stuf 
+{
+--Initial throw speed + current speed    180MPH!!!!
+--wobble
+--nose up/down + hyzer/anhyzer  
+--linear vector
+-spin percentage + rpm
+}
+
+
+Range level:
+-Design Trees/canyon/height
+
+
+UE
+--follow flight (different colour for different states/discs)
+-flight save -> follow flight function
+-follow flight data type / class?
+-follow flight saving (same session)
+
+-mid flight over head map
+
+camera:
+--pre shot static
+--mid flight snap to disc follow
+--post flight camera rotate 180
+
+
+
+DvisEst integration
+--state communication with ue
+-other use cases (low speed detection for disc selection / other input for last throw)
+--integrate for throwing
+
+
+DfisX integration
+--simulator states
+--input / output functions audit 
+-commenting need?
+-Multidisc
+-disc swap simulation?
+
+-physics ue asynchronous
+
