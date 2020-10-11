@@ -6,7 +6,10 @@
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "DfisX\DfisX.hpp"
+#include "HAL/RunnableThread.h"
+#include "DvisEstInterface.h"
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -25,8 +28,7 @@ void ADiscCharacter::BeginPlay()
 	Super::BeginPlay();
     DfisX::init();
 
-
-
+    DvisEstInterface_StartProcess();
 
     ///Camera manager init
     //UWorld* World = GetWorld();
@@ -51,8 +53,10 @@ void ADiscCharacter::BeginPlay()
 void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    DfisX::step_simulation (DeltaTime);
 
+    DvisEstInterface_PrintStuff();
+
+    DfisX::step_simulation (DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -66,8 +70,8 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Set up "action" bindings.
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
-    PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+  PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
+  PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &ADiscCharacter::Quit);
     PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ADiscCharacter::Action1);
@@ -86,9 +90,9 @@ void ADiscCharacter::MoveForward(float Value)
 
 void ADiscCharacter::MoveRight(float Value)
 {
-    // Find out which way is "right" and record that the player wants to move that way.
-    FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-    AddMovementInput(Direction, Value);
+  // Find out which way is "right" and record that the player wants to move that way.
+  FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+  AddMovementInput(Direction, Value);
 }
 
 
@@ -127,6 +131,9 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
 void ADiscCharacter::Fire()
 {
+  // override with handy quit key mapping for now
+  //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+
     // Attempt to fire a projectile.
     if (ProjectileClass)
     {
@@ -179,3 +186,48 @@ void ADiscCharacter::Fire()
         }
     }
 }
+
+// Start dvd_DvisEst Interface
+// This portable block should be able to be moved to any high-level Unreal Object later
+void ADiscCharacter::DvisEstInterface_StartProcess()
+{
+  if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
+  {
+    // Run the thread until we've found many random numbers
+    dvisEstInterface = new DvisEstInterface();
+    DvisEstInterfaceThread = FRunnableThread::Create(dvisEstInterface, TEXT("DvisEstInterfaceThread"));
+  }
+}
+
+bool ADiscCharacter::DvisEstInterface_IsComplete() const
+{
+  return !DvisEstInterfaceThread || dvisEstInterface->IsComplete();
+}
+
+void ADiscCharacter::DvisEstInterface_PrintStuff()
+{
+  if (!DvisEstInterfaceThread || !dvisEstInterface)
+    return;
+
+  if (DvisEstInterface_IsComplete())
+  {
+    if (GEngine)
+    {
+      // This should only occur when this thread is killed!
+    }
+  }
+  else
+  {
+    if (GEngine)
+    {
+      // How the hell is this access threadsafe???
+      FString test_string = dvisEstInterface->GetTestString();
+
+      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
+        FString::Printf(TEXT("Sample Thread Still Working Away %d, %s"),
+        dvisEstInterface->ProcessedNumbers.Num(),
+        *test_string));
+    }
+  }
+}
+// End dvd_DvisEst Interface

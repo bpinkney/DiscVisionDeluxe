@@ -584,7 +584,7 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
     memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
   }
   sv_meas_queue_write_mutex.unlock();
-  cout << "error:" << (int)dvd_DvisEst_error::EST_QUEUE_FULL << endl << endl;
+  cout << "error:" << (int)dvd_DvisEst_error::EST_QUEUE_FULL << endl;
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
@@ -625,7 +625,7 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const 
 
     // output to stdout to indicate that a new tag id has been detected
     const DiscIndex disc_index = sv_kf_estimate_disc_index;
-    cout << "discmold:" << (int)disc_index << endl << endl;
+    cout << "discmold:" << (int)disc_index << endl;
   }
 
   // don't proceed if the disc index doesn't match
@@ -1007,7 +1007,7 @@ int process_filter_thread(void)
   }
   
   cerr << "Estimate Thread completed, waiting for join." << endl;
-  wait();
+  //wait();
   cerr << "Estimate Thread completed." << endl;
   return 0;
 }
