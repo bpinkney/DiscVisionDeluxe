@@ -31,6 +31,7 @@
 #define KF_EST_MAX_MEAS_FRAMES (500)
 
 extern std::atomic<bool> gv_force_continuous_mode;
+extern std::atomic<bool> gv_force_complete_threads;
 
 // define measurement and state structures
 struct pos_vel_var_state_t

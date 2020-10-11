@@ -22,6 +22,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <csignal>
 
 // Timer stuff
 #if !defined(IS_WINDOWS)
@@ -133,7 +134,7 @@ static float ang_hp_mean_count = 0;
 
 // are we getting apriltag detections? we may wish to suppress frame skips for now
 std::atomic<bool> sv_kf_estimate_tags_detected (false);
-std::atomic<DiscIndex> sv_kf_estimate_disc_index (NONE);
+std::atomic<DiscIndex> sv_kf_estimate_disc_index (DiscIndex::NONE);
 std::atomic<uint8_t> sv_kf_estimate_stage (KF_EST_STAGE_MEAS_COLLECT);
 
 // filter thread
@@ -269,7 +270,7 @@ static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time
       meas->frame_id, 
       meas->lin_xyz_pos[0], meas->lin_xyz_pos[1], meas->lin_xyz_pos[2], 
       meas->ang_hps_pos[0], meas->ang_hps_pos[1], meas->ang_hps_pos[2], 
-      meas->disc_index, meas->player, filter_active
+      (int)meas->disc_index, meas->player, filter_active
       );
 
   meas_csvlog << out << endl;
@@ -345,7 +346,7 @@ static void state_out_csv_log_write(dvd_DvisEst_kf_state_t * state)
       state->ang_hps[0].var[i2x2(0,0)], state->ang_hps[1].var[i2x2(0,0)], state->ang_hps[2].var[i2x2(0,0)],
       state->ang_hps[0].var[i2x2(1,1)], state->ang_hps[1].var[i2x2(1,1)], state->ang_hps[2].var[i2x2(1,1)],
       state->wobble_mag,
-      state->disc_index
+      (int)state->disc_index
       );
 
   state_out_csvlog << out << endl;
@@ -415,8 +416,14 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
   ang_hp_mean_count = 0;
 
   sv_kf_estimate_tags_detected = false;
-  sv_kf_estimate_disc_index = NONE;
+  sv_kf_estimate_disc_index = DiscIndex::NONE;
   sv_kf_estimate_stage = KF_EST_STAGE_MEAS_COLLECT;
+
+  meas_count_populated      = 0;
+  meas_count_empty          = 0;
+
+  sv_last_meas_frame_id     = 0;
+  sv_last_pop_meas_frame_id = 0;
 
   // enable test logging
   if(kflog)
@@ -483,7 +490,7 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 
   return true;
@@ -514,7 +521,7 @@ void dvd_DvisEst_estimate_set_tags_detected(bool tags_detected, uint32_t frame_i
     sv_kf_estimate_tags_detected = tags_detected;
     if(!tags_detected)
     {
-      sv_kf_estimate_disc_index = NONE;
+      sv_kf_estimate_disc_index = DiscIndex::NONE;
     }
     else if(tags_detected && frame_id > 0)
     {
@@ -567,7 +574,17 @@ bool dvd_DvisEst_estimate_reserve_measurement_slot(uint32_t frame_id, uint8_t * 
     sv_meas_queue_write_mutex.unlock();
     return true;
   }
+  // If the queue is full, something has gone horribly wrong.
+  // flush the entire contents to restore runnability
+  // output an appropriate error code to mark the failure
+  int i;
+  for(i = 0; i < MEAS_QUEUE_SIZE; i++)
+  {
+    MEAS_QUEUE_STATUS(i) = MEAS_QUEUE_STATUS_AVAILABLE;
+    memset(&MEAS_QUEUE_MEAS(i), 0, sizeof(dvd_DvisEst_kf_meas_t));
+  }
   sv_meas_queue_write_mutex.unlock();
+  cout << "error:" << (int)dvd_DvisEst_error::EST_QUEUE_FULL << endl << endl;
   return false;
 }
 // Perhaps AprilTag detection failed? cancel our slot reservation
@@ -600,14 +617,15 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const 
     cerr << "************************************************************** frame_id of zero reported to meas queue!" << endl;
   }
 
-  if(sv_kf_estimate_disc_index == NONE)
+  if(sv_kf_estimate_disc_index == DiscIndex::NONE)
   {
     // Update tag we're tracking right now
     // Any subsequent measurements which do not match this tag are rejected until a detection reset
     sv_kf_estimate_disc_index = kf_meas->disc_index;
 
     // output to stdout to indicate that a new tag id has been detected
-    cout << "discmold:" << sv_kf_estimate_disc_index << endl << endl;
+    const DiscIndex disc_index = sv_kf_estimate_disc_index;
+    cout << "discmold:" << (int)disc_index << endl << endl;
   }
 
   // don't proceed if the disc index doesn't match
@@ -691,7 +709,7 @@ void dvd_DvisEst_estimate_transform_measurement(cv::Matx33d R_CD, cv::Matx31d T_
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 }
 
@@ -837,11 +855,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG_in, cv::Matx31d T_
     std::exception_ptr p = std::current_exception();
     std::cerr <<(p ? p.__cxa_exception_type()->name() : "null") << std::endl;
     #endif
-    exit(1);
+    raise(SIGINT);
   }
 }
 
-static void process_filter_thread(void)
+int process_filter_thread(void)
 {
   uint64_t last_loop_ns = 0;
   uint64_t now;
@@ -849,7 +867,7 @@ static void process_filter_thread(void)
   bool latch_tic = false;
   bool latch_toc = false;
 
-  while(sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode)
+  while((sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode) && !gv_force_complete_threads)
   {
     now = uptime_get_ns();
 
@@ -940,25 +958,25 @@ static void process_filter_thread(void)
           sv_kf_state.disc_index = meas_prime_queue[queue_size].disc_index;
           switch(meas_prime_queue[queue_size].disc_index)
           {
-            case GROUNDPLANE:
+            case DiscIndex::GROUNDPLANE:
               disc_name_string = "GROUNDPLANE";
               break;
-            case PUTTER:
+            case DiscIndex::PUTTER:
               disc_name_string = "MAGNET_JAWBREAKER";
               break;
-            case PUTTER_OS:
+            case DiscIndex::PUTTER_OS:
               disc_name_string = "ZONE_JAWBREAKER";
               break;
-            case DRIVER:
+            case DiscIndex::DRIVER:
               disc_name_string = "SKRIKE_STAR";
               break;
-            case MIDRANGE:
+            case DiscIndex::MIDRANGE:
               disc_name_string = "BUZZZ_BIGZ";
               break;
-            case FAIRWAY:
+            case DiscIndex::FAIRWAY:
               disc_name_string = "TBIRD_STAR";
               break;
-            case DRIVER_OS:
+            case DiscIndex::DRIVER_OS:
               disc_name_string = "DESTROYER_DX";
               break;
             default:
@@ -987,7 +1005,11 @@ static void process_filter_thread(void)
       usleep(200);
     }
   }
+  
+  cerr << "Estimate Thread completed, waiting for join." << endl;
+  wait();
   cerr << "Estimate Thread completed." << endl;
+  return 0;
 }
 
 //This implies that we need 'KF_IDEAL_CHECK_QUEUE_SIZE' samples after priming to have a valid estimate
@@ -1451,7 +1473,15 @@ bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_sta
 
 void dvd_DvisEst_estimate_end_filter(void)
 {
-  kf_process_filter.join();
+  if(kf_process_filter.joinable())
+  {
+    kf_process_filter.join();
+    cerr << "dvd_DvisEst_estimate_end_filter thread has finished joining!" << endl; 
+  }
+  else 
+  {
+    cerr << "dvd_DvisEst_estimate_end_filter thread has already joined!" << endl; 
+  }  
 
   // init test logs
   if(log_meas)
@@ -1462,8 +1492,6 @@ void dvd_DvisEst_estimate_end_filter(void)
   {
     state_csv_log_close();
   }
-
-  cerr << "dvd_DvisEst_estimate_end_filter thread has finished joining!" << endl; 
 }
 
 // remember that we want to load in a ground-plane, and use that to modify 

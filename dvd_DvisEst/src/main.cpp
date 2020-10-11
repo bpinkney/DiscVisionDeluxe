@@ -52,15 +52,48 @@
 using namespace std;
 
 std::atomic<bool> gv_force_continuous_mode (false);
+std::atomic<bool> gv_force_complete_threads (false);
+
+bool gv_handle_camera_on_sigint (false);
 
 void signal_handler(int signum) 
 {
   cerr << "Interrupt signal (" << signum << ") received.\n";
-  dvd_DvisEst_image_capture_set_force_capture_thread_closure(true);
+  cout << "ready:0" << endl << endl;
+  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << endl << endl;
+  gv_force_complete_threads = true;
+  if(gv_handle_camera_on_sigint)
+  {
+    dvd_DvisEst_image_capture_set_force_capture_thread_closure(true);
+  }
   dvd_DvisEst_apriltag_end();
-  dvd_DvisEst_image_capture_stop(true);
+  if(gv_handle_camera_on_sigint)
+  {
+    dvd_DvisEst_image_capture_stop(true);
+  }
+  dvd_DvisEst_estimate_end_filter();
 
   exit(signum);
+}
+
+// Get time stamp in nanoseconds.
+static uint64_t nanos()
+{
+  uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::
+          now().time_since_epoch()).count();
+  return ns; 
+}
+
+// Get boot-time stamp in nanoseconds.
+static uint64_t uptime_get_ns()
+{
+  static uint64_t start_time_ns = 0;
+  if(start_time_ns == 0)
+  {
+    start_time_ns = nanos();
+  }
+
+  return (nanos() - start_time_ns); 
 }
 
 // get path of current executable in linux and windows for logging purposes
@@ -382,6 +415,8 @@ int main(int argc, char** argv )
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
     "{contrun cr     |false      | Keep outputting values, and resetting the estimate thread states, until a SIGINT is recieved}"
+    "{randmeas rm    |0          | If contrun is enabled, this can also optionally be enabled to provide random dummy throws every N seconds, 0 is disabled}"
+    "{nocam nc       |false      | If you want to run contrun and randmeas without a camera connected at all, enable thisn option}"
     ;
 
   cv::CommandLineParser parser(argc, argv, keys);
@@ -406,12 +441,13 @@ int main(int argc, char** argv )
   const bool        dfisx       = parser.get<bool>("dfisx");
   const bool        gianttext   = parser.get<bool>("gianttext");
   const bool        contrun     = parser.get<bool>("contrun");
+  const int         randmeas    = parser.get<int>("randmeas");
+  const bool        nocam       = parser.get<bool>("nocam");
 
-  // register signal SIGINT and signal handler if we need to de-init camera
-  if(camera_src)
-  { 
-    signal(SIGINT, signal_handler);
-  }
+  // register signal SIGINT and signal handler if we need to de-init camera 
+  signal(SIGINT, signal_handler);
+
+  gv_handle_camera_on_sigint = camera_src && !nocam;
 
   // check for basic function test call
   if(helloworld)
@@ -427,6 +463,16 @@ int main(int argc, char** argv )
     cerr << "dvd_DvisEst helloworld test complete.";
     cerr << endl;
     return 0;
+  }
+
+  if(randmeas > 0)
+  {
+    cerr << "Using randmeas period of " << randmeas << " seconds!" << endl;
+  }
+
+  if(nocam)
+  {
+    cerr << "NOCAM option is enabled!" << endl;
   }
 
   // Set up directories
@@ -463,7 +509,7 @@ int main(int argc, char** argv )
 
   std::string log_debug_path;
 
-  if(camera_src)
+  if(camera_src && !nocam)
   {
     // Init camera interface
     dvd_DvisEst_image_capture_init(chime);
@@ -486,9 +532,9 @@ int main(int argc, char** argv )
     // Use a default cal if none is provided (bad practice!)
     cerr << "USING DEFAULT CAMERA CAL, THIS IS DISCOURAGED!" << endl;
     #if defined(IS_WINDOWS)
-    camera_cal = executable_path + "\\camera_calibrations/19508898_camera_cal4001.yaml";
+    camera_cal = executable_path + "\\camera_calibrations/19508898.yaml";
     #else
-    camera_cal = executable_path + "/camera_calibrations/19508898_camera_cal4001.yaml";
+    camera_cal = executable_path + "/camera_calibrations/19508898.yaml";
     #endif
     //replace_slashes_linux_to_windows(&camera_cal);
   }
@@ -530,7 +576,7 @@ int main(int argc, char** argv )
       image_capture_t image_capture;
       bool got_one;
       uint16_t skipped_frames = 0; 
-      while(1)
+      while(!gv_force_complete_threads)
       {
         skipped_frames = 888;// quick flag to avoid frame skips
         std::atomic<uint8_t> thread_mode (AT_DETECTION_THREAD_MODE_MEAS);
@@ -611,7 +657,7 @@ int main(int argc, char** argv )
   }
 
   // Finally, start the capture thread now that everything is ready
-  if(camera_src)
+  if(camera_src && !nocam)
   {
     // Not running a test from image files?
     // Then we are actively capturing from our capture thread
@@ -630,7 +676,7 @@ int main(int argc, char** argv )
     gv_force_continuous_mode = true;
   }
 
-  while(1)
+  while(!gv_force_complete_threads)
   {
     if(contrun && !set_gnd_plane)
     {
@@ -654,7 +700,9 @@ int main(int argc, char** argv )
       // wait here until estimate thread is complete
       if(contrun)
       {
-        while(1)
+        uint32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns());
+        bool ready_rm = true;
+        while(!gv_force_complete_threads)
         {
           // we're holding threads open for continuous mode, so just check the state of the estimate before continuing
           if(dvd_DvisEst_estimate_complete())
@@ -662,6 +710,49 @@ int main(int argc, char** argv )
             cerr << "ESTIMATECOMPLETE!!!!" << endl;
             break;
           }
+
+          // if random debug outputs are enabled, generate one every randmeas seconds
+          // (resets time after a real throw to give it some space!)
+          if(randmeas > 0)
+          {
+            uint32_t now_ms  = NS_TO_MS(uptime_get_ns());
+            // pre-empt the 'ready' flag a bit, just so the UI can actually do something with it
+            if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas) - 500 && ready_rm)
+            {
+              ready_rm = false;
+              cout << "ready:0" << endl << endl;
+            }
+
+            if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas))
+            {
+              srand(time(NULL));
+              const int base = rand() % 40;
+              const float s1 = ((float)(base)) - 40.0/2.0 + 60.0;
+              const float signer = ((float)(rand() % 2))*2.0-1.0;
+              const float spin_d = s1 * signer;       
+              // output a random throw, along with a ready flag on either side
+              sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d",
+                MM_TO_M((float)(rand() % 500) - 500/2),
+                MM_TO_M((float)(rand() % 500) - 500/2),
+                MM_TO_M((float)(rand() % 500) - 500/2),
+                MM_TO_M((float)(rand() % 10000) - 10000/2) + 18.0, //xvel
+                MM_TO_M((float)(rand() % 8000) - 8000/2),
+                MM_TO_M((float)(rand() % 6000) - 6000/3), // bias up for zvel
+                DEG_TO_RAD((float)(rand() % 60) - 60/2), // +- 30 deg hyzer
+                DEG_TO_RAD((float)(rand() % 30) - 30/2), // +- 15 deg pitch
+                spin_d, // 60 +- 20 rad/s either positive or negative
+                ((float)(rand() % 600)) * 0.001,
+                (rand() % 10 + 3)
+                );
+              // stdout!
+              cout << output_cmd << endl << endl;
+              cout << "ready:1" << endl << endl;
+              ready_rm = true;
+
+              last_randmeas_time_ms = now_ms;
+            }
+          }
+
           // sleep for a bit so we don't busy poll
           usleep(200);
         }
@@ -704,9 +795,8 @@ int main(int argc, char** argv )
           kf_state.ang_hps[1].pos,
           kf_state.ang_hps[2].vel,
           kf_state.wobble_mag,
-          kf_state.disc_index
+          (int)kf_state.disc_index
           );
-        cerr << endl << endl;
         // stdout!
         cout << output_cmd << endl << endl;
       }
@@ -768,8 +858,8 @@ int main(int argc, char** argv )
           kf_state.lin_xyz[1].vel,
           kf_state.lin_xyz[2].vel,
           kf_state.ang_hps[2].vel,
-          kf_state.wobble_mag*0,
-          kf_state.disc_index*0 + 1
+          kf_state.wobble_mag,
+          (int)kf_state.disc_index
           );
 
         cerr << "Output String: " << output_cmd << endl;
