@@ -7,7 +7,7 @@ class DvisEstInterface : public FRunnable
 {
 public:
   // Custom constructor for setting up our thread with its target
-  DvisEstInterface(int32 InTargetCount);
+  DvisEstInterface();
 
   // FRunnable functions
   virtual uint32 Run() override;
@@ -15,13 +15,17 @@ public:
   virtual void Exit() override;
   // FRunnable
 
+  FString GetTestString();
+
   TArray<int32> ProcessedNumbers;
+
+  std::string test_string;
 
   bool IsComplete() const;
 
 protected:
-  int32 TargetCount = -1;
-  int32 FoundCount = -1;
+
+  void RunDvisEst();
 
   bool bStopThread = false;
 };

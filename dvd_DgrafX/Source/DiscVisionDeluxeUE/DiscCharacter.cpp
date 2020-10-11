@@ -70,8 +70,8 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Set up "action" bindings.
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
-    PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+  PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
+  PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
 }
 
@@ -84,9 +84,9 @@ void ADiscCharacter::MoveForward(float Value)
 
 void ADiscCharacter::MoveRight(float Value)
 {
-    // Find out which way is "right" and record that the player wants to move that way.
-    FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-    AddMovementInput(Direction, Value);
+  // Find out which way is "right" and record that the player wants to move that way.
+  FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+  AddMovementInput(Direction, Value);
 }
 
 
@@ -104,6 +104,9 @@ void DestroyDiscs()
 }
 void ADiscCharacter::Fire()
 {
+  // override with handy quit key mapping for now
+  //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+
     // Attempt to fire a projectile.
     if (ProjectileClass)
     {
@@ -155,8 +158,6 @@ void ADiscCharacter::Fire()
             }
         }
     }
-    // handy quit key mapping
-    //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
 // Start dvd_DvisEst Interface
@@ -166,7 +167,7 @@ void ADiscCharacter::DvisEstInterface_StartProcess()
   if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
   {
     // Run the thread until we've found many random numbers
-    dvisEstInterface = new DvisEstInterface(99999);
+    dvisEstInterface = new DvisEstInterface();
     DvisEstInterfaceThread = FRunnableThread::Create(dvisEstInterface, TEXT("DvisEstInterfaceThread"));
   }
 }
@@ -185,24 +186,20 @@ void ADiscCharacter::DvisEstInterface_PrintStuff()
   {
     if (GEngine)
     {
-      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Numbers generated:: %d, First 3 are: %d, %d, %d"),
-        dvisEstInterface->ProcessedNumbers.Num(),
-        (dvisEstInterface->ProcessedNumbers.Num() > 0)
-          ? dvisEstInterface->ProcessedNumbers[0] : -1,
-        (dvisEstInterface->ProcessedNumbers.Num() > 1)
-          ? dvisEstInterface->ProcessedNumbers[1] : -1,
-        (dvisEstInterface->ProcessedNumbers.Num() > 2)
-          ? dvisEstInterface->ProcessedNumbers[2] : -1));
+      // This should only occur when this thread is killed!
     }
   }
   else
   {
     if (GEngine)
     {
+      // How the hell is this access threadsafe???
+      FString test_string = dvisEstInterface->GetTestString();
+
       GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Still processing: %d"),
-        dvisEstInterface->ProcessedNumbers.Num()));
+        FString::Printf(TEXT("Sample Thread Still Working Away %d, %s"),
+        dvisEstInterface->ProcessedNumbers.Num(),
+        *test_string));
     }
   }
 }
