@@ -59,8 +59,8 @@ bool gv_handle_camera_on_sigint (false);
 void signal_handler(int signum) 
 {
   cerr << "Interrupt signal (" << signum << ") received.\n";
-  cout << "ready:0" << endl << endl;
-  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << endl << endl;
+  cout << "ready:0" << endl;
+  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << endl;
   gv_force_complete_threads = true;
   if(gv_handle_camera_on_sigint)
   {
