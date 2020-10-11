@@ -988,7 +988,7 @@ int dvd_DvisEst_image_capture_thread()
     cerr << "Unexpected Error in IMAGE CAPTURE!" << endl;
   }
 
-  wait();
+  //wait();
 
   return result;
 }
