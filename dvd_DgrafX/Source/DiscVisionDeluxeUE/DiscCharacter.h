@@ -38,7 +38,22 @@ public:
 
 	// Function that handles firing projectiles.
 	UFUNCTION()
-		void Fire();
+	  void Fire();
+
+	UFUNCTION()
+	  void Quit();
+
+	UFUNCTION()
+	  void Action1();
+
+	UFUNCTION()
+	  void Action2();
+
+	UFUNCTION()
+	  void Action3();
+
+	UFUNCTION()
+	  void Action4();
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void DestroyDiscs();

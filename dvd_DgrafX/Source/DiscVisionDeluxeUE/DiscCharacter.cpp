@@ -69,6 +69,12 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
     PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
+    PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &ADiscCharacter::Quit);
+    PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ADiscCharacter::Action1);
+    PlayerInputComponent->BindAction("Action2", IE_Pressed, this, &ADiscCharacter::Action2);
+    PlayerInputComponent->BindAction("Action3", IE_Pressed, this, &ADiscCharacter::Action3);
+    PlayerInputComponent->BindAction("Action4", IE_Pressed, this, &ADiscCharacter::Action4);
+
 }
 
 void ADiscCharacter::MoveForward(float Value)
@@ -97,6 +103,27 @@ void ADiscCharacter::ZoomCamera(float Value)
 void DestroyDiscs()
 {
     ;
+}
+
+void ADiscCharacter::Quit()
+{
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
+}
+    void ADiscCharacter::Action1()
+{
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 1");
+}
+    void ADiscCharacter::Action2()
+{
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 2");
+}
+    void ADiscCharacter::Action3()
+{
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 3");
+}
+    void ADiscCharacter::Action4()
+{
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
 void ADiscCharacter::Fire()
 {
