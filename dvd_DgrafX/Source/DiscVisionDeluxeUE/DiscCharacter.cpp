@@ -111,7 +111,9 @@ void DestroyDiscs()
 
 void ADiscCharacter::Quit()
 {
-GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
+  // override with handy quit key mapping for now
+  UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
 }
     void ADiscCharacter::Action1()
 {
@@ -131,9 +133,6 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
 void ADiscCharacter::Fire()
 {
-  // override with handy quit key mapping for now
-  //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
-
     // Attempt to fire a projectile.
     if (ProjectileClass)
     {
@@ -224,8 +223,7 @@ void ADiscCharacter::DvisEstInterface_PrintStuff()
       FString test_string = dvisEstInterface->GetTestString();
 
       GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Sample Thread Still Working Away %d, %s"),
-        dvisEstInterface->ProcessedNumbers.Num(),
+        FString::Printf(TEXT("dvd_DvisEst Thread is Still Working Away:%s"),
         *test_string));
     }
   }
