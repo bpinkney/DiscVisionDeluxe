@@ -1007,7 +1007,7 @@ int process_filter_thread(void)
   }
   
   cerr << "Estimate Thread completed, waiting for join." << endl;
-  wait();
+  //wait();
   cerr << "Estimate Thread completed." << endl;
   return 0;
 }

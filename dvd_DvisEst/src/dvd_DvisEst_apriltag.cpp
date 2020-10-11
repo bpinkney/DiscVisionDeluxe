@@ -518,7 +518,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
   cerr << "AprilTag Thread#" << (int)thread_id << " completed." << endl;
 
-  wait();
+  //wait();
 
   return 0;
 }

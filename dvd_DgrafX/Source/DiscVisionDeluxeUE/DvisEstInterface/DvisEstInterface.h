@@ -1,24 +1,27 @@
 #pragma once
 
-//#include "DvisEstInterface.generated.h"
+#include "HAL/Runnable.h"
 
-UCLASS()
-class DvisEstInterface : public UObject
+// Note that we do not have to mark our class as UCLASS() if we don't want to
+class DvisEstInterface : public FRunnable
 {
-  GENERATED_BODY()
-
 public:
-  DvisEstInterface(const FObjectInitializer& ObjectInitializer);
+  // Custom constructor for setting up our thread with its target
+  DvisEstInterface(int32 InTargetCount);
 
-  // Call this to create the thread and start it going
-  void StartProcess();
+  // FRunnable functions
+  virtual uint32 Run() override;
+  virtual void Stop() override;
+  virtual void Exit() override;
+  // FRunnable
 
-  // Call this to print the current state of the thread
-  void PrintStuff();
+  TArray<int32> ProcessedNumbers;
 
-protected:
   bool IsComplete() const;
 
-  class DvisEstInterfaceThread* MyDvisEstInterfaceThread = nullptr;
-  FRunnableThread* CurrentThread = nullptr;
+protected:
+  int32 TargetCount = -1;
+  int32 FoundCount = -1;
+
+  bool bStopThread = false;
 };
