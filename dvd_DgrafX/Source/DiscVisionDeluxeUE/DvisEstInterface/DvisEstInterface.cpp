@@ -1,59 +1,52 @@
-//#include "MyProjectPCH.h"
-#include "DiscVisionDeluxeUE.h"
-#include "HAL/RunnableThread.h"
-#include "DvisEstInterfaceThread.h"
 #include "DvisEstInterface.h"
 
-DvisEstInterface::DvisEstInterface(const FObjectInitializer& ObjectInitializer)
-  : Super(ObjectInitializer)
+DvisEstInterface::DvisEstInterface(int32 InTargetCount)
 {
+  TargetCount = InTargetCount;
+  FoundCount = 0;
 }
 
 
-void DvisEstInterface::StartProcess()
+uint32 DvisEstInterface::Run()
 {
-  if (!CurrentThread && FPlatformProcess::SupportsMultithreading())
+  bStopThread = false;
+
+  // Keep processing until we're cancelled through Stop() or we're done,
+  // although this thread will suspended for other stuff to happen at the same time
+  while (!bStopThread && !IsComplete())
   {
-    // Run the thread until we've found 999 random numbers
-    MyDvisEstInterfaceThread = new DvisEstInterfaceThread(999);
-    CurrentThread = FRunnableThread::Create(MyDvisEstInterfaceThread, TEXT("Any old thread name"));
+    // This is where we would do our expensive threaded processing
+
+    // Instead we're going to make a reaaaally busy while loop to slow down processing
+    // You can change INT_MAX to something smaller if you want it to run faster
+    int32 x = 0;
+    while (x < INT_MAX)
+    {
+      x++;
+    }
+    ProcessedNumbers.Add(FMath::RandRange(0, 999));
+    FoundCount += 1;
   }
+
+  // Return success
+  return 0;
+}
+
+
+void DvisEstInterface::Exit()
+{
+  // Here's where we can do any cleanup we want to 
+}
+
+
+void DvisEstInterface::Stop()
+{
+  // Force our thread to stop early
+  bStopThread = true;
 }
 
 
 bool DvisEstInterface::IsComplete() const
 {
-  return !CurrentThread || MyDvisEstInterfaceThread->IsComplete();
-}
-
-
-void DvisEstInterface::PrintStuff()
-{
-  if (!CurrentThread || !MyDvisEstInterfaceThread)
-    return;
-
-  if (IsComplete())
-  {
-    if (GEngine)
-    {
-      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Numbers generated:: %d, First 3 are: %d, %d, %d"),
-        MyDvisEstInterfaceThread->ProcessedNumbers.Num(),
-        (MyDvisEstInterfaceThread->ProcessedNumbers.Num() > 0)
-          ? MyDvisEstInterfaceThread->ProcessedNumbers[0] : -1,
-        (MyDvisEstInterfaceThread->ProcessedNumbers.Num() > 1)
-          ? MyDvisEstInterfaceThread->ProcessedNumbers[1] : -1,
-        (MyDvisEstInterfaceThread->ProcessedNumbers.Num() > 2)
-          ? MyDvisEstInterfaceThread->ProcessedNumbers[2] : -1));
-    }
-  }
-  else
-  {
-    if (GEngine)
-    {
-      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Still processing: %d"),
-        MyDvisEstInterfaceThread->ProcessedNumbers.Num()));
-    }
-  }
+  return FoundCount >= TargetCount;
 }

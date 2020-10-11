@@ -24,10 +24,12 @@ public class DiscVisionDeluxeUE : ModuleRules
 
 		// add libs        
         PrivateIncludePaths.Add( "../../dvd_DvisEst/lib/eigen" );
+        //PrivateIncludePaths.Add( "../../" );
 
         // add headers
         PrivateIncludePaths.Add( "../../common/inc");
         PrivateIncludePaths.Add( "DiscVisionDeluxeUE/DfisX");
+        PrivateIncludePaths.Add( "DiscVisionDeluxeUE/DvisEstInterface");
         //PrivateIncludePaths.Add( "../../dvd_DfisX/Private");
 
         
