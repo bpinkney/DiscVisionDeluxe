@@ -6,7 +6,10 @@
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "DfisX\DfisX.hpp"
+#include "HAL/RunnableThread.h"
+#include "DvisEstInterface.h"
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -25,8 +28,7 @@ void ADiscCharacter::BeginPlay()
 	Super::BeginPlay();
     DfisX::init();
 
-
-
+    DvisEstInterface_StartProcess();
 
     ///Camera manager init
     //UWorld* World = GetWorld();
@@ -51,8 +53,10 @@ void ADiscCharacter::BeginPlay()
 void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    DfisX::step_simulation (DeltaTime);
 
+    DvisEstInterface_PrintStuff();
+
+    DfisX::step_simulation (DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -151,4 +155,55 @@ void ADiscCharacter::Fire()
             }
         }
     }
+    // handy quit key mapping
+    //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
+
+// Start dvd_DvisEst Interface
+// This portable block should be able to be moved to any high-level Unreal Object later
+void ADiscCharacter::DvisEstInterface_StartProcess()
+{
+  if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
+  {
+    // Run the thread until we've found many random numbers
+    dvisEstInterface = new DvisEstInterface(99999);
+    DvisEstInterfaceThread = FRunnableThread::Create(dvisEstInterface, TEXT("DvisEstInterfaceThread"));
+  }
+}
+
+bool ADiscCharacter::DvisEstInterface_IsComplete() const
+{
+  return !DvisEstInterfaceThread || dvisEstInterface->IsComplete();
+}
+
+void ADiscCharacter::DvisEstInterface_PrintStuff()
+{
+  if (!DvisEstInterfaceThread || !dvisEstInterface)
+    return;
+
+  if (DvisEstInterface_IsComplete())
+  {
+    if (GEngine)
+    {
+      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
+        FString::Printf(TEXT("Numbers generated:: %d, First 3 are: %d, %d, %d"),
+        dvisEstInterface->ProcessedNumbers.Num(),
+        (dvisEstInterface->ProcessedNumbers.Num() > 0)
+          ? dvisEstInterface->ProcessedNumbers[0] : -1,
+        (dvisEstInterface->ProcessedNumbers.Num() > 1)
+          ? dvisEstInterface->ProcessedNumbers[1] : -1,
+        (dvisEstInterface->ProcessedNumbers.Num() > 2)
+          ? dvisEstInterface->ProcessedNumbers[2] : -1));
+    }
+  }
+  else
+  {
+    if (GEngine)
+    {
+      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
+        FString::Printf(TEXT("Still processing: %d"),
+        dvisEstInterface->ProcessedNumbers.Num()));
+    }
+  }
+}
+// End dvd_DvisEst Interface

@@ -17,9 +17,22 @@ public:
 	// Sets default values for this character's properties
 	ADiscCharacter();
 
+	//dvd_DvisEst Interface Function Handlers
+	// Call this to create the thread and start it going
+	void DvisEstInterface_StartProcess();
+
+	// Call this to print the current state of the thread
+	void DvisEstInterface_PrintStuff();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//dvd_DvisEst Interface Function Handlers
+	bool DvisEstInterface_IsComplete() const;
+
+	class DvisEstInterface* dvisEstInterface = nullptr;
+	FRunnableThread* DvisEstInterfaceThread = nullptr;
 
 public:	
 	// Called every frame
