@@ -40,6 +40,7 @@ void ADiscCharacter::BeginPlay()
     camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     camera_manager->set_player_target(PC);
+    camera_manager->focus_on_player();
    
 
 
@@ -64,7 +65,7 @@ void ADiscCharacter::Tick(float DeltaTime)
       disc_init_state_t new_disc_init_state;
       dvisEstInterface->GetDiscInitState(&new_disc_init_state);
 
-      PerformThrow(false, &new_disc_init_state);
+      //PerformThrow(false, &new_disc_init_state);
     }
     
     DvisEstInterface_PrintStuff();
@@ -85,8 +86,8 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Set up "action" bindings.
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
-  PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
-  PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+    PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
+    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &ADiscCharacter::Quit);
     PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ADiscCharacter::Action1);
@@ -133,10 +134,19 @@ void ADiscCharacter::Quit()
     void ADiscCharacter::Action1()
 {
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 1");
+SetActorLocationAndRotation(FVector(-381,-1300,3091),FRotator(0,-90,0), false, 0, ETeleportType::None);
+APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+PC->SetControlRotation(FRotator(0,-90,0));
+
+
 }
     void ADiscCharacter::Action2()
 {
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 2");
+SetActorLocationAndRotation(FVector(-360,-70,3091),FRotator(0,0,0), false, 0, ETeleportType::None);
+APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+PC->AController::SetControlRotation(FRotator(0,0,0));
+
 }
     void ADiscCharacter::Action3()
 {
