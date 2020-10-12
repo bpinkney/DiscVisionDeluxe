@@ -6,6 +6,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CameraManager.h"
+#include "disc_layouts.hpp"
+
+// always last include
 #include "DiscCharacter.generated.h"
 
 UCLASS()
@@ -40,6 +43,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void PerformThrow(const bool use_default_throw, disc_init_state_t * new_disc_init_state);
 
 	// Handles input for moving forward and backward.
 	UFUNCTION()

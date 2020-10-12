@@ -155,6 +155,8 @@ static inline disc_init_state_string_code disc_init_state_hash(std::string const
     else if (input_string == "spin_d")    return espin_d;
     else if (input_string == "wobble")    return ewobble;
     else if (input_string == "discmold")  return ediscmold;
+    else
+      return einvalid;
 }
 // always pass out to float (user can cast back to int if required, no large ints should be present here)
 static inline bool dvd_DvisEst_get_disc_init_state_key_value(std::string key, disc_init_state_t * disc_init_state, float * value)

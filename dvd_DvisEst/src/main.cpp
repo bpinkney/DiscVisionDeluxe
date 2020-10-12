@@ -751,12 +751,12 @@ int main(int argc, char** argv )
               sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d",
                 MM_TO_M((float)(rand() % 500) - 500/2),
                 MM_TO_M((float)(rand() % 500) - 500/2),
-                MM_TO_M((float)(rand() % 500) - 500/2),
+                MM_TO_M((float)(rand() % 300) - 300/2) + 1.5, // standing up off the ground by 1.5 default
                 MM_TO_M((float)(rand() % 10000) - 10000/2) + 18.0, //xvel
                 MM_TO_M((float)(rand() % 8000) - 8000/2),
                 MM_TO_M((float)(rand() % 6000) - 6000/3), // bias up for zvel
                 DEG_TO_RAD((float)(rand() % 60) - 60/2), // +- 30 deg hyzer
-                DEG_TO_RAD((float)(rand() % 30) - 30/2), // +- 15 deg pitch
+                DEG_TO_RAD((float)(rand() % 30) - 30/2 + 10), // +- 15 deg pitch, biased up by 10 deg
                 spin_d, // 60 +- 20 rad/s either positive or negative
                 ((float)(rand() % 600)) * 0.001,
                 (rand() % 10 + 3)

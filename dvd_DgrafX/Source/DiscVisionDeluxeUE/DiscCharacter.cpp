@@ -11,14 +11,15 @@
 #include "HAL/RunnableThread.h"
 #include "DvisEstInterface.h"
 
+// convenience settings for dvd_DvisEst interface
+#define DVISEST_INTERFACE_ENABLED              (true)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+
 // Sets default values
 ADiscCharacter::ADiscCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-
-
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +29,8 @@ void ADiscCharacter::BeginPlay()
 	Super::BeginPlay();
     DfisX::init();
 
-    DvisEstInterface_StartProcess();
+    if(DVISEST_INTERFACE_ENABLED)
+      DvisEstInterface_StartProcess();
 
     ///Camera manager init
     //UWorld* World = GetWorld();
@@ -54,9 +56,22 @@ void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    DvisEstInterface_PrintStuff();
+  // dvd_DvisEst Interface
+  if(DVISEST_INTERFACE_ENABLED)
+  {
+    if(dvisEstInterface->IsNewThrowReady())
+    {
+      disc_init_state_t new_disc_init_state;
+      dvisEstInterface->GetDiscInitState(&new_disc_init_state);
 
-    DfisX::step_simulation (DeltaTime);
+      PerformThrow(false, &new_disc_init_state);
+    }
+    
+    DvisEstInterface_PrintStuff();
+  }
+  // end dvd_DvisEst Interface
+  
+  DfisX::step_simulation (DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -111,7 +126,9 @@ void DestroyDiscs()
 
 void ADiscCharacter::Quit()
 {
-GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
+  // override with handy quit key mapping for now
+  UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
 }
     void ADiscCharacter::Action1()
 {
@@ -129,62 +146,93 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 3");
 {
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
+
+void ADiscCharacter::PerformThrow(const bool use_default_throw, disc_init_state_t * new_disc_init_state)
+{
+  // Attempt to fire a projectile.
+  if (ProjectileClass)
+  {
+    DestroyDiscs();
+    // Get the camera transform.
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+    // Transform MuzzleOffset from camera space to world space.
+    FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+    MuzzleLocation += FVector (0.0,0.0,-80.0);
+    FRotator MuzzleRotation = CameraRotation;
+    // Skew the aim to be slightly upwards.
+    
+    UWorld* World = GetWorld();
+    if (World)
+    {
+      FActorSpawnParameters SpawnParams;
+      SpawnParams.Owner = this;
+      SpawnParams.Instigator = GetInstigator();
+      // Spawn the projectile at the muzzle.
+      ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+      camera_manager->focus_on_disc(Projectile);
+      if (Projectile)
+      {
+        // Set the projectile's initial trajectory.
+        
+        if(use_default_throw)
+        {
+          FVector fire_direction = MuzzleRotation.Vector();
+          fire_direction *= 21;
+          double throw_pitch;
+          double throw_roll;
+          double aim_up = 10.0;
+          if ((MuzzleRotation.Pitch+aim_up)>180)
+          {
+              
+          throw_pitch = cos (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
+          throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
+          }
+          else
+          {
+          throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;
+          throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;    
+          }
+          DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, -95.0, 0.0);               
+        }
+        else
+        {
+          // Some magic will happen here for the mapping between the DvisEst DiscIndex
+          // e.g. MIDRANGE_OS
+          // and the DfisX/DgrafX Disc_Mold_Enum
+          // e.g. 175g big-Z BUZZZ
+
+          // The world axes appear to be defined in a different way to our defs (we defined X forward, Y Right, Z up)
+          // Maybe you can fix this one up Mike? for now I just have random -1s scattered
+
+          // perform a new throw!
+          DfisX::new_throw(
+            DfisX::NONE,
+            Eigen::Vector3d(
+              -1 * new_disc_init_state->lin_pos_xyz[0] + MuzzleLocation.X/100, // negative for some reason? no idea what the world frame is here
+              -1 * new_disc_init_state->lin_pos_xyz[1] + MuzzleLocation.Y/100, // negative for some reason? no idea what the world frame is here
+               0 * new_disc_init_state->lin_pos_xyz[2] + MuzzleLocation.Z/100), // just zero this until the UI is sorted
+            Eigen::Vector3d(
+              -1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
+              -1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
+                   new_disc_init_state->lin_vel_xyz[2]),
+            -1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
+            -1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
+                   new_disc_init_state->ang_vel_hps[2],
+                   new_disc_init_state->wobble);
+        }
+      }
+    }
+  }
+}
+
 void ADiscCharacter::Fire()
 {
   // override with handy quit key mapping for now
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
-
-    // Attempt to fire a projectile.
-    if (ProjectileClass)
-    {
-        DestroyDiscs();
-        // Get the camera transform.
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        GetActorEyesViewPoint(CameraLocation, CameraRotation);
-
-        // Transform MuzzleOffset from camera space to world space.
-        FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-        MuzzleLocation += FVector (0.0,0.0,-80.0);
-        FRotator MuzzleRotation = CameraRotation;
-        // Skew the aim to be slightly upwards.
-        
-        UWorld* World = GetWorld();
-        if (World)
-        {
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.Owner = this;
-            SpawnParams.Instigator = GetInstigator();
-            // Spawn the projectile at the muzzle.
-            ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-            camera_manager->focus_on_disc(Projectile);
-            if (Projectile)
-            {
-                // Set the projectile's initial trajectory.
-                
-                FVector fire_direction = MuzzleRotation.Vector();
-                fire_direction *= 21;
-                double throw_pitch;
-                double throw_roll;
-                double aim_up = 10.0;
-                if ((MuzzleRotation.Pitch+aim_up)>180)
-                {
-                    
-                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
-                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
-                }
-                else
-                {
-                throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;
-                throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;    
-                }
-
-                DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, -95.0, 0.0);
-
-                
-            }
-        }
-    }
+  PerformThrow(true, nullptr);
 }
 
 // Start dvd_DvisEst Interface
@@ -193,8 +241,8 @@ void ADiscCharacter::DvisEstInterface_StartProcess()
 {
   if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
   {
-    // Run the thread until we've found many random numbers
-    dvisEstInterface = new DvisEstInterface();
+    // Run the thread indefinitely
+    dvisEstInterface = new DvisEstInterface(DVISEST_INTERFACE_USE_GENERATED_THROWS);
     DvisEstInterfaceThread = FRunnableThread::Create(dvisEstInterface, TEXT("DvisEstInterfaceThread"));
   }
 }
@@ -224,8 +272,7 @@ void ADiscCharacter::DvisEstInterface_PrintStuff()
       FString test_string = dvisEstInterface->GetTestString();
 
       GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("Sample Thread Still Working Away %d, %s"),
-        dvisEstInterface->ProcessedNumbers.Num(),
+        FString::Printf(TEXT("dvd_DvisEst Thread is Still Working Away:%s"),
         *test_string));
     }
   }
