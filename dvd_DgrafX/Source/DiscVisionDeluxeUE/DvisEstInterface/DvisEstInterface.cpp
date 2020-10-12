@@ -150,8 +150,9 @@ FString DvisEstInterface::GetTestString()
   if(NewThrowReady)
     ss << "New Throw RX!" << std::endl;
 
-  if(((int)LastDiscIndex) > 0)
-    ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
+  // this parsing seems broken
+  //if(((int)LastDiscIndex) > 0)
+  //  ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
 
   ss << "Last velx = " << disc_init_state.lin_vel_xyz[0] << " m/s" << std::endl;
 
