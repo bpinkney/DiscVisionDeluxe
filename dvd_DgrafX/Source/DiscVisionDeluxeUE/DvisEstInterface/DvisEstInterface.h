@@ -8,7 +8,7 @@ class DvisEstInterface : public FRunnable
 {
 public:
   // Custom constructor for setting up our thread with its target
-  DvisEstInterface();
+  DvisEstInterface(const bool generated_throws);
 
   // FRunnable functions
   virtual uint32 Run() override;
@@ -24,6 +24,7 @@ public:
   bool IsReadyToThrow();
   bool IsNewThrowReady();
 
+  bool use_generated_throws;
   disc_init_state_t disc_init_state;
   bool ReadyToThrow;
   bool NewThrowReady;

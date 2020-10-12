@@ -1,3 +1,4 @@
+
 #include "DvisEstInterface.h"
 #include "GenericPlatform/GenericPlatformProcess.h"
 #include "Misc/Paths.h"
@@ -11,9 +12,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
-DvisEstInterface::DvisEstInterface()
+DvisEstInterface::DvisEstInterface(const bool generated_throws)
 {
+  use_generated_throws = generated_throws;
   // init
   memset(&disc_init_state, 0, sizeof(disc_init_state_t));
 }
@@ -24,6 +27,8 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
   std::string s = result;
   std::string delimiter_out = ",";
   std::string delimiter_in  = ":";
+  // remove newlines
+  s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
 
   bool new_throw = false;
 
@@ -90,7 +95,19 @@ void DvisEstInterface::RunDvisEst()
     "../../Binaries/dvd_DvisEst/2020-10-11/"));
 
   std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
-  batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=15 -nc 2> nul";
+
+  // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
+  // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
+  batFile << "taskkill /IM \"dvd_DvisEst.exe\" /F" << std::endl;
+
+  if(use_generated_throws)
+  {
+    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10 -nc 2> nul";
+  }
+  else
+  {
+    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr 2> nul";
+  }
   batFile.close();
 
   // Now we can do the real call using the .bat file so we don't have to RX STDERR
@@ -144,6 +161,9 @@ FString DvisEstInterface::GetTestString()
 
 void DvisEstInterface::GetDiscInitState(disc_init_state_t * new_disc_init_state)
 {
+  // mark new throw as false on fetch
+  NewThrowReady = false;
+
   memcpy(new_disc_init_state, &disc_init_state, sizeof(disc_init_state_t));
 }
 
@@ -156,7 +176,6 @@ bool DvisEstInterface::IsNewThrowReady()
 {
   return NewThrowReady;
 }
-
 
 uint32 DvisEstInterface::Run()
 {
