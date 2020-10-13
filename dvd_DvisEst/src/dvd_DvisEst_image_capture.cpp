@@ -1211,7 +1211,7 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 }
 
 // Return the next captured image from the front of the queue
-#define MAX_FRAME_SKIP_COUNT (10)
+#define MAX_FRAME_SKIP_COUNT (20)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id, const bool calc_groundplane)
 {
   bool got_frame = true;

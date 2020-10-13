@@ -218,11 +218,40 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
   apriltag_family_t *tf   = tag36h11_create();
   apriltag_detector_t *td = apriltag_detector_create();
   apriltag_detector_add_family_bits(td, tf, 1);
-  td->quad_decimate   = 0.0;
-  td->quad_sigma      = 0.0;
+  
   td->nthreads        = AT_INT_THREAD_COUNT;
+
+  // When non-zero, write a variety of debugging images to the
+  // current working directory at various stages through the
+  // detection process. (Somewhat slow).
   td->debug           = 0;
-  td->refine_edges    = 1; // might want to disable this for 522fps
+
+  // detection of quads can be done on a lower-resolution image,
+  // improving speed at a cost of pose accuracy and a slight
+  // decrease in detection rate. Decoding the binary payload is
+  // still done at full resolution.
+  td->quad_decimate   = 2.0;
+
+  // What Gaussian blur should be applied to the segmented image
+  // (used for quad detection?)  Parameter is the standard deviation
+  // in pixels.  Very noisy images benefit from non-zero values
+  // (e.g. 0.8).
+  td->quad_sigma      = 0.0;
+
+  // When non-zero, the edges of the each quad are adjusted to "snap
+  // to" strong gradients nearby. This is useful when decimation is
+  // employed, as it can increase the quality of the initial quad
+  // estimate substantially. Generally recommended to be on (1).
+  //
+  // Very computationally inexpensive. Option is ignored if
+  // quad_decimate = 1.
+  td->refine_edges    = 1; // might want to disable this for 522fps? Seems cheap though
+
+  // How much sharpening should be done to decoded images? This
+  // can help decode small tags but may or may not help in odd
+  // lighting conditions or low light conditions.
+  //
+  // The default value is 0.25.
   td->decode_sharpening = 0.25;
 
   // Define housing for grayscale tag
@@ -483,13 +512,14 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
         apriltag_detections_destroy(detections);
         // can we afford to sleep here? CPU usage for these threads it getting to be a bit much....
-        usleep(1000);
+        usleep(5000);
       }
       else
       {
         // did we not get a measurement slot reservation? weird. Maybe we haven't processed the old measurements yet
         //test_mutex.unlock();
         cerr << "Frame ID " << image_capture.frame_id << " was dropped due to a lack of available measurement slots!! Do your estimate loop faster!" << endl;
+        usleep(5000);
       }
     }
     else
@@ -505,8 +535,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           break;
         }
       }
-
-      usleep(1000);
+      usleep(5000);
     }
   }
 

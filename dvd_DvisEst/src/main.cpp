@@ -771,7 +771,7 @@ int main(int argc, char** argv )
           }
 
           // sleep for a bit so we don't busy poll
-          usleep(200);
+          usleep(2000);
         }
       }
       else
