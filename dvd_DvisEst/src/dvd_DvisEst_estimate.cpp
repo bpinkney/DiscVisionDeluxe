@@ -55,7 +55,7 @@
 
 static void usleep(__int64 usec) 
 { 
-    HANDLE timer; 
+    /*HANDLE timer; 
     LARGE_INTEGER ft; 
 
     ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
@@ -63,7 +63,8 @@ static void usleep(__int64 usec)
     timer = CreateWaitableTimer(NULL, TRUE, NULL); 
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
+    CloseHandle(timer);*/ 
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
 }
 #endif
 
@@ -638,6 +639,8 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const 
 
     // add measurement to queue
     MEAS_QUEUE_MEAS(slot_id)   = (*kf_meas);
+    //memcpy(&MEAS_QUEUE_MEAS(slot_id), kf_meas, sizeof(dvd_DvisEst_kf_meas_t));
+    //free(kf_meas);
     // mark measurement slot populated and ready for consumption
     MEAS_QUEUE_STATUS(slot_id) = MEAS_QUEUE_STATUS_POPULATED;
 

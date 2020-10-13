@@ -61,7 +61,7 @@ bool gv_handle_camera_on_sigint (false);
 
 static void usleep(__int64 usec) 
 { 
-    HANDLE timer; 
+    /*HANDLE timer; 
     LARGE_INTEGER ft; 
 
     ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
@@ -69,7 +69,8 @@ static void usleep(__int64 usec)
     timer = CreateWaitableTimer(NULL, TRUE, NULL); 
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
+    CloseHandle(timer); */
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
 }
 #endif
 

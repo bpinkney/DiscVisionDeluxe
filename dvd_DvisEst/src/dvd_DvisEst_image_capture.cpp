@@ -72,7 +72,7 @@ using namespace Spinnaker::GenICam;
 
 static void usleep(__int64 usec) 
 { 
-    HANDLE timer; 
+    /*HANDLE timer; 
     LARGE_INTEGER ft; 
 
     ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
@@ -80,7 +80,8 @@ static void usleep(__int64 usec)
     timer = CreateWaitableTimer(NULL, TRUE, NULL); 
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
+    CloseHandle(timer); */
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
 }
 #endif
 
@@ -927,7 +928,7 @@ int dvd_DvisEst_image_capture_thread()
           image_queue_purge(image_queue_size()-1);
         }
       }
-      // Free up image memory after OpenCV conversion                
+      // Free up image memory after OpenCV conversion            
       //imagePtr->Release();
       //cerr << NS_TO_MS(uptime_get_ns()) << " ---> imagePtr->Release();" << endl;
     }

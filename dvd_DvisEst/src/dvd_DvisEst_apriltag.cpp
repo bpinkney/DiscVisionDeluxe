@@ -45,9 +45,18 @@
 // timer overloads for windows
 #if defined(IS_WINDOWS)
 
+typedef struct image_u8_mod image_u8_mod_t;
+struct image_u8_mod
+{
+  int32_t width;
+  int32_t height;
+  int32_t stride;
+  uint8_t *buf;
+};
+
 static void usleep(__int64 usec) 
 { 
-    HANDLE timer; 
+    /*HANDLE timer; 
     LARGE_INTEGER ft; 
 
     ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
@@ -55,7 +64,8 @@ static void usleep(__int64 usec)
     timer = CreateWaitableTimer(NULL, TRUE, NULL); 
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
+    CloseHandle(timer);*/ 
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
 }
 #endif
 
@@ -312,12 +322,16 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           if(convert_from_bayer)
           {
             cvtColor(image_capture.image_data, img_rgb, cv::COLOR_BayerRG2RGB);
+            imwrite(img_filename.str(), img_rgb);
+            // release mat after conversion
+            img_rgb.release();
           }
           else
           {
             img_rgb = image_capture.image_data;
+            imwrite(img_filename.str(), img_rgb);
           }
-          imwrite(img_filename.str(), img_rgb);
+          
         }
 
         // if using spinnaker images, we are converting from bayer
@@ -325,15 +339,23 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
         if(convert_from_bayer)
         {
           cvtColor(image_capture.image_data, img_grey_dist, cv::COLOR_BayerRG2GRAY);
+          // release mat after conversion
+          image_capture.image_data.release();
         }
         else
         {
           cvtColor(image_capture.image_data, img_grey_dist, cv::COLOR_RGB2GRAY);
+          // release mat after conversion
+          image_capture.image_data.release();
         }
 
         // undistort the grey image
         dvd_DvisEst_image_processing_undistort_image(&img_grey_dist, &img_grey);
+        // release mat after conversion
+        img_grey_dist.release();
 
+        if(1)
+        {
         // log undistorted image if desired
         //if(!log_dir.empty() && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         //{
@@ -357,8 +379,18 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           .buf    = img_grey.data
         };
         #else
-        image_u8_t img_header = *image_u8_create_stride(img_grey.cols, img_grey.rows, img_grey.cols);
-        img_header.buf    = img_grey.data;
+        image_u8_mod_t img_header_mod;
+
+        //image_u8_create_stride causes memory leaks! AVOID!
+        //image_u8_t img_header;// = *image_u8_create_stride(img_grey.cols, img_grey.rows, img_grey.cols);
+        memset(&img_header_mod, 0, sizeof(image_u8_mod_t));
+        img_header_mod.width  = img_grey.cols;
+        img_header_mod.height = img_grey.rows;
+        img_header_mod.stride = img_grey.cols;
+        img_header_mod.buf    = img_grey.data;
+        
+        image_u8_t img_header = {0};
+        memcpy(&img_header, &img_header_mod, sizeof(image_u8_t));
         #endif
 
         // detect those apriltags
@@ -510,16 +542,25 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           }          
         }
 
+        // release image header after conversion
+        //image_u8_destroy(&img_header);
+        img_grey.release();
+
         apriltag_detections_destroy(detections);
+
+      }
         // can we afford to sleep here? CPU usage for these threads it getting to be a bit much....
-        usleep(5000);
+        usleep(200);
       }
       else
       {
         // did we not get a measurement slot reservation? weird. Maybe we haven't processed the old measurements yet
         //test_mutex.unlock();
-        cerr << "Frame ID " << image_capture.frame_id << " was dropped due to a lack of available measurement slots!! Do your estimate loop faster!" << endl;
-        usleep(5000);
+        //cerr << "Frame ID " << image_capture.frame_id << " was dropped due to a lack of available measurement slots!! Do your estimate loop faster!" << endl;
+        
+        // release unused memory for opencv Mat
+        image_capture.image_data.release();
+        usleep(200);
       }
     }
     else
@@ -535,7 +576,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           break;
         }
       }
-      usleep(5000);
+      usleep(200);
     }
   }
 
