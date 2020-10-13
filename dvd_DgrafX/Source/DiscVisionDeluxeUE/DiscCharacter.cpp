@@ -12,7 +12,7 @@
 #include "DvisEstInterface.h"
 
 // convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (true)
+#define DVISEST_INTERFACE_ENABLED              (false)
 #define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
 
 // Sets default values
@@ -65,7 +65,7 @@ void ADiscCharacter::Tick(float DeltaTime)
       disc_init_state_t new_disc_init_state;
       dvisEstInterface->GetDiscInitState(&new_disc_init_state);
 
-      //PerformThrow(false, &new_disc_init_state);
+      PerformThrow(false, &new_disc_init_state);
     }
     
     DvisEstInterface_PrintStuff();
