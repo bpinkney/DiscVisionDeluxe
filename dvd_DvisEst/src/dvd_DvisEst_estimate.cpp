@@ -626,7 +626,7 @@ void dvd_DvisEst_estimate_fulfill_measurement_slot(const uint8_t slot_id, const 
 
     // output to stdout to indicate that a new tag id has been detected
     const DiscIndex disc_index = sv_kf_estimate_disc_index;
-    cout << "discmold:" << (int)disc_index << endl;
+    cout << "discmold:" << (int)disc_index << "," << endl;
   }
 
   // don't proceed if the disc index doesn't match

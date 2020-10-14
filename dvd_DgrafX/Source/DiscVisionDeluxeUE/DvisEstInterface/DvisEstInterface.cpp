@@ -51,13 +51,13 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
           float value = stof(token);
           if(key == "ready")
           {
-            if(value == 0)
+            if(value > 0)
             {
-              ReadyToThrow = false;
+              ReadyToThrow = true;
             }
             else
             {
-              ReadyToThrow = true;
+              ReadyToThrow = false;
             }
           }
           else
@@ -94,11 +94,14 @@ void DvisEstInterface::RunDvisEst()
     FPaths::ConvertRelativePathToFull(FPaths::GameSourceDir() + 
     "../../Binaries/dvd_DvisEst/2020-10-11/"));
 
+  //std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
   std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
 
   // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
   // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
   batFile << "taskkill /IM \"dvd_DvisEst.exe\" /F" << std::endl;
+  batFile << "ping -n 9 127.0.0.1 >nul" << std::endl; // delay for 10 seconds
+  //batFileKill.close();
 
   if(use_generated_throws)
   {
@@ -110,12 +113,28 @@ void DvisEstInterface::RunDvisEst()
   }
   batFile.close();
 
+  FString dVisEst_args("");
+
+/*  // Run the kil thing separately since multi-line bat files are buggy and weird
+  FInteractiveProcess* CmdProcessKill;
+  FString dVisEst_bin_cmd_kill(
+    dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
+    );
+  FString dVisEst_args("");
+
+  CmdProcessKill = new FInteractiveProcess(
+    dVisEst_bin_cmd_kill,
+    dVisEst_args,
+    true,
+    false
+    );
+  CmdProcessKill->Launch();*/
+
   // Now we can do the real call using the .bat file so we don't have to RX STDERR
   FInteractiveProcess* CmdProcess;
   FString dVisEst_bin_cmd(
     dVisEst_bin_path + "dvd_DvisEst_abstractor.bat"
     );
-  FString dVisEst_args("");
 
   CmdProcess = new FInteractiveProcess(
     dVisEst_bin_cmd,
@@ -131,6 +150,8 @@ void DvisEstInterface::RunDvisEst()
       std::string result = std::string(TCHAR_TO_UTF8(*outputString));
 
       ParseDvisEstLine(result);
+
+      test_string += result + "\n";
     }
   );
 
@@ -151,12 +172,15 @@ FString DvisEstInterface::GetTestString()
     ss << "New Throw RX!" << std::endl;
 
   // this parsing seems broken
-  //if(((int)LastDiscIndex) > 0)
-  //  ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
+  if(((int)LastDiscIndex) > 0)
+    ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
 
   ss << "Last velx = " << disc_init_state.lin_vel_xyz[0] << " m/s" << std::endl;
 
+  //ss << test_string;
+
   FString new_string(ss.str().c_str());
+  //FString new_string(test_string.c_str());
   return new_string;
 }
 

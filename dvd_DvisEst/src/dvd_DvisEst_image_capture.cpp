@@ -858,14 +858,14 @@ int dvd_DvisEst_image_capture_thread()
       {
         ready_to_throw = true;
         //print status update
-        cout << "ready:1" << endl;
+        cout << "ready:1," << endl;
       }
 
       if(ready_to_throw && dvd_DvisEst_get_estimate_stage() > KF_EST_STAGE_MEAS_COLLECT)
       {
         ready_to_throw = false;
         //print status update
-        cout << "ready:0" << endl;
+        cout << "ready:0," << endl;
       }
 
       // capture frames       

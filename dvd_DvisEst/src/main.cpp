@@ -77,8 +77,8 @@ static void usleep(__int64 usec)
 void signal_handler(int signum) 
 {
   cerr << "Interrupt signal (" << signum << ") received.\n";
-  cout << "ready:0" << endl;
-  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << endl;
+  cout << "ready:0," << endl;
+  cout << "error:" << (int)dvd_DvisEst_error::PROGRAM_TERMINATED << "," << endl;
   gv_force_complete_threads = true;
   if(gv_handle_camera_on_sigint)
   {
@@ -738,7 +738,7 @@ int main(int argc, char** argv )
             if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas) - 500 && ready_rm)
             {
               ready_rm = false;
-              cout << "ready:0" << endl << endl;
+              cout << "ready:0," << endl;
             }
 
             if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas))
@@ -749,7 +749,7 @@ int main(int argc, char** argv )
               const float signer = ((float)(rand() % 2))*2.0-1.0;
               const float spin_d = s1 * signer;       
               // output a random throw, along with a ready flag on either side
-              sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d",
+              sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d,",
                 MM_TO_M((float)(rand() % 500) - 500/2),
                 MM_TO_M((float)(rand() % 500) - 500/2),
                 MM_TO_M((float)(rand() % 300) - 300/2) + 1.5, // standing up off the ground by 1.5 default
@@ -763,8 +763,8 @@ int main(int argc, char** argv )
                 (rand() % 10 + 3)
                 );
               // stdout!
-              cout << output_cmd << endl << endl;
-              cout << "ready:1" << endl << endl;
+              cout << output_cmd << endl;
+              cout << "ready:1," << endl;
               ready_rm = true;
 
               last_randmeas_time_ms = now_ms;
@@ -802,7 +802,7 @@ int main(int argc, char** argv )
       if(got_output)
       {
         // we should print this state ASAP for consumption by Mike's dvd_DfisX
-        sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d",
+        sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d,",
           kf_state.lin_xyz[0].pos,
           kf_state.lin_xyz[1].pos,
           kf_state.lin_xyz[2].pos,
@@ -816,7 +816,7 @@ int main(int argc, char** argv )
           (int)kf_state.disc_index
           );
         // stdout!
-        cout << output_cmd << endl << endl;
+        cout << output_cmd << endl;
       }
       else
       {
