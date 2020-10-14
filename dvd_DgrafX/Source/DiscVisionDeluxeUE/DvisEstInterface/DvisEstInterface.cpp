@@ -88,21 +88,54 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
   }
 }
 
+FString dvd_DvisEst_bin_path = "../../Binaries/dvd_DvisEst/2020-10-11/";
+
 void DvisEstInterface::RunDvisEst() 
 {
+  // Holy Mother****er, if this is not the sketchiest pile of crap I have ever coded
+  // Sweet Lord, what have you made me do Windows?
+
   FString dVisEst_bin_path(
     FPaths::ConvertRelativePathToFull(FPaths::GameSourceDir() + 
-    "../../Binaries/dvd_DvisEst/2020-10-11/"));
+    dvd_DvisEst_bin_path));
 
-  //std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
-  std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
+  FString dVisEst_args("");
+
+  std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
 
   // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
   // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
-  batFile << "taskkill /IM \"dvd_DvisEst.exe\" /F" << std::endl;
-  batFile << "ping -n 9 127.0.0.1 >nul" << std::endl; // delay for 10 seconds
-  //batFileKill.close();
+  batFileKill << "@Echo off & SetLocal EnableDelayedExpansion" << std::endl;
+  batFileKill << "set \"PID=\"" << std::endl;
+  batFileKill << "for /f \"tokens=2\" %%A in ('tasklist ^| findstr /i \"dvd_DvisEst.exe\" 2^>NUL') do @Set \"PID=!PID!,%%A\"" << std::endl;
+  batFileKill << "if defined PID Echo dvd_DvisEst.exe has PID(s) %PID:~1%" << std::endl;
+  // this line is the reason this needs to be 2 commands, 
+  // since suppressing the STUPID "Terminate batch job (Y/N)?"" prompt is almost impossible
+  batFileKill << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "windows-kill.exe" + "\"" + " -SIGINT %PID:~1%" << std::endl;
+  batFileKill.close();
 
+  // Run the kil thing separately since multi-line bat files are buggy and weird
+  FInteractiveProcess* CmdProcessKill;
+  FString dVisEst_bin_cmd_kill(
+    dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
+    );
+
+  CmdProcessKill = new FInteractiveProcess(
+    dVisEst_bin_cmd_kill,
+    dVisEst_args,
+    true,
+    false
+    );
+  CmdProcessKill->Launch();
+
+  // Now we can do the real call using the .bat file so we don't have to RX STDERR
+  // real command
+  std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
+   // ping until the process is dead
+  batFile << ":loop" << std::endl;
+  batFile << "ping -n 2 127.0.0.1 >nul" << std::endl; // delay for 1 second
+  batFile << "tasklist /FI \"IMAGENAME eq dvd_DvisEst.exe\" 2>NUL | find /I /N \"dvd_DvisEst.exe\">NUL" << std::endl;
+  batFile << "if \"%ERRORLEVEL%\"==\"0\" goto loop" << std::endl;
   if(use_generated_throws)
   {
     batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10 -nc 2> nul";
@@ -113,24 +146,6 @@ void DvisEstInterface::RunDvisEst()
   }
   batFile.close();
 
-  FString dVisEst_args("");
-
-/*  // Run the kil thing separately since multi-line bat files are buggy and weird
-  FInteractiveProcess* CmdProcessKill;
-  FString dVisEst_bin_cmd_kill(
-    dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
-    );
-  FString dVisEst_args("");
-
-  CmdProcessKill = new FInteractiveProcess(
-    dVisEst_bin_cmd_kill,
-    dVisEst_args,
-    true,
-    false
-    );
-  CmdProcessKill->Launch();*/
-
-  // Now we can do the real call using the .bat file so we don't have to RX STDERR
   FInteractiveProcess* CmdProcess;
   FString dVisEst_bin_cmd(
     dVisEst_bin_path + "dvd_DvisEst_abstractor.bat"
@@ -151,7 +166,8 @@ void DvisEstInterface::RunDvisEst()
 
       ParseDvisEstLine(result);
 
-      test_string += result + "\n";
+      // getting test output is handy
+      //test_string += result + "\n";
     }
   );
 
@@ -177,10 +193,10 @@ FString DvisEstInterface::GetTestString()
 
   ss << "Last velx = " << disc_init_state.lin_vel_xyz[0] << " m/s" << std::endl;
 
-  //ss << test_string;
+  // getting test output is handy
+  ss << test_string;
 
   FString new_string(ss.str().c_str());
-  //FString new_string(test_string.c_str());
   return new_string;
 }
 
@@ -211,8 +227,6 @@ uint32 DvisEstInterface::Run()
     // This is where we would do our expensive threaded processing
     
     RunDvisEst();
-    //FPlatformProcess::Sleep(3.0);
-  //}
 
   // Return success
   return 0;
@@ -221,7 +235,27 @@ uint32 DvisEstInterface::Run()
 
 void DvisEstInterface::Exit()
 {
-  // Here's where we can do any cleanup we want to 
+  // Here's where we can do any cleanup we want to
+  FString dVisEst_bin_path(
+  FPaths::ConvertRelativePathToFull(FPaths::GameSourceDir() + 
+  dvd_DvisEst_bin_path));
+
+  // try to kill any dvd_DvisEst instances running
+  FString dVisEst_args("");
+
+  // Run the kill file we generated earlier
+  FInteractiveProcess* CmdProcessKill;
+  FString dVisEst_bin_cmd_kill(
+    dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
+    );
+
+  CmdProcessKill = new FInteractiveProcess(
+    dVisEst_bin_cmd_kill,
+    dVisEst_args,
+    true,
+    false
+    );
+  CmdProcessKill->Launch();
 }
 
 

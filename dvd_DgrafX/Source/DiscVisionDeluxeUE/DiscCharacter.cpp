@@ -12,7 +12,7 @@
 #include "DvisEstInterface.h"
 
 // convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (false)
+#define DVISEST_INTERFACE_ENABLED              (true)
 #define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
 
 // Sets default values
@@ -243,6 +243,20 @@ void ADiscCharacter::Fire()
   // override with handy quit key mapping for now
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
   PerformThrow(true, nullptr);
+}
+ 
+// gets called when Unreal destroys this actor on exit
+void ADiscCharacter::BeginDestroy()
+{
+  Super::BeginDestroy();
+}
+
+// gets called when Unreal destroys this actor on exit
+void ADiscCharacter::Destroyed()
+{
+  Super::Destroyed();
+     
+  //dvisEstInterface->Exit();
 }
 
 // Start dvd_DvisEst Interface

@@ -56,24 +56,6 @@ std::atomic<bool> gv_force_complete_threads (false);
 
 bool gv_handle_camera_on_sigint (false);
 
-// timer overloads for windows
-#if defined(IS_WINDOWS)
-
-static void usleep(__int64 usec) 
-{ 
-    /*HANDLE timer; 
-    LARGE_INTEGER ft; 
-
-    ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
-
-    timer = CreateWaitableTimer(NULL, TRUE, NULL); 
-    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
-    WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); */
-  std::this_thread::sleep_for(std::chrono::microseconds(usec));
-}
-#endif
-
 void signal_handler(int signum) 
 {
   cerr << "Interrupt signal (" << signum << ") received.\n";
@@ -93,6 +75,70 @@ void signal_handler(int signum)
 
   exit(signum);
 }
+
+// timer overloads for windows
+#if defined(IS_WINDOWS)
+
+static void usleep(__int64 usec) 
+{ 
+    /*HANDLE timer; 
+    LARGE_INTEGER ft; 
+
+    ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
+
+    timer = CreateWaitableTimer(NULL, TRUE, NULL); 
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
+    WaitForSingleObject(timer, INFINITE); 
+    CloseHandle(timer); */
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
+}
+
+/*BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
+{
+    switch (fdwCtrlType)
+    {
+        // Handle the CTRL-C signal. 
+    case CTRL_C_EVENT:
+        cerr << "Ctrl-C event" << std::endl;
+        signal_handler(1);
+        return TRUE;
+
+        // CTRL-CLOSE: confirm that the user wants to exit. 
+    case CTRL_CLOSE_EVENT:
+        cerr << "Ctrl-Close event" << std::endl;
+        signal_handler(1);
+        return TRUE;
+
+        // Pass other signals to the next handler. 
+    case CTRL_BREAK_EVENT:
+        cerr << "Ctrl-Break event" << std::endl;
+        signal_handler(1);
+        return FALSE;
+
+    case CTRL_LOGOFF_EVENT:
+        cerr << "Ctrl-Logoff event" << std::endl;
+        signal_handler(1);
+        return FALSE;
+
+    case CTRL_SHUTDOWN_EVENT:
+        cerr << "Ctrl-Shutdown event" << std::endl;
+        signal_handler(1);
+        return FALSE;
+
+    default:
+        cerr << "Ctrl-DEFAULT event????" << std::endl;
+        return FALSE;
+    }
+}
+
+LRESULT CALLBACK CtrlHandlerHook (int nCode, WPARAM wParam, LPARAM lParam)
+{
+  cerr << "Ctrl-WM_CLOSE detected!" << std::endl;
+  return NULL;
+}*/
+
+
+#endif
 
 // Get time stamp in nanoseconds.
 static uint64_t nanos()
@@ -462,8 +508,17 @@ int main(int argc, char** argv )
   const int         randmeas    = parser.get<int>("randmeas");
   const bool        nocam       = parser.get<bool>("nocam");
 
-  // register signal SIGINT and signal handler if we need to de-init camera 
+  // register signal SIGINT and signal handler if we need to de-init camera
+  /*#ifdef IS_WINDOWS
+  SetConsoleCtrlHandler(CtrlHandler, TRUE);
+  //SetWindowsHookEx(WM_CLOSE, CtrlHandlerHook, TRUE);
+  HINSTANCE hInstance = GetModuleHandle(NULL);
+  SetWindowsHookEx(WM_CLOSE, CtrlHandlerHook, hInstance, NULL);
+  SetWindowsHookEx(WM_QUIT, CtrlHandlerHook, hInstance, NULL);
+  SetWindowsHookEx(WM_DESTROY, CtrlHandlerHook, hInstance, NULL);
+  #else*/
   signal(SIGINT, signal_handler);
+  //#endif
 
   gv_handle_camera_on_sigint = camera_src && !nocam;
 
