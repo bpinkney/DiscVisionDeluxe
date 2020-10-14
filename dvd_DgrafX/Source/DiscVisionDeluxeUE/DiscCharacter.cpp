@@ -245,6 +245,15 @@ void ADiscCharacter::Fire()
   PerformThrow(true, nullptr);
 }
  
+// gets called when Unreal ends play on this actor pre exit
+void ADiscCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+  // terminate DvisEst Process
+  dvisEstInterface->Exit();
+
+  Super::EndPlay(EndPlayReason);
+}
+
 // gets called when Unreal destroys this actor on exit
 void ADiscCharacter::BeginDestroy()
 {
@@ -255,9 +264,9 @@ void ADiscCharacter::BeginDestroy()
 void ADiscCharacter::Destroyed()
 {
   Super::Destroyed();
-     
-  //dvisEstInterface->Exit();
 }
+
+
 
 // Start dvd_DvisEst Interface
 // This portable block should be able to be moved to any high-level Unreal Object later
