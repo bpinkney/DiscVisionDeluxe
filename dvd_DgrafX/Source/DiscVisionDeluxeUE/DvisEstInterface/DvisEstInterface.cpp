@@ -191,7 +191,12 @@ FString DvisEstInterface::GetTestString()
   if(((int)LastDiscIndex) > 0)
     ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
 
-  ss << "Last velx = " << disc_init_state.lin_vel_xyz[0] << " m/s" << std::endl;
+  ss << "Last Throw:" << std::endl << 
+    "vel_xyz = [" << disc_init_state.lin_vel_xyz[0] << ", " << disc_init_state.lin_vel_xyz[1] << ", " << disc_init_state.lin_vel_xyz[2] << "] m/s" << std::endl <<
+    "hyzer = " << (disc_init_state.ang_pos_hps[0]*57.2957795) << " deg" << std::endl <<
+    "pitch = " << (disc_init_state.ang_pos_hps[1]*57.2957795) << " deg" << std::endl <<
+    "spin_d = " << disc_init_state.ang_vel_hps[2] << " rad/s (" << (disc_init_state.ang_vel_hps[2]*9.54929658) << " rpm)" << std::endl <<
+    std::endl;
 
   // getting test output is handy
   ss << test_string;
