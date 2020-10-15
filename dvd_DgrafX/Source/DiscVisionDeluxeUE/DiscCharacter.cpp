@@ -1,19 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-
+//Unreal stuff
 #include "DiscCharacter.h"
 #include "DiscVisionDeluxeUE.h"
 #include "DiscProjectile.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+// DfisX stuff
 #include "DfisX\DfisX.hpp"
+//#include "DfisX\disc_params.hpp"
+
+// dvd_DvisEst interface stuff
 #include "HAL/RunnableThread.h"
 #include "DvisEstInterface.h"
 
 // convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (true)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+#define DVISEST_INTERFACE_ENABLED              (false)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -65,7 +70,7 @@ void ADiscCharacter::Tick(float DeltaTime)
       disc_init_state_t new_disc_init_state;
       dvisEstInterface->GetDiscInitState(&new_disc_init_state);
 
-      //PerformThrow(false, &new_disc_init_state);
+      PerformThrow(false, &new_disc_init_state);
     }
     
     DvisEstInterface_PrintStuff();
@@ -218,8 +223,11 @@ void ADiscCharacter::PerformThrow(const bool use_default_throw, disc_init_state_
           // Maybe you can fix this one up Mike? for now I just have random -1s scattered
 
           // perform a new throw!
+          // Just map the disc mold directly right now, since there are aero params defined for each!
+          // good ol' fashioned dangerous static cast!
+          DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
           DfisX::new_throw(
-            DfisX::NONE,
+            new_disc_enum,
             Eigen::Vector3d(
               -1 * new_disc_init_state->lin_pos_xyz[0] + MuzzleLocation.X/100, // negative for some reason? no idea what the world frame is here
               -1 * new_disc_init_state->lin_pos_xyz[1] + MuzzleLocation.Y/100, // negative for some reason? no idea what the world frame is here
@@ -244,6 +252,29 @@ void ADiscCharacter::Fire()
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
   PerformThrow(true, nullptr);
 }
+ 
+// gets called when Unreal ends play on this actor pre exit
+void ADiscCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+  // terminate DvisEst Process
+  dvisEstInterface->Exit();
+
+  Super::EndPlay(EndPlayReason);
+}
+
+// gets called when Unreal destroys this actor on exit
+void ADiscCharacter::BeginDestroy()
+{
+  Super::BeginDestroy();
+}
+
+// gets called when Unreal destroys this actor on exit
+void ADiscCharacter::Destroyed()
+{
+  Super::Destroyed();
+}
+
+
 
 // Start dvd_DvisEst Interface
 // This portable block should be able to be moved to any high-level Unreal Object later

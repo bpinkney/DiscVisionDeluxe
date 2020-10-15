@@ -18,6 +18,8 @@ public:
 
   bool IsComplete() const;
 
+  std::string test_string;
+
   FString GetTestString();
 
   void GetDiscInitState(disc_init_state_t * disc_init_state);

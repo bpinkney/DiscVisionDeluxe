@@ -72,7 +72,7 @@ using namespace Spinnaker::GenICam;
 
 static void usleep(__int64 usec) 
 { 
-    HANDLE timer; 
+    /*HANDLE timer; 
     LARGE_INTEGER ft; 
 
     ft.QuadPart = -(10*usec); // Convert to 100 nanosecond interval, negative value indicates relative time
@@ -80,7 +80,8 @@ static void usleep(__int64 usec)
     timer = CreateWaitableTimer(NULL, TRUE, NULL); 
     SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0); 
     WaitForSingleObject(timer, INFINITE); 
-    CloseHandle(timer); 
+    CloseHandle(timer); */
+  std::this_thread::sleep_for(std::chrono::microseconds(usec));
 }
 #endif
 
@@ -857,14 +858,14 @@ int dvd_DvisEst_image_capture_thread()
       {
         ready_to_throw = true;
         //print status update
-        cout << "ready:1" << endl;
+        cout << "ready:1," << endl;
       }
 
       if(ready_to_throw && dvd_DvisEst_get_estimate_stage() > KF_EST_STAGE_MEAS_COLLECT)
       {
         ready_to_throw = false;
         //print status update
-        cout << "ready:0" << endl;
+        cout << "ready:0," << endl;
       }
 
       // capture frames       
@@ -927,7 +928,7 @@ int dvd_DvisEst_image_capture_thread()
           image_queue_purge(image_queue_size()-1);
         }
       }
-      // Free up image memory after OpenCV conversion                
+      // Free up image memory after OpenCV conversion            
       //imagePtr->Release();
       //cerr << NS_TO_MS(uptime_get_ns()) << " ---> imagePtr->Release();" << endl;
     }
@@ -1211,7 +1212,7 @@ uint32_t dvd_DvisEst_image_capture_get_image_capture_queue_size()
 }
 
 // Return the next captured image from the front of the queue
-#define MAX_FRAME_SKIP_COUNT (10)
+#define MAX_FRAME_SKIP_COUNT (20)
 bool dvd_DvisEst_image_capture_get_next_image_capture(image_capture_t * image_capture, uint16_t * skipped_frames, std::atomic<uint8_t> * at_thread_mode, uint8_t thread_id, const bool calc_groundplane)
 {
   bool got_frame = true;
