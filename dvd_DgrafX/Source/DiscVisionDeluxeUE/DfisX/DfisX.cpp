@@ -229,6 +229,35 @@ Does the following things
   global_active_throw.disc_state_array.clear ();
 }
 
+void new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
+{
+//Disc_Mold_Enum disc_mold_enum
+//Eigen::Vector3d thrown_disc_position
+//float thrown_disc_speed
+float thrown_disc_direction_rad = thrown_disc_direction / 57.3;
+float thrown_disc_loft_rad = thrown_disc_loft / 57.3;
+float thrown_disc_pitch_rad = thrown_disc_pitch / 57.3;
+float thrown_disc_roll_rad = thrown_disc_roll / 57.3;
+//float thrown_disc_nose_up_rad = thrown_disc_nose_up / 57.3;
+float thrown_disc_spin_percent_dec = thrown_disc_spin_percent / 100;
+//float thrown_disc_wobble
+
+float thrown_disc_velocity_x = thrown_disc_speed * cos(thrown_disc_loft_rad) * cos(thrown_disc_direction_rad);
+float thrown_disc_velocity_y = thrown_disc_speed * cos(thrown_disc_loft_rad) * sin(thrown_disc_direction_rad);
+float thrown_disc_velocity_z = thrown_disc_speed * sin(thrown_disc_loft_rad);
+Eigen::Vector3d thrown_disc_velocity = Eigen::Vector3d (thrown_disc_velocity_x,thrown_disc_velocity_y,thrown_disc_velocity_z);
+//thrown_disc_roll
+//thrown_disc_pitch
+
+//assuming diameter of 212mm
+float thrown_disc_rotations_per_second = thrown_disc_speed / (0.212 * 3.1415) * thrown_disc_spin_percent_dec;
+float thrown_disc_radians_per_second = thrown_disc_rotations_per_second * -2 * 3.1415;
+
+new_throw (disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll_rad,thrown_disc_pitch_rad,thrown_disc_radians_per_second,thrown_disc_wobble);
+
+
+}
+
 
 
 

@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CameraManager.h"
-#include "disc_layouts.hpp"
+
 
 // always last include
 #include "DiscCharacter.generated.h"
@@ -20,22 +20,12 @@ public:
 	// Sets default values for this character's properties
 	ADiscCharacter();
 
-	//dvd_DvisEst Interface Function Handlers
-	// Call this to create the thread and start it going
-	void DvisEstInterface_StartProcess();
-
-	// Call this to print the current state of the thread
-	void DvisEstInterface_PrintStuff();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//dvd_DvisEst Interface Function Handlers
-	bool DvisEstInterface_IsComplete() const;
 
-	class DvisEstInterface* dvisEstInterface = nullptr;
-	FRunnableThread* DvisEstInterfaceThread = nullptr;
 
 public:	
 	// Called every frame
@@ -47,7 +37,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void PerformThrow(const bool use_default_throw, disc_init_state_t * new_disc_init_state);
+
 
 	// Handles input for moving forward and backward.
 	UFUNCTION()
@@ -79,15 +69,24 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void DestroyDiscs();
 
+	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+	  void new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+	  void new_captured_throw(int captured_disc_mold_enum, FVector captured_position, FVector captured_velocity, float captured_world_roll, float captured_world_pitch, float captured_spin_speed, float captured_wobble);
+
 
 	// Gun muzzle's offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector MuzzleOffset;
 
 	// Projectile class to spawn.
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = "Disc Throwing")
 		TSubclassOf<class ADiscProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Manager")
 		TSubclassOf<class ACameraManager> CameraManagerBP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Throw Input")
+		TSubclassOf<class AThrowInputController> ThrowInputControllerBP;
 };

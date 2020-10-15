@@ -232,6 +232,7 @@ void                step_simulation (float step_time);
 
 //Instantiates a new throw, ready to be stepped or simulated
 void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
+void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble);
 
 //Finishes a throw
 //This includes things such as saving/serializing the throw and performing various stat calculations

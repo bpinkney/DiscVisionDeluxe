@@ -10,6 +10,7 @@
 
 // DfisX stuff
 #include "DfisX\DfisX.hpp"
+<<<<<<< Updated upstream
 //#include "DfisX\disc_params.hpp"
 
 // dvd_DvisEst interface stuff
@@ -19,6 +20,15 @@
 // convenience settings for dvd_DvisEst interface
 #define DVISEST_INTERFACE_ENABLED              (false)
 #define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
+=======
+#include "ThrowInputController.h"
+
+
+
+
+ACameraManager* camera_manager;
+AThrowInputController* throw_input_controller;
+>>>>>>> Stashed changes
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -28,17 +38,15 @@ ADiscCharacter::ADiscCharacter()
 }
 
 // Called when the game starts or when spawned
-ACameraManager* camera_manager;
+
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
     DfisX::init();
 
-    if(DVISEST_INTERFACE_ENABLED)
-      DvisEstInterface_StartProcess();
+
 
     ///Camera manager init
-    //UWorld* World = GetWorld();
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
@@ -46,7 +54,9 @@ void ADiscCharacter::BeginPlay()
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     camera_manager->set_player_target(PC);
     camera_manager->focus_on_player();
-   
+
+    ///throw input controller init  
+    throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
 
 
 	if (GEngine)
@@ -62,6 +72,7 @@ void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+<<<<<<< Updated upstream
   // dvd_DvisEst Interface
   if(DVISEST_INTERFACE_ENABLED)
   {
@@ -76,6 +87,9 @@ void ADiscCharacter::Tick(float DeltaTime)
     DvisEstInterface_PrintStuff();
   }
   // end dvd_DvisEst Interface
+=======
+  
+>>>>>>> Stashed changes
   
   DfisX::step_simulation (DeltaTime);
 }
@@ -89,10 +103,10 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight", this, &ADiscCharacter::MoveRight);	
 
 	//Set up "action" bindings.
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
+	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
-    PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+    //PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
+    //PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &ADiscCharacter::Quit);
     PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ADiscCharacter::Action1);
@@ -133,8 +147,9 @@ void DestroyDiscs()
 void ADiscCharacter::Quit()
 {
   // override with handy quit key mapping for now
-  UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Alt QQ");
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+  
 }
     void ADiscCharacter::Action1()
 {
@@ -162,6 +177,7 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 3");
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
 
+<<<<<<< Updated upstream
 void ADiscCharacter::PerformThrow(const bool use_default_throw, disc_init_state_t * new_disc_init_state)
 {
   // Attempt to fire a projectile.
@@ -246,11 +262,13 @@ void ADiscCharacter::PerformThrow(const bool use_default_throw, disc_init_state_
   }
 }
 
+=======
+>>>>>>> Stashed changes
 void ADiscCharacter::Fire()
 {
   // override with handy quit key mapping for now
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
-  PerformThrow(true, nullptr);
+  //PerformThrow(true, nullptr);
 }
  
 // gets called when Unreal ends play on this actor pre exit
@@ -276,46 +294,30 @@ void ADiscCharacter::Destroyed()
 
 
 
-// Start dvd_DvisEst Interface
-// This portable block should be able to be moved to any high-level Unreal Object later
-void ADiscCharacter::DvisEstInterface_StartProcess()
+void ADiscCharacter::new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
 {
-  if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
-  {
-    // Run the thread indefinitely
-    dvisEstInterface = new DvisEstInterface(DVISEST_INTERFACE_USE_GENERATED_THROWS);
-    DvisEstInterfaceThread = FRunnableThread::Create(dvisEstInterface, TEXT("DvisEstInterfaceThread"));
-  }
+    DestroyDiscs();
+    // Get the camera transform.
+  FVector current_location = FVector (0,0,40) + this->GetActorLocation();
+    
+  UWorld* World = GetWorld();
+  FActorSpawnParameters SpawnParams;
+  SpawnParams.Owner = this;
+  SpawnParams.Instigator = GetInstigator();
+      // Spawn the projectile at the muzzle.
+  ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
+  camera_manager->focus_on_disc(Projectile);
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
+  DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),Eigen::Vector3d (thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),thrown_disc_speed,thrown_disc_direction,thrown_disc_loft,thrown_disc_roll,thrown_disc_pitch,thrown_disc_spin_percent,thrown_disc_wobble);
+
 }
 
-bool ADiscCharacter::DvisEstInterface_IsComplete() const
+void new_captured_throw(int captured_disc_mold_enum, FVector captured_position, FVector captured_velocity, float captured_world_roll, float captured_world_pitch, float captured_spin_speed, float captured_wobble)
+
 {
-  return !DvisEstInterfaceThread || dvisEstInterface->IsComplete();
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Captured throw!."));
+    ;
 }
 
-void ADiscCharacter::DvisEstInterface_PrintStuff()
-{
-  if (!DvisEstInterfaceThread || !dvisEstInterface)
-    return;
 
-  if (DvisEstInterface_IsComplete())
-  {
-    if (GEngine)
-    {
-      // This should only occur when this thread is killed!
-    }
-  }
-  else
-  {
-    if (GEngine)
-    {
-      // How the hell is this access threadsafe???
-      FString test_string = dvisEstInterface->GetTestString();
 
-      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
-        FString::Printf(TEXT("dvd_DvisEst Thread is Still Working Away:%s"),
-        *test_string));
-    }
-  }
-}
-// End dvd_DvisEst Interface
