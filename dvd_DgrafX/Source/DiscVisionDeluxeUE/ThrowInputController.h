@@ -27,7 +27,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     //dvd_DvisEst Interface Function Handlers
     bool DvisEstInterface_IsComplete() const;
@@ -41,7 +41,4 @@ public:
 
 
     void PerformCapturedThrow(disc_init_state_t * new_disc_init_state);
-
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 };

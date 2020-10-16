@@ -155,33 +155,6 @@ void ADiscCharacter::Fire()
   //PerformThrow(true, nullptr);
 }
 
-
-
- /*
-// gets called when Unreal ends play on this actor pre exit
-void ADiscCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-  // terminate DvisEst Process
-  dvisEstInterface->Exit();
-
-  Super::EndPlay(EndPlayReason);
-}
-
-
-
-// gets called when Unreal destroys this actor on exit
-void ADiscCharacter::BeginDestroy()
-{
-  Super::BeginDestroy();
-}
-
-// gets called when Unreal destroys this actor on exit
-void ADiscCharacter::Destroyed()
-{
-  Super::Destroyed();
-}
-*/
-
 ///used for debug throws
 void ADiscCharacter::new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
 {
