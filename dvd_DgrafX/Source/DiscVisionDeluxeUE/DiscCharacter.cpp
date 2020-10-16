@@ -10,17 +10,6 @@
 
 // DfisX stuff
 #include "DfisX\DfisX.hpp"
-<<<<<<< Updated upstream
-//#include "DfisX\disc_params.hpp"
-
-// dvd_DvisEst interface stuff
-#include "HAL/RunnableThread.h"
-#include "DvisEstInterface.h"
-
-// convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (false)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
-=======
 #include "ThrowInputController.h"
 
 
@@ -28,7 +17,7 @@
 
 ACameraManager* camera_manager;
 AThrowInputController* throw_input_controller;
->>>>>>> Stashed changes
+
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
@@ -72,25 +61,6 @@ void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-<<<<<<< Updated upstream
-  // dvd_DvisEst Interface
-  if(DVISEST_INTERFACE_ENABLED)
-  {
-    if(dvisEstInterface->IsNewThrowReady())
-    {
-      disc_init_state_t new_disc_init_state;
-      dvisEstInterface->GetDiscInitState(&new_disc_init_state);
-
-      PerformThrow(false, &new_disc_init_state);
-    }
-    
-    DvisEstInterface_PrintStuff();
-  }
-  // end dvd_DvisEst Interface
-=======
-  
->>>>>>> Stashed changes
-  
   DfisX::step_simulation (DeltaTime);
 }
 
@@ -177,100 +147,17 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 3");
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 4");
 }
 
-<<<<<<< Updated upstream
-void ADiscCharacter::PerformThrow(const bool use_default_throw, disc_init_state_t * new_disc_init_state)
-{
-  // Attempt to fire a projectile.
-  if (ProjectileClass)
-  {
-    DestroyDiscs();
-    // Get the camera transform.
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-    // Transform MuzzleOffset from camera space to world space.
-    FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-    MuzzleLocation += FVector (0.0,0.0,-80.0);
-    FRotator MuzzleRotation = CameraRotation;
-    // Skew the aim to be slightly upwards.
-    
-    UWorld* World = GetWorld();
-    if (World)
-    {
-      FActorSpawnParameters SpawnParams;
-      SpawnParams.Owner = this;
-      SpawnParams.Instigator = GetInstigator();
-      // Spawn the projectile at the muzzle.
-      ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-      camera_manager->focus_on_disc(Projectile);
-      if (Projectile)
-      {
-        // Set the projectile's initial trajectory.
-        
-        if(use_default_throw)
-        {
-          FVector fire_direction = MuzzleRotation.Vector();
-          fire_direction *= 21;
-          double throw_pitch;
-          double throw_roll;
-          double aim_up = 10.0;
-          if ((MuzzleRotation.Pitch+aim_up)>180)
-          {
-              
-          throw_pitch = cos (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
-          throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * ((MuzzleRotation.Pitch+aim_up)-360)/57.3;
-          }
-          else
-          {
-          throw_pitch = cos (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;
-          throw_roll  = -sin (MuzzleRotation.Yaw/57.3) * (MuzzleRotation.Pitch+aim_up)/57.3;    
-          }
-          DfisX::new_throw (DfisX::NONE,Eigen::Vector3d (MuzzleLocation.X/100,MuzzleLocation.Y/100,MuzzleLocation.Z/100),Eigen::Vector3d (fire_direction.X,fire_direction.Y,fire_direction.Z),throw_roll, throw_pitch, -95.0, 0.0);               
-        }
-        else
-        {
-          // Some magic will happen here for the mapping between the DvisEst DiscIndex
-          // e.g. MIDRANGE_OS
-          // and the DfisX/DgrafX Disc_Mold_Enum
-          // e.g. 175g big-Z BUZZZ
-
-          // The world axes appear to be defined in a different way to our defs (we defined X forward, Y Right, Z up)
-          // Maybe you can fix this one up Mike? for now I just have random -1s scattered
-
-          // perform a new throw!
-          // Just map the disc mold directly right now, since there are aero params defined for each!
-          // good ol' fashioned dangerous static cast!
-          DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
-          DfisX::new_throw(
-            new_disc_enum,
-            Eigen::Vector3d(
-              -1 * new_disc_init_state->lin_pos_xyz[0] + MuzzleLocation.X/100, // negative for some reason? no idea what the world frame is here
-              -1 * new_disc_init_state->lin_pos_xyz[1] + MuzzleLocation.Y/100, // negative for some reason? no idea what the world frame is here
-               0 * new_disc_init_state->lin_pos_xyz[2] + MuzzleLocation.Z/100), // just zero this until the UI is sorted
-            Eigen::Vector3d(
-              -1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
-              -1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
-                   new_disc_init_state->lin_vel_xyz[2]),
-            -1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
-            -1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
-                   new_disc_init_state->ang_vel_hps[2],
-                   new_disc_init_state->wobble);
-        }
-      }
-    }
-  }
-}
-
-=======
->>>>>>> Stashed changes
 void ADiscCharacter::Fire()
 {
   // override with handy quit key mapping for now
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
   //PerformThrow(true, nullptr);
 }
- 
+
+
+
+ /*
 // gets called when Unreal ends play on this actor pre exit
 void ADiscCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -279,6 +166,8 @@ void ADiscCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
   Super::EndPlay(EndPlayReason);
 }
+
+
 
 // gets called when Unreal destroys this actor on exit
 void ADiscCharacter::BeginDestroy()
@@ -291,9 +180,9 @@ void ADiscCharacter::Destroyed()
 {
   Super::Destroyed();
 }
+*/
 
-
-
+///used for debug throws
 void ADiscCharacter::new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
 {
     DestroyDiscs();
@@ -309,6 +198,30 @@ void ADiscCharacter::new_throw_camera_realtive (int disc_mold_enum, FVector thro
   camera_manager->focus_on_disc(Projectile);
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
   DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),Eigen::Vector3d (thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),thrown_disc_speed,thrown_disc_direction,thrown_disc_loft,thrown_disc_roll,thrown_disc_pitch,thrown_disc_spin_percent,thrown_disc_wobble);
+}
+
+
+///used for captured throws
+void ADiscCharacter::new_throw_world_frame ( int disc_mold_enum,FVector thrown_disc_position,FVector thrown_disc_velocity, float thrown_disc_roll, float thrown_disc_pitch, float thrown_disc_radians_per_second, float thrown_disc_wobble)
+
+{
+    DestroyDiscs();
+    // Get the camera transform.
+  FVector current_location = FVector (0,0,40) + this->GetActorLocation();
+    
+  UWorld* World = GetWorld();
+  FActorSpawnParameters SpawnParams;
+  SpawnParams.Owner = this;
+  SpawnParams.Instigator = GetInstigator();
+      // Spawn the projectile at the muzzle.
+  ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
+  camera_manager->focus_on_disc(Projectile);
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
+  
+
+    Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100);
+    Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
+    DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),v3d_thrown_disc_position,v3d_thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
 
 }
 

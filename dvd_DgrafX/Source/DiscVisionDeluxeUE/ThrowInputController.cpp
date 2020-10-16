@@ -46,6 +46,7 @@ void AThrowInputController::Tick(float DeltaTime)
 	// dvd_DvisEst Interface
   if(DVISEST_INTERFACE_ENABLED)
   {
+
     if(dvisEstInterface->IsNewThrowReady())
     {
       disc_init_state_t new_disc_init_state;
@@ -75,18 +76,19 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
           // Maybe you can fix this one up Mike? for now I just have random -1s scattered
 
           // perform a new throw!
+	 //DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
           static_cast<ADiscCharacter*>(parent_disc_character)->new_captured_throw(
-            	0,   //disc_mold_enum goes here, static cast it to int though because it is passing through uproperties first. it will get cast back when it hits dfisx
+            static_cast<int>(new_disc_init_state->discmold),   //disc_mold_enum goes here, static cast it to int though because it is passing through uproperties first. it will get cast back when it hits dfisx
             FVector(
-              -1 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here
-              -1 * new_disc_init_state->lin_pos_xyz[1], // negative for some reason? no idea what the world frame is here
+              100 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here
+              100 * new_disc_init_state->lin_pos_xyz[1], // negative for some reason? no idea what the world frame is here
                0 * new_disc_init_state->lin_pos_xyz[2]), // just zero this until the UI is sorted
             FVector(
-              -1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
-              -1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
+              1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
+              1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
                    new_disc_init_state->lin_vel_xyz[2]),
-            -1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
-            -1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
+            1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
+            1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
                    new_disc_init_state->ang_vel_hps[2],
                    new_disc_init_state->wobble);
 }
