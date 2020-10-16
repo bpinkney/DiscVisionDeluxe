@@ -76,7 +76,7 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
     //PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
-    //PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
+    PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &ADiscCharacter::Quit);
     PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ADiscCharacter::Action1);
