@@ -213,7 +213,7 @@ FString DvisEstInterface::GetTestString()
     std::endl;
 
   // getting test output is handy
-  ss << test_string;
+  //ss << test_string;
 
   FString new_string(ss.str().c_str());
   return new_string;
