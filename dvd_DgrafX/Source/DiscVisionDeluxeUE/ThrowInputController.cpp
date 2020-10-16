@@ -32,7 +32,8 @@ void AThrowInputController::BeginPlay()
 void AThrowInputController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
   // terminate DvisEst Process
-  dvisEstInterface->Exit();
+  if(DVISEST_INTERFACE_ENABLED)
+    dvisEstInterface->Exit();
 
   Super::EndPlay(EndPlayReason);
 }
