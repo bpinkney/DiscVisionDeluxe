@@ -28,6 +28,7 @@ public:
 
   bool use_generated_throws;
   disc_init_state_t disc_init_state;
+  bool DvisEstInitComplete;
   bool ReadyToThrow;
   bool NewThrowReady;
   DiscIndex LastDiscIndex;

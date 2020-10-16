@@ -851,6 +851,7 @@ int dvd_DvisEst_image_capture_thread()
     ImagePtr imagePtr;
 
     bool ready_to_throw = false;
+    bool got_first_frame = false;
 
     while(!capture_thread_ready && result == 0 && !sv_force_purge_frames && (dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_PRIME || gv_force_continuous_mode) && !gv_force_complete_threads)
     {
@@ -882,6 +883,13 @@ int dvd_DvisEst_image_capture_thread()
       }
       else
       {
+        if(!got_first_frame)
+        {
+          got_first_frame = true;
+          // flag init condition on the stdout commandline
+          cout << "init:1," << endl;
+        }
+
         if(init_timestamp_ns == 0)
         {
           init_timestamp_ns = imagePtr->GetTimeStamp();

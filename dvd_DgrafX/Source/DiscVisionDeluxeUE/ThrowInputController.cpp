@@ -8,7 +8,7 @@
 
 // convenience settings for dvd_DvisEst interface
 #define DVISEST_INTERFACE_ENABLED              (true)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
 
 // Sets default values
 AThrowInputController::AThrowInputController()
@@ -131,7 +131,7 @@ void AThrowInputController::DvisEstInterface_PrintStuff()
       // How the hell is this access threadsafe???
       FString test_string = dvisEstInterface->GetTestString();
 
-      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Green,
+      GEngine->AddOnScreenDebugMessage(-1, 0, FColor::White,
         FString::Printf(TEXT("dvd_DvisEst Thread is Still Working Away:%s"),
         *test_string));
     }

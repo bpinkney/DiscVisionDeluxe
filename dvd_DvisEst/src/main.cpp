@@ -490,6 +490,9 @@ int main(int argc, char** argv )
     return 0;
   }
 
+  // flag init condition on the stdout commandline
+  cout << "init:0," << endl;
+
   // grab commandline args
   const bool        helloworld  = parser.get<bool>("helloworld");
   const cv::String  imgdir_src  = parser.get<cv::String>("fromimgsdir");

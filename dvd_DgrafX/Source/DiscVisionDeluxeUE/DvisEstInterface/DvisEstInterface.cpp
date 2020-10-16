@@ -3,6 +3,8 @@
 #include "GenericPlatform/GenericPlatformProcess.h"
 #include "Misc/Paths.h"
 #include "Misc/InteractiveProcess.h"
+#include "GenericPlatform/GenericPlatformProcess.h"
+//#include "Kismet/GameplayStatics.h"
 
 #include <cstdio>
 #include <iostream>
@@ -17,6 +19,12 @@
 DvisEstInterface::DvisEstInterface(const bool generated_throws)
 {
   use_generated_throws = generated_throws;
+
+  DvisEstInitComplete = false;
+  ReadyToThrow = false;
+  NewThrowReady = false;
+  LastDiscIndex = (DiscIndex)0;
+
   // init
   memset(&disc_init_state, 0, sizeof(disc_init_state_t));
 }
@@ -58,6 +66,17 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
             else
             {
               ReadyToThrow = false;
+            }
+          }
+          else if(key == "init")
+          {
+            if(value > 0)
+            {
+              DvisEstInitComplete = true;
+            }
+            else
+            {
+              DvisEstInitComplete = false;
             }
           }
           else
@@ -213,7 +232,7 @@ FString DvisEstInterface::GetTestString()
     std::endl;
 
   // getting test output is handy
-  //ss << test_string;
+  ss << test_string;
 
   FString new_string(ss.str().c_str());
   return new_string;
@@ -241,11 +260,55 @@ uint32 DvisEstInterface::Run()
 {
   // Keep processing until we're cancelled through Stop() or we're done,
   // although this thread will suspended for other stuff to happen at the same time
-  //while (!bStopThread && !IsComplete())
-  //{
+
+  bool rerun_dvisest = true;
+  bool init_complete = false;
+
+  // this a work around for bad shutdown of spinnaker camera drivers
+  // due to windows-kill being broken, and taskkill being incapable of sending SIGINT
+  // this should be removed later once a solution to that signalling is complete
+  const int init_time_reset_limit_s = 5;
+  int start_time = 0;//UGameplayStatics::GetRealTimeSeconds();
+  int now_time = 0;
+
+  while (!bStopThread && !IsComplete())
+  {
     // This is where we would do our expensive threaded processing
     
-    RunDvisEst();
+    // we can use the 'DvisEstInitComplete' status to indicate whether things have initialized correctly
+    // after a certain period of time
+    if(!init_complete && rerun_dvisest)
+    {
+      test_string += "Run DvisEst exe!\n";
+      RunDvisEst();
+      rerun_dvisest = false;
+      start_time = 0;//UGameplayStatics::GetRealTimeSeconds();
+      now_time = 0;      
+    }
+
+    //this should latch even if DvisEstInitComplete goes back to zero for some reason
+    if(DvisEstInitComplete && !init_complete)
+    {
+      init_complete =  true;
+      test_string += "Init Complete!\n";
+    }
+
+    if(!init_complete)
+    {
+      test_string += "Loop DvisEst 1s thread timer! [" + std::to_string(now_time) + "/" + std::to_string(init_time_reset_limit_s) + "]\n";
+
+      if(now_time >= start_time + init_time_reset_limit_s)
+      {
+        // queue up dvd_DvisEst.exe to restart since it has not init'd after init_time_reset_limit_s
+        // this will include a pre-kill of the old process
+        rerun_dvisest = true;
+        test_string += "Forced to re-run dvd_DvisEst.exe due to unclean camera shutdown!\n";
+      }
+      now_time += 1;
+    }
+
+    FPlatformProcess::Sleep(1.0);    
+  }
 
   // Return success
   return 0;
@@ -254,6 +317,8 @@ uint32 DvisEstInterface::Run()
 
 void DvisEstInterface::Exit()
 {
+  Stop();
+
   // Here's where we can do any cleanup we want to
   FString dVisEst_bin_path(
   FPaths::ConvertRelativePathToFull(FPaths::GameSourceDir() + 
