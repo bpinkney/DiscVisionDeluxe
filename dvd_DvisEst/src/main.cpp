@@ -744,6 +744,11 @@ int main(int argc, char** argv )
     // start image capture thread
     dvd_DvisEst_image_capture_start();
   }
+  else
+  {
+    // fake out init
+    cout << "init:1," << endl;
+  }
   
   if(contrun)
   {
