@@ -126,6 +126,18 @@ void DvisEstInterface::RunDvisEst()
     true,
     false
     );
+
+  CmdProcessKill->OnOutput().BindLambda(
+    [=](const FString& outputMessage)
+    {
+      FString outputString(outputMessage);
+      std::string result = std::string(TCHAR_TO_UTF8(*outputString));
+
+      // getting test output is handy
+      test_string += "KB->" + result + "\n";
+    }
+  );
+
   CmdProcessKill->Launch();
 
   // Now we can do the real call using the .bat file so we don't have to RX STDERR
@@ -167,7 +179,7 @@ void DvisEstInterface::RunDvisEst()
       ParseDvisEstLine(result);
 
       // getting test output is handy
-      //test_string += result + "\n";
+      test_string += "RB->" + result + "\n";
     }
   );
 
@@ -260,6 +272,18 @@ void DvisEstInterface::Exit()
     true,
     false
     );
+
+  CmdProcessKill->OnOutput().BindLambda(
+    [=](const FString& outputMessage)
+    {
+      FString outputString(outputMessage);
+      std::string result = std::string(TCHAR_TO_UTF8(*outputString));
+
+      // getting test output is handy
+      test_string += "KB->" + result + "\n";
+    }
+  );
+  
   CmdProcessKill->Launch();
 }
 
