@@ -103,15 +103,17 @@ void DvisEstInterface::RunDvisEst()
 
   std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
 
+  batFileKill << "taskkill /F /IM dvd_DvisEst.exe" << std::endl;
+
   // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
   // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
-  batFileKill << "@Echo off & SetLocal EnableDelayedExpansion" << std::endl;
-  batFileKill << "set \"PID=\"" << std::endl;
-  batFileKill << "for /f \"tokens=2\" %%A in ('tasklist ^| findstr /i \"dvd_DvisEst.exe\" 2^>NUL') do @Set \"PID=!PID!,%%A\"" << std::endl;
-  batFileKill << "if defined PID Echo dvd_DvisEst.exe has PID(s) %PID:~1%" << std::endl;
+  //batFileKill << "@Echo off & SetLocal EnableDelayedExpansion" << std::endl;
+  //batFileKill << "set \"PID=\"" << std::endl;
+  //batFileKill << "for /f \"tokens=2\" %%A in ('tasklist ^| findstr /i \"dvd_DvisEst.exe\" 2^>NUL') do @Set \"PID=!PID!,%%A\"" << std::endl;
+  //batFileKill << "if defined PID Echo dvd_DvisEst.exe has PID(s) %PID:~1%" << std::endl;
   // this line is the reason this needs to be 2 commands, 
   // since suppressing the STUPID "Terminate batch job (Y/N)?"" prompt is almost impossible
-  batFileKill << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "windows-kill.exe" + "\"" + " -SIGINT %PID:~1%" << std::endl;
+  //batFileKill << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "windows-kill.exe" + "\"" + " -SIGINT %PID:~1%" << std::endl;
   batFileKill.close();
 
   // Run the kil thing separately since multi-line bat files are buggy and weird
@@ -143,7 +145,7 @@ void DvisEstInterface::RunDvisEst()
   // Now we can do the real call using the .bat file so we don't have to RX STDERR
   // real command
   std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
-   // ping until the process is dead
+  // ping until the process is dead
   batFile << ":loop" << std::endl;
   batFile << "ping -n 2 127.0.0.1 >nul" << std::endl; // delay for 1 second
   batFile << "tasklist /FI \"IMAGENAME eq dvd_DvisEst.exe\" 2>NUL | find /I /N \"dvd_DvisEst.exe\">NUL" << std::endl;
@@ -283,7 +285,7 @@ void DvisEstInterface::Exit()
       test_string += "KB->" + result + "\n";
     }
   );
-  
+
   CmdProcessKill->Launch();
 }
 
