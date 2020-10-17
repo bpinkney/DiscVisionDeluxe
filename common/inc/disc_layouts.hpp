@@ -113,7 +113,8 @@ enum class dvd_DvisEst_error
   NONE,
   EST_QUEUE_FULL,
   NO_CAMERA_DETECTED,
-  PROGRAM_TERMINATED
+  PROGRAM_TERMINATED,
+  DETECT_TIMED_OUT_BEFORE_EST,
 };
 
 // Define static getter/setter for key:value pair lookups used in dvd_DvisEst outputs

@@ -880,12 +880,22 @@ int process_filter_thread(void)
     // frame_id_delta * dt > timeout -> trigger the timeout    
     const double apriltag_detect_loss_time_s = (double)(sv_last_meas_frame_id - sv_last_pop_meas_frame_id) / max(CLOSE_TO_ZERO, dvd_DvisEst_image_capture_get_fps());
 
+    const bool tags_last_detected = dvd_DvisEst_estimate_get_tags_detected();
+    const bool at_detect_timeout = apriltag_detect_loss_time_s >= KF_FILTER_TAG_DETECT_RESET_TIME_S && tags_last_detected;
+    const bool meas_count_max = meas_count_populated > KF_EST_MAX_MEAS_FRAMES && tags_last_detected;
+    const bool test_queue_empty = dvd_DvisEst_image_capture_image_capture_queue_empty() && tags_last_detected;
+
     if(
-        (apriltag_detect_loss_time_s >= KF_FILTER_TAG_DETECT_RESET_TIME_S || meas_count_populated > KF_EST_MAX_MEAS_FRAMES || dvd_DvisEst_image_capture_image_capture_queue_empty()) && 
-        dvd_DvisEst_estimate_get_tags_detected() &&
+        (at_detect_timeout || meas_count_max || test_queue_empty) &&
         sv_kf_estimate_stage < KF_EST_STAGE_PRIME
       )
     {
+      // output and error if we have lost apriltags before the PRIME stage
+      if(at_detect_timeout && sv_kf_estimate_stage < KF_EST_STAGE_READY)
+      {
+        std::cout << "error:" << (int)dvd_DvisEst_error::DETECT_TIMED_OUT_BEFORE_EST << "," << std::endl;
+      }
+
       // mark filter as ready for prime
       if(sv_kf_estimate_stage == KF_EST_STAGE_READY)
       {

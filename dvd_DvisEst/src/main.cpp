@@ -775,6 +775,7 @@ int main(int argc, char** argv )
     bool got_output = false;
     char output_cmd[512] = {0};
     dvd_DvisEst_kf_state_t kf_state;
+    memset(&kf_state, 0, sizeof(dvd_DvisEst_kf_state_t));
 
     if(!set_gnd_plane)
     {

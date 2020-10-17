@@ -181,7 +181,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
   // Local def for image capture
   image_capture_t image_capture;
   // which measurement slot we are assigned
-  uint8_t meas_slot_id;
+  uint8_t meas_slot_id = 0;
 
   // Apriltag objects
 
