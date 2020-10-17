@@ -964,6 +964,7 @@ int process_filter_thread(void)
 
         if(log_meas && log_state)
         {
+          std::cerr << "Log dir: " << sv_log_dir << std::endl;
           // Let's write some metadata out to the logging directory now that the filter has begun
           // I'm just going to hardcode these associations right now or logging's sake
           const int queue_size = meas_prime_queue.size()-1;
@@ -998,6 +999,9 @@ int process_filter_thread(void)
                 disc_name_string = "UNDEFINED";
                 break;    
             }
+            
+            std::cerr << "Disc Name String: " << disc_name_string << std::endl;
+
             std::ofstream metadata;
             metadata.open(sv_log_dir + "metadata_" + disc_name_string + ".txt", std::ios_base::trunc);
             metadata << disc_name_string << endl;
