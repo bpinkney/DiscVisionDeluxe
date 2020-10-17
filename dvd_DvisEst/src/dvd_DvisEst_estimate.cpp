@@ -962,49 +962,52 @@ int process_filter_thread(void)
         //sv_kf_estimate_complete = true;
         latch_toc = true;
 
-        // Let's write some metadata out to the logging directory now that the filter has begun
-        // I'm just going to hardcode these associations right now or logging's sake
-        const int queue_size = meas_prime_queue.size()-1;
-        if(queue_size > 0)
+        if(log_meas && log_state)
         {
-          std::string disc_name_string = "";
-          sv_kf_state.disc_index = meas_prime_queue[queue_size].disc_index;
-          switch(meas_prime_queue[queue_size].disc_index)
+          // Let's write some metadata out to the logging directory now that the filter has begun
+          // I'm just going to hardcode these associations right now or logging's sake
+          const int queue_size = meas_prime_queue.size()-1;
+          if(queue_size > 0)
           {
-            case DiscIndex::GROUNDPLANE:
-              disc_name_string = "GROUNDPLANE";
-              break;
-            case DiscIndex::PUTTER:
-              disc_name_string = "MAGNET_JAWBREAKER";
-              break;
-            case DiscIndex::PUTTER_OS:
-              disc_name_string = "ZONE_JAWBREAKER";
-              break;
-            case DiscIndex::DRIVER:
-              disc_name_string = "SKRIKE_STAR";
-              break;
-            case DiscIndex::MIDRANGE:
-              disc_name_string = "BUZZZ_BIGZ";
-              break;
-            case DiscIndex::FAIRWAY:
-              disc_name_string = "TBIRD_STAR";
-              break;
-            case DiscIndex::DRIVER_OS:
-              disc_name_string = "DESTROYER_DX";
-              break;
-            default:
-              disc_name_string = "UNDEFINED";
-              break;    
+            std::string disc_name_string = "";
+            sv_kf_state.disc_index = meas_prime_queue[queue_size].disc_index;
+            switch(meas_prime_queue[queue_size].disc_index)
+            {
+              case DiscIndex::GROUNDPLANE:
+                disc_name_string = "GROUNDPLANE";
+                break;
+              case DiscIndex::PUTTER:
+                disc_name_string = "MAGNET_JAWBREAKER";
+                break;
+              case DiscIndex::PUTTER_OS:
+                disc_name_string = "ZONE_JAWBREAKER";
+                break;
+              case DiscIndex::DRIVER:
+                disc_name_string = "SKRIKE_STAR";
+                break;
+              case DiscIndex::MIDRANGE:
+                disc_name_string = "BUZZZ_BIGZ";
+                break;
+              case DiscIndex::FAIRWAY:
+                disc_name_string = "TBIRD_STAR";
+                break;
+              case DiscIndex::DRIVER_OS:
+                disc_name_string = "DESTROYER_DX";
+                break;
+              default:
+                disc_name_string = "UNDEFINED";
+                break;    
+            }
+            std::ofstream metadata;
+            metadata.open(sv_log_dir + "metadata_" + disc_name_string + ".txt", std::ios_base::trunc);
+            metadata << disc_name_string << endl;
+            metadata << "GP: " + sv_groundplane_filepath << endl;
+            metadata.close();
           }
-          std::ofstream metadata;
-          metadata.open(sv_log_dir + "metadata_" + disc_name_string + ".txt", std::ios_base::trunc);
-          metadata << disc_name_string << endl;
-          metadata << "GP: " + sv_groundplane_filepath << endl;
-          metadata.close();
-        }
-        else
-        {
-          cerr << "All meas frames were already purged! No metadata for you!" << endl;
+          else
+          {
+            cerr << "All meas frames were already purged! No metadata for you!" << endl;
+          }
         }
 
       }
