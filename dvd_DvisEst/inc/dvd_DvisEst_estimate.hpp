@@ -101,8 +101,11 @@ void dvd_DvisEst_estimate_update_groundplane(cv::Matx33d R_CG, cv::Matx31d T_CG)
 // Run the Kalman Filter
 void dvd_DvisEst_estimate_process_filter(void);
 
-// Join Kalman Filter thread
+// get output
 bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_state);
+
+// wrap up logging files etc.
+void dvd_DvisEst_estimate_complete_filter(void);
 
 // Join Kalman Filter thread
 void dvd_DvisEst_estimate_end_filter(void);

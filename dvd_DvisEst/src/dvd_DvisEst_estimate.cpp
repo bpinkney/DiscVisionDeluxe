@@ -170,6 +170,10 @@ std::atomic<uint32_t> meas_count_empty     (0);
 std::atomic<uint32_t> sv_last_meas_frame_id (0);
 std::atomic<uint32_t> sv_last_pop_meas_frame_id (0);
 
+// profiling
+bool latch_tic = false;
+bool latch_toc = false;
+
 // log file pointers
 bool log_meas  (false);
 bool log_state (false);
@@ -250,15 +254,21 @@ void toc() {
 }
 
 // write measurements and states to output files
-static void meas_csv_log_open()
-{
-  meas_csvlog.open(sv_log_dir + "meas.csv", std::ios_base::trunc);// discard old file contents each run
-  meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
-}
-
 static void meas_csv_log_close()
 {
   meas_csvlog.close();
+}
+
+static void meas_csv_log_open()
+{
+  if(meas_csvlog.is_open())
+  {
+    std::cerr << "Had to force close meas_csv file!" << std::endl;
+    meas_csv_log_close();
+  }  
+
+  meas_csvlog.open(sv_log_dir + "meas.csv", std::ios_base::trunc);// discard old file contents each run
+  meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 }
 
 static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time_ns, const bool filter_active)
@@ -277,8 +287,19 @@ static void meas_csv_log_write(dvd_DvisEst_kf_meas_t * meas, uint64_t state_time
   meas_csvlog << out << endl;
 }
 
+static void state_csv_log_close()
+{
+  state_csvlog.close();
+}
+
 static void state_csv_log_open()
 {
+  if(state_csvlog.is_open())
+  {
+    std::cerr << "Had to force close state_csv file!" << std::endl;
+    state_csv_log_close();
+  }
+
   state_csvlog.open(sv_log_dir + "state.csv", std::ios_base::trunc);// discard old file contents each run
   state_csvlog << 
     "time_ms, lin_x_pos, lin_y_pos, lin_z_pos, lin_x_vel, lin_y_vel, lin_z_vel, "
@@ -288,11 +309,6 @@ static void state_csv_log_open()
              "ang_h_pos_var, ang_p_pos_var, ang_s_pos_var, "
              "ang_h_vel_var, ang_p_vel_var, ang_s_vel_var"
     << endl;
-}
-
-static void state_csv_log_close()
-{
-  state_csvlog.close();
 }
 
 static void state_csv_log_write(dvd_DvisEst_kf_state_t * state)
@@ -425,6 +441,9 @@ bool dvd_DvisEst_estimate_init(const bool kflog)
 
   sv_last_meas_frame_id     = 0;
   sv_last_pop_meas_frame_id = 0;
+
+  latch_tic = false;
+  latch_toc = false;
 
   // enable test logging
   if(kflog)
@@ -867,9 +886,6 @@ int process_filter_thread(void)
   uint64_t last_loop_ns = 0;
   uint64_t now;
 
-  bool latch_tic = false;
-  bool latch_toc = false;
-
   while((sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE || gv_force_continuous_mode) && !gv_force_complete_threads)
   {
     now = uptime_get_ns();
@@ -958,11 +974,9 @@ int process_filter_thread(void)
       // and do some profiling (this is valid for test images only!)
       if((dvd_DvisEst_image_capture_image_capture_queue_empty() || sv_kf_estimate_stage > KF_EST_STAGE_PRIME) && latch_tic && !latch_toc)
       {
-        toc();
-        //sv_kf_estimate_complete = true;
-        latch_toc = true;
+        toc();        
 
-        if(log_meas && log_state)
+        if(log_meas && log_state && !latch_toc)
         {
           std::cerr << "Log dir: " << sv_log_dir << std::endl;
           // Let's write some metadata out to the logging directory now that the filter has begun
@@ -1013,7 +1027,7 @@ int process_filter_thread(void)
             cerr << "All meas frames were already purged! No metadata for you!" << endl;
           }
         }
-
+        latch_toc = true;
       }
 
       last_loop_ns = now;
@@ -1491,6 +1505,19 @@ bool dvd_DvisEst_estimate_get_ideal_output_state(dvd_DvisEst_kf_state_t * kf_sta
   return false;
 }
 
+void dvd_DvisEst_estimate_complete_filter(void)
+{
+  // init test logs
+  if(log_meas)
+  {
+    meas_csv_log_close();
+  }
+  if(log_state)
+  {
+    state_csv_log_close();
+  }
+}
+
 void dvd_DvisEst_estimate_end_filter(void)
 {
   if(kf_process_filter.joinable())
@@ -1501,16 +1528,6 @@ void dvd_DvisEst_estimate_end_filter(void)
   else 
   {
     cerr << "dvd_DvisEst_estimate_end_filter thread has already joined!" << endl; 
-  }  
-
-  // init test logs
-  if(log_meas)
-  {
-    meas_csv_log_close();
-  }
-  if(log_state)
-  {
-    state_csv_log_close();
   }
 }
 

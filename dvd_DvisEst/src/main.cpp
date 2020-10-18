@@ -583,8 +583,6 @@ int main(int argc, char** argv )
   cerr << "Ground Plane Path: "  << gnd_plane << endl;
   dvd_DvisEst_estimate_set_ground_plane_file(gnd_plane);
 
-  std::string log_debug_path;
-
   if(camera_src && !nocam)
   {
     // Init camera interface
@@ -691,7 +689,7 @@ int main(int argc, char** argv )
   }
 
   // Init remaining calls and loop if required
-  if(debug)
+  if(debug && !contrun)
   {
     set_logging_dir();
   }
@@ -699,7 +697,7 @@ int main(int argc, char** argv )
   if(!set_gnd_plane)
   {  
     // allocate measurement slots and prep Kalman Filter initial states
-    if(!dvd_DvisEst_estimate_init(debug))
+    if(!dvd_DvisEst_estimate_init(debug && !contrun))
     {
       cerr << "Can't read ground plane, exiting...!" << endl;
       return 1;
@@ -761,6 +759,12 @@ int main(int argc, char** argv )
   {
     if(contrun && !set_gnd_plane)
     {
+      // reset the logging dir
+      if(debug)
+      {
+        set_logging_dir();
+      }
+
       // re-allocate measurement slots and prep Kalman Filter initial states
       if(!dvd_DvisEst_estimate_init(debug))
       {
@@ -888,9 +892,11 @@ int main(int argc, char** argv )
       }
 
       // also pipe this into the metadata file
-      if(debug)
+      if(debug && got_output)
       {
         std::stringstream ss_metadata;
+        std::string log_debug_path = dvd_DvisEst_estimate_get_log_dir();
+        //std::cerr << "Trying to pipe extra metadata to: --> '" << log_debug_path << "' <--" << std::endl;
         ss_metadata << "FILEPATH=$(ls " << log_debug_path << "metadata*); echo \"" << output_cmd << "\" >> " << "$FILEPATH";
         std::system(ss_metadata.str().c_str());
       }
@@ -903,11 +909,28 @@ int main(int argc, char** argv )
       dvd_DvisEst_apriltag_end();
     }
 
+    // wrap up logging
+    std::string log_debug_path = dvd_DvisEst_estimate_get_log_dir();
+    if(debug && !log_debug_path.empty())
+    {
+      dvd_DvisEst_estimate_complete_filter();
+    }
+
     if(!set_gnd_plane)
     {
       if(!got_output && !gianttext)
       {
         cerr << ("No ouput state! Sorry!\n") << endl;
+
+        if(debug && !log_debug_path.empty())
+        {
+          //cv::glob(log_debug_path,fn,true);
+          //if(fn.size() == 0)
+          //{
+          cv::utils::fs::remove_all(log_debug_path);
+          cerr << "Deleted logging folder '" << log_debug_path << "'" << endl;
+          //}
+        }
       }
 
       // plotting with matlab!
@@ -920,6 +943,7 @@ int main(int argc, char** argv )
 
         // get abs path
         char abs_path[512];
+        std::string log_debug_path = dvd_DvisEst_estimate_get_log_dir();
         realpath(log_debug_path.c_str(), abs_path);
 
         sprintf(output_cmd, "cd ../matlab/visualizers/; matlab -nosplash -nodesktop -r \"plot_test_log_kfstate('%s')\" &",
@@ -1114,18 +1138,6 @@ int main(int argc, char** argv )
       break;
     }
   }
-
-  // if we didn't log anything, delete the logging dir
-  if(debug && !log_debug_path.empty())
-  {
-    cv::glob(log_debug_path,fn,true);
-    if(fn.size() == 0)
-    {
-      cv::utils::fs::remove_all(log_debug_path);
-      cerr << "Deleted logging folder '" << log_debug_path << "'" << endl;
-    }
-  }
-
   return 0;
 }
 
