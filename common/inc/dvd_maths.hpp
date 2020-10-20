@@ -37,6 +37,12 @@
 #define M_PI (3.14159265359)
 #endif
 
+#define DT_1Hz    (1.0)
+#define DT_10Hz   (1.0/10.0)
+#define DT_50Hz   (1.0/50.0)
+#define DT_100Hz  (1.0/100.0)
+#define DT_200Hz  (1.0/200.0)
+
 #define DEG_TO_RAD(deg)                 ((deg) * M_PI / 180.0)
 #define RAD_TO_DEG(rad)                 ((rad) * 180.0 / M_PI)
 #define MRAD_TO_RAD(mrad)               ((mrad) * 0.001)

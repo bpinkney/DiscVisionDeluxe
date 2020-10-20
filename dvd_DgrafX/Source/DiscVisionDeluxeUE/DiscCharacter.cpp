@@ -1,5 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+// general c stuff and timer
+#include <chrono>
+#include <ctime>
 
 //Unreal stuff
 #include "DiscCharacter.h"
@@ -9,11 +12,35 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 // DfisX stuff
+#include "dvd_maths.hpp"
 #include "DfisX\DfisX.hpp"
 #include "ThrowInputController.h"
 
+// define static (local) function headers
+static uint64_t nanos(void);
+static uint64_t uptime_get_ns(void);
+static void RunTimingLoops(void);
 
+// add c-standard timing stuff
+// Get time stamp in nanoseconds.
+static uint64_t nanos()
+{
+  uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::
+          now().time_since_epoch()).count();
+  return ns; 
+}
 
+// Get boot-time stamp in nanoseconds.
+static uint64_t uptime_get_ns()
+{
+  static uint64_t start_time_ns = 0;
+  if(start_time_ns == 0)
+  {
+    start_time_ns = nanos();
+  }
+
+  return (nanos() - start_time_ns); 
+}
 
 ACameraManager* camera_manager;
 AThrowInputController* throw_input_controller;
@@ -56,10 +83,112 @@ void ADiscCharacter::BeginPlay()
 	
 }
 
+static void RunTimingLoops()
+{
+  // example of timing sub-stepping loop
+  static bool skipping_steps_1Hz   = false;
+  static bool skipping_steps_10Hz  = false;
+  static bool skipping_steps_50Hz  = false;
+  static bool skipping_steps_100Hz = false;
+  static bool skipping_steps_200Hz = false;
+
+  static uint64_t last_update_1Hz_time_ns   = 0;
+  static uint64_t last_update_10Hz_time_ns  = 0;
+  static uint64_t last_update_50Hz_time_ns  = 0;
+  static uint64_t last_update_100Hz_time_ns = 0;
+  static uint64_t last_update_200Hz_time_ns = 0;
+
+  uint64_t current_time_ns = uptime_get_ns();
+  // run 1Hz loop
+  if(current_time_ns >= last_update_1Hz_time_ns + S_TO_NS(DT_1Hz))
+  {
+    if(!skipping_steps_1Hz && (current_time_ns >= last_update_1Hz_time_ns + S_TO_NS(DT_1Hz) * 2.0))
+    {
+      skipping_steps_1Hz = true;
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "1Hz loop is skipping steps!");
+    }
+    else
+    {
+      skipping_steps_1Hz = false;
+    }
+
+    last_update_1Hz_time_ns = current_time_ns;
+    //do 1Hz processes
+  }
+
+  // run 10Hz loop
+  if(current_time_ns >= last_update_10Hz_time_ns + S_TO_NS(DT_10Hz))
+  {
+    if(!skipping_steps_10Hz && (current_time_ns >= last_update_10Hz_time_ns + S_TO_NS(DT_10Hz) * 2.0))
+    {
+      skipping_steps_10Hz = true;
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "10Hz loop is skipping steps!");
+    }
+    else
+    {
+      skipping_steps_10Hz = false;
+    }
+
+    last_update_10Hz_time_ns = current_time_ns;
+    //do 10Hz processes
+  }
+
+  // run 50Hz loop
+  if(current_time_ns >= last_update_50Hz_time_ns + S_TO_NS(DT_50Hz))
+  {
+    if(!skipping_steps_50Hz && (current_time_ns >= last_update_50Hz_time_ns + S_TO_NS(DT_50Hz) * 2.0))
+    {
+      skipping_steps_50Hz = true;
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "50Hz loop is skipping steps!");
+    }
+    else
+    {
+      skipping_steps_50Hz = false;
+    }
+
+    last_update_50Hz_time_ns = current_time_ns;
+    //do 50Hz processes
+  }
+
+  if(current_time_ns >= last_update_100Hz_time_ns + S_TO_NS(DT_100Hz))
+  {
+    if(!skipping_steps_100Hz && (current_time_ns >= last_update_100Hz_time_ns + S_TO_NS(DT_100Hz) * 2.0))
+    {
+      skipping_steps_100Hz = true;
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "50Hz loop is skipping steps!");
+    }
+    else
+    {
+      skipping_steps_100Hz = false;
+    }
+
+    last_update_100Hz_time_ns = current_time_ns;
+    //do 100Hz processes
+  }
+
+  if(current_time_ns >= last_update_200Hz_time_ns + S_TO_NS(DT_200Hz))
+  {
+    if(!skipping_steps_200Hz && (current_time_ns >= last_update_200Hz_time_ns + S_TO_NS(DT_200Hz) * 2.0))
+    {
+      skipping_steps_200Hz = true;
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "200Hz loop is skipping steps!");
+    }
+    else
+    {
+      skipping_steps_200Hz = false;
+    }
+
+    last_update_200Hz_time_ns = current_time_ns;
+    //do 200Hz processes
+  }
+}
+
 // Called every frame
 void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+  RunTimingLoops();
 
   DfisX::step_simulation (DeltaTime);
 }
