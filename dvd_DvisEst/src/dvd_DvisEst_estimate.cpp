@@ -11,7 +11,7 @@
 
 #include <dvd_DvisEst_estimate.hpp>
 #include <dvd_DvisEst_image_capture.hpp>
-#include <dvd_DvisEst_maths.hpp>
+#include <dvd_maths.hpp>
 
 #include <iostream>
 #include <vector>

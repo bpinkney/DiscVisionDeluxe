@@ -1,5 +1,5 @@
-#ifndef DVD_DVISEST_MATHS_HPP
-#define DVD_DVISEST_MATHS_HPP
+#ifndef DVD_MATHS_HPP
+#define DVD_MATHS_HPP
 
 // This header just contains useful math macros and functions, mostly used by dvd_DvisEst_estimate
 
@@ -156,4 +156,4 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
   R[i3x3(2,2)] = 1.0-(q1q1 + q2q2);
 }
 
-#endif // DVD_DVISEST_MATHS_HPP
+#endif // DVD_MATHS_HPP
