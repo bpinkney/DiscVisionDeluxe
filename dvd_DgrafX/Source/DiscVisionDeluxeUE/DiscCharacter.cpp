@@ -43,13 +43,13 @@ void ADiscCharacter::BeginPlay()
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
-    camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-    camera_manager->set_player_target(PC);
-    camera_manager->focus_on_player();
+    ptr_camera_manager->set_player_target(PC);
+    ptr_camera_manager->focus_on_player();
 
     ///throw input controller init  
-    throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
 
 
 	if (GEngine)

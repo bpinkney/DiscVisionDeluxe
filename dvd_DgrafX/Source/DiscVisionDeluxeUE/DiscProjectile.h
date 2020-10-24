@@ -40,8 +40,6 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = Curve)
-	UCurveFloat* FlightCurve;
 
 	//UPROPERTY()
 	//AFollowFlight* followflight;

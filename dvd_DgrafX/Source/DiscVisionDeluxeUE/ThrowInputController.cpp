@@ -4,11 +4,12 @@
 #include "ThrowInputController.h"
 #include "HAL/RunnableThread.h"
 #include "DvisEstInterface.h"
+#include "DiscThrow.h"
 #include "DiscCharacter.h"
 
 // convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (true)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+#define DVISEST_INTERFACE_ENABLED              (false)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
 
 // Sets default values
 AThrowInputController::AThrowInputController()
@@ -66,7 +67,13 @@ void AThrowInputController::Tick(float DeltaTime)
 void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_init_state)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Perform Captured throw!."));
-	AActor* parent_disc_character = this->GetOwner();
+
+	UWorld* World = GetWorld();
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = GetOwner();
+    SpawnParams.Instigator = GetInstigator();
+
+    ADiscThrow* disc_throw = World->SpawnActor<ADiscThrow>(DiscThrowBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
         
           // Some magic will happen here for the mapping between the DvisEst DiscIndex
           // e.g. MIDRANGE_OS
@@ -78,7 +85,7 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
 
           // perform a new throw!
 	 //DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
-          static_cast<ADiscCharacter*>(parent_disc_character)->new_captured_throw(
+          disc_throw->new_captured_throw(
             static_cast<int>(new_disc_init_state->discmold),   //disc_mold_enum goes here, static cast it to int though because it is passing through uproperties first. it will get cast back when it hits dfisx
             FVector(
               100 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here

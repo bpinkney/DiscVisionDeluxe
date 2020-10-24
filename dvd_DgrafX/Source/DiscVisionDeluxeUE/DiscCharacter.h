@@ -62,22 +62,16 @@ public:
 	UFUNCTION()
 	  void Action4();
 
-	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-	void DestroyDiscs();
-
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-	  void new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble);
-
-	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
-	  void new_captured_throw(int captured_disc_mold_enum, FVector captured_position, FVector captured_velocity, float captured_world_roll, float captured_world_pitch, float captured_spin_speed, float captured_wobble);
-
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-		void new_throw_world_frame ( int disc_mold_enum,FVector thrown_disc_position,FVector v3d_thrown_disc_velocity, float thrown_disc_roll, float thrown_disc_pitch, float thrown_disc_radians_per_second, float thrown_disc_wobble);
-
 
 	// Gun muzzle's offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector MuzzleOffset;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+      class ACameraManager* ptr_camera_manager;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+      class AThrowInputController* ptr_throw_input_controller;
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = "Disc Throwing")
