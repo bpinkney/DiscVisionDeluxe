@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-// general c stuff and timer
-#include <chrono>
-#include <ctime>
+
 
 //Unreal stuff
 #include "DiscCharacter.h"
@@ -16,34 +14,10 @@
 #include "DfisX\DfisX.hpp"
 #include "ThrowInputController.h"
 
-// define static (local) function headers
-static uint64_t nanos(void);
-static uint64_t uptime_get_ns(void);
-static void RunTimingLoops(void);
 
-// add c-standard timing stuff
-// Get time stamp in nanoseconds.
-static uint64_t nanos()
-{
-  uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::
-          now().time_since_epoch()).count();
-  return ns; 
-}
 
-// Get boot-time stamp in nanoseconds.
-static uint64_t uptime_get_ns()
-{
-  static uint64_t start_time_ns = 0;
-  if(start_time_ns == 0)
-  {
-    start_time_ns = nanos();
-  }
 
-  return (nanos() - start_time_ns); 
-}
 
-ACameraManager* camera_manager;
-AThrowInputController* throw_input_controller;
 
 
 // Sets default values
@@ -51,6 +25,9 @@ ADiscCharacter::ADiscCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -83,112 +60,14 @@ void ADiscCharacter::BeginPlay()
 	
 }
 
-static void RunTimingLoops()
-{
-  // example of timing sub-stepping loop
-  static bool skipping_steps_1Hz   = false;
-  static bool skipping_steps_10Hz  = false;
-  static bool skipping_steps_50Hz  = false;
-  static bool skipping_steps_100Hz = false;
-  static bool skipping_steps_200Hz = false;
 
-  static uint64_t last_update_1Hz_time_ns   = 0;
-  static uint64_t last_update_10Hz_time_ns  = 0;
-  static uint64_t last_update_50Hz_time_ns  = 0;
-  static uint64_t last_update_100Hz_time_ns = 0;
-  static uint64_t last_update_200Hz_time_ns = 0;
-
-  uint64_t current_time_ns = uptime_get_ns();
-  // run 1Hz loop
-  if(current_time_ns >= last_update_1Hz_time_ns + S_TO_NS(DT_1Hz))
-  {
-    if(!skipping_steps_1Hz && (current_time_ns >= last_update_1Hz_time_ns + S_TO_NS(DT_1Hz) * 2.0))
-    {
-      skipping_steps_1Hz = true;
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "1Hz loop is skipping steps!");
-    }
-    else
-    {
-      skipping_steps_1Hz = false;
-    }
-
-    last_update_1Hz_time_ns = current_time_ns;
-    //do 1Hz processes
-  }
-
-  // run 10Hz loop
-  if(current_time_ns >= last_update_10Hz_time_ns + S_TO_NS(DT_10Hz))
-  {
-    if(!skipping_steps_10Hz && (current_time_ns >= last_update_10Hz_time_ns + S_TO_NS(DT_10Hz) * 2.0))
-    {
-      skipping_steps_10Hz = true;
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "10Hz loop is skipping steps!");
-    }
-    else
-    {
-      skipping_steps_10Hz = false;
-    }
-
-    last_update_10Hz_time_ns = current_time_ns;
-    //do 10Hz processes
-  }
-
-  // run 50Hz loop
-  if(current_time_ns >= last_update_50Hz_time_ns + S_TO_NS(DT_50Hz))
-  {
-    if(!skipping_steps_50Hz && (current_time_ns >= last_update_50Hz_time_ns + S_TO_NS(DT_50Hz) * 2.0))
-    {
-      skipping_steps_50Hz = true;
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "50Hz loop is skipping steps!");
-    }
-    else
-    {
-      skipping_steps_50Hz = false;
-    }
-
-    last_update_50Hz_time_ns = current_time_ns;
-    //do 50Hz processes
-  }
-
-  if(current_time_ns >= last_update_100Hz_time_ns + S_TO_NS(DT_100Hz))
-  {
-    if(!skipping_steps_100Hz && (current_time_ns >= last_update_100Hz_time_ns + S_TO_NS(DT_100Hz) * 2.0))
-    {
-      skipping_steps_100Hz = true;
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "50Hz loop is skipping steps!");
-    }
-    else
-    {
-      skipping_steps_100Hz = false;
-    }
-
-    last_update_100Hz_time_ns = current_time_ns;
-    //do 100Hz processes
-  }
-
-  if(current_time_ns >= last_update_200Hz_time_ns + S_TO_NS(DT_200Hz))
-  {
-    if(!skipping_steps_200Hz && (current_time_ns >= last_update_200Hz_time_ns + S_TO_NS(DT_200Hz) * 2.0))
-    {
-      skipping_steps_200Hz = true;
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "200Hz loop is skipping steps!");
-    }
-    else
-    {
-      skipping_steps_200Hz = false;
-    }
-
-    last_update_200Hz_time_ns = current_time_ns;
-    //do 200Hz processes
-  }
-}
 
 // Called every frame
 void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-  RunTimingLoops();
+  //RunTimingLoops();
 
   DfisX::step_simulation (DeltaTime);
 }
@@ -238,10 +117,6 @@ void ADiscCharacter::ZoomCamera(float Value)
     AddMovementInput(Direction, Value);
 }
 */
-void DestroyDiscs()
-{
-    ;
-}
 
 void ADiscCharacter::Quit()
 {
@@ -282,56 +157,6 @@ void ADiscCharacter::Fire()
   // override with handy quit key mapping for now
   //UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
   //PerformThrow(true, nullptr);
-}
-
-///used for debug throws
-void ADiscCharacter::new_throw_camera_realtive (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
-{
-    DestroyDiscs();
-    // Get the camera transform.
-  FVector current_location = FVector (0,0,40) + this->GetActorLocation();
-    
-  UWorld* World = GetWorld();
-  FActorSpawnParameters SpawnParams;
-  SpawnParams.Owner = this;
-  SpawnParams.Instigator = GetInstigator();
-      // Spawn the projectile at the muzzle.
-  ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-  camera_manager->focus_on_disc(Projectile);
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
-  DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),Eigen::Vector3d (thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),thrown_disc_speed,thrown_disc_direction,thrown_disc_loft,thrown_disc_roll,thrown_disc_pitch,thrown_disc_spin_percent,thrown_disc_wobble);
-}
-
-
-///used for captured throws
-void ADiscCharacter::new_throw_world_frame ( int disc_mold_enum,FVector thrown_disc_position,FVector thrown_disc_velocity, float thrown_disc_roll, float thrown_disc_pitch, float thrown_disc_radians_per_second, float thrown_disc_wobble)
-
-{
-    DestroyDiscs();
-    // Get the camera transform.
-  FVector current_location = FVector (0,0,40) + this->GetActorLocation();
-    
-  UWorld* World = GetWorld();
-  FActorSpawnParameters SpawnParams;
-  SpawnParams.Owner = this;
-  SpawnParams.Instigator = GetInstigator();
-      // Spawn the projectile at the muzzle.
-  ADiscProjectile* Projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-  camera_manager->focus_on_disc(Projectile);
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
-  
-
-    Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100);
-    Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
-    DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),v3d_thrown_disc_position,v3d_thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
-
-}
-
-void new_captured_throw(int captured_disc_mold_enum, FVector captured_position, FVector captured_velocity, float captured_world_roll, float captured_world_pitch, float captured_spin_speed, float captured_wobble)
-
-{
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Captured throw!."));
-    ;
 }
 
 
