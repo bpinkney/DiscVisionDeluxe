@@ -23,10 +23,12 @@ DvisEstInterface::DvisEstInterface(const bool generated_throws)
   DvisEstInitComplete = false;
   ReadyToThrow = false;
   NewThrowReady = false;
-  LastDiscIndex = (DiscIndex)0;
+  LastDiscIndex = DiscIndex::NONE;
 
   // init
+  NewThrowMutex.lock();
   memset(&disc_init_state, 0, sizeof(disc_init_state_t));
+  NewThrowMutex.unlock();
 }
 
 void DvisEstInterface::ParseDvisEstLine(std::string result)
@@ -43,6 +45,11 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
   size_t pos_out = 0;
   size_t pos_in  = 0;
   std::string token;
+
+  // mutex this entire block so we ensure a full parsing before 
+  // any other threads fetch the disc_init_state struct instance
+  NewThrowMutex.lock();
+
   while ((pos_out = s.find(delimiter_out)) != std::string::npos) 
   {
     if (s.find(delimiter_out) != std::string::npos)
@@ -98,6 +105,8 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
       s.erase(0, pos_out + delimiter_out.length());
     }
   }
+
+  NewThrowMutex.unlock();
 
   // now that all the fields are parsed (how the F does this thread safety work??)
   // we can tip off the main thread
@@ -221,8 +230,10 @@ FString DvisEstInterface::GetTestString()
     ss << "New Throw RX!" << std::endl;
 
   // this parsing seems broken
-  if(((int)LastDiscIndex) > 0)
-    ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
+  if(LastDiscIndex > DiscIndex::NONE)
+    ss << "Last DiscMold = " << (int)((DiscIndex)LastDiscIndex) << std::endl;
+
+  NewThrowMutex.lock();
 
   ss << "Last Throw:" << std::endl << 
     "vel_xyz = [" << disc_init_state.lin_vel_xyz[0] << ", " << disc_init_state.lin_vel_xyz[1] << ", " << disc_init_state.lin_vel_xyz[2] << "] m/s" << std::endl <<
@@ -230,6 +241,8 @@ FString DvisEstInterface::GetTestString()
     "pitch = " << (disc_init_state.ang_pos_hps[1]*57.2957795) << " deg" << std::endl <<
     "spin_d = " << disc_init_state.ang_vel_hps[2] << " rad/s (" << (disc_init_state.ang_vel_hps[2]*9.54929658) << " rpm)" << std::endl <<
     std::endl;
+
+  NewThrowMutex.unlock();
 
   // getting test output is handy
   //ss << test_string;
@@ -243,7 +256,9 @@ void DvisEstInterface::GetDiscInitState(disc_init_state_t * new_disc_init_state)
   // mark new throw as false on fetch
   NewThrowReady = false;
 
+  NewThrowMutex.lock();
   memcpy(new_disc_init_state, &disc_init_state, sizeof(disc_init_state_t));
+  NewThrowMutex.unlock();
 }
 
 bool DvisEstInterface::IsReadyToThrow()
