@@ -140,6 +140,7 @@ void ADiscThrow::spawn_disc_and_follow_flight ()
 void ADiscThrow::end_throw_simulation ()
 {
 	is_throw_simulating = false;
+	ptr_follow_flight->unselect();
 }
 
 

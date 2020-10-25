@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
 	void log_position ();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void select ();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void unselect ();
+
 	
 
 
