@@ -20,6 +20,8 @@
 #define SPINNAKER_ALLOWED
 //#endif
 
+// also changed!
+
 #include <string>
 #include <csignal>
 #include <iostream>
