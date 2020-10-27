@@ -10,6 +10,8 @@
 
 #endif
 
+// test change
+
 //#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
