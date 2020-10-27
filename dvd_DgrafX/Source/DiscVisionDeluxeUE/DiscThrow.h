@@ -16,63 +16,88 @@
 UCLASS()
 class DISCVISIONDELUXEUE_API ADiscThrow : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ADiscThrow();
+  GENERATED_BODY()
+  
+public:  
+  // Sets default values for this actor's properties
+  ADiscThrow();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+  // prtected class vars
+  DfisX::Throw_Container throw_container;
 
-        UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-    void DestroyDiscs();
+  // Called when the game starts or when spawned
+  virtual void BeginPlay() override;
 
-		// Projectile class to spawn.
+public:  
+  // Called every frame
+  virtual void Tick(float DeltaTime) override;
 
+  UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+  void DestroyDiscs();
 
-    UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-	  void new_throw_camera_relative (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble);
+  // Projectile class to spawn.
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void new_throw_camera_relative(
+    const int disc_mold_enum, 
+    const FVector thrown_disc_position, 
+    const float thrown_disc_speed, 
+    const float thrown_disc_direction, 
+    const float thrown_disc_loft, 
+    const float thrown_disc_roll,
+    const float thrown_disc_pitch,
+    const float thrown_disc_spin_percent, 
+    const float thrown_disc_wobble);
 
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-	  void new_captured_throw(int captured_disc_mold_enum, FVector captured_position, FVector captured_velocity, float captured_world_roll, float captured_world_pitch, float captured_spin_speed, float captured_wobble);
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void new_captured_throw(
+    const int captured_disc_mold_enum, 
+    const FVector captured_position, 
+    const FVector captured_velocity, 
+    const float captured_world_roll, 
+    const float captured_world_pitch, 
+    const float captured_spin_speed, 
+    const float captured_wobble);
 
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-		void new_throw_world_frame ( int disc_mold_enum,FVector thrown_disc_position,FVector v3d_thrown_disc_velocity, float thrown_disc_roll, float thrown_disc_pitch, float thrown_disc_radians_per_second, float thrown_disc_wobble);
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void new_throw_world_frame(
+    const int disc_mold_enum,
+    const FVector thrown_disc_position,
+    const FVector v3d_thrown_disc_velocity, 
+    const float thrown_disc_roll, 
+    const float thrown_disc_pitch, 
+    const float thrown_disc_radians_per_second, 
+    const float thrown_disc_wobble);
 
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-		void end_throw_simulation ();
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void end_throw_simulation();
 
-	UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-		void spawn_disc_and_follow_flight ();
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void spawn_disc_and_follow_flight();
 
-    UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
-        TSubclassOf<class ADiscProjectile> ProjectileClass;
+  UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
+  TSubclassOf<class ADiscProjectile> ProjectileClass;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
-        TSubclassOf<class AFollowFlight> FollowFlightBP;
+  UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
+  TSubclassOf<class AFollowFlight> FollowFlightBP;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
-        TSubclassOf<class ADiscCharacter> DiscCharacterBP;
+  UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
+  TSubclassOf<class ADiscCharacter> DiscCharacterBP;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-      class ADiscCharacter* ptr_disc_character;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+  class ADiscCharacter* ptr_disc_character;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-      class ACameraManager* ptr_camera_manager;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+  class ACameraManager* ptr_camera_manager;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-      class AFollowFlight* ptr_follow_flight;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+  class AFollowFlight* ptr_follow_flight;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-      class ADiscProjectile* ptr_disc_projectile;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+  class ADiscProjectile* ptr_disc_projectile;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-      bool is_throw_simulating;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+  bool is_throw_simulating;
 
 };

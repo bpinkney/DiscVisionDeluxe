@@ -2,18 +2,15 @@
 #include <Eigen/Dense>
 #include <vector>
 
-#define d_statistics    active_throw.disc_statistics
-#define d_velocity      active_throw.current_disc_state.disc_velocity
-#define d_location      active_throw.current_disc_state.disc_location
-#define d_orientation   active_throw.current_disc_state.disc_orientation
-#define d_state         active_throw.current_disc_state
-#define d_array         active_throw.disc_state_array
-#define p_state         active_throw.previous_disc_state
-#define d_forces        active_throw.current_disc_state.forces_state
-#define d_object        active_throw.disc_object
-
-
-
+#define d_statistics    throw_container->disc_statistics
+#define d_velocity      throw_container->current_disc_state.disc_velocity
+#define d_location      throw_container->current_disc_state.disc_location
+#define d_orientation   throw_container->current_disc_state.disc_orientation
+#define d_state         throw_container->current_disc_state
+#define d_array         throw_container->disc_state_array
+#define p_state         throw_container->previous_disc_state
+#define d_forces        throw_container->current_disc_state.forces_state
+#define d_object        throw_container->disc_object
 
 //Used for quick radian to degree conversions
 #define RAD_360   6.28318531
@@ -25,21 +22,8 @@
 //disc aerodynamic constant
 #define PI_X_AR   3.99
 
-
-
-
-
-
 namespace DfisX
 {
-
-  extern bool basic_console_logging;
-  extern bool verbose_console_logging;
-  //the amount of time each simulation step simulates
-  extern double step_time_global;
-
-
-
   enum Disc_Mold_Enum
   {
     NONE,
@@ -84,7 +68,6 @@ namespace DfisX
   //Aerodynamic simulation step variables
   //  used to calculate the forces/accelerations on a disc in flight
   struct Forces_State
-
   {
       Eigen::Vector3d current_wind;    //in meters per second as a vector
 
@@ -101,8 +84,6 @@ namespace DfisX
       double collision_torque;
 
       int step_count;
-
-
 
       /////////////aero holders
 
@@ -131,10 +112,6 @@ namespace DfisX
       double stall_induced_drag;
 
       double lift_induced_pitching_moment;  //needs to go into struct
-
-
-
-
   };
 
 
@@ -143,36 +120,31 @@ namespace DfisX
 //
 //   everything needed for display purposes and then some
 struct Disc_State
-
 {
   Eigen::Vector3d disc_location;    //in meters
   Eigen::Vector3d disc_velocity;    //in meters per second
   Eigen::Vector3d disc_orientation; //orientation vector is the normal of the plane inscribed by the disc
   double disc_rotation;             //in radians
   Sim_State sim_state;              //describes the current state of the disc
-  Forces_State forces_state;        //describes the aerodynamic state of a disc in flight including forces,torques,moments, and coefficients
-  
+  Forces_State forces_state;        //describes the aerodynamic state of a disc in flight including forces,torques,moments, and coefficients  
 };
 
 
 
 //Holds variables need through all DfisX related files that are set during runtime
-struct Global_Variables
-
+struct DfisX_Config
 {
   std::string save_path;
   Eigen::Vector3d global_wind_vel;    //in meters per second as a vector
   bool matlab_export;                 //used to export saved results to a matlab visualizer
   std::string install_path;
-
 };
 
 
 
-//Disc Object
-//contains the name and the aerodynamic properties of a disc mold
-struct Disc_Object
-
+//Disc Model
+//contains the name and the physics/aerodynamic properties of a disc mold
+struct Disc_Model
 {
   std::string mold_name;
   float lift_coefficient_base;
@@ -186,14 +158,13 @@ struct Disc_Object
   float radius;
   float area;
 };
-//example....const Disc_Object disc_aviar {"bigz buzzz",0.150000,0.599500,0.050000,-0.015000,0.120000,0.175000,0.217000};
+//example....const Disc_Model disc_aviar {"bigz buzzz",0.150000,0.599500,0.050000,-0.015000,0.120000,0.175000,0.217000};
 
 
 
 //Disc Statistics
 //used to track various stats about a discs flight, such as time aloft and distance travelled
 struct Disc_Statistics
-
 {
   Eigen::Vector3d disc_start_location;
   Eigen::Vector3d disc_finish_location;
@@ -206,48 +177,53 @@ struct Disc_Statistics
 //Throw Container
 //contains all of the info needed to simulate and display a disc
 struct Throw_Container
-
 {
   Disc_State current_disc_state;              //current state of disc
   Disc_State previous_disc_state;             //state of disc last step
-  Disc_Object disc_object;                    //aero properties of disc being simulated
+  Disc_Model disc_object;                    //aero properties of disc being simulated
   Disc_Statistics disc_statistics;            //used to track stats of a flight
   std::vector <Disc_State> disc_state_array;  //array of disc states: used to hold the flight data of a simulated throw
 };
 
 
 
-bool                is_finished_simulating (Throw_Container &throw_container);
+bool                is_finished_simulating(Throw_Container *throw_container);
 
-std::vector <Disc_State> get_disc_state_array (Throw_Container &throw_container);
-
-
-void                test ();
+std::vector <Disc_State> get_disc_state_array(Throw_Container *throw_container);
 
 //Simulates the current throw to completion
-void                simulate_throw();
+void                simulate_throw(Throw_Container *throw_container, const float dt);
 
 //Steps the aero simulation forward one step
-void                step_simulation (float step_time);
+void                step_simulation(Throw_Container *throw_container, const float dt);
 
 //Instantiates a new throw, ready to be stepped or simulated
-void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position,Eigen::Vector3d thrown_disc_velocity, double thrown_disc_roll, double thrown_disc_pitch, double thrown_disc_radians_per_second, double thrown_disc_wobble);
-void                new_throw (Disc_Mold_Enum disc_mold_enum,Eigen::Vector3d thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble);
+void                new_throw(
+  Throw_Container *throw_container, 
+  const Disc_Mold_Enum disc_mold_enum,
+  const Eigen::Vector3d thrown_disc_position,
+  const Eigen::Vector3d thrown_disc_velocity, 
+  const double thrown_disc_roll, 
+  const double thrown_disc_pitch, 
+  const double thrown_disc_radians_per_second, 
+  const double thrown_disc_wobble);
+
+void                new_throw(
+  Throw_Container *throw_container, 
+  const Disc_Mold_Enum disc_mold_enum,
+  const Eigen::Vector3d thrown_disc_position, 
+  const float thrown_disc_speed, 
+  const float thrown_disc_direction, 
+  const float thrown_disc_loft, 
+  const float thrown_disc_roll,
+  const float thrown_disc_pitch,
+  const float thrown_disc_spin_percent, 
+  const float thrown_disc_wobble);
 
 //Finishes a throw
 //This includes things such as saving/serializing the throw and performing various stat calculations
-void                finish_throw        (Throw_Container &throw_container);
+void                finish_throw        (Throw_Container *throw_container, const float dt);
 
-//used to load all of the disc_object aero properties from a csv file into and array
-void                load_disc_parameters   ();
-
-//initializes the DfisX simulator during statup
-void                init                   ();
-
-void                set_save_path       (std::string save_path);
-void                set_global_wind_vel (Eigen::Vector3d global_wind_vel);
-Eigen::Vector3d     get_global_wind_vel    ();
-Disc_State          get_disc_state         ();
 void                activate_matlab_export ();
 
 

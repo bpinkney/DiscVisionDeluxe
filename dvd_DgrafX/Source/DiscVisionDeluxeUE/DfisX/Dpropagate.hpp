@@ -3,7 +3,5 @@
 
 namespace DfisX
 {
-
-void propagate (Throw_Container &active_throw, float step_time);
-
+  void propagate (Throw_Container *throw_container, const float dt);
 }
