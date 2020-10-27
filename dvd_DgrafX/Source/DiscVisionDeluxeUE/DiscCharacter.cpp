@@ -14,11 +14,7 @@
 #include "DfisX\DfisX.hpp"
 #include "ThrowInputController.h"
 
-
-
-
-
-
+//comment
 
 // Sets default values
 ADiscCharacter::ADiscCharacter()
