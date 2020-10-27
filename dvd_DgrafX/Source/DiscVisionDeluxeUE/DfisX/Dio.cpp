@@ -22,7 +22,7 @@ void parse_cl (int argc, char *argv[])
     Default Values for command line        
     */
   bool run_test = 0;
-  DfisX::Disc_Mold_Enum disc_mold_enum; 
+  DfisX::Disc_Mold_Enum disc_mold_enum = DfisX::Disc_Mold_Enum::NONE; 
 
   double posx = 0;
   double posy = 0;
@@ -37,7 +37,7 @@ void parse_cl (int argc, char *argv[])
 
   double thrown_disc_roll = 0;
   double thrown_disc_pitch = 0;
-  double thrown_disc_radians_per_second;
+  double thrown_disc_radians_per_second = 0;
   double thrown_disc_wobble = 0;
 
   Eigen::Vector3d thrown_disc_position;

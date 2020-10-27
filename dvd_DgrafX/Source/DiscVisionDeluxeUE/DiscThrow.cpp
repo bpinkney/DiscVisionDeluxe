@@ -30,9 +30,13 @@ void ADiscThrow::BeginPlay()
 void ADiscThrow::Tick(const float DeltaTime)
 {
   Super::Tick(DeltaTime);
+
+  // actually step DfisX
+  DfisX::step_simulation(&throw_container, DeltaTime);
+
   if (is_throw_simulating)
   {
-    DfisX::Disc_State disc_state = DfisX::get_disc_state();
+    DfisX::Disc_State disc_state = DfisX::get_disc_state(&throw_container);
     float xx = disc_state.disc_location[0]*100;
     float yy = disc_state.disc_location[1]*100;
     float zz = disc_state.disc_location[2]*100;
@@ -78,7 +82,7 @@ void ADiscThrow::new_throw_camera_relative(
 {
   spawn_disc_and_follow_flight();
   DfisX::new_throw(
-    *throw_container,
+    &throw_container,
     static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),
     Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),
     thrown_disc_speed,
@@ -129,8 +133,8 @@ void ADiscThrow::new_captured_throw(
   //float character_rotation = disc_character->GetActorRotation()->Yaw;
   FRotator character_rotation = ptr_disc_character->GetActorRotation();
   FVector character_location = ptr_disc_character->GetActorLocation();
-  FVector disc_rotation = FVector (captured_world_roll,captured_world_pitch,0); ///this is a vector just for the transform function
-  FVector forward_offset = FVector (100,0,0); ///temporarily offset forward so we dont collide with the invisible mesh
+  FVector disc_rotation = FVector(captured_world_roll,captured_world_pitch,0); ///this is a vector just for the transform function
+  FVector forward_offset = FVector(100,0,0); ///temporarily offset forward so we dont collide with the invisible mesh
 
   FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
   FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
@@ -139,7 +143,7 @@ void ADiscThrow::new_captured_throw(
   
   float thrown_disc_roll  = thrown_disc_rotation.X;
   float thrown_disc_pitch = thrown_disc_rotation.Y;
-  new_throw_world_frame ( captured_disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
+  new_throw_world_frame(captured_disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
 }
 
 void ADiscThrow::spawn_disc_and_follow_flight()
@@ -161,9 +165,6 @@ void ADiscThrow::spawn_disc_and_follow_flight()
   ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
   ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
-  
-
-
 }
 
 void ADiscThrow::end_throw_simulation ()

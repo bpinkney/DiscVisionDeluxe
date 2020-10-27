@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+//#include <deque>
 
 #include "ThrowInputController.h"
 #include "HAL/RunnableThread.h"
@@ -8,8 +9,12 @@
 #include "DiscCharacter.h"
 
 // convenience settings for dvd_DvisEst interface
-#define DVISEST_INTERFACE_ENABLED              (false)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
+#define DVISEST_INTERFACE_ENABLED              (true)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+
+// all throws in queue
+//std::deque<ADiscThrow> DiscThrowQueue;
+TQueue<TSubclassOf<class ADiscThrow>> DiscThrowQueue;
 
 // Sets default values
 AThrowInputController::AThrowInputController()
@@ -74,7 +79,16 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
     SpawnParams.Instigator = GetInstigator();
 
     ADiscThrow* disc_throw = World->SpawnActor<ADiscThrow>(DiscThrowBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-        
+    
+    // add new disc_throw to queue
+    const bool queue_empty_before = DiscThrowQueue.IsEmpty();
+    DiscThrowQueue.Enqueue(DiscThrowBP);
+    const bool queue_empty_after = DiscThrowQueue.IsEmpty();
+
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
+      FString::Printf(TEXT("DiscThrowQueue empty? = %d/%d"),
+        queue_empty_before, queue_empty_after));
+
           // Some magic will happen here for the mapping between the DvisEst DiscIndex
           // e.g. MIDRANGE_OS
           // and the DfisX/DgrafX Disc_Mold_Enum

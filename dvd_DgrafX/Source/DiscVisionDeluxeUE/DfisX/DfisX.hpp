@@ -223,10 +223,8 @@ void                new_throw(
 //Finishes a throw
 //This includes things such as saving/serializing the throw and performing various stat calculations
 void                finish_throw        (Throw_Container *throw_container, const float dt);
+Disc_State get_disc_state(Throw_Container *throw_container);
 
 void                activate_matlab_export ();
-
-
-
 
 }
