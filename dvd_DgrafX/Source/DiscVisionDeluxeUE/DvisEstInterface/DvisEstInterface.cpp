@@ -171,7 +171,7 @@ void DvisEstInterface::RunDvisEst()
   batFile << "if \"%ERRORLEVEL%\"==\"0\" goto loop" << std::endl;
   if(use_generated_throws)
   {
-    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=1 -nc 2> nul";
+    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=5000 -nc 2> nul";
   }
   else
   {

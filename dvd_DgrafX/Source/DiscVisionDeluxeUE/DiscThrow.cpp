@@ -149,7 +149,9 @@ void ADiscThrow::new_captured_throw(
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
   is_throw_simulating = true;
-  DestroyDiscs();
+
+  // disable this for now to allow multi-throw
+  //DestroyDiscs();
 
   // Get the camera transform.
   FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
