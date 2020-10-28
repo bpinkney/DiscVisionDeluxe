@@ -128,7 +128,8 @@ namespace DfisX
     // init throw container
     //memset(throw_container, 0, sizeof(Throw_Container));
 
-    // don't clear Disc_Env or Disc_Model
+    // don't clear Disc_Env or Disc_Model in case we want to pass those in
+    // during init from the GUI
     memset(&(throw_container->current_disc_state),  0, sizeof(Disc_State));
     memset(&(throw_container->previous_disc_state), 0, sizeof(Disc_State));
     memset(&(throw_container->disc_statistics),     0, sizeof(Disc_Statistics));
