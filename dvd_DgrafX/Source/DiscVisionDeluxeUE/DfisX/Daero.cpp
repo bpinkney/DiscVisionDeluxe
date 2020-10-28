@@ -54,11 +54,8 @@ double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b)
 //main file function
 //this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
 //step_daero saves these calculations into the throw container
-void step_Daero (Throw_Container &active_throw, float step_time)
-
+void step_Daero(Throw_Container *throw_container, const float dt)
 {
-
-
     /* ripped from dfisx.py, naming scheme isnt accurate yet
     #####Unit Vectors
     #vel_unit:  unit vector of total disc velocity
@@ -72,15 +69,12 @@ void step_Daero (Throw_Container &active_throw, float step_time)
     """
     */
 
+  Eigen::Vector3d wind_temp = {0,0,0};
 
+  Eigen::Vector3d disc_air_velocity_vector = d_velocity - wind_temp;
 
-	Eigen::Vector3d disc_air_velocity_vector = d_velocity - get_global_wind_vel ();
-
-
-
-  d_forces.disc_velocity_unit_vector = get_unit_vector (disc_air_velocity_vector);
-  make_unit_vector (d_orientation);
-
+  d_forces.disc_velocity_unit_vector = get_unit_vector(disc_air_velocity_vector);
+  make_unit_vector(d_orientation);
 
 
 ////////////////////////////////////////////////////////////Div//By//Zero//Protection///////////////////////////////////////////////////////////////
@@ -100,7 +94,7 @@ void step_Daero (Throw_Container &active_throw, float step_time)
       d_forces.disc_x_unit_vector =    Eigen::Vector3d    (0,0,0);
       d_forces.disc_y_unit_vector =    Eigen::Vector3d    (0,0,0);
       d_forces.disc_lift_unit_vector = Eigen::Vector3d    (0,0,0);
-    if (basic_console_logging) std::cout << "This would produce an error if there was no divide by zero protection in Daero unit vector creation process!!!!!!!!!!!!!!!!!";
+    //if (basic_console_logging) std::cout << "This would produce an error if there was no divide by zero protection in Daero unit vector creation process!!!!!!!!!!!!!!!!!";
     }
 ////////////////////////////////////////////////////////////Div//By//Zero//Protection/////////////////////////////////////////////////////////
 
@@ -192,7 +186,7 @@ pi * AR = PI_X_AR = 3.99
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
     ///gravity
-    d_velocity[2] -= 9.81 * step_time;
+    d_velocity[2] -= 9.81 * dt;
     
 
     

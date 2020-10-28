@@ -43,5 +43,5 @@ public:
     void PerformCapturedThrow(disc_init_state_t * new_disc_init_state);
 
     UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
-        TSubclassOf<class ADiscThrow> DiscThrowBP;
+    	TSubclassOf<class ADiscThrow> DiscThrowBP;
 };

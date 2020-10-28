@@ -15,12 +15,6 @@
 */
 
 
-
-
-
-
-
-
 void parse_cl (int argc, char *argv[]) 
 {
 
@@ -28,7 +22,7 @@ void parse_cl (int argc, char *argv[])
     Default Values for command line        
     */
   bool run_test = 0;
-  DfisX::Disc_Mold_Enum disc_mold_enum; 
+  DfisX::Disc_Mold_Enum disc_mold_enum = DfisX::Disc_Mold_Enum::NONE; 
 
   double posx = 0;
   double posy = 0;
@@ -43,7 +37,7 @@ void parse_cl (int argc, char *argv[])
 
   double thrown_disc_roll = 0;
   double thrown_disc_pitch = 0;
-  double thrown_disc_radians_per_second;
+  double thrown_disc_radians_per_second = 0;
   double thrown_disc_wobble = 0;
 
   Eigen::Vector3d thrown_disc_position;
@@ -51,10 +45,6 @@ void parse_cl (int argc, char *argv[])
 
   std::string save_path;
     
-
-  DfisX::init();
-  //DfisX::global_variables.save_path = "\\flight_saves\\saved_throw2.csv";
-   //std::cout << "It is being saved to the file " << DfisX::global_variables;
 
   for (int count{ 2 }; count < argc; count += 2)
   {
@@ -66,7 +56,7 @@ void parse_cl (int argc, char *argv[])
     {
       run_test = 1;  
     }
-    else if (arg_value == "matlab")    DfisX::activate_matlab_export ();
+    //else if (arg_value == "matlab")    DfisX::activate_matlab_export ();
     else if (arg_value == "hyzer")     thrown_disc_roll                 = arg_value_value;
     else if (arg_value == "pitch")     thrown_disc_pitch                = arg_value_value;
     else if (arg_value == "posx")      posx                             = arg_value_value;
@@ -84,7 +74,7 @@ void parse_cl (int argc, char *argv[])
     else if (arg_value == "savepath")   
     {
                       save_path             = argv[count+1];
-                      DfisX::set_save_path ("flight_saves\\"+save_path);
+                      //DfisX::set_save_path ("flight_saves\\"+save_path);
                       count += 2;
     }
     
@@ -97,7 +87,7 @@ void parse_cl (int argc, char *argv[])
   }
   
 
-  DfisX::set_global_wind_vel(Eigen::Vector3d (windx,windy,windz));
+  //DfisX::set_global_wind_vel(Eigen::Vector3d (windx,windy,windz));
   if (run_test) 
   {
   std::cout << "\nSimulating using test function";
@@ -112,8 +102,11 @@ void parse_cl (int argc, char *argv[])
     thrown_disc_position = Eigen::Vector3d(posx,posy,posz);
     thrown_disc_velocity = Eigen::Vector3d(velx,vely,velz);
 
-    DfisX::new_throw (disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
-    DfisX::simulate_throw();
+    DfisX::Throw_Container throw_container;
+    const float dt = (1.0/100.0); // run at 100Hz for test
+
+    DfisX::new_throw(&throw_container, disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
+    DfisX::simulate_throw(&throw_container, dt);
 
     std::cout << "Successfully passed a command line throw \n";
   }

@@ -10,6 +10,8 @@
 
 #endif
 
+// test change
+
 //#if (defined(IS_WINDOWS) && !defined(SPINNAKER_ALLOWED))
 // not available in mingw64 for windows! (sad)
 // I'm starting to think spinnaker and apriltag are never meant to
@@ -17,6 +19,8 @@
 //#elsed
 #define SPINNAKER_ALLOWED
 //#endif
+
+// also changed!
 
 #include <string>
 #include <csignal>
@@ -479,7 +483,7 @@ int main(int argc, char** argv )
     "{dfisx rdf      |false      | Run dfisx and the matlab renderer for it, nice!}"
     "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
     "{contrun cr     |false      | Keep outputting values, and resetting the estimate thread states, until a SIGINT is recieved}"
-    "{randmeas rm    |0          | If contrun is enabled, this can also optionally be enabled to provide random dummy throws every N seconds, 0 is disabled}"
+    "{randmeas rm    |0          | If contrun is enabled, this can also optionally be enabled to provide random dummy throws every N milliseconds, 0 is disabled}"
     "{nocam nc       |false      | If you want to run contrun and randmeas without a camera connected at all, enable thisn option}"
     ;
 
@@ -543,7 +547,7 @@ int main(int argc, char** argv )
 
   if(randmeas > 0)
   {
-    cerr << "Using randmeas period of " << randmeas << " seconds!" << endl;
+    cerr << "Using randmeas period of " << randmeas << " milliseconds!" << endl;
   }
 
   if(nocam)
@@ -803,13 +807,13 @@ int main(int argc, char** argv )
           {
             uint32_t now_ms  = NS_TO_MS(uptime_get_ns());
             // pre-empt the 'ready' flag a bit, just so the UI can actually do something with it
-            if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas) - 500 && ready_rm)
+            if(now_ms > last_randmeas_time_ms + randmeas - 500 && ready_rm)
             {
               ready_rm = false;
               cout << "ready:0," << endl;
             }
 
-            if(now_ms > last_randmeas_time_ms + S_TO_MS(randmeas))
+            if(now_ms > last_randmeas_time_ms + randmeas)
             {
               srand(time(NULL));
               const int base = rand() % 40;

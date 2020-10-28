@@ -35,21 +35,18 @@ ADiscCharacter::ADiscCharacter()
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-    DfisX::init();
+  
+  ///Camera manager init
+  FActorSpawnParameters SpawnParams;
+  SpawnParams.Owner = this;
+  SpawnParams.Instigator = GetInstigator();
+  ptr_camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+  APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+  ptr_camera_manager->set_player_target(PC);
+  ptr_camera_manager->focus_on_player();
 
-
-
-    ///Camera manager init
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.Owner = this;
-    SpawnParams.Instigator = GetInstigator();
-    ptr_camera_manager = GetWorld()->SpawnActor<ACameraManager>(CameraManagerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-    ptr_camera_manager->set_player_target(PC);
-    ptr_camera_manager->focus_on_player();
-
-    ///throw input controller init  
-    ptr_throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+  ///throw input controller init  
+  ptr_throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
 
 
 	if (GEngine)
@@ -68,8 +65,6 @@ void ADiscCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
   //RunTimingLoops();
-
-  DfisX::step_simulation (DeltaTime);
 }
 
 // Called to bind functionality to input
