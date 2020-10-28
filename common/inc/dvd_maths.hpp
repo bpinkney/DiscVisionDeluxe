@@ -37,6 +37,15 @@
 #define M_PI (3.14159265359)
 #endif
 
+#ifndef M_PI_2
+#define M_PI_2 (3.14159265359*0.5)
+#endif
+
+#define GRAV    (9.80665)
+
+//air density
+#define ISA_RHO       1.225
+
 #define DT_1Hz    (1.0)
 #define DT_10Hz   (1.0/10.0)
 #define DT_50Hz   (1.0/50.0)
@@ -70,6 +79,10 @@
     } \
   } \
   while (0)
+
+static inline int signum(float x) {
+  return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
+}
 
 static inline void R2Q( float MAT3X3(R), float VEC4(Q) )
 {

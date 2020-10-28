@@ -20,6 +20,7 @@
 #include "Dio.hpp"
 
 #include "disc_params.hpp"
+#include "dvd_maths.hpp"
 
 //#define basic_console_logging   (true)
 //#define verbose_console_logging (false)
@@ -42,10 +43,10 @@ namespace DfisX
   //used to simulate one 'step' of physics
   void step_simulation(Throw_Container *throw_container, const float dt)
   {
-    step_Daero (throw_container, dt);
+    step_Daero(throw_container, dt);
     //step_Dcollision (throw_container, dt);
-    step_Dgyro (throw_container, dt);
-    propagate (throw_container, dt); 
+    step_Dgyro(throw_container, dt);
+    propagate(throw_container, dt); 
 
     //temporary ground collision detection
     if (throw_container->current_disc_state.disc_location[2] <= 0) 
@@ -125,7 +126,14 @@ namespace DfisX
   */
   {  
     // init throw container
-    memset(throw_container, 0, sizeof(Throw_Container));
+    //memset(throw_container, 0, sizeof(Throw_Container));
+
+    // don't clear Disc_Env or Disc_Model
+    memset(&(throw_container->current_disc_state),  0, sizeof(Disc_State));
+    memset(&(throw_container->previous_disc_state), 0, sizeof(Disc_State));
+    memset(&(throw_container->disc_statistics),     0, sizeof(Disc_Statistics));
+    memset(&(throw_container->previous_disc_state), 0, sizeof(Disc_State));
+    throw_container->disc_state_array.clear();
 
     //convert world frame roll/pitch into and orientation vector
 
@@ -137,10 +145,13 @@ namespace DfisX
     const double thrown_disc_rotation = 0;
 
     //create the starting d state
-    throw_container->current_disc_state = {thrown_disc_position,thrown_disc_velocity,thrown_disc_orientation,thrown_disc_rotation};
+    throw_container->current_disc_state.disc_location = thrown_disc_position;
+    throw_container->current_disc_state.disc_velocity = thrown_disc_velocity;
+    throw_container->current_disc_state.disc_orientation = thrown_disc_orientation;
+    throw_container->current_disc_state.disc_rotation = thrown_disc_rotation;
     throw_container->current_disc_state.sim_state = SIM_STATE_STARTED;  
     throw_container->current_disc_state.forces_state = {};
-    throw_container->current_disc_state.forces_state.angular_velocity = thrown_disc_radians_per_second;
+    throw_container->current_disc_state.disc_rotation_vel = thrown_disc_radians_per_second;
     throw_container->previous_disc_state = {};
 
     throw_container->disc_object = disc_object_array[disc_mold_enum];
@@ -148,11 +159,10 @@ namespace DfisX
     throw_container->disc_object.mass = 0.175;
     throw_container->disc_object.diameter = 0.25;
 
-    throw_container->disc_object.radius = throw_container->disc_object.diameter / 2;
-    throw_container->disc_object.area = 3.1415 * throw_container->disc_object.radius * throw_container->disc_object.radius;
+    throw_container->disc_object.radius = throw_container->disc_object.diameter / 2.0;
+    throw_container->disc_object.area = M_PI * throw_container->disc_object.radius * throw_container->disc_object.radius;
 
-    std::vector <Disc_State> disc_state_array = {};
-    throw_container->disc_state_array.clear ();
+    throw_container->disc_state_array.clear();
   }
 
   // overloaded
@@ -171,11 +181,11 @@ namespace DfisX
     //Disc_Mold_Enum disc_mold_enum
     //Eigen::Vector3d thrown_disc_position
     //float thrown_disc_speed
-    const float thrown_disc_direction_rad = thrown_disc_direction / 57.3;
-    const float thrown_disc_loft_rad = thrown_disc_loft / 57.3;
-    const float thrown_disc_pitch_rad = thrown_disc_pitch / 57.3;
-    const float thrown_disc_roll_rad = thrown_disc_roll / 57.3;
-    //float thrown_disc_nose_up_rad = thrown_disc_nose_up / 57.3;
+    const float thrown_disc_direction_rad = DEG_TO_RAD(thrown_disc_direction);
+    const float thrown_disc_loft_rad = DEG_TO_RAD(thrown_disc_loft);
+    const float thrown_disc_pitch_rad = DEG_TO_RAD(thrown_disc_pitch);
+    const float thrown_disc_roll_rad = DEG_TO_RAD(thrown_disc_roll);
+    //float thrown_disc_nose_up_rad = DEG_TO_RAD(thrown_disc_nose_up);
     const float thrown_disc_spin_percent_dec = thrown_disc_spin_percent / 100;
     //float thrown_disc_wobble
 

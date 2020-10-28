@@ -1,5 +1,7 @@
 #include "DfisX.hpp"
 #include "Daero.hpp"
+#include "dvd_maths.hpp"
+
 #include <iostream> 
 #include <math.h>
 /*
@@ -14,48 +16,35 @@ Also gravity.
 */
 namespace DfisX
 {
-///for display purposes     see Sim_State
-// determines the division between
-// SIM_STATE_FLYING_TURN  -  TURN_CONST   -   SIM_STATE_FLYING   -  FADE_CONST  -  SIM_STATE_FLYING_FADE
-const double HS_TURN_CONST = -0.05;
-const double TURN_CONST =  0.05;
-const double FADE_CONST =  0.15;
+  ///for display purposes     see Sim_State
+  // determines the division between
+  // SIM_STATE_FLYING_TURN  -  TURN_CONST   -   SIM_STATE_FLYING   -  FADE_CONST  -  SIM_STATE_FLYING_FADE
+  const double HS_TURN_CONST = -0.05;
+  const double TURN_CONST =  0.05;
+  const double FADE_CONST =  0.15;
 
+  void             make_unit_vector         (Eigen::Vector3d &vector_to_unitize)
+  {
+      vector_to_unitize /= vector_to_unitize.norm();
+  }
 
+  Eigen::Vector3d  get_unit_vector          (Eigen::Vector3d vector_to_unitize)
+  {
+      return vector_to_unitize /= vector_to_unitize.norm();
+  }
 
+  double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
+  {
+      double angle = 0.0;
+      angle = std::atan2(a.cross(b).norm(), a.dot(b));
+      return angle;
+  }
 
-
-
-void             make_unit_vector         (Eigen::Vector3d &vector_to_unitize)
-{
-    vector_to_unitize /= vector_to_unitize.norm();
-}
-
-
-
-Eigen::Vector3d  get_unit_vector          (Eigen::Vector3d vector_to_unitize)
-{
-    return vector_to_unitize /= vector_to_unitize.norm();
-}
-
-
-
-double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
-{
-    double angle = 0.0;
-    angle = std::atan2(a.cross(b).norm(), a.dot(b));
-    return angle;
-}
-
-
-
-
-
-//main file function
-//this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
-//step_daero saves these calculations into the throw container
-void step_Daero(Throw_Container *throw_container, const float dt)
-{
+  //main file function
+  //this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
+  //step_daero saves these calculations into the throw container
+  void step_Daero(Throw_Container *throw_container, const float dt)
+  {
     /* ripped from dfisx.py, naming scheme isnt accurate yet
     #####Unit Vectors
     #vel_unit:  unit vector of total disc velocity
@@ -69,15 +58,13 @@ void step_Daero(Throw_Container *throw_container, const float dt)
     """
     */
 
-  Eigen::Vector3d wind_temp = {0,0,0};
+    Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz;
 
-  Eigen::Vector3d disc_air_velocity_vector = d_velocity - wind_temp;
-
-  d_forces.disc_velocity_unit_vector = get_unit_vector(disc_air_velocity_vector);
-  make_unit_vector(d_orientation);
+    d_forces.disc_velocity_unit_vector = get_unit_vector(disc_air_velocity_vector);
+    make_unit_vector(d_orientation);
 
 
-////////////////////////////////////////////////////////////Div//By//Zero//Protection///////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////Div//By//Zero//Protection///////////////////////////////////////////////////////////////
     //division by zero protection......maybe not necessary
     if (!d_orientation.isApprox(d_forces.disc_velocity_unit_vector))
     {
@@ -96,19 +83,13 @@ void step_Daero(Throw_Container *throw_container, const float dt)
       d_forces.disc_lift_unit_vector = Eigen::Vector3d    (0,0,0);
     //if (basic_console_logging) std::cout << "This would produce an error if there was no divide by zero protection in Daero unit vector creation process!!!!!!!!!!!!!!!!!";
     }
-////////////////////////////////////////////////////////////Div//By//Zero//Protection/////////////////////////////////////////////////////////
-
-
-
-
-
-
+  ////////////////////////////////////////////////////////////Div//By//Zero//Protection/////////////////////////////////////////////////////////
 
 
     //////////////////////////////////////////Multiuse Variables/////////////////////////////////
     //#AoAr angle of attack (radians)
     //aoar = vel_unit.angle(disc_normal_unit)-np.deg2rad(90)
-    d_forces.aoar = angle_between_vectors (d_forces.disc_velocity_unit_vector, d_orientation) - RAD_90;
+    d_forces.aoar = angle_between_vectors (d_forces.disc_velocity_unit_vector, d_orientation) - M_PI_2;
     
     //#velocity squared
     //V2 = (vel.magnitude()) ** 2
@@ -117,9 +98,8 @@ void step_Daero(Throw_Container *throw_container, const float dt)
 
     //#0.5 * pressure * area * velocity^2
     //pav2by2 = p * a * V2 / 2
-    d_forces.pav2by2 = RHO * d_object.area * d_forces.v2 / 2;
+    d_forces.pav2by2 = throw_container->disc_environment.air_density * d_object.area * d_forces.v2 * 0.5;
     //////////////////////////////////////////Multiuse Variables/////////////////////////////////
-
 
 
     /////////////Calculating the realized flight coefficients////////////////////////////////////
@@ -143,52 +123,37 @@ void step_Daero(Throw_Container *throw_container, const float dt)
     /////////////Calculating the realized flight coefficients////////////////////////////////////
 
 
-
     /////////////Sim_State calculations for display purposes////////////////////////////////////////
     if      (d_forces.aoar < HS_TURN_CONST)   d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
     else if (d_forces.aoar < TURN_CONST)      d_state.sim_state = SIM_STATE_FLYING_TURN;
     else if (d_forces.aoar < FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING;
     else                                      d_state.sim_state = SIM_STATE_FLYING_FADE;
-/*
-      if      (d_forces.aoar < 0)                                                d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
-    else if (d_forces.realized_pitching_moment_coefficient <= TURN_CONST)      d_state.sim_state = SIM_STATE_FLYING_TURN;
-    else if (d_forces.realized_pitching_moment_coefficient >  TURN_CONST && 
-             d_forces.realized_pitching_moment_coefficient <  FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING;
-    else if (d_forces.realized_pitching_moment_coefficient >= FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING_FADE;
-    */
-    /////////////Sim_State calculations for display purposes////////////////////////////////////////
+  /*
+        if      (d_forces.aoar < 0)                                                d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
+      else if (d_forces.realized_pitching_moment_coefficient <= TURN_CONST)      d_state.sim_state = SIM_STATE_FLYING_TURN;
+      else if (d_forces.realized_pitching_moment_coefficient >  TURN_CONST && 
+               d_forces.realized_pitching_moment_coefficient <  FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING;
+      else if (d_forces.realized_pitching_moment_coefficient >= FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING_FADE;
+      */
+      /////////////Sim_State calculations for display purposes////////////////////////////////////////
 
+  /*
+  induced drag Cdi = Cl**2 / pi AR
 
-
-
-
-
-/*
-induced drag Cdi = Cl**2 / pi AR
-
-AR = 1.27 for a circular disc
-pi * AR = PI_X_AR = 3.99
- */
+  AR = 1.27 for a circular disc
+  pi * AR = PI_X_AR = 3.99
+   */
 
     d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
     d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;
-
-
 
     d_forces.lift_induced_pitching_moment = d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
     d_forces.lift_force_magnitude         = d_forces.pav2by2 * d_forces.realized_lift_coefficient;
     d_forces.drag_force_magnitude         = d_forces.pav2by2 * d_forces.realized_drag_coefficient;
 
-
-
     d_forces.lift_force_vector =  d_forces.lift_force_magnitude * d_forces.disc_lift_unit_vector;
     d_forces.drag_force_vector = -d_forces.drag_force_magnitude * d_forces.disc_velocity_unit_vector;
 
-    d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
-    ///gravity
-    d_velocity[2] -= 9.81 * dt;
-    
-
-    
+    d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;    
   }
 }
