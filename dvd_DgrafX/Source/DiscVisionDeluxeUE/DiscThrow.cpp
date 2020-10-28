@@ -24,6 +24,7 @@ void ADiscThrow::BeginPlay()
 	{
 	ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
 	ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
+	follow_flight_hue = 000.0;
 	}
 
 	
@@ -36,6 +37,8 @@ void ADiscThrow::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (is_throw_simulating)
 	{
+
+	//converting dfisx disc state into unreal usable forms
 	DfisX::Disc_State disc_state = DfisX::get_disc_state ();
 	float xx = disc_state.disc_location[0]*100;
 	float yy = disc_state.disc_location[1]*100;
@@ -65,7 +68,24 @@ void ADiscThrow::Tick(float DeltaTime)
 
 	
 	ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin);
+	//finish converting dfisx disc state into unreal usable forms
+	//ff stuff
+	  if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_HIGH_SPEED_TURN)
+	  	ptr_follow_flight->transition_to_colour(follow_flight_hue);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_TURN)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+50);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+60);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_FADE)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+110);
+
+    //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
+    
+
+	
 	ptr_follow_flight->log_position ();
+	//end ff stuff
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
 	}
 
 }
@@ -75,7 +95,9 @@ void ADiscThrow::Tick(float DeltaTime)
 
 void ADiscThrow::new_throw_camera_relative (int disc_mold_enum, FVector thrown_disc_position, float thrown_disc_speed, float thrown_disc_direction, float thrown_disc_loft, float thrown_disc_roll,float thrown_disc_pitch,float thrown_disc_spin_percent, float thrown_disc_wobble)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Disc Throw made with debug!"));
 	spawn_disc_and_follow_flight ();
+
  DfisX::new_throw (static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),Eigen::Vector3d (thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),thrown_disc_speed,thrown_disc_direction,thrown_disc_loft,thrown_disc_roll,thrown_disc_pitch,thrown_disc_spin_percent,thrown_disc_wobble);
 }
 
@@ -84,6 +106,7 @@ void ADiscThrow::new_throw_camera_relative (int disc_mold_enum, FVector thrown_d
 void ADiscThrow::new_throw_world_frame ( int disc_mold_enum,FVector thrown_disc_position,FVector thrown_disc_velocity, float thrown_disc_roll, float thrown_disc_pitch, float thrown_disc_radians_per_second, float thrown_disc_wobble)
 
 {
+
 	spawn_disc_and_follow_flight ();
 
     Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100);
@@ -131,6 +154,8 @@ void ADiscThrow::spawn_disc_and_follow_flight ()
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+
+    ptr_follow_flight->set_colour(follow_flight_hue);
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
   
 

@@ -78,4 +78,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
       bool is_throw_simulating;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FollowFlight)
+      float follow_flight_hue;  //0..360
+
 };
