@@ -825,11 +825,11 @@ int main(int argc, char** argv )
                 MM_TO_M((float)(rand() % 500) - 500/2),
                 MM_TO_M((float)(rand() % 500) - 500/2),
                 MM_TO_M((float)(rand() % 300) - 300/2) + 1.5, // standing up off the ground by 1.5 default
-                MM_TO_M((float)(rand() % 10000) - 10000/2) + 18.0, //xvel
+                MM_TO_M((float)(rand() % 10000) - 10000/2) + 22.0, //xvel
                 MM_TO_M((float)(rand() % 8000) - 8000/2),
-                MM_TO_M((float)(rand() % 6000) - 6000/3), // bias up for zvel
-                DEG_TO_RAD((float)(rand() % 60) - 60/2), // +- 30 deg hyzer
-                DEG_TO_RAD((float)(rand() % 30) - 30/2 + 10), // +- 15 deg pitch, biased up by 10 deg
+                MM_TO_M((float)(rand() % 3000) - 3000/3), // bias up for zvel
+                DEG_TO_RAD((float)(rand() % 40) - 40/2), // +- 20 deg hyzer
+                DEG_TO_RAD((float)(rand() % 20) - 20/2 + 10), // +- 10 deg pitch, biased up by 10 deg
                 spin_d, // 60 +- 20 rad/s either positive or negative
                 ((float)(rand() % 600)) * 0.001,
                 (rand() % 10 + 3)
