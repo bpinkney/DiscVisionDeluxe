@@ -144,6 +144,49 @@ namespace DfisX
   pi * AR = PI_X_AR = 3.99
    */
 
+    // parasidic drag torque calculations:
+    
+    // Inertia of a thin disc:
+    // Iz =      1/2 * m * r^2
+    // Ix = Iy = 1/4 * m * r^2
+
+    // torque = accel * I
+    const bool use_updated_rotational_drag_model = true;
+    const float r2 = (d_object.radius * d_object.radius);
+    const float r5 = (d_object.radius * d_object.radius * d_object.radius * d_object.radius * d_object.radius);
+    if(use_updated_rotational_drag_model)
+    {
+      // rotational Reynolds number = Re = omega * r^2 / linear_v
+      // where (I think) linear_v is along the rotational plane (not sure)
+      // for now, we can just take the total lin vel magnitude...
+      Eigen::Vector3d v = d_state.disc_velocity;
+      const float lin_vel_mag = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+      const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(lin_vel_mag, CLOSE_TO_ZERO);
+
+      // https://www.sciencedirect.com/topics/engineering/rotating-disc
+      // approximate surrounded by laminar   Cm = 3.87Re^(-1/2)
+      // approximate surrounded by turbulent Cm = 0.146Re^(-1/5)
+      // NO IDEA, let's just tune this with the laminar formula
+      const float Cm = 1.5 * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
+      // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
+      // where omega is the angular vel in m/s
+      // and 'r' is the radius in m
+      d_forces.aero_torque = 
+        0.5 * 
+        throw_container->disc_environment.air_density * 
+        (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
+        r5 * 
+        Cm;
+    }
+    else
+    {
+      const double hacky_spin_drag_rate = 5.0;
+      const float Iz = 0.5 * d_object.mass * r2;
+      d_forces.aero_torque = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate * Iz;
+    } 
+
+    std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque) << " Nm" << std::endl;
+
     d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
     d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;
 

@@ -7,8 +7,6 @@
 
 namespace DfisX
 {
-  const double hacky_spin_drag_rate = 5.0;
-
   void propagate(Throw_Container *throw_container, const float dt)
   {
     const float dt2 = dt*dt  / 2.0;
@@ -21,9 +19,11 @@ namespace DfisX
     d_state.disc_acceleration = d_forces.net_force / d_object.mass;
 
     //// Compute the angular acceleration (just spin for now) so we can use that as the integrator for the lower order states
-    //d_forces.aero_torque = _____; // this should get moved to DAero!
-    //d_forces.net_torque = ____; // use inertia here to compute the resulting rotation accel
-    d_state.disc_rotation_accel = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate;
+    // Iz = 1/2 * m * r^2
+    const float Iz = 0.5 * d_object.mass * (d_object.radius * d_object.radius);
+    d_forces.net_torque = d_forces.aero_torque; 
+    // use inertia here to compute the resulting rotation accel (only about 'spin' axis for now)
+    d_state.disc_rotation_accel = d_forces.net_torque / Iz;
 
     // store old state before state propagation
     throw_container->disc_state_array.push_back(d_state);

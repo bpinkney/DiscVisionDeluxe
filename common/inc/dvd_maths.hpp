@@ -19,6 +19,13 @@
 
 #define CLOSE_TO_ZERO (0.000001)
 
+#ifndef MIN
+#define MIN(A,B)      (((A) < (B)) ? (A) : (B))
+#endif
+#ifndef MAX
+#define MAX(A,B)      (((A) < (B)) ? (B) : (A))
+#endif
+
 // Functions
 #define MS_TO_S(ms)       ((ms) * 0.001)
 #define US_TO_S(us)       ((us) * 0.000001)
