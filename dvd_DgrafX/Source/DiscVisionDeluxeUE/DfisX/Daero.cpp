@@ -159,16 +159,25 @@ namespace DfisX
       // rotational Reynolds number = Re = omega * r^2 / linear_v
       // where (I think) linear_v is along the rotational plane (not sure)
       // for now, we can just take the total lin vel magnitude...
-      Eigen::Vector3d v = d_state.disc_velocity;
-      const float lin_vel_mag = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-      const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(lin_vel_mag, CLOSE_TO_ZERO);
+      Eigen::Vector3d v = disc_air_velocity_vector;
+      const float airspeed_vel_mag = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+
+      // (I think?) The rotational reynolds number is a function only of the linear aispeed
+      // across the disc surface (orthogonal to the disc normal)
+      // So we can compute the dot product between the disc normal unit vector, and the airspeed vector
+      // to compute the effective angle between the airspeed vector and the disc normal
+      // then, we can use this angle to attenuate the magnitude of the airspeed vector to produce 
+      // the magnitude of airflow in the disc plane only
+      const float ang_disc_normal_to_airspeed = angle_between_vectors(v, d_state.disc_orientation);
+      const float airspeed_vel_mag_disc_plane = sin(ang_disc_normal_to_airspeed) * airspeed_vel_mag;
+      const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(airspeed_vel_mag_disc_plane, CLOSE_TO_ZERO);
 
       // https://www.sciencedirect.com/topics/engineering/rotating-disc
       // approximate surrounded by laminar   Cm = 3.87Re^(-1/2)
       // approximate surrounded by turbulent Cm = 0.146Re^(-1/5)
       // NO IDEA, let's just tune this with the laminar formula
       float Cm = 0.0;
-      if(lin_vel_mag > CLOSE_TO_ZERO)
+      if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
       {
         Cm = 0.01 * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
       }
