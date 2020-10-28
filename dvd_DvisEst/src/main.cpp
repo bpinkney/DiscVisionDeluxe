@@ -817,7 +817,13 @@ int main(int argc, char** argv )
             {
               srand(time(NULL));
               const int base = rand() % 40;
-              const float s1 = ((float)(base)) - 40.0/2.0 + 60.0;
+                    float s1 = ((float)(base)) - 40.0/2.0 + 75.0;
+              // allow a SUPERSPIN if the base hits the max spin
+              if(base == (40-1))
+              {
+                s1 = 200.0;
+              }
+
               const float signer = ((float)(rand() % 2))*2.0-1.0;
               const float spin_d = s1 * signer;       
               // output a random throw, along with a ready flag on either side
