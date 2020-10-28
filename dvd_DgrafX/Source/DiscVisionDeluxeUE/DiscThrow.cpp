@@ -195,7 +195,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    //ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
     ptr_follow_flight->set_colour(follow_flight_hue);
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));

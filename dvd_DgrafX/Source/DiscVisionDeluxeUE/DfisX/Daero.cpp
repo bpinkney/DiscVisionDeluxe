@@ -167,12 +167,17 @@ namespace DfisX
       // approximate surrounded by laminar   Cm = 3.87Re^(-1/2)
       // approximate surrounded by turbulent Cm = 0.146Re^(-1/5)
       // NO IDEA, let's just tune this with the laminar formula
-      const float Cm = 1.5 * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
+       float Cm = 0.0;
+      if(lin_vel_mag > CLOSE_TO_ZERO)
+      {
+        float Cm = 0.01 * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
+      }
+
       // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
       // where omega is the angular vel in m/s
       // and 'r' is the radius in m
       d_forces.aero_torque = 
-        0.5 * 
+        -0.5 * 
         throw_container->disc_environment.air_density * 
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
         r5 * 
