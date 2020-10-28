@@ -26,6 +26,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+  DfisX::Throw_Container throw_container;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
