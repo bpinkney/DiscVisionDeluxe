@@ -32,8 +32,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-        UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-    void DestroyDiscs();
+  UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+  void DestroyDiscs();
+
+  void GenerateDiscEnv(DfisX::Disc_Env * disc_environment);
 
   // Projectile class to spawn.
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")

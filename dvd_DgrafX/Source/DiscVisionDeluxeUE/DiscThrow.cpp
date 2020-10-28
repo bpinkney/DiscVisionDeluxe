@@ -3,6 +3,8 @@
 
 #include "DiscThrow.h"
 
+#include "dvd_maths.hpp"
+
  //ACameraManager* camera_manager;
  //AThrowInputController* throw_input_controller;
 
@@ -85,6 +87,13 @@ void ADiscThrow::Tick(const float DeltaTime)
   }
 }
 
+void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
+{
+  // use default for now
+  disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0);
+  disc_environment->gust_factor = DfisX::Gust_Factor::THREE_BRUSQUE_BREEZE;
+  disc_environment->air_density = ISA_RHO;
+}
 
 void ADiscThrow::new_throw_camera_relative(
   const int disc_mold_enum, 
@@ -98,6 +107,10 @@ void ADiscThrow::new_throw_camera_relative(
   const float thrown_disc_wobble)
 {
   spawn_disc_and_follow_flight();
+
+  // get current wind state (we'll need to update this periodically later as the disc changes environments)
+  GenerateDiscEnv(&(throw_container.disc_environment));
+
   DfisX::new_throw(
     &throw_container,
     static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),
@@ -126,6 +139,10 @@ void ADiscThrow::new_throw_world_frame(
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100);
   Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
+  
+  // get current wind state (we'll need to update this periodically later as the disc changes environments)
+  GenerateDiscEnv(&(throw_container.disc_environment));
+
   DfisX::new_throw(
     &throw_container,
     static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),
@@ -156,7 +173,6 @@ void ADiscThrow::new_captured_throw(
   FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
   FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
   FVector thrown_disc_rotation = FTransform(character_rotation).TransformVector(disc_rotation);
-
   
   float thrown_disc_roll  = thrown_disc_rotation.X;
   float thrown_disc_pitch = thrown_disc_rotation.Y;
