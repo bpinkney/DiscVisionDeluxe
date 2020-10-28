@@ -77,21 +77,12 @@ void ADiscThrow::Tick(const float DeltaTime)
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
     
-    float ll = disc_state.disc_velocity[0];
-    float mm = disc_state.disc_velocity[1];
-    float nn = disc_state.disc_velocity[2];
 
 	
 	ptr_follow_flight->log_position();
 	//end ff stuff
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
 	}
-
-    FRotator disc_rotation = {pitch,roll,yaw};
-    
-    ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin);
-    ptr_follow_flight->log_position();
-  }
 }
 
 

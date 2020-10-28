@@ -23,19 +23,15 @@ public:
   ADiscThrow();
 
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-  // prtected class vars
-  DfisX::Throw_Container throw_container;
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-  // Called when the game starts or when spawned
-  virtual void BeginPlay() override;
-
-public:  
-  // Called every frame
-  virtual void Tick(float DeltaTime) override;
-
-  UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-  void DestroyDiscs();
+        UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+    void DestroyDiscs();
 
   // Projectile class to spawn.
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
@@ -85,19 +81,25 @@ public:
   UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
   TSubclassOf<class ADiscCharacter> DiscCharacterBP;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-  class ADiscCharacter* ptr_disc_character;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+      class ADiscCharacter* ptr_disc_character;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-  class ACameraManager* ptr_camera_manager;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+      class ACameraManager* ptr_camera_manager;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-  class AFollowFlight* ptr_follow_flight;
+        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+      class AFollowFlight* ptr_follow_flight;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-  class ADiscProjectile* ptr_disc_projectile;
+        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+      class ADiscProjectile* ptr_disc_projectile;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-  bool is_throw_simulating;
+   // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    //  class ADiscProjectile* ptr_HUD_Main_Readout;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+      bool is_throw_simulating;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FollowFlight)
+      float follow_flight_hue;  //0..360
 
 };
