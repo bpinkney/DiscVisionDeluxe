@@ -17,8 +17,9 @@ namespace DfisX
 ///for display purposes     see Sim_State
 // determines the division between
 // SIM_STATE_FLYING_TURN  -  TURN_CONST   -   SIM_STATE_FLYING   -  FADE_CONST  -  SIM_STATE_FLYING_FADE
-const double TURN_CONST = -0.015;
-const double FADE_CONST =  0.025;
+const double HS_TURN_CONST = -0.05;
+const double TURN_CONST =  0.05;
+const double FADE_CONST =  0.15;
 
 
 
@@ -144,11 +145,17 @@ void step_Daero(Throw_Container *throw_container, const float dt)
 
 
     /////////////Sim_State calculations for display purposes////////////////////////////////////////
-    if      (d_forces.aoar < 0)                                                d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
+    if      (d_forces.aoar < HS_TURN_CONST)   d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
+    else if (d_forces.aoar < TURN_CONST)      d_state.sim_state = SIM_STATE_FLYING_TURN;
+    else if (d_forces.aoar < FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING;
+    else                                      d_state.sim_state = SIM_STATE_FLYING_FADE;
+/*
+      if      (d_forces.aoar < 0)                                                d_state.sim_state = SIM_STATE_FLYING_HIGH_SPEED_TURN;
     else if (d_forces.realized_pitching_moment_coefficient <= TURN_CONST)      d_state.sim_state = SIM_STATE_FLYING_TURN;
     else if (d_forces.realized_pitching_moment_coefficient >  TURN_CONST && 
              d_forces.realized_pitching_moment_coefficient <  FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING;
     else if (d_forces.realized_pitching_moment_coefficient >= FADE_CONST)      d_state.sim_state = SIM_STATE_FLYING_FADE;
+    */
     /////////////Sim_State calculations for display purposes////////////////////////////////////////
 
 

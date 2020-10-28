@@ -30,6 +30,20 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
 	void log_position ();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void select ();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void unselect ();
+
+//immediately changes colour of ff to set_colour    0..360
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void set_colour (float set_colour);
+
+//transitions ff to desired_colour
+	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
+	void transition_to_colour (float desired_colour);
+
 	
 
 

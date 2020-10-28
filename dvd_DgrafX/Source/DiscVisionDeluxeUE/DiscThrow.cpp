@@ -17,49 +17,75 @@ ADiscThrow::ADiscThrow()
 // Called when the game starts or when spawned
 void ADiscThrow::BeginPlay()
 {
-  Super::BeginPlay();
+	Super::BeginPlay();
 
-  if (GEngine)
-  {
-    ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
-    ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
-  }
+	if (GEngine)
+	{
+	ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
+	ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
+	follow_flight_hue = 000.0;
+	}
 }
 
 // Called every frame
 void ADiscThrow::Tick(const float DeltaTime)
 {
-  Super::Tick(DeltaTime);
+	Super::Tick(DeltaTime);
+	if (is_throw_simulating)
+	{
 
-  // actually step DfisX
-  DfisX::step_simulation(&throw_container, DeltaTime);
+	//converting dfisx disc state into unreal usable forms
+	DfisX::Disc_State disc_state = DfisX::get_disc_state(&throw_container);
+	float xx = disc_state.disc_location[0]*100;
+	float yy = disc_state.disc_location[1]*100;
+	float zz = disc_state.disc_location[2]*100;
+	FVector disc_position = {xx,yy,zz};
 
-  if (is_throw_simulating)
-  {
-    DfisX::Disc_State disc_state = DfisX::get_disc_state(&throw_container);
-    float xx = disc_state.disc_location[0]*100;
-    float yy = disc_state.disc_location[1]*100;
-    float zz = disc_state.disc_location[2]*100;
-    FVector disc_position = {xx,yy,zz};
+	float ii = disc_state.disc_orientation[0];
+	float jj = disc_state.disc_orientation[1];
+	float kk = disc_state.disc_orientation[2];
 
-    float ii = disc_state.disc_orientation[0];
-    float jj = disc_state.disc_orientation[1];
-    float kk = disc_state.disc_orientation[2];
+	float pitch =-atan(ii/kk)*57.3;
+	float yaw =atan(jj/kk)*57.3;
+	float roll =0.0;
+	
 
-    float pitch =-atan(ii/kk)*57.3;
-    float yaw =atan(jj/kk)*57.3;
-    float roll =0.0;
-    
+	FVector disc_direction = FVector (disc_state.disc_velocity[0],disc_state.disc_velocity[1],disc_state.disc_velocity[2]);
+	
+	float ll = disc_state.disc_velocity[0];
+	float mm = disc_state.disc_velocity[1];
+	float nn = disc_state.disc_velocity[2];
 
-    FVector disc_direction = FVector(disc_state.disc_velocity[0],disc_state.disc_velocity[1],disc_state.disc_velocity[2]);
+	FVector disc_velocity = {ll,mm,nn};
+	
+    float disc_spin = -disc_state.disc_rotation/10;
+
+	FRotator disc_rotation = {pitch,roll,yaw};
+
+	
+	ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin);
+	//finish converting dfisx disc state into unreal usable forms
+	//ff stuff
+	  if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_HIGH_SPEED_TURN)
+	  	ptr_follow_flight->transition_to_colour(follow_flight_hue);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_TURN)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+50);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+60);
+	  else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_FADE)
+	  	ptr_follow_flight->transition_to_colour (follow_flight_hue+110);
+
+    //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
     
     float ll = disc_state.disc_velocity[0];
     float mm = disc_state.disc_velocity[1];
     float nn = disc_state.disc_velocity[2];
 
-    FVector disc_velocity = {ll,mm,nn};
-    
-    float disc_spin = -disc_state.disc_rotation/10;
+	
+	ptr_follow_flight->log_position();
+	//end ff stuff
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
+	}
 
     FRotator disc_rotation = {pitch,roll,yaw};
     
@@ -148,30 +174,31 @@ void ADiscThrow::new_captured_throw(
 
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
-  is_throw_simulating = true;
+	is_throw_simulating = true;
+	//DestroyDiscs();
+    // Get the camera transform.
+    FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
+    FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();
+    
+    UWorld* World = GetWorld();
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = ptr_disc_character;
 
-  // disable this for now to allow multi-throw
-  //DestroyDiscs();
+    ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
+    SpawnParams.Owner = ptr_disc_projectile;
+    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
-  // Get the camera transform.
-  FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
-  FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();
-  
-  UWorld* World = GetWorld();
-  FActorSpawnParameters SpawnParams;
-  SpawnParams.Owner = this;
-  SpawnParams.Instigator = ptr_disc_character;
-
-  ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-  SpawnParams.Owner = ptr_disc_projectile;
-  ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-  ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    ptr_follow_flight->set_colour(follow_flight_hue);
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
+  
 }
 
 void ADiscThrow::end_throw_simulation ()
 {
-  is_throw_simulating = false;
+	is_throw_simulating = false;
+	ptr_follow_flight->unselect();
 }
 
 
