@@ -85,6 +85,7 @@ namespace DfisX
     double net_torque_z;
 
     Eigen::Vector3d aero_force;
+    double gyro_torque_x;
     double aero_torque_x;
     double aero_torque_z;
 

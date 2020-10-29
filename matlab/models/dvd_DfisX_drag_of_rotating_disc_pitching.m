@@ -73,7 +73,7 @@ for i=1:length(theta)
   Fd_sum = Fd_sum + Fd;
   
   %get resulting torque
-  Td = Fd * r;
+  Td = Fd * (x_new + x_last)/2;
   Td_sum = Td_sum + Td;
   
   %Fd_new(i) = Fd;

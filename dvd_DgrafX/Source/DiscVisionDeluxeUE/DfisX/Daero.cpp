@@ -199,10 +199,36 @@ namespace DfisX
       const double hacky_spin_drag_rate = 5.0;
       const float Iz = 0.5 * d_object.mass * r2;
       d_forces.aero_torque_z = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate * Iz;
-    } 
+    }
 
-    std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque_z) << 
-      " Nm, SPIN = " << std::to_string(d_state.disc_rotation_vel) << "rad/s" << std::endl;
+    //std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque_z) << 
+    //  " Nm, SPIN = " << std::to_string(d_state.disc_rotation_vel) << "rad/s" << std::endl;
+
+
+    const bool use_pitching_drag_model = true;
+
+    d_forces.aero_torque_x = 0;
+    if(use_pitching_drag_model)
+    {
+      // from 'drag of rotating disc pitching'
+      // k = 0.13412
+      // Td = 2.0 * k * Cwdxy * r^5 * rho * w^2
+
+      // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
+      const double Cwdxy = 1.17;
+
+      const double Td = 
+        -signum(d_state.disc_pitching_vel) *
+        2.0 * 0.13412 *
+        Cwdxy *
+        r5 *
+        throw_container->disc_environment.air_density *
+        (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
+
+      d_forces.aero_torque_x = Td;
+
+      //std::cout << std::to_string(d_forces.step_count) << ": Rot Drag XY Torque = " << out.str() << " Nm vs gyro induced torque = " << std::to_string(d_forces.gyro_torque_x) << std::endl;
+    }
 
     d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
     d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;

@@ -28,7 +28,7 @@ namespace DfisX
     //// Pitching moment
     // tack on change to Pitch from the gyroscopic precession only
     // we'll need to update this when collisions get added!
-    d_forces.net_torque_x = d_forces.aero_torque_x;
+    d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x;
     // use inertia here to compute the resulting rotation accel (only about 'pitching' axis for now)
     d_state.disc_pitching_accel = d_forces.net_torque_x / Ix;
 

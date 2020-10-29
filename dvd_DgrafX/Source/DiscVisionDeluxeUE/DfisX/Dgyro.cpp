@@ -33,7 +33,7 @@ namespace DfisX
 
     // compute resulting angular torque from applied pitching moment vel
     const double Wp_d  = (Wp - d_state.disc_pitching_vel) / MAX(dt, CLOSE_TO_ZERO);
-    d_forces.aero_torque_x = Wp_d * Ix;
+    d_forces.gyro_torque_x = Wp_d * Ix;
 
     // Mike: what do we need this for? is this actually the roll change??
     d_statistics.disc_cumulative_roll += RAD_TO_DEG(Wp) * dt;
