@@ -179,15 +179,16 @@ namespace DfisX
       float Cm = 0.0;
       if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
       {
-        const float Cm_base = 1.5;
+        const float Cm_base = 0.1;
         Cm = Cm_base * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
       }
 
       // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
       // where omega is the angular vel in m/s
       // and 'r' is the radius in m
-      d_forces.aero_torque_z = 
-        -0.5 * 
+      d_forces.aero_torque_z =
+        -signum(d_state.disc_rotation_vel) *
+        0.5 * 
         throw_container->disc_environment.air_density * 
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
         r5 * 
@@ -200,7 +201,8 @@ namespace DfisX
       d_forces.aero_torque_z = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate * Iz;
     } 
 
-    //std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque_z) << " Nm" << std::endl;
+    std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque_z) << 
+      " Nm, SPIN = " << std::to_string(d_state.disc_rotation_vel) << "rad/s" << std::endl;
 
     d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
     d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;

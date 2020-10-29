@@ -33,7 +33,7 @@ namespace DfisX
     d_state.disc_pitching_accel = d_forces.net_torque_x / Ix;
 
     //// Spin/Rotation moment
-    d_forces.net_torque_z = d_forces.aero_torque_z; 
+    d_forces.net_torque_z = d_forces.aero_torque_z;
     // use inertia here to compute the resulting rotation accel (only about 'spin' axis for now)
     d_state.disc_rotation_accel = d_forces.net_torque_z / Iz;
 
