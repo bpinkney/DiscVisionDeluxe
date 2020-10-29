@@ -185,7 +185,7 @@ namespace DfisX
       // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
       // where omega is the angular vel in m/s
       // and 'r' is the radius in m
-      d_forces.aero_torque = 
+      d_forces.aero_torque_z = 
         -0.5 * 
         throw_container->disc_environment.air_density * 
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
@@ -196,10 +196,10 @@ namespace DfisX
     {
       const double hacky_spin_drag_rate = 5.0;
       const float Iz = 0.5 * d_object.mass * r2;
-      d_forces.aero_torque = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate * Iz;
+      d_forces.aero_torque_z = -signum(d_state.disc_rotation_vel) * hacky_spin_drag_rate * Iz;
     } 
 
-    std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque) << " Nm" << std::endl;
+    //std::cout << std::to_string(d_forces.step_count) << ": RotParaDrag Torque = " << std::to_string(d_forces.aero_torque_z) << " Nm" << std::endl;
 
     d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
     d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;

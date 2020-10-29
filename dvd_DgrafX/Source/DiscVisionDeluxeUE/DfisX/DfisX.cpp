@@ -43,6 +43,7 @@ namespace DfisX
   //used to simulate one 'step' of physics
   void step_simulation(Throw_Container *throw_container, const float dt)
   {
+    // all steps must be completed before propagation
     step_Daero(throw_container, dt);
     //step_Dcollision (throw_container, dt);
     step_Dgyro(throw_container, dt);
