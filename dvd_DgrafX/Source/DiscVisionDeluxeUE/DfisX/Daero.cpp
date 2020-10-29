@@ -179,7 +179,8 @@ namespace DfisX
       float Cm = 0.0;
       if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
       {
-        Cm = 0.01 * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
+        const float Cm_base = 1.5;
+        Cm = Cm_base * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
       }
 
       // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
