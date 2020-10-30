@@ -1022,7 +1022,7 @@ int main(int argc, char** argv )
                   default:
                   // DESTROYER DX 4 with discmold1
                     sprintf(output_cmd, "%s,", 
-                      "hyzer:-0.27222,pitch:0.18536,posx:0.415,posy:-0.376,posz:2.221,velx:20.489,vely:2.824,velz:1.752,spin_d:-72.95879,wobble:0.121,discmold:13");
+                      "hyzer:-0.27222,pitch:0.18536,posx:0.415,posy:-0.376,posz:2.221,velx:20.489,vely:2.824,velz:1.752,spin_d:-72.95879,wobble:0.121,discmold:1");
                     break;
                 }
               }
