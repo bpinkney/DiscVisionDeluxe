@@ -484,7 +484,7 @@ int main(int argc, char** argv )
     "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
     "{contrun cr     |false      | Keep outputting values, and resetting the estimate thread states, until a SIGINT is recieved}"
     "{randmeas rm    |0          | If contrun is enabled, this can also optionally be enabled to provide random dummy throws every N milliseconds, 0 is disabled}"
-    "{cannedthrow ct |0          | If randmeas is enabled, this will override the randomized output with 'N' canned throw (these are from collected logs), 0 is disabled}"
+    "{cannedthrow can |0          | If randmeas is enabled, this will override the randomized output with 'N' canned throw (these are from collected logs), 0 is disabled}"
     "{nocam nc       |false      | If you want to run contrun and randmeas without a camera connected at all, enable thisn option}"
     ;
 
@@ -797,7 +797,8 @@ int main(int argc, char** argv )
       // wait here until estimate thread is complete
       if(contrun)
       {
-        uint32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns());
+        // startthrowing right away
+        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - randmeas;
         bool ready_rm = true;
         while(!gv_force_complete_threads)
         {
