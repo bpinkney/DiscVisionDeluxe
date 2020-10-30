@@ -797,8 +797,8 @@ int main(int argc, char** argv )
       // wait here until estimate thread is complete
       if(contrun)
       {
-        // startthrowing right away
-        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - randmeas;
+        // startthrowing after 3 seconds
+        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - 3;
         bool ready_rm = true;
         while(!gv_force_complete_threads)
         {
