@@ -798,7 +798,7 @@ int main(int argc, char** argv )
       if(contrun)
       {
         // startthrowing after 3 seconds
-        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - S_TO_MS(3);
+        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - MAX(randmeas - S_TO_MS(3), 0);
         bool ready_rm = true;
         while(!gv_force_complete_threads)
         {
