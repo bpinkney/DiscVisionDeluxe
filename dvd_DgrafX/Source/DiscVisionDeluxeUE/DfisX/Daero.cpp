@@ -252,31 +252,62 @@ namespace DfisX
       const double A_edge   = d_object.radius * 2 * 0.015; // say 1.5cm tall edge for now
 
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
+
+      // Disc 'Form' Drag
+      // what we need here is the projection of the airspeed induced force against the surfaces of the disc
+      // we are considering two surfaces right now:
+      // 1. disc edge, this will be minimal on drivers, but not on putters. This effective area should later be a disc param
+      // 2. disc plate, this is the flat surface on the top or bottom of the disc. The Cd*A is probably higher on the bottom due to the lips,
+      // but we'll consider it symmetric for the moment
+
+      // For the EDGE:
+      // The incident force of the air on the edge will be felt along the plane of the disc.
+      // e.g. a nose-down disc with a horz airflow will produce lift, and get pushed backward along the air force vector
+      // and a nose-up disc with a horz airflow will produce negative lift, and get pushed backward along the air force vector
+      // ^                                /\<------ V
+      //  \                              / /
+      //  \\\                           / /
+      //   \ \                         ///   
+      //    \ \                        /
+      //     \/<----- V               v
+
+      // For the PLATE:
+      // The incident force of the air on the plate should always project (positively or negatively) along 
+      // the disc nomrla plane. You can think of this like a normal force for an applied force on the ground
+      // (it is always orthogonal to the incident surface)
+
+      // The magnitude of these applied forces is a function of how much of this surface is incident with the airflow.
+      // So if the disc is completely flat in a horizontal airflow, there is NO PLATE DRAG FORCE
+      // and similarly, a flat disc in vertical free-fall would have NO EDGE DRAG FORCE
+      // this is only considering form drag, and NOT parasitic surface drag
+
+
       const double Fd_edge  = rhov2o2 * Cd_edge  * A_edge  * cos(d_forces.aoar);
       const double Fd_plate = rhov2o2 * Cd_plate * A_plate * sin(d_forces.aoar);
 
-      // copy old stuff here for now
-      d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
-      d_forces.drag_force_magnitude      = d_forces.pav2by2 * d_forces.induced_drag_coefficient;
+      // now we can determine the unit vector to apply the edge drag force in
+      // get orth vector to airspeed and disc norm
+      // then use this vector to get the projected edge force vector along the disc plane
+      Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
+      make_unit_vector(edge_force_vector);
 
-      // add on new drag force
-      d_forces.drag_force_magnitude += Fd_edge + Fd_plate;
-
-      //std::cout << "Check AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar)) << " deg vs airspeed" << std::endl;
-      //std::cout << "Forces [edge,plate] = [" << std::to_string(Fd_edge) << ", " << std::to_string(Fd_plate) << "] N" << std::endl;
+      d_forces.drag_force_vector *= 0;
+      d_forces.drag_force_vector += Fd_edge  * edge_force_vector;
+      d_forces.drag_force_vector += Fd_plate * d_orientation;
     }
     else
     {
       d_forces.induced_drag_coefficient  = d_forces.realized_lift_coefficient * d_forces.realized_lift_coefficient / PI_X_AR;
       d_forces.realized_drag_coefficient = d_object.drag_coefficient + d_forces.induced_drag_coefficient + d_forces.stall_induced_drag;
       d_forces.drag_force_magnitude      = d_forces.pav2by2 * d_forces.realized_drag_coefficient;
+      d_forces.drag_force_vector = -d_forces.drag_force_magnitude * d_forces.disc_velocity_unit_vector;
     }
 
     d_forces.lift_induced_pitching_moment = d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
     d_forces.lift_force_magnitude         = d_forces.pav2by2 * d_forces.realized_lift_coefficient;
 
     d_forces.lift_force_vector =  d_forces.lift_force_magnitude * d_forces.disc_lift_unit_vector;
-    d_forces.drag_force_vector = -d_forces.drag_force_magnitude * d_forces.disc_velocity_unit_vector;
+
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;    
   }
