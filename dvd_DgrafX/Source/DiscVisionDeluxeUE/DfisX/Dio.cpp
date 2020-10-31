@@ -1,5 +1,6 @@
 #include "DfisX.hpp"
 #include "Dio.hpp"
+#include "dvd_maths.hpp"
 #include <iostream> 
 #include <string> 
 #include <sstream>
@@ -86,8 +87,6 @@ void parse_cl (int argc, char *argv[])
     
   }
   
-
-  //DfisX::set_global_wind_vel(Eigen::Vector3d (windx,windy,windz));
   if (run_test) 
   {
   std::cout << "\nSimulating using test function";
@@ -103,6 +102,12 @@ void parse_cl (int argc, char *argv[])
     thrown_disc_velocity = Eigen::Vector3d(velx,vely,velz);
 
     DfisX::Throw_Container throw_container;
+
+    // init disc env and disc model
+    throw_container.disc_environment.wind_vector_xyz = Eigen::Vector3d(windx,windy,windz);
+    throw_container.disc_environment.gust_factor = DfisX::Gust_Factor::THREE_BRUSQUE_BREEZE;
+    throw_container.disc_environment.air_density = ISA_RHO;
+
     const float dt = (1.0/100.0); // run at 100Hz for test
 
     DfisX::new_throw(&throw_container, disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);

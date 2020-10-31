@@ -3,6 +3,17 @@
 namespace DfisX
 {
 
+	// mold_name; 
+	// lift_coefficient_base; 
+	// lift_coefficient_per_radian; 
+	// drag_coefficient;
+  // pitching_moment_base;
+  // pitching_moment_per_radian;
+  // mass;
+  // diameter;
+  // radius;
+  // area;
+
 	const std::vector<DfisX::Disc_Model> disc_object_array = 
 	{
 	Disc_Model {"NONE",       0.17000 , 0.6   ,0.05000 ,-0.015000,0.120000,0.175000,0.217000},

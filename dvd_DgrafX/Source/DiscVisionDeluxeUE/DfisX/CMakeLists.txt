@@ -65,7 +65,7 @@ if (WIN32)
 endif (WIN32)
 
 # add project local include files
-target_include_directories(dvd_DfisX PUBLIC "../common/inc/")
+target_include_directories(dvd_DfisX PUBLIC "../../../../common/inc/")
 #target_include_directories(dvd_DfisX PUBLIC inc)
 if (WIN32)
 target_include_directories( dvd_DfisX PRIVATE ${OpenCV_INC} )

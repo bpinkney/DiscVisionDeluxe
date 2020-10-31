@@ -484,6 +484,7 @@ int main(int argc, char** argv )
     "{gianttext gt   |false      | Show giant text with basic dvd_DvisEst throw info}"
     "{contrun cr     |false      | Keep outputting values, and resetting the estimate thread states, until a SIGINT is recieved}"
     "{randmeas rm    |0          | If contrun is enabled, this can also optionally be enabled to provide random dummy throws every N milliseconds, 0 is disabled}"
+    "{cannedthrow can |0          | If randmeas is enabled, this will override the randomized output with 'N' canned throw (these are from collected logs), 0 is disabled}"
     "{nocam nc       |false      | If you want to run contrun and randmeas without a camera connected at all, enable thisn option}"
     ;
 
@@ -513,6 +514,7 @@ int main(int argc, char** argv )
   const bool        gianttext   = parser.get<bool>("gianttext");
   const bool        contrun     = parser.get<bool>("contrun");
   const int         randmeas    = parser.get<int>("randmeas");
+  const int         cannedthrow = parser.get<int>("cannedthrow");
   const bool        nocam       = parser.get<bool>("nocam");
 
   // register signal SIGINT and signal handler if we need to de-init camera
@@ -548,6 +550,11 @@ int main(int argc, char** argv )
   if(randmeas > 0)
   {
     cerr << "Using randmeas period of " << randmeas << " milliseconds!" << endl;
+  }
+
+  if(cannedthrow > 0)
+  {
+    cerr << "Using cannedthrow " << cannedthrow << "!" << endl;
   }
 
   if(nocam)
@@ -790,7 +797,8 @@ int main(int argc, char** argv )
       // wait here until estimate thread is complete
       if(contrun)
       {
-        uint32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns());
+        // startthrowing after 3 seconds
+        int32_t last_randmeas_time_ms = NS_TO_MS(uptime_get_ns()) - MAX(randmeas - S_TO_MS(3), 0);
         bool ready_rm = true;
         while(!gv_force_complete_threads)
         {
@@ -815,30 +823,214 @@ int main(int argc, char** argv )
 
             if(now_ms > last_randmeas_time_ms + randmeas)
             {
-              srand(time(NULL));
-              const int base = rand() % 40;
-              const float s1 = ((float)(base)) - 40.0/2.0 + 60.0;
-              const float signer = ((float)(rand() % 2))*2.0-1.0;
-              const float spin_d = s1 * signer;       
-              // output a random throw, along with a ready flag on either side
-              sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d,",
-                MM_TO_M((float)(rand() % 500) - 500/2),
-                MM_TO_M((float)(rand() % 500) - 500/2),
-                MM_TO_M((float)(rand() % 300) - 300/2) + 1.5, // standing up off the ground by 1.5 default
-                MM_TO_M((float)(rand() % 10000) - 10000/2) + 18.0, //xvel
-                MM_TO_M((float)(rand() % 8000) - 8000/2),
-                MM_TO_M((float)(rand() % 6000) - 6000/3), // bias up for zvel
-                DEG_TO_RAD((float)(rand() % 60) - 60/2), // +- 30 deg hyzer
-                DEG_TO_RAD((float)(rand() % 30) - 30/2 + 10), // +- 15 deg pitch, biased up by 10 deg
-                spin_d, // 60 +- 20 rad/s either positive or negative
-                ((float)(rand() % 600)) * 0.001,
-                (rand() % 10 + 3)
-                );
+              if(cannedthrow <= 0)
+              {
+                srand(time(NULL));
+                const int base = rand() % 40;
+                      float s1 = ((float)(base)) - 40.0/2.0 + 75.0;
+                // allow a SUPERSPIN if the base hits the max spin
+                if(base == (40-1))
+                {
+                  s1 = 200.0;
+                }
+
+                const float signer = ((float)(rand() % 2))*2.0-1.0;
+                const float spin_d = s1 * signer;       
+                // output a random throw, along with a ready flag on either side
+                sprintf(output_cmd, "posx:%0.3f,posy:%0.3f,posz:%0.3f,velx:%0.3f,vely:%0.3f,velz:%0.3f,hyzer:%0.5f,pitch:%0.5f,spin_d:%0.5f,wobble:%0.3f,discmold:%d,",
+                  MM_TO_M((float)(rand() % 500) - 500/2),
+                  MM_TO_M((float)(rand() % 500) - 500/2),
+                  MM_TO_M((float)(rand() % 300) - 300/2) + 1.5, // standing up off the ground by 1.5 default
+                  MM_TO_M((float)(rand() % 10000) - 10000/2) + 22.0, //xvel
+                  MM_TO_M((float)(rand() % 8000) - 8000/2),
+                  MM_TO_M((float)(rand() % 3000) - 3000/3), // bias up for zvel
+                  DEG_TO_RAD((float)(rand() % 40) - 40/2), // +- 20 deg hyzer
+                  DEG_TO_RAD((float)(rand() % 20) - 20/2 + 10), // +- 10 deg pitch, biased up by 10 deg
+                  spin_d, // 60 +- 20 rad/s either positive or negative
+                  ((float)(rand() % 600)) * 0.001,
+                  (rand() % 10 + 3)
+                  );
+              }
+              else
+              {
+                // processing script for old metadata files
+                /*#!/bin/bash
+                for filename in *.txt; do
+                  # delete all non important lines
+                  sed -i '/posx/!d' "$filename"
+                  # add colons
+                  sed -i 's/\([a-zA-Z]\) /\1:/g' "$filename"
+                  # add commas  
+                  sed -i 's/\([0-9]\) /\1,/g' "$filename"
+                  #remove spaces
+                  sed -i 's/ //g' "$filename"
+                done*/
+
+                // These throws were collected on 2020 jun 5 outside on a very calm day
+                switch(cannedthrow)
+                {
+                  case 1:
+                  // BUZZZ BIGZ 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.19522,pitch:0.05258,posx:0.115,posy:-0.516,posz:2.103,velx:18.696,vely:1.140,velz:2.115,spin_d:-66.66691,wobble:0.203,discmold:6");
+                    break;
+                  case 2:
+                  // BUZZZ BIGZ 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.22867,pitch:0.10204,posx:-0.065,posy:-0.808,posz:1.831,velx:19.455,vely:-1.452,velz:-0.070,spin_d:-74.63047,wobble:0.144,discmold:6");
+                    break;
+                  case 3:
+                  // BUZZZ BIGZ 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.59230,pitch:0.10387,posx:-0.113,posy:-0.549,posz:2.132,velx:18.811,vely:1.572,velz:3.527,spin_d:-77.10027,wobble:0.113,discmold:6");
+                    break;
+                  case 4:
+                  // BUZZZ BIGZ 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.29240,pitch:0.17107,posx:0.310,posy:-0.276,posz:2.770,velx:16.800,vely:-1.223,velz:5.264,spin_d:50.79136,wobble:0.388,discmold:6");
+                    break;
+                  case 5:
+                  // BUZZZ BIGZ 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.27132,pitch:0.03473,posx:-0.398,posy:-0.508,posz:1.827,velx:18.832,vely:1.476,velz:-6.199,spin_d:-69.93354,wobble:0.190,discmold:6");
+                    break;
+                  case 6:
+                  // DESTROYER DX 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.21919,pitch:0.26950,posx:0.047,posy:-0.702,posz:2.166,velx:18.466,vely:-0.766,velz:-0.807,spin_d:-71.42656,wobble:0.172,discmold:13");
+                    break;
+                  case 7:
+                  // DESTROYER DX 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.33906,pitch:0.16332,posx:0.510,posy:-0.462,posz:1.998,velx:19.417,vely:0.601,velz:1.084,spin_d:-75.72374,wobble:0.180,discmold:13");
+                    break;
+                  case 8:
+                  // DESTROYER DX 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.66198,pitch:0.10738,posx:-0.135,posy:-0.377,posz:2.246,velx:16.497,vely:1.183,velz:-0.176,spin_d:-72.83827,wobble:0.106,discmold:13");
+                    break;
+                  case 9:
+                  // DESTROYER DX 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.07256,pitch:0.16584,posx:0.146,posy:-0.143,posz:2.949,velx:15.999,vely:0.903,velz:5.149,spin_d:52.51524,wobble:0.388,discmold:13");
+                    break;
+                  case 10:
+                  // DESTROYER DX 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.27222,pitch:0.18536,posx:0.415,posy:-0.376,posz:2.221,velx:20.489,vely:2.824,velz:1.752,spin_d:-72.95879,wobble:0.121,discmold:13");
+                    break;
+                  case 11:
+                  // MAGNET JAWBREAKER 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.13032,pitch:0.40518,posx:-0.384,posy:0.345,posz:2.430,velx:17.372,vely:11.317,velz:2.939,spin_d:-57.47996,wobble:0.139,discmold:3");
+                    break;
+                  case 12:
+                  // MAGNET JAWBREAKER 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.34111,pitch:0.03103,posx:0.145,posy:-0.951,posz:1.823,velx:18.125,vely:-1.618,velz:1.992,spin_d:-66.38936,wobble:0.363,discmold:3");
+                    break;
+                  case 13:
+                  // MAGNET JAWBREAKER 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.57271,pitch:-0.01244,posx:-0.005,posy:-0.356,posz:1.732,velx:15.012,vely:0.554,velz:-6.455,spin_d:-79.75193,wobble:0.223,discmold:3");
+                    break;
+                  case 14:
+                  // MAGNET JAWBREAKER 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.21140,pitch:-0.13659,posx:-0.506,posy:-0.175,posz:2.431,velx:18.947,vely:-1.284,velz:8.041,spin_d:48.23113,wobble:0.464,discmold:3");
+                    break;
+                  case 15:
+                  // MAGNET JAWBREAKER 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.33264,pitch:0.21405,posx:-0.020,posy:-0.540,posz:2.523,velx:17.941,vely:2.005,velz:7.422,spin_d:-71.82778,wobble:0.218,discmold:3");
+                    break;
+                  case 16:
+                  // SKRYKE STAR 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.35117,pitch:0.14543,posx:-0.092,posy:-0.260,posz:2.190,velx:18.204,vely:3.120,velz:0.031,spin_d:-70.37193,wobble:0.163,discmold:12");
+                    break;
+                  case 17:
+                  // SKRYKE STAR 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.50366,pitch:0.04661,posx:0.205,posy:-0.028,posz:1.937,velx:18.538,vely:4.164,velz:0.651,spin_d:-75.25597,wobble:0.169,discmold:12");
+                    break;
+                  case 18:
+                  // SKRYKE STAR 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.67647,pitch:0.11490,posx:0.355,posy:-0.563,posz:2.456,velx:18.422,vely:1.475,velz:7.828,spin_d:-76.33426,wobble:0.099,discmold:12");
+                    break;
+                  case 19:
+                  // SKRYKE STAR 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.12989,pitch:0.41927,posx:-0.150,posy:-0.567,posz:2.800,velx:16.950,vely:-1.561,velz:6.294,spin_d:45.54270,wobble:0.333,discmold:12");
+                    break;
+                  case 20:
+                  // SKRYKE STAR 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.37926,pitch:0.27012,posx:-0.257,posy:-0.823,posz:2.076,velx:16.676,vely:-5.094,velz:-8.371,spin_d:-79.97721,wobble:0.168,discmold:12");
+                    break;
+                  case 21:
+                  // TBIRD STAR 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.33865,pitch:0.11599,posx:0.701,posy:-0.828,posz:2.052,velx:19.061,vely:-0.636,velz:3.917,spin_d:-75.02171,wobble:0.182,discmold:9");
+                    break;
+                  case 22:
+                  // TBIRD STAR 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.39006,pitch:0.21263,posx:1.002,posy:-0.370,posz:2.025,velx:19.743,vely:0.460,velz:4.442,spin_d:-74.53731,wobble:0.199,discmold:9");
+                    break;
+                  case 23:
+                  // TBIRD STAR 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.68388,pitch:-0.03740,posx:-0.317,posy:-0.286,posz:1.892,velx:15.136,vely:2.817,velz:-8.663,spin_d:-75.07970,wobble:0.146,discmold:9");
+                    break;
+                  case 24:
+                  // TBIRD STAR 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.62789,pitch:0.06013,posx:0.109,posy:-0.583,posz:3.102,velx:15.990,vely:-1.383,velz:4.891,spin_d:45.20207,wobble:0.064,discmold:9");
+                    break;
+                  case 25:
+                  // TBIRD STAR 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.36306,pitch:0.10420,posx:-0.372,posy:-0.570,posz:1.888,velx:16.494,vely:-0.833,velz:-7.979,spin_d:-69.47189,wobble:0.152,discmold:9");
+                    break;
+                  case 26:
+                  // ZONE JAWBREAKER 0
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.38616,pitch:0.14311,posx:0.227,posy:-0.811,posz:1.927,velx:18.343,vely:0.124,velz:4.531,spin_d:-64.51692,wobble:0.248,discmold:4");
+                    break;
+                  case 27:
+                  // ZONE JAWBREAKER 1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.18486,pitch:0.15966,posx:0.562,posy:0.059,posz:2.290,velx:16.720,vely:3.728,velz:2.355,spin_d:-60.60035,wobble:0.247,discmold:4");
+                    break;
+                  case 28:
+                  // ZONE JAWBREAKER 2
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.55880,pitch:0.12608,posx:0.177,posy:-0.328,posz:2.510,velx:17.960,vely:1.960,velz:7.819,spin_d:-79.32303,wobble:0.169,discmold:4");
+                    break;
+                  case 29:
+                  // ZONE JAWBREAKER 3
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.19282,pitch:0.11540,posx:-0.317,posy:-0.116,posz:2.347,velx:16.391,vely:-0.534,velz:3.819,spin_d:51.62236,wobble:0.509,discmold:4");
+                    break;
+                  case 30:
+                  // ZONE JAWBREAKER 4
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.26173,pitch:0.10885,posx:0.424,posy:0.093,posz:2.078,velx:19.621,vely:4.785,velz:2.194,spin_d:-71.48774,wobble:0.200,discmold:4");
+                    break;
+                  default:
+                  // DESTROYER DX 4 with discmold1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-0.27222,pitch:0.18536,posx:0.415,posy:-0.376,posz:2.221,velx:20.489,vely:2.824,velz:1.752,spin_d:-72.95879,wobble:0.121,discmold:1");
+                    break;
+                }
+              }
+
               // stdout!
               cout << output_cmd << endl;
               cout << "ready:1," << endl;
               ready_rm = true;
-
               last_randmeas_time_ms = now_ms;
             }
           }
