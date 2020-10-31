@@ -249,7 +249,7 @@ namespace DfisX
       const double Cd_plate = 1.17;
       const double Cd_edge  = 1.1;
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * 0.015; // say 1.5cm tall edge for now
+      const double A_edge   = d_object.radius * 2 * 0.006; // say effectively a 6mm tall rrectangle edge for now
 
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
@@ -281,9 +281,22 @@ namespace DfisX
       // and similarly, a flat disc in vertical free-fall would have NO EDGE DRAG FORCE
       // this is only considering form drag, and NOT parasitic surface drag
 
-
       const double Fd_edge  = rhov2o2 * Cd_edge  * A_edge  * cos(d_forces.aoar);
       const double Fd_plate = rhov2o2 * Cd_plate * A_plate * sin(d_forces.aoar);
+
+      // Parasitic Skin Drag
+      // This is not included in the two components of form drag listed above, but will change with AOA
+      // It is akin to 'air friction', and is addressed for the rotational case in 'aero_torque_z' above
+      // For the linear airflow interaction, 
+      // we assume that maximum skin drag occurs when the most surface area is exposed to an airflow
+      // this is very probably when the disc is flat
+      // The effective area used for this drag term may be related to the boundary layer, and how
+      // long laminar airflows stay attached to the disc.
+      // For now, we'll just approximate it as a fixed valuefor any AOA (to be revisited later if required)
+      // Skin drag is considered to be in the direction of the airflow vector
+      const double Cd_skin = 0.01;
+      const double Fd_skin  = rhov2o2 * Cd_skin  * (A_edge + A_plate);
+
 
       // now we can determine the unit vector to apply the edge drag force in
       // get orth vector to airspeed and disc norm
@@ -294,6 +307,7 @@ namespace DfisX
       d_forces.drag_force_vector *= 0;
       d_forces.drag_force_vector += Fd_edge  * edge_force_vector;
       d_forces.drag_force_vector += Fd_plate * d_orientation;
+      d_forces.drag_force_vector += Fd_skin  * -d_forces.disc_velocity_unit_vector;
     }
     else
     {
