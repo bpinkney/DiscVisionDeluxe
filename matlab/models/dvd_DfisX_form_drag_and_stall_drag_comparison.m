@@ -13,11 +13,12 @@ disc_circle = [sin(0:0.1:pi*2+0.1); cos(0:0.1:pi*2+0.1); (0:0.1:pi*2+0.1).*0];
 disc_circle2 = [sin(0:0.1:pi*2+0.1); cos(0:0.1:pi*2+0.1); (0:0.1:pi*2+0.1).*0 - r*0.1];
 disc_circle_rot = [disc_circle,disc_circle];
 
-pitch_sweep = -deg2rad(100):0.005:deg2rad(100);
+pitch_sweep = -deg2rad(90):0.005:deg2rad(90);
+aoa_series = [];
 for k = 1:length(pitch_sweep)
   
   %R = rotationY(deg2rad(20)) * rotationX(deg2rad(0));
-  R = rotationY(pitch_sweep(k)) * rotationX(deg2rad(0));
+  R = rotationY(-pitch_sweep(k)) * rotationX(deg2rad(0));
 
   for i=1:length(disc_circle)
 
@@ -38,8 +39,9 @@ for k = 1:length(pitch_sweep)
   a = airspeed_vector;
   b = disc_norm;
   aoa = atan2(norm(cross(a, b)), dot(a, b)) - pi/2;
+  aoa_series(k) = aoa;
 
-  r = 0.42;%0.25/2;
+  r = 0.5;%0.25/2;
   Cd = 1.5;
   rho = 1.225;
   A_plate = pi*r^2;
@@ -51,7 +53,8 @@ for k = 1:length(pitch_sweep)
 %     
 %   end 
 
-  A_edge = r * 2 * 0.02; %example 2cm rim height approx
+  edge_height = 0.02;
+  A_edge = r * 2 * edge_height; %example 2cm rim height approx
 
   Fd_edge  = rho * airspeed.^2 * 0.5 * Cd * A_edge  * cos(aoa);
   Fd_plate = rho * airspeed.^2 * 0.5 * Cd * A_plate * sin(aoa);
@@ -88,13 +91,15 @@ for k = 1:length(pitch_sweep)
   
   % 2. Effect of cavity depth vs disc diameter (from page 74,90 DPFD):
   % thickness / diameter = [NOCAV, 0.1, 0.15] for the three samples
-  % with a nominal roof thickness of 0.004m
+  % with a nominal roof thickness of 0.004m, and rim thickness of 0.01m
   % Cl0 (zero aoa) = [0, 0.054, -0.039]
   % dCl/Daoa = [0.036, 0.049, 0.045]
   % Cd0 = [0.092, 0.124, 0.148]
   if(0)
     diameter = 0.200;
     thickness = [0.1, 0.1, 0.15].*diameter;
+    rim_width = 0.01;
+    roof_height = 0.004;
 
     %% SOLVED! This effect adds about half the lip surface area to the drag model as if it were edge height
     % This relationship for Cd0 is actually pretty interesting (unlike the
@@ -106,13 +111,18 @@ for k = 1:length(pitch_sweep)
     % While is this undoubtably the case, there may be more complex wake
     % effects at work here as well. Let's check!
     Cd0 = [0.092, 0.124, 0.148];    
-    added_inner_lip_height = [0, 0.1, 0.15].*diameter;
+    added_inner_lip_height = [0, 0.1*diameter-roof_height, 0.15*diameter-roof_height];
     
     Cd0_eff = (diameter .* thickness).*15+0.015;
 
     % guess here is that the whole inner lips is not exposed by some factor
     lip_exposed_surface_factor = 0.5;
-    Cd0_eff_lip = (diameter .* added_inner_lip_height.*lip_exposed_surface_factor).*15+0.015;
+    A_eff_lip = (diameter-rim_width*2) .* ...
+      added_inner_lip_height.*lip_exposed_surface_factor;
+    Cd0_eff_lip = ...
+      ( ...
+        A_eff_lip ...
+      ).*15+0.015;
     figure; hold on; grid on;
     plot(added_inner_lip_height, Cd0)
     plot(added_inner_lip_height, Cd0_eff + Cd0_eff_lip, '.-')
@@ -121,10 +131,58 @@ for k = 1:length(pitch_sweep)
     
     
     %% TOSOLVE
+    % This extra lift at aoa=0 implies that a cavity in the bottom of the
+    % disc produces more bernoulli lift. Therefore, we assume that the
+    % lower lip, or cavity plays some part in SLOWING down the lower
+    % airflow, and thus, increasing the lower pressure.
+    % Since we know from the above check that air hits the back of the
+    % inner lip at AOA=0, we know this to be correct!
+    % However, there is no linear relationship for extra
+    % lift, correlated to the exposed underside area which will explain
+    % these coeffs...
+    % perhaps there is a diminishing effect as a function of cavity depth
+    % vs cavity width?
+    % don't try to fit the "no cavity' case here as a part of this model
+    % for now
     Cl0 = [0, 0.054, -0.039];
     
-    %% TOSOLVE
+    % This relationship for  A_eff_lip is obviously a bit weird
+    % and non-linear, so in the next step, let's see if we can form an
+    % easier quadratic or something
+    Cl0_eff = [0, 0.0005./(A_eff_lip(2:end).^(0.95)) - 0.2];
+    figure; hold on; grid on;
+    plot(added_inner_lip_height, Cl0)
+    plot(added_inner_lip_height, Cl0_eff, '.-')
+    
+    %% SOLVED! This is just edgedrag again
+    % We know that this will at least be partly the vertical projection of
+    % the 'edge' form drag on the inner lip.
+    % let's check if we can mostly blame that
+    % note that the cavity sizes don't follow the relationship we would
+    % expect here, but they are so close, I am willing to bet that is a
+    % numerical precision issue....
+   
     dCl_Daoa = [0.036, 0.049, 0.045];
+    aoa_range = -pi/4:0.1:pi/4;
+    figure; hold on;grid on;
+    j = 1; plot(aoa_range, (aoa_range .* dCl_Daoa(j)));
+    j = 2; plot(aoa_range, (aoa_range .* dCl_Daoa(j)));
+    j = 3; plot(aoa_range, (aoa_range .* dCl_Daoa(j)));
+    reset_colours
+    % the inner edge surface size is attenuated away from aoa=0 by cos, and
+    % then we get the projection onto the vertical axis (vert component of
+    % the 'lip' edge force along the disc plane) by sin(aoa) as below
+    for j=1:3
+      lift_from_projected_lip_edge_drag = sin(aoa_range).*(cos(aoa_range) * (Cd0_eff(j)*0.5 + Cd0_eff_lip(j)));
+      
+      % this effect at angle is DWARFED compared to the basic Cl0 factor
+      
+      lift_from_lip_area_bernoulli = Cl0_eff(j)*0; %???
+      
+      plot(aoa_range, lift_from_projected_lip_edge_drag + lift_from_lip_area_bernoulli, '.-');
+    end
+    title('Cl effective change from cavity, causing increased edge form drag, but being countered by extra bernoulli lift?')
+    
     
   
   end
@@ -249,44 +307,65 @@ for k = 1:length(pitch_sweep)
   end
   
   
-  Cl_base = 1.0;
-  % arc length of top of disc / length of bottom as a flat surface
-  % will be larger for drivers, and almost 1.0 for some putters
-  arc_length_ratio = 0.75;  
+  Cl_base = 2.0;  
+  
+  % height above edge for camber dome peak
+  camber_m_edge_depth = 0.01; % 1cm for now
+
+  % treat this like the pulled out edges of a rectangle, as above
+  camber_rect_arc_length = r*2 + camber_m_edge_depth*2;
+  camber_arc_to_diameter_ratio = camber_rect_arc_length./(r*2);
+  
+  % now let's compute the theoretical lift change as a function of the
+  % increased 'top arc length'  
   % define the stall range for this effect
-  aoa_arc_range = deg2rad([25, -45]);
+  aoa_arc_range = deg2rad([0, -45]);
   if(aoa < aoa_arc_range(1) & aoa > aoa_arc_range(2))
-    % effect starts at the min angle, and increases from there
-    ClA_toparc = Cl_base * arc_length_ratio * sin(aoa - aoa_arc_range(1));
-  %elseif(aoa < aoa_arc_range(2))
-    % effect starts at the min angle, and increases from there
-    %ClA_toparc = Cl_base * arc_length_ratio * sin(aoa_arc_range(2) - aoa_arc_range(1));
+    % does this change with angle?
+    ClA_toparc = camber_arc_to_diameter_ratio * A_plate * Cl_base * sin(aoa);
   else
     ClA_toparc = 0;
   end
   Fl_arc  = rho * airspeed.^2 * 0.5 * ClA_toparc;
   
   % scale effect for exposed edge of inner back rim
-  % assume this effect is at a maximum in the centre of the range
-  lip_scale = 0.75;  
-  % define the stall range for this effect
-  lip_scale_range = deg2rad([0, -45]);
-  if(aoa < lip_scale_range(1) & aoa > lip_scale_range(2))
-    % treat this effect as a squared relationship over the range
-    ClA_botlip = -Cl_base * lip_scale * ((aoa - lip_scale_range(1)) / (lip_scale_range(2) - lip_scale_range(1)))^2;
-  %elseif(aoa < lip_scale_range(2))
-    % effect is maxed out at higher angles?????
-    %ClA_botlip = -Cl_base * lip_scale * ((lip_scale_range(2) - lip_scale_range(1)) / (lip_scale_range(2) - lip_scale_range(1)))^2;
-  else
-    ClA_botlip = 0;
-  end
-  Fl_lip  = rho * airspeed.^2 * 0.5 * ClA_botlip;  
+  roof_height = 0.004;
+  rim_width = 0.02;
+  added_inner_lip_height = 0.012;
+  %edge_height defined above
   
-  Fl_arc_vect = disc_norm .* Fl_arc;
-  Fl_lip_vect = disc_norm .* Fl_lip;
+  % guess here is that the whole inner lips is not exposed by some factor
+  % (this is validated above) 
+  lip_exposed_surface_factor = 0.5; %this should probably be around 0.5
+  A_eff_lip = (r*2-rim_width*2) .* ...
+      added_inner_lip_height.*lip_exposed_surface_factor;    
+  
+  % define the range for added edge drag for the inner lip
+  %lip_scale_range = deg2rad([-90, 90]);
+  %if(aoa > lip_scale_range(1) & aoa < lip_scale_range(2))
+    Fd_lip(k) = rho * airspeed.^2 * 0.5 * Cd * A_eff_lip * cos(aoa);
+  %else
+  %  Fd_lip(k) = 0;
+  %end
+  
+  % define the range for bernoulli from the inner lip
+  scaling_factor = 3.0; % arbitrary model tuner for now
+  %lip_scale_range = deg2rad([-90, 90]);
+  %if(aoa > lip_scale_range(1) & aoa < lip_scale_range(2))
+    lift_factor = -0.0005./(A_eff_lip.^(0.95)) * scaling_factor;
+    Fl_lip(k) = rho * airspeed.^2 * 0.5 * lift_factor;
+ % else
+  %  Fl_lip(k) = 0;
+  %end
+  %Fl_lip  = rho * airspeed.^2 * 0.5 * ClA_botlip;  
+  
+  Fd_lip_vect = edge_force_vect .* Fd_lip(k);
+  Fl_lip_vect = disc_norm .* Fl_lip(k);
+  
+  Fl_arc_vect = disc_norm .* Fl_arc;  
   
   F_drag_sum = Fd_edge_vect + Fd_plate_vect;
-  F_lift_sum = Fl_arc_vect + Fl_lip_vect;
+  F_lift_sum = Fl_arc_vect + Fl_lip_vect + Fd_lip_vect;
   
   F_sum = F_drag_sum + F_lift_sum;
 
@@ -299,8 +378,8 @@ for k = 1:length(pitch_sweep)
   % assume only in X for now
   Cd_eff_base(k) = F_drag_sum(1) / (rho * airspeed.^2 * 0.5);
   Cl_eff_base(k) = F_drag_sum(3) / (rho * airspeed.^2 * 0.5);
-  Cd_eff_lip(k) = (F_drag_sum(1)+Fl_lip_vect(1)) / (rho * airspeed.^2 * 0.5);
-  Cl_eff_lip(k) = (F_drag_sum(3)+Fl_lip_vect(3)) / (rho * airspeed.^2 * 0.5);
+  Cd_eff_lip(k) = (F_drag_sum(1)+Fl_lip_vect(1)+Fd_lip_vect(1)) / (rho * airspeed.^2 * 0.5);
+  Cl_eff_lip(k) = (F_drag_sum(3)+Fl_lip_vect(3)+Fd_lip_vect(3)) / (rho * airspeed.^2 * 0.5);
   Cd_eff_arc(k) = (F_drag_sum(1)+Fl_arc_vect(1)) / (rho * airspeed.^2 * 0.5);
   Cl_eff_arc(k) = (F_drag_sum(3)+Fl_arc_vect(3)) / (rho * airspeed.^2 * 0.5);
   Cd_eff(k) = F_sum(1) / (rho * airspeed.^2 * 0.5);
@@ -356,10 +435,10 @@ end
 
 figure; 
 subplot(2,1,2);hold on; grid on
-plot(rad2deg(pitch_sweep), -Cd_eff_base)
-plot(rad2deg(pitch_sweep), -Cd_eff_arc, '-')
-plot(rad2deg(pitch_sweep), -Cd_eff_lip, '--')
-plot(rad2deg(pitch_sweep), -Cd_eff, '.')
+plot(rad2deg(-aoa_series), -Cd_eff_base)
+plot(rad2deg(-aoa_series), -Cd_eff_arc, '-')
+plot(rad2deg(-aoa_series), -Cd_eff_lip, '--')
+plot(rad2deg(-aoa_series), -Cd_eff, '.')
 %plot(rad2deg(pitch_sweep), Cd_paper)
 title('Cd effective vs Cd from paper')
 click_legend({'Form Drag Cd effective nolift', 'Form Drag Cd effective plus arc effect', ...
@@ -369,11 +448,11 @@ xlabel('AOA (deg)')
 ylabel('Cd effective')
 ylim([0, 1.6])
 subplot(2,1,1);hold on; grid on
-plot(rad2deg(pitch_sweep), -Cl_eff_base)
-plot(rad2deg(pitch_sweep), -Cl_eff_arc, '-')
-plot(rad2deg(pitch_sweep), -Cl_eff_lip, '--')
-plot(rad2deg(pitch_sweep), -Cl_eff, '.')
-%plot(rad2deg(pitch_sweep), -Cl_paper)
+plot(rad2deg(-aoa_series), -Cl_eff_base)
+plot(rad2deg(-aoa_series), -Cl_eff_arc, '-')
+plot(rad2deg(-aoa_series), -Cl_eff_lip, '--')
+plot(rad2deg(-aoa_series), -Cl_eff, '.')
+%plot(rad2deg(aoa_series), -Cl_paper)
 title('Cl effective vs Cl from paper')
 click_legend({'Form Drag Cl effective nolift', 'Form Drag Cl effective plus arc effect', ...
   'Form Drag Cl effective plus lip effect', ...
