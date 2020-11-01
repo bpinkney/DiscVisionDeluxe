@@ -322,6 +322,7 @@ namespace DfisX
     if(use_updated_lift_model)
     {
       const double Cl_base = 1.0;
+      const double A_plate  = r2 * M_PI;
 
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
@@ -335,12 +336,14 @@ namespace DfisX
       // get effective area exposed by inner lip
       const double A_eff_lip = 
         (d_object.radius * 2 - disc_rim_width * 2) *
-        disc_inner_lip_height * lip_exposed_surface_factor * cos(d_forces.aoar); 
+        disc_inner_lip_height * lip_exposed_surface_factor;
+
+      const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar); 
 
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
       const double Cd_edge  = 1.1;
 
-      const double Fd_lip = rhov2o2 * Cd_edge * A_eff_lip * sin(d_forces.aoar);
+      const double Fd_lip = rhov2o2 * Cd_edge * A_eff_lip_at_aoa * sin(d_forces.aoar);
 
       Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
       make_unit_vector(edge_force_vector);
@@ -350,12 +353,14 @@ namespace DfisX
       // This is a Bernoulli lift effect, since the slowed air below the disc
       // results in an increase in pressure below, resulting in lift
       // define the range for Bernoulli effects from the inner lip
-      const double scaling_factor = 3.0; // arbitrary model tuner for now
+      const double scaling_factor = 1.0; // arbitrary model tuner for now
       const double lift_factor = 0.0005 / pow(A_eff_lip, 0.95) * scaling_factor;
-      const double Fl_lip = rhov2o2 * Cl_base * lift_factor;
+      const double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
 
       d_forces.lift_force_vector *= 0;
       d_forces.lift_force_vector += d_orientation * Fl_lip;
+
+      //std::cout << "Fl Lip  = " << std::to_string(Fl_lip) << " N, Lift Factor = " << std::to_string(lift_factor)  << ", Inter = " << std::to_string(A_plate) << std::endl; 
 
       // 3. Lift from increased top arc-length, and corresponding increasing in 'above disc' airspeed
       // This is the classic 'wing' Bernoulli effect, where the extra distance covered by the airstream
@@ -369,7 +374,7 @@ namespace DfisX
 
       // define the stall range for this effect
       double Fl_arc = 0;
-      const double A_plate  = r2 * M_PI;
+      
       if(d_forces.aoar > -DEG_TO_RAD(15) && d_forces.aoar < DEG_TO_RAD(45))
       {
         Fl_arc  = rhov2o2 * A_plate * Cl_base * camber_arc_to_diameter_ratio * sin(d_forces.aoar);
