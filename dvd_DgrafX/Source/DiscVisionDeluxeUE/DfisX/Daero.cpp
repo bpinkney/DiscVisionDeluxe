@@ -74,6 +74,7 @@ namespace DfisX
     // 'Form Drag from exposed disc plate'
     // with a simple sinusoid for effective exposed area to the airflow
     const bool use_updated_form_drag_model = true;
+    const bool use_updated_lift_model      = true;
 
     Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz;
 
@@ -195,7 +196,7 @@ namespace DfisX
       float Cm = 0.0;
       if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
       {
-        const float Cm_base = 0.1;
+        const float Cm_base = 0.08;
         Cm = Cm_base * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
       }
 
@@ -243,13 +244,14 @@ namespace DfisX
       //std::cout << std::to_string(d_forces.step_count) << ": Rot Drag XY Torque = " << out.str() << " Nm vs gyro induced torque = " << std::to_string(d_forces.gyro_torque_x) << std::endl;
     }
 
+    const float edge_height = 0.006;
     if(use_updated_form_drag_model)
     {
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double Cd_plate = 1.17;
       const double Cd_edge  = 1.1;
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * 0.015; // say 1.5cm tall edge for now
+      const double A_edge   = d_object.radius * 2 * 0.006; // say effectively a 6mm tall rrectangle edge for now
 
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
@@ -281,9 +283,22 @@ namespace DfisX
       // and similarly, a flat disc in vertical free-fall would have NO EDGE DRAG FORCE
       // this is only considering form drag, and NOT parasitic surface drag
 
-
       const double Fd_edge  = rhov2o2 * Cd_edge  * A_edge  * cos(d_forces.aoar);
       const double Fd_plate = rhov2o2 * Cd_plate * A_plate * sin(d_forces.aoar);
+
+      // Parasitic Skin Drag
+      // This is not included in the two components of form drag listed above, but will change with AOA
+      // It is akin to 'air friction', and is addressed for the rotational case in 'aero_torque_z' above
+      // For the linear airflow interaction, 
+      // we assume that maximum skin drag occurs when the most surface area is exposed to an airflow
+      // this is very probably when the disc is flat
+      // The effective area used for this drag term may be related to the boundary layer, and how
+      // long laminar airflows stay attached to the disc.
+      // For now, we'll just approximate it as a fixed valuefor any AOA (to be revisited later if required)
+      // Skin drag is considered to be in the direction of the airflow vector
+      const double Cd_skin = 0.01;
+      const double Fd_skin  = rhov2o2 * Cd_skin  * (A_edge + A_plate);
+
 
       // now we can determine the unit vector to apply the edge drag force in
       // get orth vector to airspeed and disc norm
@@ -294,6 +309,7 @@ namespace DfisX
       d_forces.drag_force_vector *= 0;
       d_forces.drag_force_vector += Fd_edge  * edge_force_vector;
       d_forces.drag_force_vector += Fd_plate * d_orientation;
+      d_forces.drag_force_vector += Fd_skin  * -d_forces.disc_velocity_unit_vector;
     }
     else
     {
@@ -303,12 +319,76 @@ namespace DfisX
       d_forces.drag_force_vector = -d_forces.drag_force_magnitude * d_forces.disc_velocity_unit_vector;
     }
 
-    d_forces.lift_induced_pitching_moment = d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
-    d_forces.lift_force_magnitude         = d_forces.pav2by2 * d_forces.realized_lift_coefficient;
+    if(use_updated_lift_model)
+    {
+      const double Cl_base = 1.0;
+      const double A_plate  = r2 * M_PI;
 
-    d_forces.lift_force_vector =  d_forces.lift_force_magnitude * d_forces.disc_lift_unit_vector;
+      // from the model validation and comparison with wind tunnel data in
+      // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
 
+      // 1. Effective drag in increase from air hitting the back of the disc inner lip
+      const double disc_inner_lip_height = 0.012;
+      const double disc_rim_width = 0.02;
+      // this was shown to be aroun 0.5 by comparison with the wind tunnel models
+      const double lip_exposed_surface_factor = 0.5;
+      
+      // get effective area exposed by inner lip
+      const double A_eff_lip = 
+        (d_object.radius * 2 - disc_rim_width * 2) *
+        disc_inner_lip_height * lip_exposed_surface_factor;
 
+      const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar); 
+
+      const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
+      const double Cd_edge  = 1.1;
+
+      const double Fd_lip = rhov2o2 * Cd_edge * A_eff_lip_at_aoa * sin(d_forces.aoar);
+
+      Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
+      make_unit_vector(edge_force_vector);
+      d_forces.drag_force_vector += Fd_lip * edge_force_vector;
+
+      // 2. Lift from decreased aispeed below the disc due to the inner lip 'edge' form drag noted above
+      // This is a Bernoulli lift effect, since the slowed air below the disc
+      // results in an increase in pressure below, resulting in lift
+      // define the range for Bernoulli effects from the inner lip
+      const double scaling_factor = 1.0; // arbitrary model tuner for now
+      const double lift_factor = 0.0005 / pow(A_eff_lip, 0.95) * scaling_factor;
+      const double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
+
+      d_forces.lift_force_vector *= 0;
+      d_forces.lift_force_vector += d_orientation * Fl_lip;
+
+      //std::cout << "Fl Lip  = " << std::to_string(Fl_lip) << " N, Lift Factor = " << std::to_string(lift_factor)  << ", Inter = " << std::to_string(A_plate) << std::endl; 
+
+      // 3. Lift from increased top arc-length, and corresponding increasing in 'above disc' airspeed
+      // This is the classic 'wing' Bernoulli effect, where the extra distance covered by the airstream
+      // above the disc, results in a higher airspeed, and a lower pressure than below, resulting in lift
+      // height above edge for camber dome peak
+      const double camber_m_edge_depth = 0.01; // 1cm for now
+
+      // treat this like the pulled out edges of a rectangle for now (seems OK)
+      const double camber_rect_arc_length = d_object.radius * 2 + camber_m_edge_depth * 2;
+      const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2);
+
+      // define the stall range for this effect
+      double Fl_arc = 0;
+      
+      if(d_forces.aoar > -DEG_TO_RAD(15) && d_forces.aoar < DEG_TO_RAD(45))
+      {
+        Fl_arc  = rhov2o2 * A_plate * Cl_base * camber_arc_to_diameter_ratio * sin(d_forces.aoar);
+      }
+
+      d_forces.lift_force_vector += d_orientation * Fl_arc;
+    }
+    else
+    {
+      d_forces.lift_force_magnitude         = d_forces.pav2by2 * d_forces.realized_lift_coefficient;
+      d_forces.lift_force_vector =  d_forces.lift_force_magnitude * d_forces.disc_lift_unit_vector;
+    }
+
+    d_forces.lift_induced_pitching_moment = 0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;    
   }
 }
