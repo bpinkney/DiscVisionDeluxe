@@ -208,5 +208,15 @@ void ADiscThrow::end_throw_simulation ()
   ptr_follow_flight->unselect();
 }
 
+  void ADiscThrow::get_initial_release_stats(Initial_Release_Stats *release_stats)
+  {
+    release_stats = &initial_release_stats;
+  }
+
+  void ADiscThrow::get_flight_cumulative_stats(Flight_Cumulative_Stats *cumulative_stats)
+  {
+    cumulative_stats = &flight_cumulative_stats;
+  }
+
 
 

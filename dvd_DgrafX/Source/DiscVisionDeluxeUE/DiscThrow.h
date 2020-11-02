@@ -28,7 +28,34 @@ protected:
 
   DfisX::Throw_Container throw_container;
 
+
+  struct Initial_Release_Stats
+  {
+  	float initial_speed;
+  	float initial_spin_percent;
+  	float initial_direction;
+  	float initial_loft;
+  	float initial_hyzer;
+  	float initial_nose_up;
+  	float initial_wobble;
+  };
+  struct Flight_Cumulative_Stats
+  {
+  	float current_distance;
+  	float current_speed;
+  	float current_spin;
+  	float current_turnfade;
+  	float current_wobble;
+  };
+
+  Initial_Release_Stats initial_release_stats;
+  Flight_Cumulative_Stats flight_cumulative_stats;
+
 public:	
+
+   void get_initial_release_stats(Initial_Release_Stats* release_stats);
+   void get_flight_cumulative_stats(Flight_Cumulative_Stats* cumulative_stats);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
