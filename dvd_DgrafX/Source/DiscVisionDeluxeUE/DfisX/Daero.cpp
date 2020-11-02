@@ -196,7 +196,7 @@ namespace DfisX
       float Cm = 0.0;
       if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
       {
-        const float Cm_base = 0.1;
+        const float Cm_base = 0.08;
         Cm = Cm_base * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
       }
 
@@ -388,7 +388,7 @@ namespace DfisX
       d_forces.lift_force_vector =  d_forces.lift_force_magnitude * d_forces.disc_lift_unit_vector;
     }
 
-    d_forces.lift_induced_pitching_moment = d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
+    d_forces.lift_induced_pitching_moment = 0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;    
   }
 }
