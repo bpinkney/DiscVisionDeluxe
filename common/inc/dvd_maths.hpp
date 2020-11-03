@@ -63,6 +63,7 @@
 #define RAD_TO_DEG(rad)                 ((rad) * 180.0 / M_PI)
 #define MRAD_TO_RAD(mrad)               ((mrad) * 0.001)
 
+// [-pi, pi]
 #define WRAP_2PI(rad)     \
   while ((rad) > M_PI)    \
   {                       \
@@ -71,6 +72,17 @@
   while ((rad) < -1*M_PI) \
   {                       \
     (rad) += 2*M_PI;      \
+  }
+
+// [0, 2*pi]
+#define WRAP_TO_2PI(rad)  \
+  while ((rad) > 2*M_PI)  \
+  {                       \
+    rad -= 2*M_PI;        \
+  }                       \
+  while ((rad) < 0)       \
+  {                       \
+    rad += 2*M_PI;        \
   }
 
 #define BOUND_VARIABLE(VAR,LOW,HIGH) \

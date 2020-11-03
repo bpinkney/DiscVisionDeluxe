@@ -76,7 +76,28 @@ namespace DfisX
     const bool use_updated_form_drag_model = true;
     const bool use_updated_lift_model      = true;
 
-    Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz;
+
+    // fun sample gusts
+    if(0)
+    {
+      const double gust_freq_Hz = 0.5;
+      const double gust_magnitude_mps = 3.0;
+
+      d_forces.gust_time_s += dt;
+
+      // only add XY gusts for now, out of phase
+      d_forces.gust_vector_xyz[0] = sin(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
+      d_forces.gust_vector_xyz[1] = cos(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
+      d_forces.gust_vector_xyz[2] = 0.0;
+    }
+    else
+    {
+      d_forces.gust_vector_xyz[0] = 0.0;
+      d_forces.gust_vector_xyz[1] = 0.0;
+      d_forces.gust_vector_xyz[2] = 0.0;
+    }
+
+    Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz - d_forces.gust_vector_xyz;
 
     d_forces.disc_velocity_unit_vector = get_unit_vector(disc_air_velocity_vector);
     make_unit_vector(d_orientation);

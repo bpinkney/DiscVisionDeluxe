@@ -97,6 +97,9 @@ namespace DfisX
 
     int step_count;
 
+    float gust_time_s;
+    Eigen::Vector3d gust_vector_xyz;
+
     /////////////aero holders
 
     Eigen::Vector3d disc_x_unit_vector;
