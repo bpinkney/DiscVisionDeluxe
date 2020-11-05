@@ -194,4 +194,41 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
   R[i3x3(2,2)] = 1.0-(q1q1 + q2q2);
 }
 
+
+// filter sample for gaussian noise to gusts
+// Butterworth 1st order, 0.2 Hz bandwidth
+// Sampling rate: 200 Hz
+#define FILTER_IIR_BW1_0p2_F200(VAR)          \
+{                                             \
+  static const float b1 = 0.0031318;          \
+  static const float b0 = 0.0031318;          \
+  static const float a1 = -0.99374;           \
+  static const float gain = 1;                \
+                                              \
+  static float x[2];                          \
+  static float y[2];                          \
+  static uint8_t first = 1;                   \
+                                              \
+  if (first) {                                \
+    x[1] = VAR;                               \
+    x[0] = VAR;                               \
+    y[1] = VAR;                               \
+    y[0] = VAR;                               \
+    first = 0;                                \
+  }                                           \
+  else {                                      \
+    x[1] = x[0];                              \
+    x[0] = VAR;                               \
+    y[1] = y[0];                              \
+    y[0] = gain*( b0*x[0] + b1*x[1]           \
+            - (a1 * y[1]) );                  \
+  }                                           \
+  VAR = y[0];                                 \
+}
+
+
+
+
+
+
 #endif // DVD_MATHS_HPP

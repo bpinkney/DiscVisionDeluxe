@@ -40,6 +40,38 @@ namespace DfisX
       return angle;
   }
 
+
+  // GUST TEST
+  // Gaussian Noise Generator
+  // generate numbers with mean 0 and standard deviation 1. 
+  // (To adjust to some other distribution, multiply by the standard deviation and add the mean.)
+  // ~0.65s for 10000000 rands on X86
+  float gaussrand()
+  {
+    static float V1, V2, S;
+    static int phase = 0;
+    float X;
+
+    if(phase == 0) {
+      do {
+        float U1 = (float)rand() / (float)RAND_MAX;
+        float U2 = (float)rand() / (float)RAND_MAX;
+
+        V1 = 2 * U1 - 1;
+        V2 = 2 * U2 - 1;
+        S = V1 * V1 + V2 * V2;
+        } while(S >= 1 || S == 0);
+
+      X = V1 * sqrt(-2 * log(S) / S);
+    } else
+      X = V2 * sqrt(-2 * log(S) / S);
+
+    phase = 1 - phase;
+
+    return X;
+  }
+
+
   //main file function
   //this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
   //step_daero saves these calculations into the throw container
@@ -78,9 +110,9 @@ namespace DfisX
 
 
     // fun sample gusts
-    if(0)
+    if(1)
     {
-      const double gust_freq_Hz = 0.5;
+      /*const double gust_freq_Hz = 0.5;
       const double gust_magnitude_mps = 3.0;
 
       d_forces.gust_time_s += dt;
@@ -88,7 +120,20 @@ namespace DfisX
       // only add XY gusts for now, out of phase
       d_forces.gust_vector_xyz[0] = sin(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
       d_forces.gust_vector_xyz[1] = cos(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
+      d_forces.gust_vector_xyz[2] = 0.0;*/
+
+      // do it with filtered white noise instead
+      const double gust_stddev = 1.0;
+      const double scaling_factor = 1.0/0.06;
+
+      d_forces.gust_vector_xyz[0] = gaussrand() * scaling_factor * gust_stddev;
+      d_forces.gust_vector_xyz[1] = 0 * gaussrand() * scaling_factor * gust_stddev;
       d_forces.gust_vector_xyz[2] = 0.0;
+
+      // apply static var filters (this will need to change for multidisc)
+      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[0]);
+      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[1]);
+      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[2]);
     }
     else
     {
