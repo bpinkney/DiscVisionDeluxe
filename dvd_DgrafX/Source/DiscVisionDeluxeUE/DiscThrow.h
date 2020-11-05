@@ -21,15 +21,8 @@ class DISCVISIONDELUXEUE_API ADiscThrow : public AActor
 public:  
   // Sets default values for this actor's properties
   ADiscThrow();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-  DfisX::Throw_Container throw_container;
-
-
-  struct Initial_Release_Stats
+  
+    struct Initial_Release_Stats
   {
   	float initial_speed;
   	float initial_spin_percent;
@@ -48,6 +41,11 @@ protected:
   	float current_wobble;
   };
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+  DfisX::Throw_Container throw_container;
   Initial_Release_Stats initial_release_stats;
   Flight_Cumulative_Stats flight_cumulative_stats;
 
@@ -55,6 +53,7 @@ public:
 
    void get_initial_release_stats(Initial_Release_Stats* release_stats);
    void get_flight_cumulative_stats(Flight_Cumulative_Stats* cumulative_stats);
+   void generate_flight_cumulative_stats();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
