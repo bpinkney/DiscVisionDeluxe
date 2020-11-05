@@ -44,7 +44,7 @@ protected:
   	float current_distance;
   	float current_speed;
   	float current_spin;
-  	float current_turnfade;
+  	float current_turnfade; 
   	float current_wobble;
   };
 

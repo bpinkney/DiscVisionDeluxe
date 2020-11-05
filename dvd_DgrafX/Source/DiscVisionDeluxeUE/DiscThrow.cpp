@@ -2,7 +2,7 @@
 
 
 #include "DiscThrow.h"
-
+#include "FollowFlight.h"
 #include "dvd_maths.hpp"
 
  //ACameraManager* camera_manager;
@@ -193,11 +193,24 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     SpawnParams.Instigator = ptr_disc_character;
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-    SpawnParams.Owner = ptr_disc_projectile;
-    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+
+    
     ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
-    ptr_follow_flight->set_colour(follow_flight_hue);
+
+
+////Follow flight spawn and init
+    SpawnParams.Owner = ptr_disc_projectile;
+    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+
+	float set_hue = 000.0;
+	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;
+	bool set_rainbow = true;
+
+    ptr_follow_flight->init (set_hue,set_shape,set_rainbow);
+    ////end Follow flight spawn and init
+
+
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
   
 }
