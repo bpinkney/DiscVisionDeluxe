@@ -72,6 +72,41 @@ namespace DfisX
   }
 
 
+  void Daero_compute_gusts(Throw_Container *throw_container)
+  {
+    // apply static var filters (this will need to change for multidisc)
+    // approximate a 1st order butterworth filrter with 0.2Hz cutoff, and 200Hz sampling
+    const float N = 1.0 / (0.2/(200/2)) * 0.3;
+    // do it with filtered white noise instead
+    // we'll do some noise with a standard deviation of 0.3
+    // and then bound it to +-1.0
+    const double gust_stddev = 0.3;
+    const double scaling_factor = N/10.0;
+
+    double raw_gust_noise[3] = 
+    {
+      gaussrand() * gust_stddev,
+      gaussrand() * gust_stddev,
+      0.0
+    };
+
+    // Bound to +-1.0 absolute
+    BOUND_VARIABLE(raw_gust_noise[0], -1.0, 1.0);
+    BOUND_VARIABLE(raw_gust_noise[1], -1.0, 1.0);
+    BOUND_VARIABLE(raw_gust_noise[2], -1.0, 1.0);
+
+    // Amplify based on gust enum directly for now
+    const double gust_amplitude = (double)(throw_container->disc_environment).gust_factor;
+
+    raw_gust_noise[0] *= gust_amplitude;
+    raw_gust_noise[1] *= gust_amplitude;
+    raw_gust_noise[2] *= gust_amplitude;
+
+    LP_FILT(d_forces.gust_vector_xyz[0], raw_gust_noise[0], N);
+    LP_FILT(d_forces.gust_vector_xyz[1], raw_gust_noise[1], N);
+    LP_FILT(d_forces.gust_vector_xyz[2], raw_gust_noise[2], N);
+  }
+
   //main file function
   //this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
   //step_daero saves these calculations into the throw container
@@ -112,28 +147,7 @@ namespace DfisX
     // fun sample gusts
     if(1)
     {
-      /*const double gust_freq_Hz = 0.5;
-      const double gust_magnitude_mps = 3.0;
-
-      d_forces.gust_time_s += dt;
-
-      // only add XY gusts for now, out of phase
-      d_forces.gust_vector_xyz[0] = sin(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
-      d_forces.gust_vector_xyz[1] = cos(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
-      d_forces.gust_vector_xyz[2] = 0.0;*/
-
-      // do it with filtered white noise instead
-      const double gust_stddev = 1.0;
-      const double scaling_factor = 1.0/0.06;
-
-      d_forces.gust_vector_xyz[0] = gaussrand() * scaling_factor * gust_stddev;
-      d_forces.gust_vector_xyz[1] = 0 * gaussrand() * scaling_factor * gust_stddev;
-      d_forces.gust_vector_xyz[2] = 0.0;
-
-      // apply static var filters (this will need to change for multidisc)
-      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[0]);
-      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[1]);
-      FILTER_IIR_BW1_0p2_F200(d_forces.gust_vector_xyz[2]);
+      Daero_compute_gusts(throw_container);
     }
     else
     {
