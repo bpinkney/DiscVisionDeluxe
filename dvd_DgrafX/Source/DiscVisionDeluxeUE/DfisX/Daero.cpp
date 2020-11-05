@@ -87,7 +87,7 @@ namespace DfisX
     {
       gaussrand() * gust_stddev,
       gaussrand() * gust_stddev,
-      0.0
+      gaussrand() * gust_stddev * 0.25
     };
 
     // Bound to +-1.0 absolute
@@ -96,7 +96,8 @@ namespace DfisX
     BOUND_VARIABLE(raw_gust_noise[2], -1.0, 1.0);
 
     // Amplify based on gust enum directly for now
-    const double gust_amplitude = (double)(throw_container->disc_environment).gust_factor;
+    double gust_amplitude = ((double)(throw_container->disc_environment).gust_factor);
+    gust_amplitude *= gust_amplitude; // square it
 
     raw_gust_noise[0] *= gust_amplitude;
     raw_gust_noise[1] *= gust_amplitude;
