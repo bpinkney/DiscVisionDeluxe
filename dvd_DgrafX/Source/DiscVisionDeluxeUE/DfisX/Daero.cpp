@@ -40,6 +40,75 @@ namespace DfisX
       return angle;
   }
 
+
+  // GUST TEST
+  // Gaussian Noise Generator
+  // generate numbers with mean 0 and standard deviation 1. 
+  // (To adjust to some other distribution, multiply by the standard deviation and add the mean.)
+  // ~0.65s for 10000000 rands on X86
+  float gaussrand()
+  {
+    // not sure if these are a problem for multi-throw, don't think so
+    static float V1, V2, S;
+    static int phase = 0;
+    float X;
+
+    if(phase == 0) {
+      do {
+        float U1 = (float)rand() / (float)RAND_MAX;
+        float U2 = (float)rand() / (float)RAND_MAX;
+
+        V1 = 2 * U1 - 1;
+        V2 = 2 * U2 - 1;
+        S = V1 * V1 + V2 * V2;
+        } while(S >= 1 || S == 0);
+
+      X = V1 * sqrt(-2 * log(S) / S);
+    } else
+      X = V2 * sqrt(-2 * log(S) / S);
+
+    phase = 1 - phase;
+
+    return X;
+  }
+
+
+  void Daero_compute_gusts(Throw_Container *throw_container)
+  {
+    // apply static var filters (this will need to change for multidisc)
+    // approximate a 1st order butterworth filrter with 0.2Hz cutoff, and 200Hz sampling
+    const float N = 1.0 / (0.2/(200/2)) * 0.3;
+    // do it with filtered white noise instead
+    // we'll do some noise with a standard deviation of 0.3
+    // and then bound it to +-1.0
+    const double gust_stddev = 0.3;
+    const double scaling_factor = N/10.0;
+
+    double raw_gust_noise[3] = 
+    {
+      gaussrand() * gust_stddev,
+      gaussrand() * gust_stddev,
+      gaussrand() * gust_stddev * 0.25
+    };
+
+    // Bound to +-1.0 absolute
+    BOUND_VARIABLE(raw_gust_noise[0], -1.0, 1.0);
+    BOUND_VARIABLE(raw_gust_noise[1], -1.0, 1.0);
+    BOUND_VARIABLE(raw_gust_noise[2], -1.0, 1.0);
+
+    // Amplify based on gust enum directly for now
+    double gust_amplitude = ((double)(throw_container->disc_environment).gust_factor);
+    gust_amplitude *= gust_amplitude; // square it
+
+    raw_gust_noise[0] *= gust_amplitude;
+    raw_gust_noise[1] *= gust_amplitude;
+    raw_gust_noise[2] *= gust_amplitude;
+
+    LP_FILT(d_forces.gust_vector_xyz[0], raw_gust_noise[0], N);
+    LP_FILT(d_forces.gust_vector_xyz[1], raw_gust_noise[1], N);
+    LP_FILT(d_forces.gust_vector_xyz[2], raw_gust_noise[2], N);
+  }
+
   //main file function
   //this takes a throw container reference and a step time in seconds and performs the aerdynamic force and torque calculations
   //step_daero saves these calculations into the throw container
@@ -76,26 +145,8 @@ namespace DfisX
     const bool use_updated_form_drag_model = true;
     const bool use_updated_lift_model      = true;
 
-
-    // fun sample gusts
-    if(0)
-    {
-      const double gust_freq_Hz = 0.5;
-      const double gust_magnitude_mps = 3.0;
-
-      d_forces.gust_time_s += dt;
-
-      // only add XY gusts for now, out of phase
-      d_forces.gust_vector_xyz[0] = sin(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
-      d_forces.gust_vector_xyz[1] = cos(2.0 * M_PI * d_forces.gust_time_s * gust_freq_Hz) * gust_magnitude_mps;
-      d_forces.gust_vector_xyz[2] = 0.0;
-    }
-    else
-    {
-      d_forces.gust_vector_xyz[0] = 0.0;
-      d_forces.gust_vector_xyz[1] = 0.0;
-      d_forces.gust_vector_xyz[2] = 0.0;
-    }
+    // add LP-filtered white-noise gusts
+    Daero_compute_gusts(throw_container);
 
     Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz - d_forces.gust_vector_xyz;
 

@@ -58,7 +58,7 @@ namespace DfisX
   // environmental enums
   enum class Gust_Factor
   {
-    NONE,
+    ZERO_DEAD_DIDDLY,
     ONE_DULL_DRAFT,
     TWO_CALM_CHINOOK,
     THREE_BRUSQUE_BREEZE,    

@@ -194,4 +194,23 @@ static inline void Q2R( float VEC4(Q), float MAT3X3(R) )
   R[i3x3(2,2)] = 1.0-(q1q1 + q2q2);
 }
 
+// Low-pass first-order IIR filter
+// Time constant is ~ (N * T_sample), N=0 for no filter
+#define LP_FILT(var, new_val, N)  \
+  do { var = ((float)var * ((float)N) + ((float)new_val)) / ((float)N+1); } while(0)
+
+#define BOUND_VARIABLE(VAR,LOW,HIGH) \
+  do \
+  { \
+    if ((VAR) < (LOW)) \
+    { \
+      (VAR) = (LOW); \
+    } \
+    else if ((VAR) > (HIGH)) \
+    { \
+      (VAR) = (HIGH); \
+    } \
+  } \
+  while (0)
+
 #endif // DVD_MATHS_HPP
