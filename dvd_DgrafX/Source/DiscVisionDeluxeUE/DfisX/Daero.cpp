@@ -48,6 +48,7 @@ namespace DfisX
   // ~0.65s for 10000000 rands on X86
   float gaussrand()
   {
+    // not sure if these are a problem for multi-throw, don't think so
     static float V1, V2, S;
     static int phase = 0;
     float X;
@@ -144,18 +145,8 @@ namespace DfisX
     const bool use_updated_form_drag_model = true;
     const bool use_updated_lift_model      = true;
 
-
-    // fun sample gusts
-    if(1)
-    {
-      Daero_compute_gusts(throw_container);
-    }
-    else
-    {
-      d_forces.gust_vector_xyz[0] = 0.0;
-      d_forces.gust_vector_xyz[1] = 0.0;
-      d_forces.gust_vector_xyz[2] = 0.0;
-    }
+    // add LP-filtered white-noise gusts
+    Daero_compute_gusts(throw_container);
 
     Eigen::Vector3d disc_air_velocity_vector = d_velocity - throw_container->disc_environment.wind_vector_xyz - d_forces.gust_vector_xyz;
 
