@@ -2,7 +2,7 @@
 
 
 #include "DiscThrow.h"
-
+#include "FollowFlight.h"
 #include "dvd_maths.hpp"
 
  //ACameraManager* camera_manager;
@@ -14,6 +14,8 @@ ADiscThrow::ADiscThrow()
    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
   PrimaryActorTick.bCanEverTick = true;
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
+  memset(&initial_release_stats, 0, sizeof(Initial_Release_Stats));
+  memset(&flight_cumulative_stats, 0, sizeof(Flight_Cumulative_Stats));
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +39,7 @@ void ADiscThrow::Tick(const float DeltaTime)
   {
     // actually step DfisX
     DfisX::step_simulation(&throw_container, DeltaTime);
+    generate_flight_cumulative_stats();
 
     //converting dfisx disc state into unreal usable forms
     DfisX::Disc_State disc_state = DfisX::get_disc_state(&throw_container);
@@ -193,11 +196,24 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     SpawnParams.Instigator = ptr_disc_character;
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-    SpawnParams.Owner = ptr_disc_projectile;
-    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+
+    
     ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
-    ptr_follow_flight->set_colour(follow_flight_hue);
+
+
+////Follow flight spawn and init
+    SpawnParams.Owner = ptr_disc_projectile;
+    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+
+	float set_hue = 000.0;
+	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;
+	bool set_rainbow = true;
+
+    ptr_follow_flight->init (set_hue,set_shape,set_rainbow);
+    ////end Follow flight spawn and init
+
+
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
   
 }
@@ -208,15 +224,28 @@ void ADiscThrow::end_throw_simulation ()
   ptr_follow_flight->unselect();
 }
 
-  void ADiscThrow::get_initial_release_stats(Initial_Release_Stats *release_stats)
+void ADiscThrow::get_initial_release_stats(Initial_Release_Stats *release_stats)
   {
     release_stats = &initial_release_stats;
   }
 
-  void ADiscThrow::get_flight_cumulative_stats(Flight_Cumulative_Stats *cumulative_stats)
+void ADiscThrow::get_flight_cumulative_stats(Flight_Cumulative_Stats *cumulative_stats)
   {
     cumulative_stats = &flight_cumulative_stats;
   }
 
+void ADiscThrow::generate_flight_cumulative_stats()
+{
+
+
+	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
+  	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
+  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel;
+  	flight_cumulative_stats.current_turnfade   = 0; ///will add later
+  	flight_cumulative_stats.current_wobble     = 0; ///will add later
+
+  	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,(FString::SanitizeFloat(flight_cumulative_stats.current_spin)));
+
+}
 
 
