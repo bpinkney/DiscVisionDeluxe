@@ -399,11 +399,21 @@ namespace DfisX
         // disc centre. This actually changes with thickness, and other factors, but this approximation is OK
         // for now.
         const double plate_moment_arm_length = 0.15 * d_object.radius * 2;
-        const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate;
+
+        // We observe that the camber (below) causes extra torque due to the plate drag
+        // For now, we just add this to the torque term as a function of 'amplified' torque here
+        // using the camber arc length as an extended effective A_plate
+        // we may want to add this to the Fd_plate later as well, not too sure yet
+        // Copied from below:
+        const double camber_m_edge_depth = 0.01; // 1cm for now
+        // treat this like the pulled out edges of a rectangle for now (seems OK)
+        const double camber_rect_arc_length = d_object.radius * 2 + camber_m_edge_depth * 2;
+        // attenuate this factor with AOA since the entire 'plate' is exposed at some point...?
+        const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
+
+        // negative wrt Fd_plate sign, arm is toward the leading end
+        const double Fd_plate_induced_moment_Nm = -plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
         d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
-        std::cout << "Pitching moment from plate drag = " << std::to_string(Fd_plate_induced_moment_Nm) << " Nm vs old model sum = " << 
-          std::to_string(0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << " Nm, delta = " << 
-          std::to_string(Fd_plate_induced_moment_Nm - 0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << std::endl;
       }
     }
     else
@@ -476,6 +486,37 @@ namespace DfisX
       }
 
       d_forces.lift_force_vector += d_orientation * Fl_arc;
+
+
+      // Use bernoulli lift terms to apply some of the resulting pitching moment
+      if(use_updated_pitching_moment_model)
+      {
+        // from the paper and matlab: 
+        // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
+        const double Fl_lip_moment_arm_length = 0.1 * d_object.radius * 2;
+        // positive wrt Fl_lip sign, arm is toward the trailing end
+        const double Fl_lip_induced_moment_Nm = Fl_lip_moment_arm_length * Fl_lip;
+
+        // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
+        // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
+        // this probably changes with AOA, but we'll just make it static for now
+        const double Fl_arc_moment_arm_length = 0.1 * d_object.radius * 2;
+
+        // We observe that the camber (below) causes extra torque due to the plate drag
+        // negative wrt Fl_arc sign, arm is toward the leading end
+        const double Fl_arc_induced_moment_Nm = -Fl_arc_moment_arm_length * Fl_arc;
+
+        std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
+          " Nm vs from Fl_lip = " << std::to_string(Fl_lip_induced_moment_Nm) << 
+          " Nm, from Fl_arc = " << std::to_string(Fl_arc_induced_moment_Nm) << 
+          " Nm, vs old model sum = " <<           
+          std::to_string(d_forces.lift_induced_pitching_moment + Fl_lip_induced_moment_Nm + Fl_arc_induced_moment_Nm) << "/" <<  
+          std::to_string(0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << std::endl;
+
+
+        d_forces.lift_induced_pitching_moment += Fl_lip_induced_moment_Nm;
+        d_forces.lift_induced_pitching_moment += Fl_arc_induced_moment_Nm;
+      }
     }
     else
     {

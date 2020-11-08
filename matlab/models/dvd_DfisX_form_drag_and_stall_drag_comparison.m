@@ -84,6 +84,20 @@ for k = 1:length(pitch_sweep)
 
   % Grabbing some experimental data from DPFD paper:
   
+  % 0. pitching moment
+  % Looking at Figure 5.4 in Dynamics and Performance of Flying Discs
+  % we note that the laminar airflow doesn't stick to the entire disc
+  % 'plate' surface
+  % AND we can see a non zero dCm/daoa (change in pitching moment from AOA)
+  % for the flat plates of varying thickness
+  % So, since we know there are no lift effects on a plate, cavity-less
+  % plate, we must assume that the form drag is causing a moment, and
+  % therefore, that the 'effective area for laminar airflow' also affects
+  % the form drag.
+  % So, we can probably compute what the offset is, and compute a torque
+  % from the total form drag of the plate (already on the disc norml!
+  % handy!)
+  
   % 1. Use a fixed Reynolds number of 3.78*10^5 for linear motion (from page 90 DPFD)
   % I assume the reference area used for all these calculations was
   % A_ref = pi * r^2 due to the incorrect treatment of 'Cd' and 'Cl' as largely
@@ -182,7 +196,27 @@ for k = 1:length(pitch_sweep)
       plot(aoa_range, lift_from_projected_lip_edge_drag + lift_from_lip_area_bernoulli, '.-');
     end
     title('Cl effective change from cavity, causing increased edge form drag, but being countered by extra bernoulli lift?')
+  
+    % check pitching moment as a function of lifting vector application
+    % centre offset
+    % From Table 5.1 (subtracted from thickness effect
+    Cm_aoa = [0.0, -0.005]; % don't include thick one, since there is no control!
+        
+    A_plate = pi*(diameter/2)^2;
+    Cd_plate = 1.17;
+    rho = 1.225;
+    airspeed = 20.0; %m/s
+
+    % this base force doesn't change with thickness
+    Cl0_lip_eff = 0.0005./(A_eff_lip(2).^(0.95))
     
+    figure; hold on; grid on;
+    test_offset = 0.1 * diameter;
+    torque = test_offset.*Cl0_lip_eff;
+    Cm_aoa(2)
+    torque
+    plot(aoa_range, -torque, '.-');
+    plot(aoa_range, Cm_aoa(2), '-');
     
   
   end
@@ -260,6 +294,34 @@ for k = 1:length(pitch_sweep)
     title('Cl effective change from camber, causing reduced edge form drag, and DEFINITELY NOT increasing plate form drag surface area!')
     
     
+    % check pitching moment as a function of lifting vector application
+    % centre offset
+    % From Table 5.1 (subtracted from thickness effect)
+    
+    % due to the decline with greater camber seen in the third
+    % element, I think we need to assume this this a combination
+    % of the off-centre bernoulli lift (toward the front), 
+    % fighting the extra form drag acting to the domed front of the
+    % disc
+    % That second effect will likely be very similar to the off-centre
+    % form drag business, perhaps the camber should affect that value
+    Cm_aoa = [0.0, -0.002, -0.001]; 
+        
+    A_plate = pi*(diameter/2)^2;
+    Cd_plate = 1.17;
+    rho = 1.225;
+    airspeed = 20.0; %m/s
+
+    % this base force doesn't change with thickness
+    lift_force_camber = Cl0_eff-1;
+    
+    %figure; hold on; grid on;
+    test_offset = 0.2 * diameter;
+    torque = test_offset.*lift_force_camber
+    Cm_aoa
+    %plot(aoa_range, torque, '.-');
+    %plot(aoa_range, Cm_aoa(2), '-');
+    
     
   end  
   
@@ -304,6 +366,51 @@ for k = 1:length(pitch_sweep)
     j = 3; plot(aoa_range, sin(aoa_range).*(cos(aoa_range) * Cd0_eff(j)), '.-');
     j = 4; plot(aoa_range, sin(aoa_range).*(cos(aoa_range) * Cd0_eff(j)), '.-');
     title('Cl effective change over AOA, DPFD paper data vs edge form drag vert component')
+    
+    
+    % Pitching moment
+    
+    % We expect this effect is the result of:
+    % 1. different airflows and interaction with the 'plate' 
+    % (see '0. pitching moment' above)
+    % 2. the sloped surafce connecting the 'plate' to the 'edge' on a real disc
+
+    % so how does this fit into our 'plate' and 'edge' model?
+    % since we are defining the 'edge' as the strictly perpendicular to
+    % disc normal surface, let's assume that there is some centre of force
+    % offset for the applied 'plate' drag, similar to the approximation in
+    % the paper.
+    % We can validate the numbers provided in the paper for the no-camber,
+    % no-cavity thickness row in Table 5.1 using this idea.
+
+    % From Table 5.1
+    Cm_aoa = [0.008, 0.006, 0.005, 0.004];
+    % from the paper (below table 5.1):
+    % centre of applied plate drag appears to be a function of disc
+    % thickness, where for thickness = [0.01, 0.025, 0.05, 0.1] *d m
+    plate_drag_offset_from_chord_x = [0.21, 0.18, 0.14, 0.12] % percent of diameter ahead of disc centre
+    plate_drag_offset_m = plate_drag_offset_from_chord_x.*diameter
+    
+    A_plate = pi*(diameter/2)^2;
+    Cd_plate = 1.17;
+    rho = 1.225;
+    airspeed = 20.0; %m/s
+
+    % this base force doesn't change with thickness
+    Fd_plate = rho .* airspeed.^2 .* 0.5 .* Cd_plate .* A_plate .* sin(aoa_range);
+    
+    figure; hold on; grid on;
+    for j=1:4
+      torque = plate_drag_offset_m(j).*Fd_plate;
+      plot(aoa_range, torque, '.-');
+    end
+    reset_colours
+    for j=1:4
+      % compare to paper plus fixed scaling factor
+      plot(aoa_range, Cm_aoa(j).*aoa_range .* rho .* airspeed.^2 .* 0.5 .* A_plate.* 6, '-');      
+    end
+    
+    
   end
   
   
