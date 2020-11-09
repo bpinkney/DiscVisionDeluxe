@@ -335,14 +335,15 @@ namespace DfisX
       //std::cout << std::to_string(d_forces.step_count) << ": Rot Drag XY Torque = " << out.str() << " Nm vs gyro induced torque = " << std::to_string(d_forces.gyro_torque_x) << std::endl;
     }
 
-    const float edge_height = 0.006;
+    // effective edge heighr for our simplified 'edge' and 'plate' model approximation
+    const float edge_height = 0.005;
     if(use_updated_form_drag_model)
     {
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double Cd_plate = 1.17;
       const double Cd_edge  = 1.1;
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * 0.006; // say effectively a 6mm tall rrectangle edge for now
+      const double A_edge   = d_object.radius * 2 * edge_height; // say effectively a 6mm tall rrectangle edge for now
 
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
@@ -416,7 +417,7 @@ namespace DfisX
         // using the camber arc length as an extended effective A_plate
         // we may want to add this to the Fd_plate later as well, not too sure yet
         // Copied from below:
-        const double camber_m_edge_depth = 0.01; // 1cm for now
+        const double camber_m_edge_depth = 0.011; // 1cm for now
         // treat this like the pulled out edges of a rectangle for now (seems OK)
         const double camber_rect_arc_length = d_object.radius * 2 + camber_m_edge_depth * 2;
         // attenuate this factor with AOA since the entire 'plate' is exposed at some point...?
@@ -444,9 +445,11 @@ namespace DfisX
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
 
+      // These are all for a destroyer
+
       // 1. Effective drag in increase from air hitting the back of the disc inner lip
       const double disc_inner_lip_height = 0.012;
-      const double disc_rim_width = 0.02;
+      const double disc_rim_width = 0.024;
       // this was shown to be aroun 0.5 by comparison with the wind tunnel models
       const double lip_exposed_surface_factor = 0.5;
       
@@ -470,9 +473,16 @@ namespace DfisX
       // This is a Bernoulli lift effect, since the slowed air below the disc
       // results in an increase in pressure below, resulting in lift
       // define the range for Bernoulli effects from the inner lip
-      const double scaling_factor = 1.0; // arbitrary model tuner for now
-      const double lift_factor = 0.0005 / pow(A_eff_lip, 0.95) * scaling_factor;
-      const double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
+      const double scaling_factor_Fl_lip = 1.0; // arbitrary model tuner for now
+      const double lift_factor = 0.0005 / pow(A_eff_lip, 0.95) * scaling_factor_Fl_lip;
+            double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
+
+      // Only attenuate this lift for nose-down, i.e. negative AOAs
+      // TODO: Is this right? who knows 
+      if(d_forces.aoar < -DEG_TO_RAD(10))
+      {
+        //Fl_lip *= cos(d_forces.aoar)*cos(d_forces.aoar);
+      }
 
       d_forces.lift_force_vector *= 0;
       d_forces.lift_force_vector += d_orientation * Fl_lip;
@@ -483,7 +493,7 @@ namespace DfisX
       // This is the classic 'wing' Bernoulli effect, where the extra distance covered by the airstream
       // above the disc, results in a higher airspeed, and a lower pressure than below, resulting in lift
       // height above edge for camber dome peak
-      const double camber_m_edge_depth = 0.01; // 1cm for now
+      const double camber_m_edge_depth = 0.012; // 1cm for now
 
       // treat this like the pulled out edges of a rectangle for now (seems OK)
       const double camber_rect_arc_length = d_object.radius * 2 + camber_m_edge_depth * 2;
@@ -491,10 +501,11 @@ namespace DfisX
 
       // define the stall range for this effect
       double Fl_arc = 0;
+      const double scaling_factor_Fl_arc = 1.0; // arbitrary model tuner for now
       
       if(d_forces.aoar > -DEG_TO_RAD(15) && d_forces.aoar < DEG_TO_RAD(45))
       {
-        Fl_arc  = rhov2o2 * A_plate * Cl_base * camber_arc_to_diameter_ratio * sin(d_forces.aoar);
+        Fl_arc  = rhov2o2 * A_plate * Cl_base * camber_arc_to_diameter_ratio * sin(d_forces.aoar) * scaling_factor_Fl_arc;
       }
 
       d_forces.lift_force_vector += d_orientation * Fl_arc;
