@@ -442,7 +442,7 @@ namespace DfisX
         // effect is maxed at cos(aoa + rim_camber_norm_angle - pi/2)
 
         const double rim_camber_incidence_angle = d_forces.aoar + rim_camber_norm_angle - M_PI_2;
-        const double effective_rim_camber_area = disc_rim_width * d_object.radius;
+        const double effective_rim_camber_area = disc_rim_width * d_object.radius * 2 * 0.75;
               double effective_rim_camber_force_N = rhov2o2 * Cd_edge  * effective_rim_camber_area * cos(rim_camber_incidence_angle);
         // if the angle is too far nose-down, this is no longer a factor
         effective_rim_camber_force_N = MAX(0.0, effective_rim_camber_force_N);
@@ -542,13 +542,13 @@ namespace DfisX
         // from the paper and matlab: 
         // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
         // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
-        const double Fl_lip_moment_arm_length = 0.0175 * d_object.radius * 2;
+        const double Fl_lip_moment_arm_length = 0.05 * d_object.radius * 2;
         const double Fl_lip_induced_moment_Nm = -Fl_lip_moment_arm_length * Fl_lip;
 
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
         // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
         // this probably changes with AOA, but we'll just make it static for now
-        const double Fl_arc_moment_arm_length = 0.23 * d_object.radius * 2;
+        const double Fl_arc_moment_arm_length = 0.12 * d_object.radius * 2;
 
         // We observe that the camber (below) causes extra torque due to the plate drag
         // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
