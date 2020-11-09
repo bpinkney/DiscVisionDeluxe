@@ -411,8 +411,8 @@ namespace DfisX
         // attenuate this factor with AOA since the entire 'plate' is exposed at some point...?
         const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
 
-        // negative wrt Fd_plate sign, arm is toward the leading end
-        const double Fd_plate_induced_moment_Nm = -plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
+        // // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
+        const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
         d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
       }
     }
@@ -494,8 +494,8 @@ namespace DfisX
         // from the paper and matlab: 
         // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
         const double Fl_lip_moment_arm_length = 0.1 * d_object.radius * 2;
-        // positive wrt Fl_lip sign, arm is toward the trailing end
-        const double Fl_lip_induced_moment_Nm = Fl_lip_moment_arm_length * Fl_lip;
+        // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
+        const double Fl_lip_induced_moment_Nm = -Fl_lip_moment_arm_length * Fl_lip;
 
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
         // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
@@ -503,8 +503,8 @@ namespace DfisX
         const double Fl_arc_moment_arm_length = 0.1 * d_object.radius * 2;
 
         // We observe that the camber (below) causes extra torque due to the plate drag
-        // negative wrt Fl_arc sign, arm is toward the leading end
-        const double Fl_arc_induced_moment_Nm = -Fl_arc_moment_arm_length * Fl_arc;
+        // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
+        const double Fl_arc_induced_moment_Nm = Fl_arc_moment_arm_length * Fl_arc;
 
         std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
           " Nm vs from Fl_lip = " << std::to_string(Fl_lip_induced_moment_Nm) << 
@@ -530,7 +530,7 @@ namespace DfisX
     }
     else
     {
-      d_forces.lift_induced_pitching_moment = 0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
+      d_forces.lift_induced_pitching_moment = -0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter;
     }
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
