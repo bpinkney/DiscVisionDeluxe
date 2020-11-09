@@ -198,7 +198,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
 
     
-    ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    //ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
 
 
@@ -207,7 +207,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
 
 	float set_hue = 000.0;
-	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;
+	enum_ff_display_shape set_shape = enum_ff_display_shape::Spiral;//Bandsaw;
 	bool set_rainbow = true;
 
     ptr_follow_flight->init (set_hue,set_shape,set_rainbow);

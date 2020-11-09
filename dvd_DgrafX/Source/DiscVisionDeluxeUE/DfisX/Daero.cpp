@@ -412,7 +412,7 @@ namespace DfisX
         const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
 
         // negative wrt Fd_plate sign, arm is toward the leading end
-        const double Fd_plate_induced_moment_Nm = -plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
+        const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
         d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
       }
     }
@@ -493,9 +493,9 @@ namespace DfisX
       {
         // from the paper and matlab: 
         // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
-        const double Fl_lip_moment_arm_length = 0.1 * d_object.radius * 2;
+        const double Fl_lip_moment_arm_length = 0.0175 * d_object.radius * 2;
         // positive wrt Fl_lip sign, arm is toward the trailing end
-        const double Fl_lip_induced_moment_Nm = Fl_lip_moment_arm_length * Fl_lip;
+        const double Fl_lip_induced_moment_Nm = -Fl_lip_moment_arm_length * Fl_lip;
 
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
         // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
@@ -504,7 +504,7 @@ namespace DfisX
 
         // We observe that the camber (below) causes extra torque due to the plate drag
         // negative wrt Fl_arc sign, arm is toward the leading end
-        const double Fl_arc_induced_moment_Nm = -Fl_arc_moment_arm_length * Fl_arc;
+        const double Fl_arc_induced_moment_Nm = Fl_arc_moment_arm_length * Fl_arc;
 
         std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
           " Nm vs from Fl_lip = " << std::to_string(Fl_lip_induced_moment_Nm) << 
