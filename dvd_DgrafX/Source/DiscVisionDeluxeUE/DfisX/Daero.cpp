@@ -302,6 +302,7 @@ namespace DfisX
     //  " Nm, SPIN = " << std::to_string(d_state.disc_rotation_vel) << "rad/s" << std::endl;
 
     d_forces.aero_torque_x = 0;
+    d_forces.aero_torque_y = 0;
     if(use_pitching_drag_model)
     {
       // from 'drag of rotating disc pitching'
@@ -311,7 +312,7 @@ namespace DfisX
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double Cwdxy = 1.17;
 
-      const double Td = 
+      const double Td_x = 
         -signum(d_state.disc_pitching_vel) *
         2.0 * 0.13412 *
         Cwdxy *
@@ -319,7 +320,17 @@ namespace DfisX
         throw_container->disc_environment.air_density *
         (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
 
-      d_forces.aero_torque_x = Td;
+      d_forces.aero_torque_x = Td_x;
+
+      const double Td_y = 
+        -signum(d_state.disc_rolling_vel) *
+        2.0 * 0.13412 *
+        Cwdxy *
+        r5 *
+        throw_container->disc_environment.air_density *
+        (d_state.disc_rolling_vel*d_state.disc_rolling_vel);
+
+      d_forces.aero_torque_y = Td_y;
 
       //std::cout << std::to_string(d_forces.step_count) << ": Rot Drag XY Torque = " << out.str() << " Nm vs gyro induced torque = " << std::to_string(d_forces.gyro_torque_x) << std::endl;
     }
@@ -412,7 +423,8 @@ namespace DfisX
         const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
 
         // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
-        const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
+        // only take the vertical component of the moment arm?????????????????? NO CLUE, this term seems too high
+        const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor * sin(d_forces.aoar);
         d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
       }
     }
@@ -500,7 +512,7 @@ namespace DfisX
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
         // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
         // this probably changes with AOA, but we'll just make it static for now
-        const double Fl_arc_moment_arm_length = 0.1 * d_object.radius * 2;
+        const double Fl_arc_moment_arm_length = 0.23 * d_object.radius * 2;
 
         // We observe that the camber (below) causes extra torque due to the plate drag
         // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
@@ -509,7 +521,7 @@ namespace DfisX
         std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
           " Nm vs from Fl_lip = " << std::to_string(Fl_lip_induced_moment_Nm) << 
           " Nm, from Fl_arc = " << std::to_string(Fl_arc_induced_moment_Nm) << 
-          " Nm, vs old model sum = " <<           
+          " Nm, vs old model sum (AOA = " << RAD_TO_DEG(d_forces.aoar) << ") = " <<           
           std::to_string(d_forces.lift_induced_pitching_moment + Fl_lip_induced_moment_Nm + Fl_arc_induced_moment_Nm) << "/" <<  
           std::to_string(0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << std::endl;
 
