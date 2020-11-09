@@ -411,7 +411,7 @@ namespace DfisX
         // attenuate this factor with AOA since the entire 'plate' is exposed at some point...?
         const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
 
-        // // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
+        // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
         const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor;
         d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
       }
@@ -493,8 +493,8 @@ namespace DfisX
       {
         // from the paper and matlab: 
         // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
-        const double Fl_lip_moment_arm_length = 0.1 * d_object.radius * 2;
         // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
+        const double Fl_lip_moment_arm_length = 0.0175 * d_object.radius * 2;
         const double Fl_lip_induced_moment_Nm = -Fl_lip_moment_arm_length * Fl_lip;
 
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
