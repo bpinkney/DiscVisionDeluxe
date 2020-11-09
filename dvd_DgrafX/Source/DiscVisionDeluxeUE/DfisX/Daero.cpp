@@ -460,7 +460,14 @@ namespace DfisX
       // define the range for Bernoulli effects from the inner lip
       const double scaling_factor = 1.0; // arbitrary model tuner for now
       const double lift_factor = 0.0005 / pow(A_eff_lip, 0.95) * scaling_factor;
-      const double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
+            double Fl_lip = rhov2o2 * Cl_base * A_plate * lift_factor;
+
+      // Only attenuate this lift for nose-down, i.e. negative AOAs
+      // TODO: Is this right? who knows
+      if(d_forces.aoar < 0)
+      {
+        Fl_lip *= cos(d_forces.aoar);
+      }
 
       d_forces.lift_force_vector *= 0;
       d_forces.lift_force_vector += d_orientation * Fl_lip;
