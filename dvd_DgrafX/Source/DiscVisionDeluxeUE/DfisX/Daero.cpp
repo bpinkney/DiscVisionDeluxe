@@ -412,8 +412,8 @@ namespace DfisX
         // for now.
         const double plate_moment_arm_length = 0.15 * d_object.radius * 2;
 
-        // We observe that the camber (below) causes extra torque due to the plate drag
-        // For now, we just add this to the torque term as a function of 'amplified' torque here
+        // The paper seems to imply that the camber (see below) causes extra torque due to the plate drag
+        // We could add this to the torque term as a function of 'amplified' torque here
         // using the camber arc length as an extended effective A_plate
         // we may want to add this to the Fd_plate later as well, not too sure yet
         // Copied from below:
@@ -424,9 +424,34 @@ namespace DfisX
         const double Fd_plate_pitching_factor = MAX(1.0, camber_rect_arc_length / (d_object.radius * 2) * cos(d_forces.aoar));
 
         // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
-        // only take the vertical component of the moment arm?????????????????? NO CLUE, this term seems too high
         const double Fd_plate_induced_moment_Nm = plate_moment_arm_length * Fd_plate * Fd_plate_pitching_factor * sin(d_forces.aoar);
-        d_forces.lift_induced_pitching_moment += Fd_plate_induced_moment_Nm;
+
+        // HOWEVER: thise nose-down effect here seems too strong.
+        // that is making me thing that this is actually caused by the "lower surface of rim camber"
+        // on the underside of the rim
+        // note how a form drag force applied there would not affect the same force at the back of the disc.
+        // I would then propose that the strength of this torque is a function of AOA, and the (maybe?) 
+        // normal of the rim camber
+        // we'll assume 'camber_m_edge_depth' is symmetric, and apply a torque here as a function of the
+        // rim width.
+        // TODO: This should manifest as a linear force as well, and should be added soon!
+        const double disc_rim_width = 0.024;
+        // optimal angle would be rim_camber_norm_angle = atan2(camber_m_edge_depth, radius) if we assume that is a straight plane
+        // then the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
+        const double rim_camber_norm_angle = atan2(camber_m_edge_depth, d_object.radius);
+        // effect is maxed at cos(aoa + rim_camber_norm_angle - pi/2)
+
+        const double rim_camber_incidence_angle = d_forces.aoar + rim_camber_norm_angle - M_PI_2;
+        const double effective_rim_camber_area = disc_rim_width * d_object.radius;
+              double effective_rim_camber_force_N = rhov2o2 * Cd_edge  * effective_rim_camber_area * cos(rim_camber_incidence_angle);
+        // if the angle is too far nose-down, this is no longer a factor
+        effective_rim_camber_force_N = MAX(0.0, effective_rim_camber_force_N);
+
+        const double rim_camber_moment_arm_length = d_object.radius * 2 - disc_rim_width * 0.5;
+
+        const double rim_camber_induced_moment_Nm = rim_camber_moment_arm_length * effective_rim_camber_force_N;
+
+        d_forces.lift_induced_pitching_moment += rim_camber_induced_moment_Nm + Fd_plate_induced_moment_Nm * 0;
       }
     }
     else

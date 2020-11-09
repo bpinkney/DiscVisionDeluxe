@@ -163,7 +163,7 @@ for k = 1:length(pitch_sweep)
     % This relationship for  A_eff_lip is obviously a bit weird
     % and non-linear, so in the next step, let's see if we can form an
     % easier quadratic or something
-    Cl0_eff = [0, 0.0005./(A_eff_lip(2:end).^(0.95)) - 0.2];
+    Cl0_eff = [0, A_eff_lip(2:end)];%0.0005./(A_eff_lip(2:end).^(0.95)) - 0.2];
     figure; hold on; grid on;
     plot(added_inner_lip_height, Cl0)
     plot(added_inner_lip_height, Cl0_eff, '.-')
