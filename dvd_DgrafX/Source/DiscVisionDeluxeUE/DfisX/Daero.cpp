@@ -5,15 +5,19 @@
 #include <iostream> 
 #include <math.h>
 /*
-
-
-
-
 ||||||||||||Daero|||||||||||||||||
 Handles the aerodynamic forces of disc simulation.
 Also gravity.
-
 */
+
+// Model Constants for all discs
+// putching moment arms as a percentage of total diameter
+#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.05) // % of diameter toward the front of the disc for plate drag force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.12) // % of diameter toward the front of the disc for camber lift force centre
+#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+
+
 namespace DfisX
 {
   ///for display purposes     see Sim_State
@@ -410,7 +414,7 @@ namespace DfisX
         // for now, we just assume that the centre of application for 'plate drag' is 15% forward from the 
         // disc centre. This actually changes with thickness, and other factors, but this approximation is OK
         // for now.
-        const double plate_moment_arm_length = 0.15 * d_object.radius * 2;
+        const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2;
 
         // The paper seems to imply that the camber (see below) causes extra torque due to the plate drag
         // We could add this to the torque term as a function of 'amplified' torque here
@@ -434,7 +438,6 @@ namespace DfisX
         // normal of the rim camber
         // we'll assume 'camber_m_edge_depth' is symmetric, and apply a torque here as a function of the
         // rim width.
-        // TODO: This should manifest as a linear force as well, and should be added soon!
         const double disc_rim_width = 0.024;
         // optimal angle would be rim_camber_norm_angle = atan2(camber_m_edge_depth, radius) if we assume that is a straight plane
         // then the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
@@ -442,16 +445,20 @@ namespace DfisX
         // effect is maxed at cos(aoa + rim_camber_norm_angle - pi/2)
 
         const double rim_camber_incidence_angle = d_forces.aoar + rim_camber_norm_angle - M_PI_2;
-        const double effective_rim_camber_area = disc_rim_width * d_object.radius * 2 * 0.75;
+        const double effective_rim_camber_area = disc_rim_width * d_object.radius * 2 * RIM_CAMBER_EXPOSURE;
               double effective_rim_camber_force_N = rhov2o2 * Cd_edge  * effective_rim_camber_area * cos(rim_camber_incidence_angle);
         // if the angle is too far nose-down, this is no longer a factor
         effective_rim_camber_force_N = MAX(0.0, effective_rim_camber_force_N);
 
+        // assume the force is applied halfway along thr rim width
         const double rim_camber_moment_arm_length = d_object.radius * 2 - disc_rim_width * 0.5;
 
-        const double rim_camber_induced_moment_Nm = rim_camber_moment_arm_length * effective_rim_camber_force_N;
+        const double rim_camber_induced_moment_Nm = rim_camber_moment_arm_length * effective_rim_camber_force_N;        
 
-        d_forces.lift_induced_pitching_moment += rim_camber_induced_moment_Nm + Fd_plate_induced_moment_Nm * 0;
+        // assume effective_rim_camber_force_N is all in the disc normal for simplification
+        d_forces.lift_induced_pitching_moment += rim_camber_induced_moment_Nm + Fd_plate_induced_moment_Nm;
+        // ALSO add the linear force here!
+        d_forces.drag_force_vector += effective_rim_camber_force_N * d_orientation;
       }
     }
     else
@@ -542,24 +549,24 @@ namespace DfisX
         // from the paper and matlab: 
         // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
         // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
-        const double Fl_lip_moment_arm_length = 0.05 * d_object.radius * 2;
+        const double Fl_lip_moment_arm_length = PITCHING_MOMENT_CAVITY_LIFT_OFFSET * d_object.radius * 2;
         const double Fl_lip_induced_moment_Nm = -Fl_lip_moment_arm_length * Fl_lip;
 
         // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
         // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
         // this probably changes with AOA, but we'll just make it static for now
-        const double Fl_arc_moment_arm_length = 0.12 * d_object.radius * 2;
+        const double Fl_arc_moment_arm_length = PITCHING_MOMENT_CAMBER_LIFT_OFFSET * d_object.radius * 2;
 
         // We observe that the camber (below) causes extra torque due to the plate drag
         // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
         const double Fl_arc_induced_moment_Nm = Fl_arc_moment_arm_length * Fl_arc;
 
-        std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
+        /*std::cout << "Pitching moment from plate drag = " << std::to_string(d_forces.lift_induced_pitching_moment) << 
           " Nm vs from Fl_lip = " << std::to_string(Fl_lip_induced_moment_Nm) << 
           " Nm, from Fl_arc = " << std::to_string(Fl_arc_induced_moment_Nm) << 
           " Nm, vs old model sum (AOA = " << RAD_TO_DEG(d_forces.aoar) << ") = " <<           
           std::to_string(d_forces.lift_induced_pitching_moment + Fl_lip_induced_moment_Nm + Fl_arc_induced_moment_Nm) << "/" <<  
-          std::to_string(0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << std::endl;
+          std::to_string(0.25 * d_forces.pav2by2 * d_forces.realized_pitching_moment_coefficient * d_object.diameter) << std::endl;*/
 
 
         d_forces.lift_induced_pitching_moment += Fl_lip_induced_moment_Nm;
