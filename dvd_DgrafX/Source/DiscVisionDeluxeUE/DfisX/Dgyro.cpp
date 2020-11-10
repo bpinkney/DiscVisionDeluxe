@@ -27,13 +27,16 @@ namespace DfisX
     const double Iz = 1.0/2.0 * d_object.mass * (d_object.radius*d_object.radius);
 
     // ######Gyroscopic Precession
-    //    #Wp  is rads/sec of off axis rotation
+    //    #Wp  is rads/sec of off axis rotation (rolling)
     //    Wp = Pitching moment / (Moment of intertia * angular velocity (of gyro))
-    const double Wp = d_forces.lift_induced_pitching_moment / (Iz * d_state.disc_rotation_vel);
+    const double Wp = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_x) / (Iz * d_state.disc_rotation_vel);
 
     // compute resulting angular torque from applied pitching moment vel
-    const double Wp_d  = (Wp - d_state.disc_pitching_vel) / MAX(dt, CLOSE_TO_ZERO);
-    d_forces.gyro_torque_x = Wp_d * Ix;
+    const double Wp_d  = (Wp - d_state.disc_rolling_vel) / MAX(dt, CLOSE_TO_ZERO);
+    d_forces.gyro_torque_y = Wp_d * Ix;
+
+    // does this ever get applied?
+    //d_forces.gyro_torque_x = d_forces.lift_induced_pitching_moment;
 
     // Mike: what do we need this for? is this actually the roll change??
     d_statistics.disc_cumulative_roll += RAD_TO_DEG(Wp) * dt;

@@ -159,7 +159,7 @@ namespace DfisX
     throw_container->disc_object = disc_object_array[disc_mold_enum];
 
     throw_container->disc_object.mass = 0.175;
-    throw_container->disc_object.diameter = 0.25;
+    throw_container->disc_object.diameter = 0.206;
 
     throw_container->disc_object.radius = throw_container->disc_object.diameter / 2.0;
     throw_container->disc_object.area = M_PI * throw_container->disc_object.radius * throw_container->disc_object.radius;

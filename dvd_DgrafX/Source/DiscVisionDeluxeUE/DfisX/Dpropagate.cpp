@@ -16,6 +16,7 @@ namespace DfisX
     // Iz =      1/2 * m * r^2
     // Ix = Iy = 1/4 * m * r^2
     const double Ix = 1.0/4.0 * d_object.mass * (d_object.radius*d_object.radius);
+    const double Iy = 1.0/4.0 * d_object.mass * (d_object.radius*d_object.radius);
     const double Iz = 1.0/2.0 * d_object.mass * (d_object.radius*d_object.radius);
 
     //// Compute linear acceleration so we can use that as the integrator for the lower order states
@@ -24,13 +25,15 @@ namespace DfisX
     d_forces.net_force = d_forces.aero_force + d_forces.collision_force + Eigen::Vector3d(0, 0, (-GRAV * d_object.mass));
     d_state.disc_acceleration = d_forces.net_force / d_object.mass;
 
-    ////// Compute the angular acceleration (just spin and pitching moment for now) so we can use that as the integrator for the lower order states
+    ////// Compute the angular acceleration (just spin and rolling moment for now) so we can use that as the integrator for the lower order states
     //// Pitching moment
-    // tack on change to Pitch from the gyroscopic precession only
+    // tack on change to Roll from the gyroscopic precession only
     // we'll need to update this when collisions get added!
     d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x;
-    // use inertia here to compute the resulting rotation accel (only about 'pitching' axis for now)
-    d_state.disc_pitching_accel = d_forces.net_torque_x / Ix;
+    d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y;
+    // use inertia here to compute the resulting rotation accel (only about 'rolling' axis for now)
+    d_state.disc_rolling_accel  = d_forces.net_torque_y / Ix;
+    d_state.disc_pitching_accel = d_forces.net_torque_x / Iy;
 
     //// Spin/Rotation moment
     d_forces.net_torque_z = d_forces.aero_torque_z;
@@ -49,14 +52,17 @@ namespace DfisX
     // so that propagation occurs using the PREVIOUS [k-1] higher order states
 
     //// Pitching axis propagation
-    // using disc unit vectors to set rotational change only for the pitching axis
-    d_forces.gyro_orientation_delta = -d_forces.disc_x_unit_vector * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2);
-    // propagate the normal vector using the last pitching vel and accel
-    d_state.disc_orientation += d_forces.gyro_orientation_delta; 
+    // using disc unit vectors to set rotational change only for the rolling axis
+    d_forces.gyro_orientation_delta = -d_forces.disc_x_unit_vector * tan(d_state.disc_rolling_vel  * dt + d_state.disc_rolling_accel  * dt2);
+    //d_forces.gyro_orientation_delta_pitch =  d_forces.disc_y_unit_vector * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2);
+    // propagate the normal vector using the last rolling vel and accel
+    // ADD ON PITCH NOW TOO!
+    d_state.disc_orientation += d_forces.gyro_orientation_delta + (d_forces.disc_y_unit_vector * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2));
     // re-normalize unit vector
     d_state.disc_orientation /= d_state.disc_orientation.norm();
-    // update pitching vel for next timestep
+    // update rolling vel for next timestep
     // remember that this is slightly wrong, wince the frame will change by time[k+1], but probably not enough to matter for now
+    d_state.disc_rolling_vel  += d_state.disc_rolling_accel   * dt;
     d_state.disc_pitching_vel += d_state.disc_pitching_accel  * dt;
 
     //// Spinning/rotation axis propagation

@@ -82,17 +82,22 @@ namespace DfisX
     Eigen::Vector3d net_force;
     //Eigen::Vector3d net_torque;
     double net_torque_x;
+    double net_torque_y;
     double net_torque_z;
 
     Eigen::Vector3d aero_force;
     double gyro_torque_x;
+    double gyro_torque_y;
     double aero_torque_x;
+    double aero_torque_y;
+
     double aero_torque_z;
 
     Eigen::Vector3d collision_force;
     Eigen::Vector3d collision_location;
     //Eigen::Vector3d collision_angle;
     double collision_torque_x;
+    double collision_torque_y;
     double collision_torque_z;
 
     int step_count;
@@ -148,6 +153,8 @@ namespace DfisX
     Eigen::Vector3d disc_orientation;   //orientation vector is the normal of the plane inscribed by the disc
     double disc_pitching_vel;           //radians_per_second (just for pitching moment), for now we'll try to track this despite the frame changing slightly every time[k]
     double disc_pitching_accel;         //radians_per_second squared (just for pitching moment), for now we'll try to track this despite the frame changing slightly every time[k]
+    double disc_rolling_vel;            //radians_per_second (just for rolling moment), for now we'll try to track this despite the frame changing slightly every time[k]
+    double disc_rolling_accel;          //radians_per_second squared (just for rolling moment), for now we'll try to track this despite the frame changing slightly every time[k]
     double disc_rotation;               //in radians
     double disc_rotation_vel;           //radians_per_second (just for spin)
     double disc_rotation_accel;         //radians_per_second squared (just for spin)
