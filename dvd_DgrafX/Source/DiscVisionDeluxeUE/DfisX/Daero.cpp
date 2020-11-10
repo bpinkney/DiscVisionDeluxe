@@ -12,9 +12,9 @@ Also gravity.
 
 // Model Constants for all discs
 // putching moment arms as a percentage of total diameter
-#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.05) // % of diameter toward the front of the disc for plate drag force centre
+#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.02) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.12) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.23) // % of diameter toward the front of the disc for camber lift force centre
 #define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
@@ -340,7 +340,7 @@ namespace DfisX
     }
 
     // effective edge heighr for our simplified 'edge' and 'plate' model approximation
-    const float edge_height = 0.005;
+    const float edge_height = 0.006;
     if(use_updated_form_drag_model)
     {
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
