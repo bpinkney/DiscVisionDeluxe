@@ -157,19 +157,13 @@ namespace DfisX
     throw_container->previous_disc_state = {};
 
     // disable enum fetching for now
-    //throw_container->disc_object = disc_object_array[disc_mold_enum];
-
-    // destroyer!
-    throw_container->disc_object.mass = 0.175;
-    throw_container->disc_object.diameter = 0.206;
-
-    throw_container->disc_object.edge_height   = 0.006;
-    throw_container->disc_object.cavity_depth  = 0.012;
-    throw_container->disc_object.rim_width     = 0.024;
-    throw_container->disc_object.camber_height = 0.012;
-
-    throw_container->disc_object.radius = throw_container->disc_object.diameter / 2.0;
-    throw_container->disc_object.area = M_PI * throw_container->disc_object.radius * throw_container->disc_object.radius;
+    Disc_Mold_Enum disc_enum = disc_mold_enum;
+    if(disc_enum >= disc_object_array.size())
+    {
+      // ERROR
+      disc_enum = Disc_Mold_Enum::NONE;
+    }
+    throw_container->disc_object = disc_object_array[disc_enum];
 
     throw_container->disc_state_array.clear();
   }

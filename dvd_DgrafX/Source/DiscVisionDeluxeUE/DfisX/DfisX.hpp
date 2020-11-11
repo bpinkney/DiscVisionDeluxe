@@ -191,9 +191,7 @@ namespace DfisX
     float camber_height; // max height of camber above edge (m)
     
     float mass;
-    float diameter;
     float radius;
-    float area;
   };
   //example....const Disc_Model disc_aviar {"bigz buzzz",0.150000,0.599500,0.050000,-0.015000,0.120000,0.175000,0.217000};
 
