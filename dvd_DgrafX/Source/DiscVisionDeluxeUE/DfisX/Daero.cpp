@@ -12,7 +12,7 @@ Also gravity.
 
 // Model Constants for all discs
 // Form Drag Base coefficients
-#define Cm_BASE  (0.05) // base z-axis rotational parasitic skin drag coeff
+#define Cm_BASE  (0.08) // base z-axis rotational parasitic skin drag coeff
 // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
 #define Cd_PLATE (1.17) // base form drag coeff for 'plate' section of disc
 #define Cd_EDGE  (1.10) // base form drag coeff for the 'edge' approximated section of disc
@@ -27,9 +27,9 @@ Also gravity.
 #define A_EDGE_EFFECTIVE_GAIN (0.25)
 
 // Pitching moment arms as a percentage of total diameter
-#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.10) // % of diameter toward the front of the disc for plate drag force centre
+#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.05) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.0) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.08) // % of diameter toward the front of the disc for camber lift force centre
 #define RIM_CAMBER_EXPOSURE (0.5) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
@@ -382,17 +382,18 @@ namespace DfisX
       // height above edge for camber dome peak
 
       // treat this like a triangle approx
-      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height) * 2;
-      const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2);
+      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height) * 2.0;
+      const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2.0) - 1.0;
+      const double camber_rect_arc_length_ref_scale = 1.0 / (sqrt(d_object.radius * d_object.radius + 0.02 * 0.02) * 2.0 / (d_object.radius * 2.0) - 1.0);
 
       // define the stall range for this effect
       //Fl_arc      
       // TODO: make this better! effective range is [-30deg, 50deg] AOA, peak at 0 AOA
       // attenuated with AOA as a sinusoid
-      // camber_arc_to_diameter_ratio - 1.0
+      // (camber_arc_to_diameter_ratio - 1.0) normalized to a camber_height of 2cm
       // where camber_arc_to_diameter_ratio == 1 means no added lift
       d_forces.lift_force_camber_N = 
-        0* rhov2o2 * A_plate * Cl_BASE * (camber_arc_to_diameter_ratio - 1.0) * cos(d_forces.aoar) *
+        rhov2o2 * A_plate * Cl_BASE * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
         (d_forces.aoar <= DEG_TO_RAD(50) && d_forces.aoar >= DEG_TO_RAD(-30) ? 1.0 : 0.0);
 
     ////// ** ** End Linear Lift Model ** ** //////
@@ -505,6 +506,7 @@ namespace DfisX
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
     ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
+    ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
     std::cout << ss.str() << std::endl;
   }
 }
