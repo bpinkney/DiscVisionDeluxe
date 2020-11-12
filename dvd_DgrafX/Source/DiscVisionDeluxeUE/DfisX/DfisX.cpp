@@ -165,7 +165,7 @@ namespace DfisX
     }
 
     // spawn some test numbers here for a repeated throw with different discs
-    if(1)
+    if(0)
     {
       static Disc_Mold_Enum overridden_disc_enum = Disc_Mold_Enum::NONE;
 
