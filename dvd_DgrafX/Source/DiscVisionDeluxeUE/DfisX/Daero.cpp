@@ -377,8 +377,8 @@ namespace DfisX
       // above the disc, results in a higher airspeed, and a lower pressure than below, resulting in lift
       // height above edge for camber dome peak
 
-      // treat this like the pulled out edges of a rectangle for now (seems OK)
-      const double camber_rect_arc_length = d_object.radius * 2 + d_object.camber_height * 2;
+      // treat this like a triangle approx
+      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height);
       const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2);
 
       // define the stall range for this effect
@@ -487,12 +487,18 @@ namespace DfisX
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
 
-    std::stringstream ss;
+/*    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
     ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
     ss << ", cavity_edge = " << std::to_string(d_forces.rot_torque_cavity_edge_offset_Nm);
     ss << ", camber_offset = " << std::to_string(d_forces.rot_torque_camber_offset_Nm);
+    std::cout << ss.str() << std::endl;*/
+
+    std::stringstream ss;
+    ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
+    ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
+    ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
     std::cout << ss.str() << std::endl;
   }
 }
