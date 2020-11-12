@@ -163,6 +163,46 @@ namespace DfisX
       // ERROR
       disc_enum = Disc_Mold_Enum::NONE;
     }
+
+    // spawn some test numbers here for a repeated throw with different discs
+    if(0)
+    {
+      static Disc_Mold_Enum overridden_disc_enum = Disc_Mold_Enum::NONE;
+
+      // cycle through known test discs
+      if(overridden_disc_enum == Disc_Mold_Enum::NONE)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::PUTTER;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::PUTTER)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::PUTTER_OS;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::PUTTER_OS)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::MIDRANGE;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::MIDRANGE)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::FAIRWAY;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::FAIRWAY)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::DRIVER;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::DRIVER)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::DRIVER_OS;
+      }
+      else if(overridden_disc_enum == Disc_Mold_Enum::DRIVER_OS)
+      {
+        overridden_disc_enum = Disc_Mold_Enum::PUTTER;
+      }
+
+      disc_enum = overridden_disc_enum;
+    }
+
+
     throw_container->disc_object = disc_object_array[disc_enum];
 
     throw_container->disc_state_array.clear();

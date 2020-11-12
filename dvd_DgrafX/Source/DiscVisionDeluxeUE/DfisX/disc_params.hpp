@@ -1,5 +1,8 @@
 
 #pragma once
+
+#include "DfisX.hpp"
+
 namespace DfisX
 {
 

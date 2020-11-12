@@ -155,6 +155,10 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_pitch,
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
+
+  //TEXT(throw_container.disc_object.mold_name)));
+  FString output_text = FString(TEXT("Threw a ")) + UTF8_TO_TCHAR(throw_container.disc_object.mold_name.c_str());
+  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, output_text); 
 }
 
 void ADiscThrow::new_captured_throw(
