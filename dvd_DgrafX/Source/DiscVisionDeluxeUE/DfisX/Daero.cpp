@@ -434,12 +434,12 @@ namespace DfisX
 
       const double rim_camber_incidence_angle = d_forces.aoar + rim_camber_norm_angle - M_PI_2;
       const double effective_rim_camber_area = d_object.rim_width * d_object.radius * 2 * RIM_CAMBER_EXPOSURE;
-      d_forces.lin_drag_force_rim_camber_N = rhov2o2 * Cd_EDGE  * effective_rim_camber_area * cos(rim_camber_incidence_angle);
+
       // if the angle is too far nose-down, this is no longer a factor
       // TODO: make this better! effective range is [-15deg, +45deg] AOA, peak at 0 AOA
       d_forces.lin_drag_force_rim_camber_N = 
-        d_forces.lin_drag_force_rim_camber_N *
-        (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
+        rhov2o2 * Cd_EDGE  * effective_rim_camber_area * cos(rim_camber_incidence_angle) *
+        (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);        
 
       // assume the force is applied halfway along thr rim width
       const double rim_camber_moment_arm_length = d_object.radius * 2 - d_object.rim_width * 0.5;
