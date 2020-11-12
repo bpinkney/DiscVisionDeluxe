@@ -25,7 +25,7 @@ Also gravity.
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.02) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.23) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.1) // % of diameter toward the front of the disc for camber lift force centre
 #define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
@@ -411,13 +411,12 @@ namespace DfisX
 
       // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
       //Fd_plate_induced_moment_Nm 
-      // TODO: make this better! effective range is [-pi/4, 0] AOA, peak at 0 AOA
-      // so nose down only for now. We're only going to limit this for the applied torque for now
-      // since we assume that the 'plate form drag' on the bottom of the disc is applied at
-      // the disc centre (for now)
+      // TODO: make this better! effective range is [-45, 45deg] AOA, peak at 0 AOA
+      // We're only going to limit this for the applied torque for now
+      // sign is already handled by the "lin_drag_force_plate_N"
       d_forces.rot_torque_plate_offset_Nm = 
-        plate_moment_arm_length * d_forces.lin_drag_force_plate_N * Fd_plate_pitching_factor * sin(d_forces.aoar) *
-        (d_forces.aoar <= DEG_TO_RAD(0) && d_forces.aoar >= DEG_TO_RAD(-45) ? 1.0 : 0.0);
+        plate_moment_arm_length * d_forces.lin_drag_force_plate_N * Fd_plate_pitching_factor * abs(sin(d_forces.aoar)) *
+        (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-45) ? 1.0 : 0.0);
 
       // HOWEVER: thise nose-down effect here seems too strong.
       // that is making me thing that this is actually caused by the "lower surface of rim camber"
