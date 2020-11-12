@@ -30,7 +30,8 @@ Also gravity.
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.05) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.1) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.08) // % of diameter toward the front of the disc for camber lift force centre
-#define RIM_CAMBER_EXPOSURE (0.5) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+// disable the lower rim camber model for now (re-evaluate later)
+#define RIM_CAMBER_EXPOSURE (0.0) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
 namespace DfisX
@@ -494,19 +495,32 @@ namespace DfisX
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
 
-/*    std::stringstream ss;
+    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
     ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
     ss << ", cavity_edge = " << std::to_string(d_forces.rot_torque_cavity_edge_offset_Nm);
     ss << ", camber_offset = " << std::to_string(d_forces.rot_torque_camber_offset_Nm);
-    std::cout << ss.str() << std::endl;*/
-
-    std::stringstream ss;
-    ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
+    ss << ", sum = " << std::to_string(d_forces.lift_induced_pitching_moment);
     ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
     ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
     ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
     std::cout << ss.str() << std::endl;
+
+/*    std::stringstream ss;
+    ss << "" << std::to_string(RAD_TO_DEG(d_forces.aoar));
+    ss << ", " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
+    ss << ", " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
+    ss << ", " << std::to_string(d_forces.rot_torque_cavity_edge_offset_Nm);
+    ss << ", " << std::to_string(d_forces.rot_torque_camber_offset_Nm);
+    ss << ", " << std::to_string(d_forces.lift_induced_pitching_moment);
+    std::cout << ss.str() << std::endl;*/
+
+/*    std::stringstream ss;
+    ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
+    ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
+    ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
+    ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
+    std::cout << ss.str() << std::endl;*/
   }
 }
