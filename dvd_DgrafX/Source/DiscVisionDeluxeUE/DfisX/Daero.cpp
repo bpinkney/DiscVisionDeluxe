@@ -23,9 +23,9 @@ Also gravity.
 #define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605) // lift factor as a fucntion of effective exposed cavity edge area inverse
 
 // Pitching moment arms as a percentage of total diameter
-#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.02) // % of diameter toward the front of the disc for plate drag force centre
+#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.1) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.1) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.05) // % of diameter toward the front of the disc for camber lift force centre
 #define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
