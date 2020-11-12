@@ -12,21 +12,25 @@ Also gravity.
 
 // Model Constants for all discs
 // Form Drag Base coefficients
-#define Cm_BASE  (0.08) // base z-axis rotational parasitic skin drag coeff
+#define Cm_BASE  (0.05) // base z-axis rotational parasitic skin drag coeff
 // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
 #define Cd_PLATE (1.17) // base form drag coeff for 'plate' section of disc
 #define Cd_EDGE  (1.10) // base form drag coeff for the 'edge' approximated section of disc
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_BASE  (0.5)  // base lift cofficient for all bernoulli lift effects
+#define Cl_BASE  (1.0)  // base lift cofficient for all bernoulli lift effects
 #define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605) // lift factor as a fucntion of effective exposed cavity edge area inverse
 
+// how much deviation we expect from a 'true rectangle' for the edge form drag model
+// (equivalent to changing the Cd_EDGE really, but more correct this way)
+#define A_EDGE_EFFECTIVE_GAIN (0.25)
+
 // Pitching moment arms as a percentage of total diameter
-#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.2) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.2) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.08) // % of diameter toward the front of the disc for camber lift force centre
-#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.10) // % of diameter toward the front of the disc for plate drag force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.0) // % of diameter toward the front of the disc for camber lift force centre
+#define RIM_CAMBER_EXPOSURE (0.5) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 
 namespace DfisX
@@ -276,7 +280,7 @@ namespace DfisX
       // effective edge heighr for our simplified 'edge' and 'plate' model approximation
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * d_object.edge_height; // approximated as a rectangle
+      const double A_edge   = d_object.radius * 2 * d_object.edge_height * A_EDGE_EFFECTIVE_GAIN; // approximated as a rectangle
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
       // Disc 'Form' Drag
@@ -378,15 +382,17 @@ namespace DfisX
       // height above edge for camber dome peak
 
       // treat this like a triangle approx
-      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height);
+      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height) * 2;
       const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2);
 
       // define the stall range for this effect
       //Fl_arc      
       // TODO: make this better! effective range is [-30deg, 50deg] AOA, peak at 0 AOA
       // attenuated with AOA as a sinusoid
+      // camber_arc_to_diameter_ratio - 1.0
+      // where camber_arc_to_diameter_ratio == 1 means no added lift
       d_forces.lift_force_camber_N = 
-        rhov2o2 * A_plate * Cl_BASE * camber_arc_to_diameter_ratio * cos(d_forces.aoar) *
+        0* rhov2o2 * A_plate * Cl_BASE * (camber_arc_to_diameter_ratio - 1.0) * cos(d_forces.aoar) *
         (d_forces.aoar <= DEG_TO_RAD(50) && d_forces.aoar >= DEG_TO_RAD(-30) ? 1.0 : 0.0);
 
     ////// ** ** End Linear Lift Model ** ** //////

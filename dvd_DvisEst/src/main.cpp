@@ -1020,9 +1020,9 @@ int main(int argc, char** argv )
                       "hyzer:-0.26173,pitch:0.10885,posx:0.424,posy:0.093,posz:2.078,velx:19.621,vely:4.785,velz:2.194,spin_d:-71.48774,wobble:0.200,discmold:4");
                     break;
                   default:
-                  // DESTROYER DX 4 with discmold1
+                  // Basic Fast Throw with discmold1
                     sprintf(output_cmd, "%s,", 
-                      "hyzer:-0.27222,pitch:0.18536,posx:0.415,posy:-0.376,posz:2.221,velx:20.489,vely:2.824,velz:1.752,spin_d:-72.95879,wobble:0.121,discmold:1");
+                      "hyzer:0.0,pitch:0.0,posx:-2.0,posy:0.0,posz:2.0,velx:22.0,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
                     break;
                 }
               }

@@ -67,10 +67,10 @@ namespace DfisX
     Disc_Model
     {
       /*.mold_name =*/     "MAGNET_JAWBREAKER", 
-      /*.edge_height =*/    0.013, 
+      /*.edge_height =*/    0.014, 
       /*.cavity_depth =*/   0.014, 
       /*.rim_width =*/      0.009, 
-      /*.camber_height =*/ (0.022-0.013), //thickness - edge height
+      /*.camber_height =*/ (0.022-0.014), //thickness - edge height
       /*.mass =*/           0.173,
       /*.radius =*/        (0.211 * 0.5)
     },
@@ -78,10 +78,10 @@ namespace DfisX
     Disc_Model
     {
       /*.mold_name =*/     "ZONE_JAWBREAKER", 
-      /*.edge_height =*/    0.0115, 
+      /*.edge_height =*/    0.016, 
       /*.cavity_depth =*/   0.014, 
       /*.rim_width =*/      0.0115,
-      /*.camber_height =*/ (0.0165-0.0115), //thickness - edge height
+      /*.camber_height =*/ (0.0165-0.016), //thickness - edge height
       /*.mass =*/           0.174,
       /*.radius =*/        (0.214 * 0.5)
     },

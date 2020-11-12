@@ -184,7 +184,7 @@ namespace DfisX
   //contains the name and the physics/aerodynamic properties of a disc mold
   struct Disc_Model
   {
-    std::string mold_name;
+    char mold_name[128];
     float edge_height;   // approximation of 'edge height' for our simpified disc model (m)
     float cavity_depth;  // height of cavity, measured at the edge of the cavity (m)
     float rim_width;     // width of rim, from edge of cavity, to edge of disc (m)
