@@ -1022,7 +1022,7 @@ int main(int argc, char** argv )
                   default:
                   // Basic Fast Throw with discmold1
                     sprintf(output_cmd, "%s,", 
-                      "hyzer:0.0,pitch:0.0,posx:-2.0,posy:0.0,posz:2.0,velx:22.0,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                      "hyzer:0.0,pitch:0.0,posx:0.0,posy:-2.0,posz:2.0,velx:22.0,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
                     break;
                 }
               }
