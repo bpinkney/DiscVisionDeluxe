@@ -4,6 +4,15 @@
 
 #include <iostream> 
 #include <math.h>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+
+#define ALLOW_AERO_UNREAL_DEBUG
+#include "../UI/RangeHUD.h"
+
+#endif
+
+
 /*
 ||||||||||||Daero|||||||||||||||||
 Handles the aerodynamic forces of disc simulation.
@@ -34,6 +43,27 @@ Also gravity.
 // disable the lower rim camber model for now (re-evaluate later)
 #define RIM_CAMBER_EXPOSURE (0.0) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
+// add some runtime tuning hook-ups
+std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_FACTOR";
+double gv_aero_debug0             = (CAVITY_EDGE_LIFT_FACTOR);
+
+std::string gv_aero_label_debug1  = "CAVITY_EDGE_NORM_ROT_SPEED";
+double gv_aero_debug1             = (CAVITY_EDGE_NORM_ROT_SPEED);
+
+std::string gv_aero_label_debug2  = "A_EDGE_EFFECTIVE_GAIN";
+double gv_aero_debug2             = (A_EDGE_EFFECTIVE_GAIN);
+
+std::string gv_aero_label_debug3  = "PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET";
+double gv_aero_debug3             = (PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET);
+
+std::string gv_aero_label_debug4  = "PITCHING_MOMENT_CAVITY_LIFT_OFFSET";
+double gv_aero_debug4             = (PITCHING_MOMENT_CAVITY_LIFT_OFFSET);
+
+std::string gv_aero_label_debug5  = "PITCHING_MOMENT_CAMBER_LIFT_OFFSET";
+double gv_aero_debug5             = (PITCHING_MOMENT_CAMBER_LIFT_OFFSET);
+
+std::string gv_aero_label_debug6  = "";
+double gv_aero_debug6             = (0.0);
 
 namespace DfisX
 {
@@ -147,7 +177,6 @@ namespace DfisX
     #rotation direction goes from disc_unit_x to disc_unit_y
     """
     */
-
 
     // add LP-filtered white-noise gusts
     Daero_compute_gusts(throw_container);
@@ -282,7 +311,7 @@ namespace DfisX
       // effective edge heighr for our simplified 'edge' and 'plate' model approximation
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * d_object.edge_height * A_EDGE_EFFECTIVE_GAIN; // approximated as a rectangle
+      const double A_edge   = d_object.radius * 2 * d_object.edge_height * gv_aero_debug2; // approximated as a rectangle
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
       // Disc 'Form' Drag
@@ -371,10 +400,10 @@ namespace DfisX
       double lift_factor = 0;
       if(A_eff_lip > 0)
       {
-        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
-        if(CAVITY_EDGE_NORM_ROT_SPEED > 0)
+        lift_factor = (1.0 / A_eff_lip) * gv_aero_debug0;//CAVITY_EDGE_LIFT_FACTOR;
+        if(gv_aero_debug1 > 0)
         {
-          lift_factor *= abs(d_state.disc_rotation_vel) / CAVITY_EDGE_NORM_ROT_SPEED;
+          lift_factor *= abs(d_state.disc_rotation_vel) / gv_aero_debug1;
         }
       }
       
@@ -417,7 +446,7 @@ namespace DfisX
       // for now, we just assume that the centre of application for 'plate drag' is 15% forward from the 
       // disc centre. This actually changes with thickness, and other factors, but this approximation is OK
       // for now.
-      const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2;
+      const double plate_moment_arm_length = gv_aero_debug3 * d_object.radius * 2;
 
       // The paper seems to imply that the camber (see below) causes extra torque due to the plate drag
       // We could add this to the torque term as a function of 'amplified' torque here
@@ -469,13 +498,13 @@ namespace DfisX
       // from the paper and matlab: 
       // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
       // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
-      const double Fl_lip_moment_arm_length = PITCHING_MOMENT_CAVITY_LIFT_OFFSET * d_object.radius * 2;
+      const double Fl_lip_moment_arm_length = gv_aero_debug4 * d_object.radius * 2;
       d_forces.rot_torque_cavity_edge_offset_Nm = -Fl_lip_moment_arm_length * d_forces.lift_force_cavity_edge_N;
 
       // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
       // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
       // this probably changes with AOA, but we'll just make it static for now
-      const double Fl_arc_moment_arm_length = PITCHING_MOMENT_CAMBER_LIFT_OFFSET * d_object.radius * 2;
+      const double Fl_arc_moment_arm_length = gv_aero_debug5 * d_object.radius * 2;
 
       // We observe that the camber (below) causes extra torque due to the plate drag
       // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end

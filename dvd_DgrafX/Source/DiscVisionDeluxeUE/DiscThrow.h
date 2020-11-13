@@ -13,6 +13,28 @@
 #include "GameFramework/Actor.h"
 #include "DiscThrow.generated.h"
 
+// add some runtime tuning hook-ups
+extern std::string gv_aero_label_debug0;
+extern double gv_aero_debug0;
+
+extern std::string gv_aero_label_debug1;
+extern double gv_aero_debug1;
+
+extern std::string gv_aero_label_debug2;
+extern double gv_aero_debug2;
+
+extern std::string gv_aero_label_debug3;
+extern double gv_aero_debug3;
+
+extern std::string gv_aero_label_debug4;
+extern double gv_aero_debug4;
+
+extern std::string gv_aero_label_debug5;
+extern double gv_aero_debug5;
+
+extern std::string gv_aero_label_debug6;
+extern double gv_aero_debug6;
+
 UCLASS()
 class DISCVISIONDELUXEUE_API ADiscThrow : public AActor
 {
