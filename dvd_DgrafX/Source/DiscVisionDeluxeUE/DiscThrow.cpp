@@ -4,6 +4,7 @@
 #include "DiscThrow.h"
 #include "FollowFlight.h"
 #include "dvd_maths.hpp"
+#include "disc_layouts.hpp"
 
  //ACameraManager* camera_manager;
  //AThrowInputController* throw_input_controller;
@@ -99,7 +100,7 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 }
 
 void ADiscThrow::new_throw_camera_relative(
-  const DiscIndex disc_index, 
+  const int disc_index, 
   const FVector thrown_disc_position, 
   const float thrown_disc_speed, 
   const float thrown_disc_direction, 
@@ -116,7 +117,7 @@ void ADiscThrow::new_throw_camera_relative(
 
   DfisX::new_throw(
     &throw_container,
-    disc_index,
+    static_cast<DiscIndex>(disc_index),
     Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),
     thrown_disc_speed,
     thrown_disc_direction,
@@ -130,7 +131,7 @@ void ADiscThrow::new_throw_camera_relative(
 
 ///used for captured throws
 void ADiscThrow::new_throw_world_frame(
-  const DiscIndex disc_index,
+  const int disc_index,
   const FVector thrown_disc_position,
   const FVector thrown_disc_velocity, 
   const float thrown_disc_roll, 
@@ -148,7 +149,7 @@ void ADiscThrow::new_throw_world_frame(
 
   DfisX::new_throw(
     &throw_container,
-    disc_index,
+    static_cast<DiscIndex>(disc_index),
     v3d_thrown_disc_position,
     v3d_thrown_disc_velocity,
     thrown_disc_roll,
@@ -168,7 +169,7 @@ void ADiscThrow::new_throw_world_frame(
 }
 
 void ADiscThrow::new_captured_throw(
-  DiscIndex captured_disc_index, 
+  const int captured_disc_index, 
   const FVector captured_position, 
   const FVector captured_velocity, 
   const float captured_world_roll, 

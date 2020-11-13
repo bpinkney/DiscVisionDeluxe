@@ -3,7 +3,6 @@
 #pragma once
 
 #include "DfisX.hpp"
-#include "disc_layouts.hpp"
 #include "DiscCharacter.h"
 #include "CameraManager.h"
 #include "DiscProjectile.h"
@@ -67,7 +66,7 @@ public:
   // Projectile class to spawn.
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void new_throw_camera_relative(
-    DiscIndex disc_index, 
+    const int disc_index, 
     const FVector thrown_disc_position, 
     const float thrown_disc_speed, 
     const float thrown_disc_direction, 
@@ -79,7 +78,7 @@ public:
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void new_captured_throw(
-    DiscIndex captured_disc_index, 
+    const int captured_disc_index, 
     const FVector captured_position, 
     const FVector captured_velocity, 
     const float captured_world_roll, 
@@ -89,7 +88,7 @@ public:
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void new_throw_world_frame(
-    DiscIndex disc_index,
+    const int disc_index,
     const FVector thrown_disc_position,
     const FVector v3d_thrown_disc_velocity, 
     const float thrown_disc_roll, 
