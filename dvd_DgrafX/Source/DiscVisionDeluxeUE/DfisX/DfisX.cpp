@@ -180,8 +180,9 @@ namespace DfisX
       case DiscIndex::NONE:
         disc_mold = find_disc_mold_index_by_name("Mr Brick");
         break;
+      // tested discs with data
       case DiscIndex::MIDRANGE:
-        disc_mold = find_disc_mold_index_by_name("Buzzz Big Z");
+        disc_mold = find_disc_mold_index_by_name("Buzzz Foil");
         break;
       case DiscIndex::FAIRWAY:
         disc_mold = find_disc_mold_index_by_name("TeeBird");
@@ -197,6 +198,28 @@ namespace DfisX
         break;
       case DiscIndex::PUTTER_OS:
         disc_mold = find_disc_mold_index_by_name("Zone");
+        break;
+      // untested discs, just to fill out the bag
+      case DiscIndex::PUTTER_US:
+        disc_mold = find_disc_mold_index_by_name("Luna");
+        break;
+      case DiscIndex::MIDRANGE_OS:
+        disc_mold = find_disc_mold_index_by_name("Zombee");
+        break;
+      case DiscIndex::MIDRANGE_US:
+        disc_mold = find_disc_mold_index_by_name("Leopard3");
+        break;
+      case DiscIndex::FAIRWAY_OS:
+        disc_mold = find_disc_mold_index_by_name("DDX");
+        break;
+      case DiscIndex::FAIRWAY_US:
+        disc_mold = find_disc_mold_index_by_name("Leopard3");
+        break;
+      case DiscIndex::DRIVER_US:
+        disc_mold = find_disc_mold_index_by_name("DDX");
+        break;
+      case DiscIndex::SPECIAL:
+        disc_mold = find_disc_mold_index_by_name("P3");
         break;
     }
 
