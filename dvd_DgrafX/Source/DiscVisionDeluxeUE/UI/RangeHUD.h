@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
 #include "RangeUserWidget.h"
+#include "DebugWidget.h"
 #include "RangeHUD.generated.h"
 
 
@@ -35,6 +36,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeHUDClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> RangeDebugClass;
+
 private:
 	URangeUserWidget* RangeUserWidget;
+
+	UDebugWidget* DebugWidget;
 };
