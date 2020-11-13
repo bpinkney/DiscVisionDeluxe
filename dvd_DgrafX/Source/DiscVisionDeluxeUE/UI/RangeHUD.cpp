@@ -25,6 +25,15 @@ void ARangeHUD::BeginPlay()
 			RangeUserWidget->AddToViewport();
 		}
 	}
+
+	if (RangeDebugClass)
+	{
+		DebugWidget = CreateWidget<UDebugWidget>(GetWorld(), RangeDebugClass);
+		if (DebugWidget)
+		{
+			DebugWidget->AddToViewport();
+		}
+	}
 }
 
 void ARangeHUD::Tick(float DeltaSeconds)
