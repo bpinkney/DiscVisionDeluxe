@@ -4,7 +4,11 @@
 #include "DiscThrow.h"
 #include "FollowFlight.h"
 #include "dvd_maths.hpp"
+
 #include "disc_layouts.hpp"
+
+#include "UI/RangeHUD.h"
+
 
  //ACameraManager* camera_manager;
  //AThrowInputController* throw_input_controller;
@@ -13,6 +17,7 @@
 ADiscThrow::ADiscThrow()
 {
    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+
   PrimaryActorTick.bCanEverTick = true;
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
   memset(&initial_release_stats, 0, sizeof(Initial_Release_Stats));
@@ -24,6 +29,7 @@ void ADiscThrow::BeginPlay()
 {
   Super::BeginPlay();
 
+  
   if (GEngine)
   {
   ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
@@ -41,7 +47,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     // actually step DfisX
     DfisX::step_simulation(&throw_container, DeltaTime);
     generate_flight_cumulative_stats();
-
+    
     //converting dfisx disc state into unreal usable forms
     DfisX::Disc_State disc_state = DfisX::get_disc_state(&throw_container);
     float xx = disc_state.disc_location[0]*100;
@@ -196,6 +202,7 @@ void ADiscThrow::new_captured_throw(
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
   is_throw_simulating = true;
+  
   //DestroyDiscs();
     // Get the camera transform.
     FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
@@ -246,7 +253,11 @@ void ADiscThrow::get_flight_cumulative_stats(Flight_Cumulative_Stats *cumulative
 
 void ADiscThrow::generate_flight_cumulative_stats()
 {
-
+    ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+    if (RangeHUD)
+    {
+        RangeHUD->PopulateHUD(flight_cumulative_stats.current_distance, flight_cumulative_stats.current_speed, flight_cumulative_stats.current_spin, flight_cumulative_stats.current_turnfade, flight_cumulative_stats.current_wobble);
+    }
 
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
