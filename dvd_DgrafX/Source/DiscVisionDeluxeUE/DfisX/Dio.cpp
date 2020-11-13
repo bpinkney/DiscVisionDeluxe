@@ -1,6 +1,7 @@
 #include "DfisX.hpp"
 #include "Dio.hpp"
 #include "dvd_maths.hpp"
+#include "disc_layouts.hpp"
 #include <iostream> 
 #include <string> 
 #include <sstream>
@@ -23,7 +24,7 @@ void parse_cl (int argc, char *argv[])
     Default Values for command line        
     */
   bool run_test = 0;
-  DfisX::Disc_Mold_Enum disc_mold_enum = DfisX::Disc_Mold_Enum::NONE; 
+  DiscIndex disc_index = DiscIndex::NONE; 
 
   double posx = 0;
   double posy = 0;
@@ -71,7 +72,7 @@ void parse_cl (int argc, char *argv[])
     else if (arg_value == "windz")     windz                            = arg_value_value;
     else if (arg_value == "wobble")    thrown_disc_wobble               = arg_value_value;
     else if (arg_value == "spinrate")  thrown_disc_radians_per_second   = arg_value_value;
-    else if (arg_value == "discmold")  disc_mold_enum                   = static_cast<DfisX::Disc_Mold_Enum>(arg_value_value);
+    else if (arg_value == "discmold")  disc_index                       = static_cast<DiscIndex>(arg_value_value);
     else if (arg_value == "savepath")   
     {
                       save_path             = argv[count+1];
@@ -110,7 +111,7 @@ void parse_cl (int argc, char *argv[])
 
     const float dt = (1.0/100.0); // run at 100Hz for test
 
-    DfisX::new_throw(&throw_container, disc_mold_enum,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
+    DfisX::new_throw(&throw_container, disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
     DfisX::simulate_throw(&throw_container, dt);
 
     std::cout << "Successfully passed a command line throw \n";

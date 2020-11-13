@@ -97,11 +97,26 @@ namespace DfisX
     return (throw_container->disc_state_array);
   }
 
+  uint8_t find_disc_mold_index_by_name(std::string disc_mold_name)
+  {
+    int i;
+    for(i = 0; i < disc_object_array.size(); i++)
+    {
+      if(disc_object_array[i].mold_name == disc_mold_name)
+      {
+        return i;
+      }
+    }
+
+    // return zero if there is no mapping
+    return 0;
+  }
+
   //New Throw
   //used to start a new simulation
   void new_throw(
     Throw_Container *throw_container, 
-    const Disc_Mold_Enum disc_mold_enum,
+    const DiscIndex disc_index,
     const Eigen::Vector3d thrown_disc_position,
     const Eigen::Vector3d thrown_disc_velocity, 
     const double thrown_disc_roll, 
@@ -120,7 +135,7 @@ namespace DfisX
       double thrown_disc_radians_per_second
       double thrown_disc_wobble  
   d object
-      Disc_Mold_Enum disc_mold_enum
+      DiscIndex disc_index
 
     
   Does the following things
@@ -156,54 +171,38 @@ namespace DfisX
     throw_container->current_disc_state.disc_rotation_vel = thrown_disc_radians_per_second;
     throw_container->previous_disc_state = {};
 
-    // disable enum fetching for now
-    Disc_Mold_Enum disc_enum = disc_mold_enum;
-    if(disc_enum >= disc_object_array.size())
+    // build an abitrary 'bag' for now so we have a mapping between the DiscIndex and DiscModel
+    // this will be handled by a user mapping later, and probably an encapsulating object for DiscModel
+    uint8_t disc_mold = 0;
+    switch(disc_index)
     {
-      // ERROR
-      disc_enum = Disc_Mold_Enum::NONE;
+      default:
+      case DiscIndex::NONE:
+        disc_mold = find_disc_mold_index_by_name("Mr Brick");
+        break;
+      case DiscIndex::MIDRANGE:
+        disc_mold = find_disc_mold_index_by_name("Buzzz Big Z");
+        break;
+      case DiscIndex::FAIRWAY:
+        disc_mold = find_disc_mold_index_by_name("TeeBird");
+        break;
+      case DiscIndex::DRIVER:
+        disc_mold = find_disc_mold_index_by_name("Shryke");
+        break;
+      case DiscIndex::DRIVER_OS:
+        disc_mold = find_disc_mold_index_by_name("Destroyer");
+        break;
+      case DiscIndex::PUTTER:
+        disc_mold = find_disc_mold_index_by_name("Magnet");
+        break;
+      case DiscIndex::PUTTER_OS:
+        disc_mold = find_disc_mold_index_by_name("Zone");
+        break;
     }
 
-    // spawn some test numbers here for a repeated throw with different discs
-    if(0)
-    {
-      static Disc_Mold_Enum overridden_disc_enum = Disc_Mold_Enum::NONE;
+    throw_container->disc_object = disc_object_array[disc_mold];
 
-      // cycle through known test discs
-      if(overridden_disc_enum == Disc_Mold_Enum::NONE)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::PUTTER;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::PUTTER)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::PUTTER_OS;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::PUTTER_OS)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::MIDRANGE;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::MIDRANGE)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::FAIRWAY;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::FAIRWAY)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::DRIVER;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::DRIVER)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::DRIVER_OS;
-      }
-      else if(overridden_disc_enum == Disc_Mold_Enum::DRIVER_OS)
-      {
-        overridden_disc_enum = Disc_Mold_Enum::PUTTER;
-      }
-
-      disc_enum = overridden_disc_enum;
-    }
-
-
-    throw_container->disc_object = disc_object_array[disc_enum];
+    std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << std::endl;
 
     throw_container->disc_state_array.clear();
   }
@@ -211,7 +210,7 @@ namespace DfisX
   // overloaded
   void new_throw(
     Throw_Container *throw_container, 
-    const Disc_Mold_Enum disc_mold_enum,
+    const DiscIndex disc_index,
     const Eigen::Vector3d thrown_disc_position, 
     const float thrown_disc_speed, 
     const float thrown_disc_direction, 
@@ -221,9 +220,6 @@ namespace DfisX
     const float thrown_disc_spin_percent, 
     const float thrown_disc_wobble)
   {
-    //Disc_Mold_Enum disc_mold_enum
-    //Eigen::Vector3d thrown_disc_position
-    //float thrown_disc_speed
     const float thrown_disc_direction_rad = DEG_TO_RAD(thrown_disc_direction);
     const float thrown_disc_loft_rad = DEG_TO_RAD(thrown_disc_loft);
     const float thrown_disc_pitch_rad = DEG_TO_RAD(thrown_disc_pitch);
@@ -243,7 +239,7 @@ namespace DfisX
 
     new_throw(
       throw_container,
-      disc_mold_enum,
+      disc_index,
       thrown_disc_position,
       thrown_disc_velocity,
       thrown_disc_roll_rad,
