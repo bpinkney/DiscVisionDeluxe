@@ -90,7 +90,6 @@ namespace DfisX
     double gyro_torque_y;
     double aero_torque_x;
     double aero_torque_y;
-
     double aero_torque_z;
 
     Eigen::Vector3d collision_force;
@@ -117,21 +116,27 @@ namespace DfisX
     double aoar;
     double velocity_magnitude;
     double v2;
-    double pav2by2;
 
-    double coefficient_curve;
-    double stall_curve;
+    // define moments and forces here
+    double lift_induced_pitching_moment; // sum of pitching moments
 
-    double lift_force_magnitude;
-    double drag_force_magnitude;
+    double lin_drag_force_plate_N; // force along disc normal from 'plate' surface form drag
+    double lin_drag_force_edge_N;  // force along disc plane  from 'edge' surface form drag
+    double lin_drag_force_cavity_edge_N; // force along disc plane from form drag against the back cavity edge
+    double lin_drag_force_rim_camber_N;  // force along disc normal from form drag against lower rim camber
+    double lin_drag_force_skin_N;  // force along -ve air vector from parasitic skin drag
 
-    double realized_lift_coefficient;
-    double realized_drag_coefficient;
-    double induced_drag_coefficient;
-    double realized_pitching_moment_coefficient;
-    double stall_induced_drag;
+    double lift_force_cavity_edge_N; // lift generated along the disc normal by the slow-down of air hitting the back of the cavity. higher pressure below -> lift
+    double lift_force_camber_N;      // lift generated along the disc normal by the speed up of air over the 'wing-like' disc camber shape. lower pressure above -> lift
+    
+    double rot_torque_plate_offset_Nm;       // Torque generated form the off-centre force centre of 'lin_drag_force_plate_N'
+    double rot_torque_rim_camber_offset_Nm;  // Torque generated form the off-centre force centre of 'lin_drag_force_rim_camber_N'
+    double rot_torque_cavity_edge_offset_Nm; // Torque generated form the off-centre force centre of 'lift_force_cavity_edge_N'
+    double rot_torque_camber_offset_Nm;      // Torque generated form the off-centre force centre of 'lift_force_camber_N'
 
-    double lift_induced_pitching_moment;  //needs to go into struct
+    double rot_drag_torque_x_Nm; // skin drag for Z (spin)
+    double rot_drag_torque_y_Nm; // 'paddle' form drag for X (pitch)
+    double rot_drag_torque_z_Nm; // 'paddle' form drag for Y (roll)
   };
 
 
@@ -179,17 +184,14 @@ namespace DfisX
   //contains the name and the physics/aerodynamic properties of a disc mold
   struct Disc_Model
   {
-    std::string mold_name;
-    float lift_coefficient_base;
-    float lift_coefficient_per_radian;
-    float drag_coefficient;
-    float pitching_moment_base;
-
-    float pitching_moment_per_radian;
+    char mold_name[128];
+    float edge_height;   // approximation of 'edge height' for our simpified disc model (m)
+    float cavity_depth;  // height of cavity, measured at the edge of the cavity (m)
+    float rim_width;     // width of rim, from edge of cavity, to edge of disc (m)
+    float camber_height; // max height of camber above edge (m)
+    
     float mass;
-    float diameter;
     float radius;
-    float area;
   };
   //example....const Disc_Model disc_aviar {"bigz buzzz",0.150000,0.599500,0.050000,-0.015000,0.120000,0.175000,0.217000};
 

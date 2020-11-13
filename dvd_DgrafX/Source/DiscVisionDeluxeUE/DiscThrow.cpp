@@ -155,6 +155,16 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_pitch,
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
+
+  //TEXT(throw_container.disc_object.mold_name)));
+
+  std::stringstream ss;
+  ss << "Threw a ";
+  // why does this produce jibberish? why are you so garbage Unreal?
+  ss << throw_container.disc_object.mold_name;
+
+  FString output_text(ss.str().c_str());
+  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, output_text); 
 }
 
 void ADiscThrow::new_captured_throw(

@@ -105,7 +105,7 @@ void parse_cl (int argc, char *argv[])
 
     // init disc env and disc model
     throw_container.disc_environment.wind_vector_xyz = Eigen::Vector3d(windx,windy,windz);
-    throw_container.disc_environment.gust_factor = DfisX::Gust_Factor::THREE_BRUSQUE_BREEZE;
+    throw_container.disc_environment.gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;
     throw_container.disc_environment.air_density = ISA_RHO;
 
     const float dt = (1.0/100.0); // run at 100Hz for test

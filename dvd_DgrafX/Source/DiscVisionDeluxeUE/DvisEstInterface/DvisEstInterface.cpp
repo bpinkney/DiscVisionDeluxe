@@ -4,6 +4,8 @@
 #include "Misc/Paths.h"
 #include "Misc/InteractiveProcess.h"
 #include "GenericPlatform/GenericPlatformProcess.h"
+
+#include "disc_params.hpp"
 //#include "Kismet/GameplayStatics.h"
 
 #include <cstdio>
@@ -171,7 +173,7 @@ void DvisEstInterface::RunDvisEst()
   batFile << "if \"%ERRORLEVEL%\"==\"0\" goto loop" << std::endl;
   if(use_generated_throws)
   {
-    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10000 -nc 2> nul";
+    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10000 -can=777 -nc 2> nul";
   }
   else
   {
@@ -222,7 +224,7 @@ FString DvisEstInterface::GetTestString()
 
   // this parsing seems broken
   if(((int)LastDiscIndex) > 0)
-    ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
+    ss << "Last DiscMold = " << DfisX::disc_object_array[(int)LastDiscIndex].mold_name << " (" << (int)LastDiscIndex << ")" << std::endl;
 
   ss << "Last Throw:" << std::endl << 
     "vel_xyz = [" << disc_init_state.lin_vel_xyz[0] << ", " << disc_init_state.lin_vel_xyz[1] << ", " << disc_init_state.lin_vel_xyz[2] << "] m/s" << std::endl <<
