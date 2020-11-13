@@ -19,9 +19,9 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_BASE  (1.0)  // base lift cofficient for all bernoulli lift effects
+#define Cl_BASE  (1.25)  // base lift cofficient for all bernoulli lift effects
 #define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605 * 0.35) // lift factor as a fucntion of effective exposed cavity edge area inverse
-#define CAVITY_EDGE_NORM_ROT_SPEED (70.0) // rad/s (if this is nom-zero, attenuate the cavity lift as a function of spin speed)
+#define CAVITY_EDGE_NORM_ROT_SPEED (70.0) // rad/s (if this is non-zero, attenuate the cavity lift as a function of spin speed)
 
 // how much deviation we expect from a 'true rectangle' for the edge form drag model
 // (equivalent to changing the Cd_EDGE really, but more correct this way)
