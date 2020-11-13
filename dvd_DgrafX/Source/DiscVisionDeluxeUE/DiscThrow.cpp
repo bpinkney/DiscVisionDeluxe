@@ -257,7 +257,13 @@ void ADiscThrow::generate_flight_cumulative_stats()
     if (RangeHUD)
     {
         RangeHUD->PopulateHUD(flight_cumulative_stats.current_distance, flight_cumulative_stats.current_speed, flight_cumulative_stats.current_spin, flight_cumulative_stats.current_turnfade, flight_cumulative_stats.current_wobble);
+        RangeHUD->InitializeDAero();
+        RangeHUD->SetAero1Text("Test");
+        RangeHUD->SetAero1Input(4);
+        int32 testsfs = RangeHUD->GetAero1Input();
+        RangeHUD->SetAero2Input(testsfs);
     }
+    
 
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();

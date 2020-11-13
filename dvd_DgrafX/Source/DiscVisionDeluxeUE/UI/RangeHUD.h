@@ -33,6 +33,69 @@ public:
 	UFUNCTION()
 	void UpdateHUD();
 
+	UFUNCTION()
+	void InitializeDAero();
+
+	UFUNCTION()
+	FString GetAero1Text();
+	UFUNCTION()
+	double GetAero1Input();
+
+	UFUNCTION()
+	FString GetAero2Text();
+	UFUNCTION()
+	double GetAero2Input();
+
+	UFUNCTION()
+	FString GetAero3Text();
+	UFUNCTION()
+	double GetAero3Input();
+
+	UFUNCTION()
+	FString GetAero4Text();
+	UFUNCTION()
+	double GetAero4Input();
+
+	UFUNCTION()
+	FString GetAero5Text();
+	UFUNCTION()
+	double GetAero5Input();
+
+	UFUNCTION()
+	FString GetAero6Text();
+	UFUNCTION()
+	double GetAero6Input();
+
+	UFUNCTION()
+	void SetAero1Text(FString aero1);
+	UFUNCTION()
+	void SetAero1Input(double aero1in);
+
+	UFUNCTION()
+	void SetAero2Text(FString aero2);
+	UFUNCTION()
+	void SetAero2Input(double aero2in);
+
+	UFUNCTION()
+	void SetAero3Text(FString aero3);
+	UFUNCTION()
+	void SetAero3Input(double aero3in);
+
+	UFUNCTION()
+	void SetAero4Text(FString aero4);
+	UFUNCTION()
+	void SetAero4Input(double aero4in);
+
+	UFUNCTION()
+	void SetAero5Text(FString aero5);
+	UFUNCTION()
+	void SetAero5Input(double aero5in);
+
+	UFUNCTION()
+	void SetAero6Text(FString aero6);
+	UFUNCTION()
+	void SetAero6Input(double aero6in);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeHUDClass;
 
