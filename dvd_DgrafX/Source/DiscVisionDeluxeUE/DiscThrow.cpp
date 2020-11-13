@@ -167,7 +167,7 @@ void ADiscThrow::new_throw_world_frame(
 
   std::stringstream ss;
   ss << "Threw a ";
-  // why does this produce jibberish? why are you so garbage Unreal?
+  ss << throw_container.disc_object.manufacturer << " ";
   ss << throw_container.disc_object.mold_name;
 
   FString output_text(ss.str().c_str());

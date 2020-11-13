@@ -223,6 +223,13 @@ namespace DfisX
         break;
     }
 
+    if(1)
+    {
+      // generate a random disc mold index from all possible sets
+      const float index = (float)rand() / (float)RAND_MAX;
+      disc_mold = floor(index * disc_object_array.size());
+    }
+
     throw_container->disc_object = disc_object_array[disc_mold];
 
     std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << std::endl;
