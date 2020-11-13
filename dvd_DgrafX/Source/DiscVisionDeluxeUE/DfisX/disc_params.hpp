@@ -156,6 +156,76 @@ namespace DfisX
     },
     // 10
     Disc_Model
+    { // Discraft Heat (Pro-D)
+      /*.mold_name =*/     "Heat",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1720,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0190,
+      /*.thickness =*/     0.0180,
+      /*.rim_depth =*/     0.0120,
+      /*.edge_height =*/   0.0080
+    },
+    // 11
+    Disc_Model
+    { // Discraft Avenger SS (X)
+      /*.mold_name =*/     "Avenger SS",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1052,
+      /*.rim_width =*/     0.0190,
+      /*.thickness =*/     0.0170,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0075
+    },
+    // 12
+    Disc_Model
+    { // Discraft Crank (Z)
+      /*.mold_name =*/     "Crank",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1740,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0235,
+      /*.thickness =*/     0.0145,
+      /*.rim_depth =*/     0.0112,
+      /*.edge_height =*/   0.0080
+    },
+    // 13
+    Disc_Model
+    { // Discraft Challenger (Pro-D)
+      /*.mold_name =*/     "Challenger",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Putter",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1740,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0100,
+      /*.thickness =*/     0.0200,
+      /*.rim_depth =*/     0.0150,
+      /*.edge_height =*/   0.0163
+    },
+    // 14
+    Disc_Model
+    { // Infinite_Discs Exodus (I-Blend)
+      /*.mold_name =*/     "Exodus",
+      /*.manufacturer =*/  "Infinite_Discs",
+      /*.disc_type =*/     "Fairway Driver",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1750,
+      /*.radius =*/        0.1055,
+      /*.rim_width =*/     0.0180,
+      /*.thickness =*/     0.0190,
+      /*.rim_depth =*/     0.0120,
+      /*.edge_height =*/   0.0100
+    },
+    // 15
+    Disc_Model
     { // Innova TeeBird (Star)
       /*.mold_name =*/     "TeeBird",
       /*.manufacturer =*/  "Innova",
@@ -168,7 +238,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0113,
       /*.edge_height =*/   0.0090
     },
-    // 11
+    // 16
     Disc_Model
     { // Innova Leopard3 (G-Star)
       /*.mold_name =*/     "Leopard3",
@@ -182,7 +252,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0110,
       /*.edge_height =*/   0.0077
     },
-    // 12
+    // 17
     Disc_Model
     { // Innova Shryke (Star)
       /*.mold_name =*/     "Shryke",
@@ -196,7 +266,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0110,
       /*.edge_height =*/   0.0080
     },
-    // 13
+    // 18
     Disc_Model
     { // Innova Destroyer (DX)
       /*.mold_name =*/     "Destroyer",
@@ -209,6 +279,230 @@ namespace DfisX
       /*.thickness =*/     0.0170,
       /*.rim_depth =*/     0.0120,
       /*.edge_height =*/   0.0060
+    },
+    // 19
+    Disc_Model
+    { // Innova Krait (Champion)
+      /*.mold_name =*/     "Krait",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0220,
+      /*.thickness =*/     0.0185,
+      /*.rim_depth =*/     0.0125,
+      /*.edge_height =*/   0.0080
+    },
+    // 20
+    Disc_Model
+    { // Innova Wraith (Star)
+      /*.mold_name =*/     "Wraith",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Driver",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1670,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0220,
+      /*.thickness =*/     0.0180,
+      /*.rim_depth =*/     0.0120,
+      /*.edge_height =*/   0.0090
+    },
+    // 21
+    Disc_Model
+    { // Innova Colossus (G-Star)
+      /*.mold_name =*/     "Colossus",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1600,
+      /*.radius =*/        0.1052,
+      /*.rim_width =*/     0.0245,
+      /*.thickness =*/     0.0155,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0090
+    },
+    // 22
+    Disc_Model
+    { // Innova Boss (Champion)
+      /*.mold_name =*/     "Boss",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Overstable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1052,
+      /*.rim_width =*/     0.0245,
+      /*.thickness =*/     0.0165,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0090
+    },
+    // 23
+    Disc_Model
+    { // Innova Mako3 (Champion)
+      /*.mold_name =*/     "Mako3",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Midrange",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1750,
+      /*.radius =*/        0.1085,
+      /*.rim_width =*/     0.0125,
+      /*.thickness =*/     0.0170,
+      /*.rim_depth =*/     0.0130,
+      /*.edge_height =*/   0.0145
+    },
+    // 24
+    Disc_Model
+    { // Innova Firebird (Champion)
+      /*.mold_name =*/     "Firebird",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Overstable",
+      /*.mass =*/          0.1750,
+      /*.radius =*/        0.1060,
+      /*.rim_width =*/     0.0195,
+      /*.thickness =*/     0.0170,
+      /*.rim_depth =*/     0.0118,
+      /*.edge_height =*/   0.0120
+    },
+    // 25
+    Disc_Model
+    { // Innova Starfire (DX)
+      /*.mold_name =*/     "Starfire",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Driver",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1500,
+      /*.radius =*/        0.1045,
+      /*.rim_width =*/     0.0210,
+      /*.thickness =*/     0.0160,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0095
+    },
+    // 26
+    Disc_Model
+    { // Innova Ape (B-Champion)
+      /*.mold_name =*/     "Ape",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Overstable",
+      /*.mass =*/          0.1600,
+      /*.radius =*/        0.1051,
+      /*.rim_width =*/     0.0245,
+      /*.thickness =*/     0.0150,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0085
+    },
+    // 27
+    Disc_Model
+    { // Innova Katana (Star)
+      /*.mold_name =*/     "Katana",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1045,
+      /*.rim_width =*/     0.0240,
+      /*.thickness =*/     0.0150,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0075
+    },
+    // 28
+    Disc_Model
+    { // Innova Monster (Champion)
+      /*.mold_name =*/     "Monster",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Overstable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0210,
+      /*.thickness =*/     0.0145,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0105
+    },
+    // 29
+    Disc_Model
+    { // Innova Valkyrie (DX)
+      /*.mold_name =*/     "Valkyrie",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1045,
+      /*.rim_width =*/     0.0192,
+      /*.thickness =*/     0.0150,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0080
+    },
+    // 30
+    Disc_Model
+    { // Innova Beast (Star)
+      /*.mold_name =*/     "Beast",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Understable",
+      /*.mass =*/          0.1750,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0210,
+      /*.thickness =*/     0.0155,
+      /*.rim_depth =*/     0.0118,
+      /*.edge_height =*/   0.0085
+    },
+    // 31
+    Disc_Model
+    { // Innova Tomb (Star)
+      /*.mold_name =*/     "Tomb",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Putter",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1750,
+      /*.radius =*/        0.1060,
+      /*.rim_width =*/     0.0105,
+      /*.thickness =*/     0.0175,
+      /*.rim_depth =*/     0.0140,
+      /*.edge_height =*/   0.0145
+    },
+    // 32
+    Disc_Model
+    { // Innova Foxbat (Star)
+      /*.mold_name =*/     "Foxbat",
+      /*.manufacturer =*/  "Innova",
+      /*.disc_type =*/     "Midrange",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1720,
+      /*.radius =*/        0.1085,
+      /*.rim_width =*/     0.0130,
+      /*.thickness =*/     0.0185,
+      /*.rim_depth =*/     0.0150,
+      /*.edge_height =*/   0.0130
+    },
+    // 33
+    Disc_Model
+    { // Latitude_64 Pioneer (Opto)
+      /*.mold_name =*/     "Pioneer",
+      /*.manufacturer =*/  "Latitude_64",
+      /*.disc_type =*/     "Fairway Driver",
+      /*.stability =*/     "Overstable",
+      /*.mass =*/          0.1730,
+      /*.radius =*/        0.1060,
+      /*.rim_width =*/     0.0198,
+      /*.thickness =*/     0.0150,
+      /*.rim_depth =*/     0.0120,
+      /*.edge_height =*/   0.0110
+    },
+    // 34
+    Disc_Model
+    { // Prodigy_Discs D4 (400G)
+      /*.mold_name =*/     "D4",
+      /*.manufacturer =*/  "Prodigy_Discs",
+      /*.disc_type =*/     "Distance Driver",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1700,
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0240,
+      /*.thickness =*/     0.0160,
+      /*.rim_depth =*/     0.0115,
+      /*.edge_height =*/   0.0065
     }
   };
 
