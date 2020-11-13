@@ -116,7 +116,7 @@ void ADiscThrow::new_throw_camera_relative(
 
   DfisX::new_throw(
     &throw_container,
-    static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),
+    disc_mold_enum,
     Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),
     thrown_disc_speed,
     thrown_disc_direction,
@@ -148,7 +148,7 @@ void ADiscThrow::new_throw_world_frame(
 
   DfisX::new_throw(
     &throw_container,
-    static_cast<DfisX::Disc_Mold_Enum>(disc_mold_enum),
+    disc_mold_enum,
     v3d_thrown_disc_position,
     v3d_thrown_disc_velocity,
     thrown_disc_roll,

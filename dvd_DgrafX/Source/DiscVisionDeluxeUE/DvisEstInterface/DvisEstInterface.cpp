@@ -143,7 +143,7 @@ void DvisEstInterface::RunDvisEst()
     dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
     );
 
-  CmdProcessKill = new FInteractiveProcess(`
+  CmdProcessKill = new FInteractiveProcess(
     dVisEst_bin_cmd_kill,
     dVisEst_args,
     true,
