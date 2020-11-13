@@ -367,7 +367,11 @@ namespace DfisX
       // This is a Bernoulli lift effect, since the slowed air below the disc
       // results in an increase in pressure below, resulting in lift
       // define the range for Bernoulli effects from the inner lip
-      const double lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
+      double lift_factor = 0;
+      if(A_eff_lip > 0)
+      {
+        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
+      }
       
       // same angular range as above!
       d_forces.lift_force_cavity_edge_N = 
@@ -498,7 +502,7 @@ namespace DfisX
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
 
-/*    std::stringstream ss;
+    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
     ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
@@ -507,8 +511,10 @@ namespace DfisX
     ss << ", sum = " << std::to_string(d_forces.lift_induced_pitching_moment);
     ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
     ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
+    ss << ", pos_x = " << std::to_string(d_state.disc_location[0]);
     ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
-    std::cout << ss.str() << std::endl;*/
+    ss << ", pos_z = " << std::to_string(d_state.disc_location[2]);
+    std::cout << ss.str() << std::endl;
 
 /*    std::stringstream ss;
     ss << "" << std::to_string(RAD_TO_DEG(d_forces.aoar));
