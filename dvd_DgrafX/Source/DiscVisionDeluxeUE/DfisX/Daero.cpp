@@ -502,7 +502,7 @@ namespace DfisX
 
     d_forces.aero_force = d_forces.lift_force_vector + d_forces.drag_force_vector;
 
-    std::stringstream ss;
+/*    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
     ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
@@ -514,7 +514,7 @@ namespace DfisX
     ss << ", pos_x = " << std::to_string(d_state.disc_location[0]);
     ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
     ss << ", pos_z = " << std::to_string(d_state.disc_location[2]);
-    std::cout << ss.str() << std::endl;
+    std::cout << ss.str() << std::endl;*/
 
 /*    std::stringstream ss;
     ss << "" << std::to_string(RAD_TO_DEG(d_forces.aoar));
@@ -525,11 +525,19 @@ namespace DfisX
     ss << ", " << std::to_string(d_forces.lift_induced_pitching_moment);
     std::cout << ss.str() << std::endl;*/
 
-/*    std::stringstream ss;
+    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
-    ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
-    ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
-    ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
-    std::cout << ss.str() << std::endl;*/
+    //ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
+    //ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
+    ss << ", cavity_torque = " << std::to_string(d_forces.rot_torque_cavity_edge_offset_Nm);
+    ss << ", camber_torque = " << std::to_string(d_forces.rot_torque_camber_offset_Nm);
+    ss << ", torque_sum = " << std::to_string(d_forces.lift_induced_pitching_moment);
+    ss << ", net_vert_accel = " << std::to_string(d_forces.aero_force[2]/ d_object.mass - GRAV);
+    //ss << ", lift_accel_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N/ 0.175);
+    //ss << ", lift_accel_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
+    //ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
+    ss << ", vel_z = " << std::to_string(d_state.disc_velocity[2]);
+    ss << ", pos_z = " << std::to_string(d_state.disc_location[2]);
+    std::cout << ss.str() << std::endl;
   }
 }
