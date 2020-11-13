@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include <vector>
 
+#include "disc_layouts.hpp"
+
 #define d_statistics    throw_container->disc_statistics
 #define d_velocity      throw_container->current_disc_state.disc_velocity
 #define d_location      throw_container->current_disc_state.disc_location
@@ -17,27 +19,6 @@
 
 namespace DfisX
 {
-  enum Disc_Mold_Enum
-  {
-    NONE,
-    GROUNDPLANE,
-    GROUNDPLANE_BIG,
-    PUTTER,
-    PUTTER_OS,
-    PUTTER_US,
-    MIDRANGE,
-    MIDRANGE_OS,
-    MIDRANGE_US,
-    FAIRWAY,
-    FAIRWAY_OS,
-    FAIRWAY_US,
-    DRIVER,
-    DRIVER_OS,
-    DRIVER_US,
-    SPECIAL    
-  };
-
-
   //SIMULATION STATE
   //this enum roughly describes the state of flight a disc is in
   enum Sim_State
@@ -184,18 +165,18 @@ namespace DfisX
   //contains the name and the physics/aerodynamic properties of a disc mold
   struct Disc_Model
   {
-    char mold_name[128];
-    float edge_height;   // approximation of 'edge height' for our simpified disc model (m)
-    float cavity_depth;  // height of cavity, measured at the edge of the cavity (m)
-    float rim_width;     // width of rim, from edge of cavity, to edge of disc (m)
-    float camber_height; // max height of camber above edge (m)
-    
-    float mass;
-    float radius;
+    char mold_name[32];     // text for disc name, e.g. Buzzz Big Z
+    char manufacturer[32];  // e.g. innova (could do this with an enum later)
+    char disc_type[32];     // e.g. putter, midrange, distance driver, etc. (could do this with an enum later)
+    char stability[32];     // e.g. stable, overstable, understable, etc. (could do this with an enum later)
+    float mass;             // (kg), this is just a default can be changed later as part of user config
+    float radius;           // (m)
+    float rim_width;        // width of rim, from edge of cavity, to edge of disc (m)
+    float thickness;        // total thickness of disc, from bottom of rim, to top of camber (m)
+    float rim_depth;        // height of cavity, measured at the edge of the cavity (m)
+    float edge_height;      // approximation of 'edge height' for our simpified disc model (m)    
   };
-  //example....const Disc_Model disc_aviar {"bigz buzzz",0.150000,0.599500,0.050000,-0.015000,0.120000,0.175000,0.217000};
-
-
+  
 
   //Disc Statistics
   //used to track various stats about a discs flight, such as time aloft and distance travelled
@@ -235,7 +216,7 @@ namespace DfisX
   //Instantiates a new throw, ready to be stepped or simulated
   void                new_throw(
     Throw_Container *throw_container, 
-    const Disc_Mold_Enum disc_mold_enum,
+    const DiscIndex disc_index, // from dvd_DvisEst
     const Eigen::Vector3d thrown_disc_position,
     const Eigen::Vector3d thrown_disc_velocity, 
     const double thrown_disc_roll, 
@@ -245,7 +226,7 @@ namespace DfisX
 
   void                new_throw(
     Throw_Container *throw_container, 
-    const Disc_Mold_Enum disc_mold_enum,
+    const DiscIndex disc_index, // from dvd_DvisEst
     const Eigen::Vector3d thrown_disc_position, 
     const float thrown_disc_speed, 
     const float thrown_disc_direction, 

@@ -224,7 +224,7 @@ FString DvisEstInterface::GetTestString()
 
   // this parsing seems broken
   if(((int)LastDiscIndex) > 0)
-    ss << "Last DiscMold = " << DfisX::disc_object_array[(int)LastDiscIndex].mold_name << " (" << (int)LastDiscIndex << ")" << std::endl;
+    ss << "Last DiscMold = " << (int)LastDiscIndex << std::endl;
 
   ss << "Last Throw:" << std::endl << 
     "vel_xyz = [" << disc_init_state.lin_vel_xyz[0] << ", " << disc_init_state.lin_vel_xyz[1] << ", " << disc_init_state.lin_vel_xyz[2] << "] m/s" << std::endl <<

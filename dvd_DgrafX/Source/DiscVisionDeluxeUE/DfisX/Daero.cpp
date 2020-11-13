@@ -345,7 +345,7 @@ namespace DfisX
       // get effective area exposed by inner lip
       const double A_eff_lip = 
         (d_object.radius * 2 - d_object.rim_width * 2) *
-        d_object.cavity_depth * lip_exposed_surface_factor;
+        d_object.rim_depth * lip_exposed_surface_factor;
 
       const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar);
 
@@ -367,7 +367,11 @@ namespace DfisX
       // This is a Bernoulli lift effect, since the slowed air below the disc
       // results in an increase in pressure below, resulting in lift
       // define the range for Bernoulli effects from the inner lip
-      const double lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
+      double lift_factor = 0;
+      if(A_eff_lip > 0)
+      {
+        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
+      }
       
       // same angular range as above!
       d_forces.lift_force_cavity_edge_N = 
@@ -382,8 +386,11 @@ namespace DfisX
       // above the disc, results in a higher airspeed, and a lower pressure than below, resulting in lift
       // height above edge for camber dome peak
 
+      // intuit camber height from the total thickness, and edge height delta
+      const double camber_height = d_object.thickness - d_object.edge_height;
+
       // treat this like a triangle approx
-      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + d_object.camber_height * d_object.camber_height) * 2.0;
+      const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + camber_height * camber_height) * 2.0;
       const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2.0) - 1.0;
       const double camber_rect_arc_length_ref_scale = 1.0 / (sqrt(d_object.radius * d_object.radius + 0.02 * 0.02) * 2.0 / (d_object.radius * 2.0) - 1.0);
 
@@ -432,11 +439,11 @@ namespace DfisX
       // note how a form drag force applied there would not affect the same force at the back of the disc.
       // I would then propose that the strength of this torque is a function of AOA, and the (maybe?) 
       // normal of the rim camber
-      // we'll assume 'd_object.camber_height' is symmetric, and apply a torque here as a function of the
+      // we'll assume 'camber_height' is symmetric, and apply a torque here as a function of the
       // rim width.
-      // optimal angle would be rim_camber_norm_angle = atan2(d_object.camber_height, radius) if we assume that is a straight plane
+      // optimal angle would be rim_camber_norm_angle = atan2(camber_height, radius) if we assume that is a straight plane
       // then the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
-      const double rim_camber_norm_angle = atan2(d_object.camber_height, d_object.radius);
+      const double rim_camber_norm_angle = atan2(camber_height, d_object.radius);
       // effect is maxed at cos(aoa + rim_camber_norm_angle - pi/2)
 
       const double rim_camber_incidence_angle = d_forces.aoar + rim_camber_norm_angle - M_PI_2;
@@ -504,7 +511,9 @@ namespace DfisX
     ss << ", sum = " << std::to_string(d_forces.lift_induced_pitching_moment);
     ss << ", lift_force_cavity_edge = " << std::to_string(d_forces.lift_force_cavity_edge_N / 0.175);
     ss << ", lift_force_camber = " << std::to_string(d_forces.lift_force_camber_N / 0.175);
+    ss << ", pos_x = " << std::to_string(d_state.disc_location[0]);
     ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
+    ss << ", pos_z = " << std::to_string(d_state.disc_location[2]);
     std::cout << ss.str() << std::endl;
 
 /*    std::stringstream ss;
