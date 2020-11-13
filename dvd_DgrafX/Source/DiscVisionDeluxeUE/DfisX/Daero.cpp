@@ -21,6 +21,7 @@ Also gravity.
 // Lift Base coefficients
 #define Cl_BASE  (1.0)  // base lift cofficient for all bernoulli lift effects
 #define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605 * 0.35) // lift factor as a fucntion of effective exposed cavity edge area inverse
+#define CAVITY_EDGE_NORM_ROT_SPEED (70.0) // rad/s (if this is nom-zero, attenuate the cavity lift as a function of spin speed)
 
 // how much deviation we expect from a 'true rectangle' for the edge form drag model
 // (equivalent to changing the Cd_EDGE really, but more correct this way)
@@ -371,6 +372,10 @@ namespace DfisX
       if(A_eff_lip > 0)
       {
         lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;//0.0005 / pow(A_eff_lip, 0.95);
+        if(CAVITY_EDGE_NORM_ROT_SPEED > 0)
+        {
+          lift_factor *= abs(d_state.disc_rotation_vel) / CAVITY_EDGE_NORM_ROT_SPEED;
+        }
       }
       
       // same angular range as above!
