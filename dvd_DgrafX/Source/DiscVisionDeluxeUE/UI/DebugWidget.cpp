@@ -123,7 +123,7 @@ void UDebugWidget::SetAero4Text(FString aero4)
 }
 void UDebugWidget::SetAero4Input(double aero4in)
 {
-	daero_debug_input1 = aero4in;
+	daero_debug_input4 = aero4in;
 }
 void UDebugWidget::SetAero5Text(FString aero5)
 {
