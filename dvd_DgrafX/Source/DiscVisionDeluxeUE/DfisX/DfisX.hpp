@@ -189,6 +189,16 @@ namespace DfisX
   };
 
 
+  // generic debug fields we can change from the UI
+  struct Disc_Debug
+  {
+    double debug0;
+    double debug1;
+    double debug2;
+    double debug3;
+    double debug4;
+    double debug5;
+  };
 
   //Throw Container
   //contains all of the info needed to simulate and display a disc
@@ -200,6 +210,7 @@ namespace DfisX
     Disc_Statistics disc_statistics;            // used to track stats of a flight
     Disc_Env disc_environment;                  // environmental states and parameters
     std::vector <Disc_State> disc_state_array;  // array of disc states: used to hold the flight data of a simulated throw
+    Disc_Debug debug;
   };
 
 

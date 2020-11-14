@@ -32,98 +32,98 @@ void UDebugWidget::NativeConstruct()
 
 FString UDebugWidget::GetAero1Text()
 {
-	return FString(gv_aero_label_debug0.c_str());
+	return FString(DebugAero1Text->GetText().ToString());
 }
 double UDebugWidget::GetAero1Input()
 {
-	return gv_aero_debug0;
+	return FCString::Atof(*DebugAero1->GetText().ToString());
 }
 FString UDebugWidget::GetAero2Text()
 {
-	return FString(gv_aero_label_debug1.c_str());
+	return FString(DebugAero2Text->GetText().ToString());
 }
 double UDebugWidget::GetAero2Input()
 {
-	return gv_aero_debug1;
+	return FCString::Atof(*DebugAero2->GetText().ToString());
 }
 FString UDebugWidget::GetAero3Text()
 {
-	return FString(gv_aero_label_debug2.c_str());
+	return FString(DebugAero3Text->GetText().ToString());
 }
 double UDebugWidget::GetAero3Input()
 {
-	return gv_aero_debug2;
+	return FCString::Atof(*DebugAero3->GetText().ToString());
 }
 FString UDebugWidget::GetAero4Text()
 {
-	return FString(gv_aero_label_debug3.c_str());
+	return FString(DebugAero4Text->GetText().ToString());
 }
 double UDebugWidget::GetAero4Input()
 {
-	return gv_aero_debug3;
+	return FCString::Atof(*DebugAero4->GetText().ToString());
 }
 FString UDebugWidget::GetAero5Text()
 {
-	return FString(gv_aero_label_debug4.c_str());
+	return FString(DebugAero5Text->GetText().ToString());
 }
 double UDebugWidget::GetAero5Input()
 {
-	return gv_aero_debug4;
+	return FCString::Atof(*DebugAero5->GetText().ToString());
 }
 FString UDebugWidget::GetAero6Text()
 {
-	return FString(gv_aero_label_debug5.c_str());
+	return FString(DebugAero6Text->GetText().ToString());
 }
 double UDebugWidget::GetAero6Input()
 {
-	return gv_aero_debug5;
+	return FCString::Atof(*DebugAero6->GetText().ToString());
 }
 
 void UDebugWidget::SetAero1Text(FString aero1)
 {
-	gv_aero_label_debug0 = std::string(TCHAR_TO_UTF8(*aero1));
+	DebugAero1Text->SetText(FText::FromString(aero1));
 }
 void UDebugWidget::SetAero1Input(double aero1in)
 {
-	gv_aero_debug0 = aero1in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero1in)));
 }
 void UDebugWidget::SetAero2Text(FString aero2)
 {
-	gv_aero_label_debug1 = std::string(TCHAR_TO_UTF8(*aero2));
+	DebugAero2Text->SetText(FText::FromString(aero2));
 }
 void UDebugWidget::SetAero2Input(double aero2in)
 {
-	gv_aero_debug1 = aero2in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero2in)));
 }
 void UDebugWidget::SetAero3Text(FString aero3)
 {
-	gv_aero_label_debug2 = std::string(TCHAR_TO_UTF8(*aero3));
+	DebugAero3Text->SetText(FText::FromString(aero3));
 }
 void UDebugWidget::SetAero3Input(double aero3in)
 {
-	gv_aero_debug2 = aero3in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero3in)));
 }
 void UDebugWidget::SetAero4Text(FString aero4)
 {
-	gv_aero_label_debug3 = std::string(TCHAR_TO_UTF8(*aero4));
+	DebugAero4Text->SetText(FText::FromString(aero4));
 }
 void UDebugWidget::SetAero4Input(double aero4in)
 {
-	gv_aero_debug3 = aero4in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero4in)));
 }
 void UDebugWidget::SetAero5Text(FString aero5)
 {
-	gv_aero_label_debug4 = std::string(TCHAR_TO_UTF8(*aero5));
+	DebugAero5Text->SetText(FText::FromString(aero5));
 }
 void UDebugWidget::SetAero5Input(double aero5in)
 {
-	gv_aero_debug4 = aero5in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero5in)));
 }
 void UDebugWidget::SetAero6Text(FString aero6)
 {
-	gv_aero_label_debug5 = std::string(TCHAR_TO_UTF8(*aero6));
+	DebugAero6Text->SetText(FText::FromString(aero6));
 }
 void UDebugWidget::SetAero6Input(double aero6in)
 {
-	gv_aero_debug5 = aero6in;
+	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(aero6in)));
 }

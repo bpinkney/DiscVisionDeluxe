@@ -268,13 +268,14 @@ void ADiscThrow::generate_flight_cumulative_stats()
           initialized = true;
         }
 
-        // only assign one-way
-        gv_aero_debug0 = RangeHUD->GetAero1Input();
-        gv_aero_debug1 = RangeHUD->GetAero2Input();
-        gv_aero_debug2 = RangeHUD->GetAero3Input();
-        gv_aero_debug3 = RangeHUD->GetAero4Input();
-        gv_aero_debug4 = RangeHUD->GetAero5Input();
-        gv_aero_debug5 = RangeHUD->GetAero6Input();
+        // we need to use this structure since we get memory exceptions otherwise
+        // wow, sketchy
+        throw_container.debug.debug0 = RangeHUD->GetAero1Input();
+        throw_container.debug.debug1 = RangeHUD->GetAero2Input();
+        throw_container.debug.debug2 = RangeHUD->GetAero3Input();
+        throw_container.debug.debug3 = RangeHUD->GetAero4Input();
+        throw_container.debug.debug4 = RangeHUD->GetAero5Input();
+        throw_container.debug.debug5 = RangeHUD->GetAero6Input();
     }
     
 
