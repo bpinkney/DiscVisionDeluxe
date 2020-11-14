@@ -29,7 +29,7 @@ Also gravity.
 // Lift Base coefficients
 #define Cl_BASE  (1.0)  // base lift cofficient for all bernoulli lift effects
 #define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605 * 0.4) // lift factor as a fucntion of effective exposed cavity edge area inverse
-#define CAVITY_EDGE_NORM_ROT_SPEED (70.0) // rad/s (if this is non-zero, attenuate the cavity lift as a function of spin speed)
+#define CAVITY_EDGE_NORM_ROT_SPEED (68.0) // rad/s (if this is non-zero, attenuate the cavity lift as a function of spin speed)
 
 // how much deviation we expect from a 'true rectangle' for the edge form drag model
 // (equivalent to changing the Cd_EDGE really, but more correct this way)
@@ -37,8 +37,8 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.1) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.08) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.2) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.062) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 #define RIM_CAMBER_EXPOSURE (0.0) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
