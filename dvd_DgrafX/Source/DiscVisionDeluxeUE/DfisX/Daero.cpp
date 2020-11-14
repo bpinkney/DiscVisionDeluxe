@@ -8,8 +8,7 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 
 #define ALLOW_AERO_UNREAL_DEBUG
-#include "../UI/RangeHUD.h"
-
+//#include "DebugWidget.h"
 #endif
 
 

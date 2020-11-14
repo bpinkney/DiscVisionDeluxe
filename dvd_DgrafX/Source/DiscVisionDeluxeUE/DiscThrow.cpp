@@ -260,35 +260,15 @@ void ADiscThrow::generate_flight_cumulative_stats()
     if (RangeHUD)
     {
         RangeHUD->PopulateHUD(flight_cumulative_stats.current_distance, flight_cumulative_stats.current_speed, flight_cumulative_stats.current_spin, flight_cumulative_stats.current_turnfade, flight_cumulative_stats.current_wobble);
-        RangeHUD->InitializeDAero();
-
-        // Slam in all the debug stuff
-        FString Label1(gv_aero_label_debug0.c_str());
-        RangeHUD->SetAero1Text(Label1);
-        FString Label2(gv_aero_label_debug1.c_str());
-        RangeHUD->SetAero2Text(Label1);
-        FString Label3(gv_aero_label_debug2.c_str());
-        RangeHUD->SetAero3Text(Label1);
-        FString Label4(gv_aero_label_debug3.c_str());
-        RangeHUD->SetAero4Text(Label1);
-        FString Label5(gv_aero_label_debug4.c_str());
-        RangeHUD->SetAero5Text(Label1);
-        FString Label6(gv_aero_label_debug5.c_str());
-        RangeHUD->SetAero6Text(Label1);
 
         static bool initialized = false;
         if(!initialized)
         {
-          RangeHUD->SetAero1Input(gv_aero_debug0);
-          RangeHUD->SetAero2Input(gv_aero_debug1);
-          RangeHUD->SetAero3Input(gv_aero_debug2);
-          RangeHUD->SetAero4Input(gv_aero_debug3);
-          RangeHUD->SetAero5Input(gv_aero_debug4);
-          RangeHUD->SetAero6Input(gv_aero_debug5);
-
+          RangeHUD->InitializeDAero();
           initialized = true;
         }
 
+        // only assign one-way
         gv_aero_debug0 = RangeHUD->GetAero1Input();
         gv_aero_debug1 = RangeHUD->GetAero2Input();
         gv_aero_debug2 = RangeHUD->GetAero3Input();
