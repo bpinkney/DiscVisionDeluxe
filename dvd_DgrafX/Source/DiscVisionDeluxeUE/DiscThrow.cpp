@@ -7,6 +7,9 @@
 
 #include "disc_layouts.hpp"
 
+// include for debug stuff
+#include "Daero.hpp"
+
 #include "UI/RangeHUD.h"
 
 
@@ -257,11 +260,22 @@ void ADiscThrow::generate_flight_cumulative_stats()
     if (RangeHUD)
     {
         RangeHUD->PopulateHUD(flight_cumulative_stats.current_distance, flight_cumulative_stats.current_speed, flight_cumulative_stats.current_spin, flight_cumulative_stats.current_turnfade, flight_cumulative_stats.current_wobble);
-        RangeHUD->InitializeDAero();
-        RangeHUD->SetAero1Text("Test");
-        RangeHUD->SetAero1Input(4);
-        int32 testsfs = RangeHUD->GetAero1Input();
-        RangeHUD->SetAero2Input(testsfs);
+
+        static bool initialized = false;
+        if(!initialized)
+        {
+          RangeHUD->InitializeDAero();
+          initialized = true;
+        }
+
+        // we need to use this structure since we get memory exceptions otherwise
+        // wow, sketchy
+        throw_container.debug.debug0 = RangeHUD->GetAero1Input();
+        throw_container.debug.debug1 = RangeHUD->GetAero2Input();
+        throw_container.debug.debug2 = RangeHUD->GetAero3Input();
+        throw_container.debug.debug3 = RangeHUD->GetAero4Input();
+        throw_container.debug.debug4 = RangeHUD->GetAero5Input();
+        throw_container.debug.debug5 = RangeHUD->GetAero6Input();
     }
     
 
