@@ -30,6 +30,20 @@ namespace DfisX
     },
     // 1
     Disc_Model
+    { // Daredevil_Discs Polar Bear (Grip Performance)
+      /*.mold_name =*/     "Polar Bear",
+      /*.manufacturer =*/  "Daredevil_Discs",
+      /*.disc_type =*/     "Putter",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.1730,
+      /*.radius =*/        0.1060,
+      /*.rim_width =*/     0.0100,
+      /*.thickness =*/     0.0220,
+      /*.rim_depth =*/     0.0145,
+      /*.edge_height =*/   0.0170
+    },
+    // 2
+    Disc_Model
     { // Discmania P3 (C-Line)
       /*.mold_name =*/     "P3",
       /*.manufacturer =*/  "Discmania",
@@ -42,7 +56,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0131,
       /*.edge_height =*/   0.0093
     },
-    // 2
+    // 3
     Disc_Model
     { // Discmania DDX (S-Line)
       /*.mold_name =*/     "DDX",
@@ -56,7 +70,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0110,
       /*.edge_height =*/   0.0070
     },
-    // 3
+    // 4
     Disc_Model
     { // Discraft Buzzz (Pro-D)
       /*.mold_name =*/     "Buzzz",
@@ -70,7 +84,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0127,
       /*.edge_height =*/   0.0073
     },
-    // 4
+    // 5
     Disc_Model
     { // Discraft Zombee (Z)
       /*.mold_name =*/     "Zombee",
@@ -84,7 +98,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0123,
       /*.edge_height =*/   0.0082
     },
-    // 5
+    // 6
     Disc_Model
     { // Discraft Luna (Jawbreaker)
       /*.mold_name =*/     "Luna",
@@ -98,7 +112,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0143,
       /*.edge_height =*/   0.0074
     },
-    // 6
+    // 7
     Disc_Model
     { // Discraft Soft Magnet (Pro-D)
       /*.mold_name =*/     "Soft Magnet",
@@ -112,7 +126,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0138,
       /*.edge_height =*/   0.0078
     },
-    // 7
+    // 8
     Disc_Model
     { // Discraft Magnet (Jawbreaker)
       /*.mold_name =*/     "Magnet",
@@ -126,7 +140,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0140,
       /*.edge_height =*/   0.0140
     },
-    // 8
+    // 9
     Disc_Model
     { // Discraft Zone (Jawbreaker)
       /*.mold_name =*/     "Zone",
@@ -140,7 +154,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0140,
       /*.edge_height =*/   0.0160
     },
-    // 9
+    // 10
     Disc_Model
     { // Discraft Buzzz Foil (Pro-D)
       /*.mold_name =*/     "Buzzz Foil",
@@ -154,7 +168,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0130,
       /*.edge_height =*/   0.0110
     },
-    // 10
+    // 11
     Disc_Model
     { // Discraft Heat (Pro-D)
       /*.mold_name =*/     "Heat",
@@ -168,7 +182,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0120,
       /*.edge_height =*/   0.0080
     },
-    // 11
+    // 12
     Disc_Model
     { // Discraft Avenger SS (X)
       /*.mold_name =*/     "Avenger SS",
@@ -182,7 +196,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0075
     },
-    // 12
+    // 13
     Disc_Model
     { // Discraft Crank (Z)
       /*.mold_name =*/     "Crank",
@@ -196,7 +210,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0112,
       /*.edge_height =*/   0.0080
     },
-    // 13
+    // 14
     Disc_Model
     { // Discraft Challenger (Pro-D)
       /*.mold_name =*/     "Challenger",
@@ -210,7 +224,35 @@ namespace DfisX
       /*.rim_depth =*/     0.0150,
       /*.edge_height =*/   0.0163
     },
-    // 14
+    // 15
+    Disc_Model
+    { // Discraft Mini Buzzz (Jawbreaker)
+      /*.mold_name =*/     "Mini Buzzz",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Midrange",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.0640,
+      /*.radius =*/        0.0750,
+      /*.rim_width =*/     0.0090,
+      /*.thickness =*/     0.0123,
+      /*.rim_depth =*/     0.0090,
+      /*.edge_height =*/   0.0095
+    },
+    // 16
+    Disc_Model
+    { // Discraft Marker Buzzz (Jawbreaker)
+      /*.mold_name =*/     "Marker Buzzz",
+      /*.manufacturer =*/  "Discraft",
+      /*.disc_type =*/     "Midrange",
+      /*.stability =*/     "Stable",
+      /*.mass =*/          0.0110,
+      /*.radius =*/        0.0350,
+      /*.rim_width =*/     0.0085,
+      /*.thickness =*/     0.0085,
+      /*.rim_depth =*/     0.0063,
+      /*.edge_height =*/   0.0075
+    },
+    // 17
     Disc_Model
     { // Infinite_Discs Exodus (I-Blend)
       /*.mold_name =*/     "Exodus",
@@ -224,7 +266,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0120,
       /*.edge_height =*/   0.0100
     },
-    // 15
+    // 18
     Disc_Model
     { // Innova TeeBird (Star)
       /*.mold_name =*/     "TeeBird",
@@ -238,7 +280,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0113,
       /*.edge_height =*/   0.0090
     },
-    // 16
+    // 19
     Disc_Model
     { // Innova Leopard3 (G-Star)
       /*.mold_name =*/     "Leopard3",
@@ -250,9 +292,9 @@ namespace DfisX
       /*.rim_width =*/     0.0168,
       /*.thickness =*/     0.0151,
       /*.rim_depth =*/     0.0110,
-      /*.edge_height =*/   0.0077
+      /*.edge_height =*/   0.0115
     },
-    // 17
+    // 20
     Disc_Model
     { // Innova Shryke (Star)
       /*.mold_name =*/     "Shryke",
@@ -266,7 +308,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0110,
       /*.edge_height =*/   0.0080
     },
-    // 18
+    // 21
     Disc_Model
     { // Innova Destroyer (DX)
       /*.mold_name =*/     "Destroyer",
@@ -278,9 +320,9 @@ namespace DfisX
       /*.rim_width =*/     0.0245,
       /*.thickness =*/     0.0170,
       /*.rim_depth =*/     0.0120,
-      /*.edge_height =*/   0.0060
+      /*.edge_height =*/   0.0080
     },
-    // 19
+    // 22
     Disc_Model
     { // Innova Krait (Champion)
       /*.mold_name =*/     "Krait",
@@ -294,7 +336,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0125,
       /*.edge_height =*/   0.0080
     },
-    // 20
+    // 23
     Disc_Model
     { // Innova Wraith (Star)
       /*.mold_name =*/     "Wraith",
@@ -308,7 +350,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0120,
       /*.edge_height =*/   0.0090
     },
-    // 21
+    // 24
     Disc_Model
     { // Innova Colossus (G-Star)
       /*.mold_name =*/     "Colossus",
@@ -322,7 +364,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0090
     },
-    // 22
+    // 25
     Disc_Model
     { // Innova Boss (Champion)
       /*.mold_name =*/     "Boss",
@@ -336,7 +378,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0090
     },
-    // 23
+    // 26
     Disc_Model
     { // Innova Mako3 (Champion)
       /*.mold_name =*/     "Mako3",
@@ -350,7 +392,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0130,
       /*.edge_height =*/   0.0145
     },
-    // 24
+    // 27
     Disc_Model
     { // Innova Firebird (Champion)
       /*.mold_name =*/     "Firebird",
@@ -364,7 +406,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0118,
       /*.edge_height =*/   0.0120
     },
-    // 25
+    // 28
     Disc_Model
     { // Innova Starfire (DX)
       /*.mold_name =*/     "Starfire",
@@ -378,7 +420,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0095
     },
-    // 26
+    // 29
     Disc_Model
     { // Innova Ape (B-Champion)
       /*.mold_name =*/     "Ape",
@@ -392,7 +434,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0085
     },
-    // 27
+    // 30
     Disc_Model
     { // Innova Katana (Star)
       /*.mold_name =*/     "Katana",
@@ -406,7 +448,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0075
     },
-    // 28
+    // 31
     Disc_Model
     { // Innova Monster (Champion)
       /*.mold_name =*/     "Monster",
@@ -420,7 +462,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0105
     },
-    // 29
+    // 32
     Disc_Model
     { // Innova Valkyrie (DX)
       /*.mold_name =*/     "Valkyrie",
@@ -434,7 +476,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0115,
       /*.edge_height =*/   0.0080
     },
-    // 30
+    // 33
     Disc_Model
     { // Innova Beast (Star)
       /*.mold_name =*/     "Beast",
@@ -448,7 +490,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0118,
       /*.edge_height =*/   0.0085
     },
-    // 31
+    // 34
     Disc_Model
     { // Innova Tomb (Star)
       /*.mold_name =*/     "Tomb",
@@ -462,7 +504,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0140,
       /*.edge_height =*/   0.0145
     },
-    // 32
+    // 35
     Disc_Model
     { // Innova Foxbat (Star)
       /*.mold_name =*/     "Foxbat",
@@ -476,7 +518,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0150,
       /*.edge_height =*/   0.0130
     },
-    // 33
+    // 36
     Disc_Model
     { // Latitude_64 Pioneer (Opto)
       /*.mold_name =*/     "Pioneer",
@@ -490,7 +532,7 @@ namespace DfisX
       /*.rim_depth =*/     0.0120,
       /*.edge_height =*/   0.0110
     },
-    // 34
+    // 37
     Disc_Model
     { // Prodigy_Discs D4 (400G)
       /*.mold_name =*/     "D4",
