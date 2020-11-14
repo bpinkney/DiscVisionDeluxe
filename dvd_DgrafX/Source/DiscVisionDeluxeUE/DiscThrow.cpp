@@ -218,7 +218,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
 
-    //ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
 
 
 

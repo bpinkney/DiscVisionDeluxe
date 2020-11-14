@@ -223,7 +223,7 @@ namespace DfisX
         break;
     }
 
-    if(0)
+    if(1)
     {
       // generate a random disc mold index from all possible sets
       const float index = (float)rand() / (float)RAND_MAX;

@@ -278,7 +278,7 @@ namespace DfisX
       /*.rim_width =*/     0.0245,
       /*.thickness =*/     0.0170,
       /*.rim_depth =*/     0.0120,
-      /*.edge_height =*/   0.0060
+      /*.edge_height =*/   0.0080
     },
     // 19
     Disc_Model
