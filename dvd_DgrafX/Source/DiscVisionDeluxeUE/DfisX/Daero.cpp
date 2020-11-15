@@ -32,8 +32,9 @@ Also gravity.
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (50.0) // rad/s cavity lift is linearly amplified about this spin speed
-  #define CAVITY_EDGE_LIFT_EXP (1.4)
+#define CAVITY_EDGE_NORM_ROT_SPEED (80.0) // rad/s cavity lift is linearly amplified about this spin speed
+  #define CAVITY_EDGE_LIFT_EXP     (2.0)
+  #define CAVITY_EDGE_LIFT_GAIN    (0.1)
 
 // effective area using cavity width * depth rectangle approx
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
@@ -51,8 +52,8 @@ Also gravity.
 #define RIM_CAMBER_EXPOSURE (0.67) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
-std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_EXP";
-double gv_aero_debug0             = (CAVITY_EDGE_LIFT_EXP);
+std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
+double gv_aero_debug0             = (CAVITY_EDGE_LIFT_GAIN);
 
 std::string gv_aero_label_debug1  = "CAVITY_EDGE_NORM_ROT_SPEED";
 double gv_aero_debug1             = (CAVITY_EDGE_NORM_ROT_SPEED);
@@ -436,10 +437,12 @@ namespace DfisX
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
           // set to 1.0. It is probably < 1
           double lift_factor_spin_bonus = 
-            pow(abs(d_state.disc_rotation_vel), throw_container->debug.debug0) / 
-            pow(throw_container->debug.debug1, throw_container->debug.debug0);
+            pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
+            pow(throw_container->debug.debug1, CAVITY_EDGE_LIFT_EXP) *
+            throw_container->debug.debug0;
 
-          lift_factor_spin_bonus = MAX(1.0, lift_factor_spin_bonus);
+          // max of 1.5x
+          lift_factor_spin_bonus = 1.0 + MAX(0.5, lift_factor_spin_bonus);
 
           lift_factor *= lift_factor_spin_bonus;
         }
