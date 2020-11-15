@@ -46,10 +46,13 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.134) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.105) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.15) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.11) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
-#define RIM_CAMBER_EXPOSURE (0.67) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+// % of edge height which slopes down as the lower rim camber
+// TODO: this number should change for discs with a concave lower rim camber
+#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
+#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
 std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
@@ -58,8 +61,8 @@ double gv_aero_debug0             = (CAVITY_EDGE_LIFT_GAIN);
 std::string gv_aero_label_debug1  = "CAVITY_EDGE_NORM_ROT_SPEED";
 double gv_aero_debug1             = (CAVITY_EDGE_NORM_ROT_SPEED);
 
-std::string gv_aero_label_debug2  = "CAVITY_EDGE_LIFT_FACTOR";
-double gv_aero_debug2             = (CAVITY_EDGE_LIFT_FACTOR);
+std::string gv_aero_label_debug2  = "RIM_CAMBER_EDGE_HEIGHT_PCT";
+double gv_aero_debug2             = (RIM_CAMBER_EDGE_HEIGHT_PCT);
 
 std::string gv_aero_label_debug3  = "RIM_CAMBER_EXPOSURE";
 double gv_aero_debug3             = (RIM_CAMBER_EXPOSURE);
@@ -431,7 +434,7 @@ namespace DfisX
       double lift_factor = 0;
       if(A_eff_lip > 0)
       {
-        lift_factor = (1.0 / A_eff_lip) * throw_container->debug.debug2 * 0.00035302903145605;
+        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR * 0.00035302903145605;
         if(throw_container->debug.debug1 > 0)
         {
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
@@ -532,7 +535,7 @@ namespace DfisX
       // perpendicular to the rim camber
       // optimal angle would be rim_camber_norm_angle = atan2(rim width, edge height)
       // the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
-      const double rim_camber_height = d_object.edge_height * 0.75;
+      const double rim_camber_height = d_object.edge_height * throw_container->debug.debug2;
       const double rim_camber_norm_angle = atan2(d_object.rim_width, rim_camber_height);
 
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
