@@ -28,8 +28,14 @@ Also gravity.
 
 // Lift Base coefficients
 #define Cl_BASE  (1.3)  // base lift cofficient for all bernoulli lift effects
-#define CAVITY_EDGE_LIFT_FACTOR (0.00035302903145605 * 0.4) // lift factor as a fucntion of effective exposed cavity edge area inverse
-#define CAVITY_EDGE_NORM_ROT_SPEED (68.0) // rad/s (if this is non-zero, attenuate the cavity lift as a function of spin speed)
+#define CAVITY_EDGE_LIFT_FACTOR (0.33) // lift factor as a function of effective exposed cavity edge area inverse
+// this can add more stability at the end of a flight if the threshold is low enough
+// but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
+// need to wait and see before enabling this one
+#define CAVITY_EDGE_NORM_ROT_SPEED (50.0) // rad/s cavity lift is linearly amplified about this spin speed
+  #define CAVITY_EDGE_LIFT_EXP     (2.0)
+  #define CAVITY_EDGE_LIFT_GAIN    (0.25)
+
 // effective area using cavity width * depth rectangle approx
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
 #define CAVITY_EDGE_EXPOSED_AREA_FACTOR (0.4)
@@ -40,20 +46,20 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.11) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.08) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.134) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.105) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
-#define RIM_CAMBER_EXPOSURE (0.3) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (0.67) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
-std::string gv_aero_label_debug0  = "CAVITY_EDGE_EXPOSED_AREA_FACTOR";
-double gv_aero_debug0             = (CAVITY_EDGE_EXPOSED_AREA_FACTOR);
+std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
+double gv_aero_debug0             = (CAVITY_EDGE_LIFT_GAIN);
 
 std::string gv_aero_label_debug1  = "CAVITY_EDGE_NORM_ROT_SPEED";
 double gv_aero_debug1             = (CAVITY_EDGE_NORM_ROT_SPEED);
 
-std::string gv_aero_label_debug2  = "Cl_BASE";
-double gv_aero_debug2             = (Cl_BASE);
+std::string gv_aero_label_debug2  = "CAVITY_EDGE_LIFT_FACTOR";
+double gv_aero_debug2             = (CAVITY_EDGE_LIFT_FACTOR);
 
 std::string gv_aero_label_debug3  = "RIM_CAMBER_EXPOSURE";
 double gv_aero_debug3             = (RIM_CAMBER_EXPOSURE);
@@ -63,9 +69,6 @@ double gv_aero_debug4             = (PITCHING_MOMENT_CAVITY_LIFT_OFFSET);
 
 std::string gv_aero_label_debug5  = "PITCHING_MOMENT_CAMBER_LIFT_OFFSET";
 double gv_aero_debug5             = (PITCHING_MOMENT_CAMBER_LIFT_OFFSET);
-
-std::string gv_aero_label_debug6  = "";
-double gv_aero_debug6             = (0.0);
 
 namespace DfisX
 {
@@ -256,6 +259,7 @@ namespace DfisX
     const float r5 = (d_object.radius * d_object.radius * d_object.radius * d_object.radius * d_object.radius);
     
     ////// ** ** Start Rotational Drag Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
 
       // from 'drag of rotating disc pitching'
       // k = 0.13412
@@ -285,6 +289,8 @@ namespace DfisX
         r5 *
         throw_container->disc_environment.air_density *
         (d_state.disc_rolling_vel*d_state.disc_rolling_vel);
+
+      //------------------------------------------------------------------------------------------------------------------
 
       //// Parasitic Skin Drag from the disc Rotation about the normal (disc Z axis)
       //// Think of this like small eddys and friction from the plastic surface of the disc
@@ -323,9 +329,13 @@ namespace DfisX
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
         r5 * 
         Cm;
+
+      //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Rotational Drag Model ** ** //////
 
+
     ////// ** ** Start Linear Form Drag Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
       // effective edge heighr for our simplified 'edge' and 'plate' model approximation
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double A_plate  = r2 * M_PI;
@@ -384,6 +394,8 @@ namespace DfisX
       Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
       make_unit_vector(edge_force_vector);
 
+      //------------------------------------------------------------------------------------------------------------------
+
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
       // 1. Effective drag in increase from air hitting the back of the disc inner lip
@@ -391,7 +403,7 @@ namespace DfisX
       // get effective area exposed by inner lip
       const double A_eff_lip = 
         (d_object.radius * 2 - d_object.rim_width * 2) *
-        d_object.rim_depth * throw_container->debug.debug0;
+        d_object.rim_depth * CAVITY_EDGE_EXPOSED_AREA_FACTOR;
 
       const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar);
 
@@ -403,9 +415,12 @@ namespace DfisX
         rhov2o2 * Cd_EDGE * A_eff_lip_at_aoa * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
         (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
 
+      //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Linear Form Drag Model ** ** //////
 
+
     ////// ** ** Start Linear Lift Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
 
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
@@ -416,20 +431,32 @@ namespace DfisX
       double lift_factor = 0;
       if(A_eff_lip > 0)
       {
-        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR;
+        lift_factor = (1.0 / A_eff_lip) * throw_container->debug.debug2 * 0.00035302903145605;
         if(throw_container->debug.debug1 > 0)
         {
-          lift_factor *= abs(d_state.disc_rotation_vel) / throw_container->debug.debug1;
+          // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
+          // set to 1.0. It is probably < 1
+          double lift_factor_spin_bonus = 
+            pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
+            pow(throw_container->debug.debug1, CAVITY_EDGE_LIFT_EXP) *
+            throw_container->debug.debug0;
+
+          // max of 1.5x
+          lift_factor_spin_bonus = 1.0 + lift_factor_spin_bonus;
+
+          lift_factor *= lift_factor_spin_bonus;
         }
       }
       
       // same angular range as above!
       d_forces.lift_force_cavity_edge_N = 
-        rhov2o2 * throw_container->debug.debug2 * A_plate * lift_factor * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
+        rhov2o2 * Cl_BASE * A_plate * lift_factor * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
         (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
 
       // Only attenuate this lift for nose-down, i.e. negative AOAs
       // TODO: Is this right? who knows 
+
+      //------------------------------------------------------------------------------------------------------------------
       
       // 3. Lift from increased top arc-length, and corresponding increasing in 'above disc' airspeed
       // This is the classic 'wing' Bernoulli effect, where the extra distance covered by the airstream
@@ -450,20 +477,26 @@ namespace DfisX
       // attenuated with AOA as a sinusoid
       // (camber_arc_to_diameter_ratio - 1.0) normalized to a camber_height of 2cm
       // where camber_arc_to_diameter_ratio == 1 means no added lift
+      // TODO: Do we actually expect the lift force fall-off to simply be cos(AOA)?
+      // we may want a better function to describe how the separation-point of laminar air
+      // affects this lift force
       d_forces.lift_force_camber_N = 
-        rhov2o2 * A_plate * throw_container->debug.debug2 * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
+        rhov2o2 * A_plate * Cl_BASE * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
         (d_forces.aoar <= DEG_TO_RAD(50) && d_forces.aoar >= DEG_TO_RAD(-30) ? 1.0 : 0.0);
 
+      //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Linear Lift Model ** ** //////
 
+
     ////// ** ** Start Pitching Moment Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
 
       //// Use form drag terms to apply some of the resulting pitching moment
       // for now, we just assume that the centre of application for 'plate drag' is 15% forward from the 
       // disc centre. This actually changes with thickness, and other factors, but this approximation is OK
       // for now.
       // assume this moment arm attenuates with non-zero AOA ???
-      const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2 * cos(d_forces.aoar);
+      const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2.0 * cos(d_forces.aoar);
 
       // The paper seems to imply that the camber (see below) causes extra torque due to the plate drag
       // We could add this to the torque term as a function of 'amplified' torque here
@@ -485,6 +518,9 @@ namespace DfisX
         (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-45) ? 1.0 : 0.0);
 
       // HOWEVER: thise nose-down effect here seems too strong.
+
+      //------------------------------------------------------------------------------------------------------------------
+
       // that is making me thing that this is actually caused by the "lower surface of rim camber"
       // on the underside of the rim
       // note how a form drag force applied there would not affect the same force at the back of the disc.
@@ -498,7 +534,16 @@ namespace DfisX
       // the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
       const double rim_camber_height = d_object.edge_height * 0.75;
       const double rim_camber_norm_angle = atan2(d_object.rim_width, rim_camber_height);
+
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
+      // force projected along disc normal unit vector is sin(rim_camber_norm_angle)
+      // NOTE: Due to the approximated way we are computing 'edge height', 
+      // and the resulting 'disc plane' forces from form drag
+      // we assume that any component which is not along the disc normla unit vector to already be added
+      // FURTHERMORE: Since the 'plate' form drag already uses the entire plate surface area,
+      // we expect the "approximate" force along the disc normal to already be added as well
+      // CONSEQUENTLY: We only need to add the pitching moment here, as we expect that only as a 
+      // consequence of the asymmetry between the leading and trailing rim camber angles
 
       const double rim_camber_incidence_angle = rim_camber_norm_angle - d_forces.aoar;
       const double effective_rim_camber_area = d_object.rim_width * d_object.radius * 2 * throw_container->debug.debug3;
@@ -506,13 +551,15 @@ namespace DfisX
       // if the angle is too far nose-down, this is no longer a factor
       // TODO: make this better! effective range is [-15deg, +45deg] AOA, peak at 0 AOA
       d_forces.lin_drag_force_rim_camber_N = 
-        rhov2o2 * Cd_EDGE  * effective_rim_camber_area * cos(rim_camber_incidence_angle) *
+        rhov2o2 * Cd_EDGE  * effective_rim_camber_area * cos(rim_camber_incidence_angle) * sin(rim_camber_norm_angle) *
         (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);        
 
       // assume the force is applied halfway along the rim width
       const double rim_camber_moment_arm_length = d_object.radius * 2 - d_object.rim_width * 0.5;
 
       d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * d_forces.lin_drag_force_rim_camber_N;            
+
+      //------------------------------------------------------------------------------------------------------------------
 
       //// Use bernoulli lift terms to apply some of the resulting pitching moment
       // from the paper and matlab: 
@@ -522,16 +569,28 @@ namespace DfisX
       const double Fl_lip_moment_arm_length = throw_container->debug.debug4 * d_object.radius * 2;// * cos(d_forces.aoar);
       d_forces.rot_torque_cavity_edge_offset_Nm = -Fl_lip_moment_arm_length * d_forces.lift_force_cavity_edge_N;
 
+      //------------------------------------------------------------------------------------------------------------------
+
       // after contending with the complication of 'Fd_plate_pitching_factor' in the paper results
       // it looks like there is about a 0.1*diameter moment arm left over for the bernoulli lift effects due to the camber
       // this probably changes with AOA, but we'll just make it static for now
-      // assume this moment arm attenuates with non-zero AOA ???
-      const double Fl_arc_moment_arm_length = throw_container->debug.debug5 * d_object.radius * 2;// * cos(d_forces.aoar);
+      // NOTE: There is likely a very fun function here for how this changes with AOA
+      // since the laminar airflow separates further toward the front of the disc, we should expect
+      // the centre of force to ALSO move toward the front of the disc with increased AOA
+      // Could this be symmetric? Not likely, better look at some smokey wind tunnel images to be certain!
+      // TODO: Make this better, for now, we are just moving the moment arm further forward with non-zero AOA
+      // in a symmetric way
+      // (we should cover this effect while computing the mangitude of 'lift_force_camber_N' above as well!)
+      const double FL_arc_airflow_separation_factor = 1.0;// + abs(sin(d_forces.aoar));
+      //2.0 - cos(d_forces.aoar);
+
+      const double Fl_arc_moment_arm_length = FL_arc_airflow_separation_factor * throw_container->debug.debug5 * d_object.radius * 2;
 
       // We observe that the camber (below) causes extra torque due to the plate drag
       // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
       d_forces.rot_torque_camber_offset_Nm = Fl_arc_moment_arm_length * d_forces.lift_force_camber_N;
 
+      //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Pitching Moment Model ** ** //////
 
     // sum all forces and torques for aero effects
@@ -544,6 +603,12 @@ namespace DfisX
     d_forces.drag_force_vector += d_forces.lin_drag_force_plate_N       * d_orientation;
     d_forces.drag_force_vector += d_forces.lin_drag_force_skin_N        * -d_forces.disc_velocity_unit_vector;
     d_forces.drag_force_vector += d_forces.lin_drag_force_cavity_edge_N * edge_force_vector;
+    // This should be partly covered by the 'plate' form drag already, realistically, this force should only be used
+    // to compute the pitching moment from the lower rim camber.
+    // HOWEVER: There is a non-zero ampunt of 'along disc normal' upward force generated when the disc is at 0 AOA
+    // which is NOT covered by the plate form drag. For now, we'll just include it.
+    // Note: this is only the 'disc normal' component, we do assume that the 'edge' form drag
+    // approximation covers everything required for the 'along disc plane' forces
     d_forces.drag_force_vector += d_forces.lin_drag_force_rim_camber_N  * d_orientation;
 
     d_forces.lift_force_vector *= 0;
@@ -581,7 +646,7 @@ namespace DfisX
     ss << ", " << std::to_string(d_forces.lift_induced_pitching_moment);
     std::cout << ss.str() << std::endl;*/
 
-    std::stringstream ss;
+/*    std::stringstream ss;
     ss << "AOA = " << std::to_string(RAD_TO_DEG(d_forces.aoar));
     //ss << ", rim_camber = " << std::to_string(d_forces.rot_torque_rim_camber_offset_Nm);
     //ss << ", plate_offset = " << std::to_string(d_forces.rot_torque_plate_offset_Nm);
@@ -594,6 +659,6 @@ namespace DfisX
     //ss << ", pos_y = " << std::to_string(d_state.disc_location[1]);
     ss << ", vel_z = " << std::to_string(d_state.disc_velocity[2]);
     ss << ", pos_z = " << std::to_string(d_state.disc_location[2]);
-    std::cout << ss.str() << std::endl;
+    std::cout << ss.str() << std::endl;*/
   }
 }

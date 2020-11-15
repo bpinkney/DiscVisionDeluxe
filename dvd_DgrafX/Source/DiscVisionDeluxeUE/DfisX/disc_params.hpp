@@ -120,11 +120,11 @@ namespace DfisX
       /*.disc_type =*/     "Putter",
       /*.stability =*/     "Stable",
       /*.mass =*/          0.1700,
-      /*.radius =*/        0.1046,
-      /*.rim_width =*/     0.0100,
-      /*.thickness =*/     0.0202,
-      /*.rim_depth =*/     0.0138,
-      /*.edge_height =*/   0.0078
+      /*.radius =*/        0.105,
+      /*.rim_width =*/     0.009,
+      /*.thickness =*/     0.02075,
+      /*.rim_depth =*/     0.015,
+      /*.edge_height =*/   0.016
     },
     // 8
     Disc_Model
