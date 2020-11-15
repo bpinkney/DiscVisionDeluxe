@@ -32,9 +32,9 @@ Also gravity.
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (80.0) // rad/s cavity lift is linearly amplified about this spin speed
+#define CAVITY_EDGE_NORM_ROT_SPEED (50.0) // rad/s cavity lift is linearly amplified about this spin speed
   #define CAVITY_EDGE_LIFT_EXP     (2.0)
-  #define CAVITY_EDGE_LIFT_GAIN    (0.1)
+  #define CAVITY_EDGE_LIFT_GAIN    (0.25)
 
 // effective area using cavity width * depth rectangle approx
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
@@ -47,7 +47,7 @@ Also gravity.
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.134) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.09) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.105) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 #define RIM_CAMBER_EXPOSURE (0.67) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
@@ -442,7 +442,7 @@ namespace DfisX
             throw_container->debug.debug0;
 
           // max of 1.5x
-          lift_factor_spin_bonus = 1.0 + MAX(0.5, lift_factor_spin_bonus);
+          lift_factor_spin_bonus = 1.0 + lift_factor_spin_bonus;
 
           lift_factor *= lift_factor_spin_bonus;
         }
