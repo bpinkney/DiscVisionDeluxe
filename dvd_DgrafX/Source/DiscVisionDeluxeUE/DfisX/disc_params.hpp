@@ -54,7 +54,7 @@ namespace DfisX
       /*.rim_width =*/     0.0126,
       /*.thickness =*/     0.0199,
       /*.rim_depth =*/     0.0131,
-      /*.edge_height =*/   0.0093
+      /*.edge_height =*/   0.0140
     },
     // 3
     Disc_Model
@@ -82,7 +82,7 @@ namespace DfisX
       /*.rim_width =*/     0.0123,
       /*.thickness =*/     0.0159,
       /*.rim_depth =*/     0.0127,
-      /*.edge_height =*/   0.0073
+      /*.edge_height =*/   0.0110
     },
     // 5
     Disc_Model
@@ -96,7 +96,7 @@ namespace DfisX
       /*.rim_width =*/     0.0150,
       /*.thickness =*/     0.0162,
       /*.rim_depth =*/     0.0123,
-      /*.edge_height =*/   0.0082
+      /*.edge_height =*/   0.0110
     },
     // 6
     Disc_Model
@@ -110,7 +110,7 @@ namespace DfisX
       /*.rim_width =*/     0.0108,
       /*.thickness =*/     0.0195,
       /*.rim_depth =*/     0.0143,
-      /*.edge_height =*/   0.0074
+      /*.edge_height =*/   0.0110
     },
     // 7
     Disc_Model
@@ -120,11 +120,11 @@ namespace DfisX
       /*.disc_type =*/     "Putter",
       /*.stability =*/     "Stable",
       /*.mass =*/          0.1700,
-      /*.radius =*/        0.105,
-      /*.rim_width =*/     0.009,
-      /*.thickness =*/     0.02075,
-      /*.rim_depth =*/     0.015,
-      /*.edge_height =*/   0.016
+      /*.radius =*/        0.1050,
+      /*.rim_width =*/     0.0090,
+      /*.thickness =*/     0.0208,
+      /*.rim_depth =*/     0.0150,
+      /*.edge_height =*/   0.0160
     },
     // 8
     Disc_Model
