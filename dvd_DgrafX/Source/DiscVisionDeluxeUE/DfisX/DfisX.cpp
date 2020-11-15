@@ -227,6 +227,7 @@ namespace DfisX
     {
       // generate a random disc mold index from all possible sets
       const float index = (float)rand() / (float)RAND_MAX;
+      //disc_mold = find_disc_mold_index_by_name("Mako3");
       disc_mold = floor(index * disc_object_array.size());
     }
 
