@@ -27,8 +27,8 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_BASE  (1.3)  // base lift cofficient for all bernoulli lift effects
-#define CAVITY_EDGE_LIFT_FACTOR (0.33) // lift factor as a function of effective exposed cavity edge area inverse
+#define Cl_BASE  (0.7)  // base lift cofficient for all bernoulli lift effects
+#define CAVITY_EDGE_LIFT_FACTOR (0.8) // lift factor as a function of effective exposed cavity edge area inverse
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
@@ -46,23 +46,23 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.15) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.11) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.16) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.29) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
 #define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
-#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (0.72) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
 std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
 double gv_aero_debug0             = (CAVITY_EDGE_LIFT_GAIN);
 
-std::string gv_aero_label_debug1  = "CAVITY_EDGE_NORM_ROT_SPEED";
-double gv_aero_debug1             = (CAVITY_EDGE_NORM_ROT_SPEED);
+std::string gv_aero_label_debug1  = "Cl_BASE";
+double gv_aero_debug1             = (Cl_BASE);
 
-std::string gv_aero_label_debug2  = "RIM_CAMBER_EDGE_HEIGHT_PCT";
-double gv_aero_debug2             = (RIM_CAMBER_EDGE_HEIGHT_PCT);
+std::string gv_aero_label_debug2  = "CAVITY_EDGE_LIFT_FACTOR";
+double gv_aero_debug2             = (CAVITY_EDGE_LIFT_FACTOR);
 
 std::string gv_aero_label_debug3  = "RIM_CAMBER_EXPOSURE";
 double gv_aero_debug3             = (RIM_CAMBER_EXPOSURE);
@@ -434,14 +434,14 @@ namespace DfisX
       double lift_factor = 0;
       if(A_eff_lip > 0)
       {
-        lift_factor = (1.0 / A_eff_lip) * CAVITY_EDGE_LIFT_FACTOR * 0.00035302903145605;
-        if(throw_container->debug.debug1 > 0)
+        lift_factor = (1.0 / A_eff_lip) * throw_container->debug.debug2 * 0.00035302903145605;
+        if(CAVITY_EDGE_NORM_ROT_SPEED > 0)
         {
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
           // set to 1.0. It is probably < 1
           double lift_factor_spin_bonus = 
             pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
-            pow(throw_container->debug.debug1, CAVITY_EDGE_LIFT_EXP) *
+            pow(CAVITY_EDGE_NORM_ROT_SPEED, CAVITY_EDGE_LIFT_EXP) *
             throw_container->debug.debug0;
 
           // max of 1.5x
@@ -453,7 +453,7 @@ namespace DfisX
       
       // same angular range as above!
       d_forces.lift_force_cavity_edge_N = 
-        rhov2o2 * Cl_BASE * A_plate * lift_factor * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
+        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
         (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
 
       // Only attenuate this lift for nose-down, i.e. negative AOAs
@@ -484,7 +484,7 @@ namespace DfisX
       // we may want a better function to describe how the separation-point of laminar air
       // affects this lift force
       d_forces.lift_force_camber_N = 
-        rhov2o2 * A_plate * Cl_BASE * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
+        rhov2o2 * A_plate * throw_container->debug.debug1 * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
         (d_forces.aoar <= DEG_TO_RAD(50) && d_forces.aoar >= DEG_TO_RAD(-30) ? 1.0 : 0.0);
 
       //------------------------------------------------------------------------------------------------------------------
@@ -535,7 +535,7 @@ namespace DfisX
       // perpendicular to the rim camber
       // optimal angle would be rim_camber_norm_angle = atan2(rim width, edge height)
       // the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
-      const double rim_camber_height = d_object.edge_height * throw_container->debug.debug2;
+      const double rim_camber_height = d_object.edge_height * RIM_CAMBER_EDGE_HEIGHT_PCT;
       const double rim_camber_norm_angle = atan2(d_object.rim_width, rim_camber_height);
 
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
@@ -549,16 +549,30 @@ namespace DfisX
       // consequence of the asymmetry between the leading and trailing rim camber angles
 
       const double rim_camber_incidence_angle = rim_camber_norm_angle - d_forces.aoar;
-      const double effective_rim_camber_area = d_object.rim_width * d_object.radius * 2 * throw_container->debug.debug3;
+      const double rim_camber_area = d_object.rim_width * d_object.radius * 2 * throw_container->debug.debug3;
 
       // if the angle is too far nose-down, this is no longer a factor
-      // TODO: make this better! effective range is [-15deg, +45deg] AOA, peak at 0 AOA
-      d_forces.lin_drag_force_rim_camber_N = 
-        rhov2o2 * Cd_EDGE  * effective_rim_camber_area * cos(rim_camber_incidence_angle) * sin(rim_camber_norm_angle) *
-        (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);        
+      // TODO: make this better! effective range is whenever 'camber_surface_exposed_*_edge' is > 0
+      // man... the nose up implications of this effect are hard to model. At some point, the trailing edge will be
+      // exposed as well, so when is the torque maximized? Perhaps we can take the exposed surface area for each
+      // side and generate a ratio? Hmm...
+      // % of surface area (rim_camber_area) exposed to the incoming airflow
+      // where the trailing edge of the disc counteracts the torque on the leading edge
+      // WHEN that edgfe is exposed is a function of the slope of that camber, and the AOA
+      // anything less than zero here is not a contributing factor, since you can't curve the air around and smack
+      // it into an hidden surface (not much anyway)
+      const double rim_camber_surface_exposed_trailing_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2)));
+      const double rim_camber_surface_exposed_leading_edge  = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - rim_camber_norm_angle)));
+
+      const double rim_camber_surface_exposed_effective = rim_camber_surface_exposed_leading_edge - rim_camber_surface_exposed_trailing_edge;
+
+      // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
+      d_forces.lin_drag_force_rim_camber_N =
+        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_effective;        
 
       // assume the force is applied halfway along the rim width
-      const double rim_camber_moment_arm_length = d_object.radius * 2 - d_object.rim_width * 0.5;
+      // TODO: could this force centre change whether the rim is concave or not? 
+      const double rim_camber_moment_arm_length = d_object.radius * 2.0 - d_object.rim_width * 0.5;
 
       d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * d_forces.lin_drag_force_rim_camber_N;            
 

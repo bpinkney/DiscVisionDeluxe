@@ -229,15 +229,27 @@ namespace DfisX
       const float index = (float)rand() / (float)RAND_MAX;
       disc_mold = floor(index * disc_object_array.size());
 
+      // OR just proceed through all of them in order
+      // (skipping the brick)
+      static uint8_t disc2throw = 0;
+      if(0)
+      {
+        disc2throw++;
+        if(disc2throw > disc_object_array.size() - 1)
+        {
+          disc2throw = 1;
+        }
+        disc_mold = disc2throw;
+      }
+
       // OR throw a cycling set for test purposes
       // REALLY handy for tuning, try throwing a:
       // - straight midrange or putter with not much camber (e.g. Mako3) 
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
-      if(0)
+      if(1)
       {
-        static uint8_t disc2throw = 0;
         switch(disc2throw)
         {
           case 0:
@@ -252,8 +264,16 @@ namespace DfisX
             disc_mold = find_disc_mold_index_by_name("Wraith");
             disc2throw = 3;
             break;
+          case 3:
+            disc_mold = find_disc_mold_index_by_name("Zone");
+            disc2throw = 4;
+            break;
+          case 4:
+            disc_mold = find_disc_mold_index_by_name("Valkyrie");
+            disc2throw = 5;
+            break;
           default:
-            disc_mold = find_disc_mold_index_by_name("TeeBird");
+            disc_mold = find_disc_mold_index_by_name("Buzzz");
             disc2throw = 0;
             break;
         }
