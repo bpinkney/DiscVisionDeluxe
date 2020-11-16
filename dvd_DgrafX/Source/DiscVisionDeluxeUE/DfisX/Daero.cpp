@@ -47,12 +47,12 @@ Also gravity.
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.16) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.29) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.28) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
 #define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
-#define RIM_CAMBER_EXPOSURE (0.72) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
 std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
@@ -561,20 +561,22 @@ namespace DfisX
       // WHEN that edgfe is exposed is a function of the slope of that camber, and the AOA
       // anything less than zero here is not a contributing factor, since you can't curve the air around and smack
       // it into an hidden surface (not much anyway)
-      const double rim_camber_surface_exposed_trailing_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2)));
-      const double rim_camber_surface_exposed_leading_edge  = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - rim_camber_norm_angle)));
-
-      const double rim_camber_surface_exposed_effective = rim_camber_surface_exposed_leading_edge - rim_camber_surface_exposed_trailing_edge;
+      const double rim_camber_surface_exposed_front_edge  = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - rim_camber_norm_angle)));
+      const double rim_camber_surface_exposed_back_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2)));
 
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
-      d_forces.lin_drag_force_rim_camber_N =
-        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_effective;        
+      d_forces.lin_drag_force_front_rim_camber_N =
+        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_front_edge;
+      d_forces.lin_drag_force_back_rim_camber_N =
+        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
       // TODO: could this force centre change whether the rim is concave or not? 
       const double rim_camber_moment_arm_length = d_object.radius * 2.0 - d_object.rim_width * 0.5;
 
-      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * d_forces.lin_drag_force_rim_camber_N;            
+      // take the delta between the two rims for this torque
+      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length *
+        (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);            
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -626,7 +628,9 @@ namespace DfisX
     // which is NOT covered by the plate form drag. For now, we'll just include it.
     // Note: this is only the 'disc normal' component, we do assume that the 'edge' form drag
     // approximation covers everything required for the 'along disc plane' forces
-    d_forces.drag_force_vector += d_forces.lin_drag_force_rim_camber_N  * d_orientation;
+    // both of these act along the disc normal, and are positive
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N  * d_orientation;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N   * d_orientation;
 
     d_forces.lift_force_vector *= 0;
     d_forces.lift_force_vector += d_forces.lift_force_cavity_edge_N     * d_orientation;

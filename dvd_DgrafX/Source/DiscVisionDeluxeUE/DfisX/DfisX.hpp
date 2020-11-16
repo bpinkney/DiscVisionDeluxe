@@ -104,7 +104,8 @@ namespace DfisX
     double lin_drag_force_plate_N; // force along disc normal from 'plate' surface form drag
     double lin_drag_force_edge_N;  // force along disc plane  from 'edge' surface form drag
     double lin_drag_force_cavity_edge_N; // force along disc plane from form drag against the back cavity edge
-    double lin_drag_force_rim_camber_N;  // force along disc normal from form drag against lower rim camber
+    double lin_drag_force_front_rim_camber_N;  // force along disc normal from form drag against lower rim, front camber
+    double lin_drag_force_back_rim_camber_N;   // force along disc normal from form drag against lower rim, back camber
     double lin_drag_force_skin_N;  // force along -ve air vector from parasitic skin drag
 
     double lift_force_cavity_edge_N; // lift generated along the disc normal by the slow-down of air hitting the back of the cavity. higher pressure below -> lift
