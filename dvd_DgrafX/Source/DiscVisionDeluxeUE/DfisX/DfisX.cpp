@@ -178,7 +178,7 @@ namespace DfisX
     {
       default:
       case DiscIndex::NONE:
-        disc_mold = find_disc_mold_index_by_name("Mr Brick");
+        disc_mold = find_disc_mold_index_by_name("Mako3");
         break;
       // tested discs with data
       case DiscIndex::MIDRANGE:
@@ -229,10 +229,13 @@ namespace DfisX
       const float index = (float)rand() / (float)RAND_MAX;
       disc_mold = floor(index * disc_object_array.size());
 
+      // OR just override explicitly
+      //disc_mold = find_disc_mold_index_by_name("Mako3");
+
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 0;
-      if(1)
+      if(0)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -248,7 +251,7 @@ namespace DfisX
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
-      if(0)
+      if(1)
       {
         switch(disc2throw)
         {

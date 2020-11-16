@@ -157,7 +157,7 @@ namespace DfisX
 
     // Amplify based on gust enum directly for now
     double gust_amplitude = ((double)(throw_container->disc_environment).gust_factor);
-    gust_amplitude *= gust_amplitude; // square it
+    gust_amplitude = pow(gust_amplitude, 2.5); 
 
     raw_gust_noise[0] *= gust_amplitude;
     raw_gust_noise[1] *= gust_amplitude;
