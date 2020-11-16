@@ -232,7 +232,7 @@ namespace DfisX
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 0;
-      if(0)
+      if(1)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -248,7 +248,7 @@ namespace DfisX
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
-      if(1)
+      if(0)
       {
         switch(disc2throw)
         {
