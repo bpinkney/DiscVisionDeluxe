@@ -267,6 +267,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
           RangeHUD->InitializeDAero();
           initialized = true;
         }
+        double rett = RangeHUD->GetGenThrow1Input();
+        RangeHUD->SetAero1Input(rett);
 
         // we need to use this structure since we get memory exceptions otherwise
         // wow, sketchy

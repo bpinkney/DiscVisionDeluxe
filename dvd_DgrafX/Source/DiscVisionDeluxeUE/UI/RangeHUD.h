@@ -34,6 +34,24 @@ public:
 	void UpdateHUD();
 
 	UFUNCTION()
+	double GetGenThrow1Input();
+	UFUNCTION()
+	double GetGenThrow2Input();
+	UFUNCTION()
+	double GetGenThrow3Input();
+	UFUNCTION()
+	double GetGenThrow4Input();
+	UFUNCTION()
+	double GetGenThrow5Input();
+	UFUNCTION()
+	double GetGenThrow6Input();
+	UFUNCTION()
+	double GetGenThrow7Input();
+	UFUNCTION()
+	int32 GetGenThrow8Input();
+
+
+	UFUNCTION()
 	void InitializeDAero();
 
 	UFUNCTION()
@@ -96,6 +114,7 @@ public:
 	UFUNCTION()
 	void SetAero6Input(double aero6in);
 
+	// Set UProperties for HUD classes.
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeHUDClass;
 
@@ -103,6 +122,7 @@ public:
 	TSubclassOf<UUserWidget> RangeDebugClass;
 
 private:
+	// Pointers to Widgets to be used.
 	URangeUserWidget* RangeUserWidget;
 
 	UDebugWidget* DebugWidget;

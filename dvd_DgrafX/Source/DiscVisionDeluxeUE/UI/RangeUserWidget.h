@@ -25,6 +25,7 @@ public:
 
 	void UpdateHUD();
 
+	// UPROPERTY binding, by name, for Range Widget variables. Include all variables to be used here.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* currentdistance;
 

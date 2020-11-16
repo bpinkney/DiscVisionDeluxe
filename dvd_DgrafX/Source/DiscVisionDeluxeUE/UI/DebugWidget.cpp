@@ -8,6 +8,7 @@ UDebugWidget::UDebugWidget(const FObjectInitializer& ObjectInitializer) : Super(
 	
 }
 
+// Initialize global variables for DAero Debug HUD fields.
 void UDebugWidget::InitializeDAero()
 {
 	DebugAero1->SetText(FText::FromString(FString::SanitizeFloat(gv_aero_debug0)));
@@ -25,11 +26,56 @@ void UDebugWidget::InitializeDAero()
 	DebugAero6Text->SetText(FText::FromString(FString(gv_aero_label_debug5.c_str())));
 }
 
+// Override of Native Construct. This can be used to enact listeners for Button Clicks/Input field changes.
 void UDebugWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
+// Getters for Input fields of Gen Throw Debug HUD.
+// Currently Hyzer
+double UDebugWidget::GetGenThrow1Input()
+{
+	return FCString::Atof(*GenDebugHyzerInput->GetText().ToString());
+}
+// Currently NoseUp
+double UDebugWidget::GetGenThrow2Input()
+{
+	return FCString::Atof(*GenDebugNoseUpInput->GetText().ToString());
+}
+// Currently Speed
+double UDebugWidget::GetGenThrow3Input()
+{
+	return FCString::Atof(*GenDebugSpeedInput->GetText().ToString());
+}
+// Currently Direction
+double UDebugWidget::GetGenThrow4Input()
+{
+	return FCString::Atof(*GenDebugDirectionInput->GetText().ToString());
+}
+// Currently Loft
+double UDebugWidget::GetGenThrow5Input()
+{
+	return FCString::Atof(*GenDebugLoftInput->GetText().ToString());
+}
+// Currently Spin Percent
+double UDebugWidget::GetGenThrow6Input()
+{
+	return FCString::Atof(*GenDebugSpinPercentInput->GetText().ToString());
+}
+// Currently Wobble
+double UDebugWidget::GetGenThrow7Input()
+{
+	return FCString::Atof(*GenDebugWobbleInput->GetText().ToString());
+}
+// Currently Disc Mold Drop Down
+int32 UDebugWidget::GetGenThrow8Input()
+{
+	return DebugDiscMoldDropDown->GetSelectedIndex();
+}
+
+
+// Getters for Text/Input fields of DAero Debug HUD.
 FString UDebugWidget::GetAero1Text()
 {
 	return FString(DebugAero1Text->GetText().ToString());
@@ -79,6 +125,8 @@ double UDebugWidget::GetAero6Input()
 	return FCString::Atof(*DebugAero6->GetText().ToString());
 }
 
+
+//Setters for Text/Input fields of DAero Debug HUD.
 void UDebugWidget::SetAero1Text(FString aero1)
 {
 	DebugAero1Text->SetText(FText::FromString(aero1));

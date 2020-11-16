@@ -14,6 +14,7 @@ void URangeUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
+// Takes in params from new Throw, populates the HUD. Intended for initial population.
 void URangeUserWidget::PopulateHUD(float current_distance, float current_speed, float current_spin, float current_turnfade, float current_wobble)
 {
 	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(current_distance)));
@@ -24,6 +25,7 @@ void URangeUserWidget::PopulateHUD(float current_distance, float current_speed, 
 
 }
 
+// TODO: Takes in params from new Throw, update fields in HUD. Intended to update continuously in Tick
 void URangeUserWidget::UpdateHUD()
 {
 	

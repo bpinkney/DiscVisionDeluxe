@@ -13,6 +13,7 @@ void ARangeHUD::DrawHUD()
 	Super::DrawHUD();
 }
 
+// Check existence of HUD Class, if present, set HUD class to Widget, add to viewport.
 void ARangeHUD::BeginPlay()
 {
 	Super::BeginPlay();
@@ -55,6 +56,39 @@ void ARangeHUD::UpdateHUD()
 	{
 		RangeUserWidget->UpdateHUD();
 	}
+}
+
+double ARangeHUD::GetGenThrow1Input()
+{
+	return DebugWidget->GetGenThrow1Input();
+}
+double ARangeHUD::GetGenThrow2Input()
+{
+	return DebugWidget->GetGenThrow2Input();
+}
+double ARangeHUD::GetGenThrow3Input()
+{
+	return DebugWidget->GetGenThrow3Input();
+}
+double ARangeHUD::GetGenThrow4Input()
+{
+	return DebugWidget->GetGenThrow4Input();
+}
+double ARangeHUD::GetGenThrow5Input()
+{
+	return DebugWidget->GetGenThrow5Input();
+}
+double ARangeHUD::GetGenThrow6Input()
+{
+	return DebugWidget->GetGenThrow6Input();
+}
+double ARangeHUD::GetGenThrow7Input()
+{
+	return DebugWidget->GetGenThrow7Input();
+}
+int32 ARangeHUD::GetGenThrow8Input()
+{
+	return DebugWidget->GetGenThrow8Input();
 }
 
 void ARangeHUD::InitializeDAero()
