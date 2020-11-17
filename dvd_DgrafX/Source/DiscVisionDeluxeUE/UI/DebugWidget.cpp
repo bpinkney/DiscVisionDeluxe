@@ -30,6 +30,12 @@ void UDebugWidget::InitializeDAero()
 void UDebugWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	GenDebugThrowButton->OnClicked.AddDynamic(this, &UDebugWidget::OnClick);
+}
+
+void UDebugWidget::OnClick()
+{
+	
 }
 
 // Getters for Input fields of Gen Throw Debug HUD.

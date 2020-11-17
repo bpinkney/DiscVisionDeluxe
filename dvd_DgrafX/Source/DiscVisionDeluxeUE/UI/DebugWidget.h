@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/UMG.h"
+#include "UMG/Public/Components/Button.h"
 #include "DebugWidget.generated.h"
 
 
@@ -54,6 +55,9 @@ public:
 	void InitializeDAero();
 
 	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void OnClick();
 
 	double daero_debug_input1;
 	double daero_debug_input2;
@@ -141,6 +145,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UComboBoxString* DebugDiscMoldDropDown;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* GenDebugThrowButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* DebugAero1Text;
