@@ -82,15 +82,6 @@ void ADiscThrow::Tick(const float DeltaTime)
   
     ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin);
     //finish converting dfisx disc state into unreal usable forms
-    //ff stuff
-    if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_HIGH_SPEED_TURN)
-      ptr_follow_flight->transition_to_colour(follow_flight_hue);
-    else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_TURN)
-      ptr_follow_flight->transition_to_colour (follow_flight_hue+50);
-    else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING)
-      ptr_follow_flight->transition_to_colour (follow_flight_hue+60);
-    else if (disc_state.sim_state == DfisX::SIM_STATE_FLYING_FADE)
-      ptr_follow_flight->transition_to_colour (follow_flight_hue+110);
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
     
@@ -100,6 +91,8 @@ void ADiscThrow::Tick(const float DeltaTime)
   }
 }
 
+
+
 void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 {
   // use default for now
@@ -108,6 +101,9 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
   disc_environment->air_density = ISA_RHO;
 }
 
+
+
+///convert to world frame here
 void ADiscThrow::new_throw_camera_relative(
   const int disc_index, 
   const FVector thrown_disc_position, 
@@ -119,6 +115,7 @@ void ADiscThrow::new_throw_camera_relative(
   const float thrown_disc_spin_percent, 
   const float thrown_disc_wobble)
 {
+	/*
   spawn_disc_and_follow_flight();
 
   // get current wind state (we'll need to update this periodically later as the disc changes environments)
@@ -135,6 +132,7 @@ void ADiscThrow::new_throw_camera_relative(
     thrown_disc_pitch,
     thrown_disc_spin_percent,
     thrown_disc_wobble);
+    */
 }
 
 
@@ -175,6 +173,23 @@ void ADiscThrow::new_throw_world_frame(
 
   FString output_text(ss.str().c_str());
   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, output_text); 
+
+
+
+
+
+
+  	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
+
+  	float actual_spin_speed = throw_container.current_disc_state.disc_rotation_vel;
+  	float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
+
+  	initial_release_stats.initial_spin_percent = actual_spin_speed / theoretical_max_spin_speed * 100;
+  	initial_release_stats.initial_direction = 0;
+  	initial_release_stats.initial_loft = 0;
+  	initial_release_stats.initial_hyzer = 0;
+  	initial_release_stats.initial_nose_up = 0;
+  	initial_release_stats.initial_wobble = 0;
 }
 
 void ADiscThrow::new_captured_throw(
