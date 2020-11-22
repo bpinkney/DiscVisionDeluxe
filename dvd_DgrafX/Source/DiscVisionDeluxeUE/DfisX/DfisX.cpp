@@ -288,48 +288,14 @@ namespace DfisX
     std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << std::endl;
 
     throw_container->disc_state_array.clear();
+
+
+/////////// used to populate disc states
+    step_simulation(throw_container, 0.001);
   }
 
   // overloaded
-  void new_throw(
-    Throw_Container *throw_container, 
-    const DiscIndex disc_index,
-    const Eigen::Vector3d thrown_disc_position, 
-    const float thrown_disc_speed, 
-    const float thrown_disc_direction, 
-    const float thrown_disc_loft, 
-    const float thrown_disc_roll,
-    const float thrown_disc_pitch,
-    const float thrown_disc_spin_percent, 
-    const float thrown_disc_wobble)
-  {
-    const float thrown_disc_direction_rad = DEG_TO_RAD(thrown_disc_direction);
-    const float thrown_disc_loft_rad = DEG_TO_RAD(thrown_disc_loft);
-    const float thrown_disc_pitch_rad = DEG_TO_RAD(thrown_disc_pitch);
-    const float thrown_disc_roll_rad = DEG_TO_RAD(thrown_disc_roll);
-    //float thrown_disc_nose_up_rad = DEG_TO_RAD(thrown_disc_nose_up);
-    const float thrown_disc_spin_percent_dec = thrown_disc_spin_percent / 100;
-    //float thrown_disc_wobble
-
-    const float thrown_disc_velocity_x = thrown_disc_speed * cos(thrown_disc_loft_rad) * cos(thrown_disc_direction_rad);
-    const float thrown_disc_velocity_y = thrown_disc_speed * cos(thrown_disc_loft_rad) * sin(thrown_disc_direction_rad);
-    const float thrown_disc_velocity_z = thrown_disc_speed * sin(thrown_disc_loft_rad);
-    const Eigen::Vector3d thrown_disc_velocity = Eigen::Vector3d (thrown_disc_velocity_x,thrown_disc_velocity_y,thrown_disc_velocity_z);
-
-    //assuming diameter of 212mm
-    const float thrown_disc_rotations_per_second = thrown_disc_speed / (0.212 * 3.1415) * thrown_disc_spin_percent_dec;
-    const float thrown_disc_radians_per_second = thrown_disc_rotations_per_second * -2 * 3.1415;
-
-    new_throw(
-      throw_container,
-      disc_index,
-      thrown_disc_position,
-      thrown_disc_velocity,
-      thrown_disc_roll_rad,
-      thrown_disc_pitch_rad,
-      thrown_disc_radians_per_second,
-      thrown_disc_wobble);
-  }
+  
 
   //Various Getters and Setters
   Disc_State get_disc_state(Throw_Container *throw_container)

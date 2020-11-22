@@ -236,17 +236,7 @@ namespace DfisX
     const double thrown_disc_radians_per_second, 
     const double thrown_disc_wobble);
 
-  void                new_throw(
-    Throw_Container *throw_container, 
-    const DiscIndex disc_index, // from dvd_DvisEst
-    const Eigen::Vector3d thrown_disc_position, 
-    const float thrown_disc_speed, 
-    const float thrown_disc_direction, 
-    const float thrown_disc_loft, 
-    const float thrown_disc_roll,
-    const float thrown_disc_pitch,
-    const float thrown_disc_spin_percent, 
-    const float thrown_disc_wobble);
+
 
   //Finishes a throw
   //This includes things such as saving/serializing the throw and performing various stat calculations

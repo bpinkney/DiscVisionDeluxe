@@ -164,6 +164,8 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
 
+`
+
   //TEXT(throw_container.disc_object.mold_name)));
 
   std::stringstream ss;
@@ -178,18 +180,33 @@ void ADiscThrow::new_throw_world_frame(
 
 
 
-
+/////////        Initial release Stats          /////////////////////////////
   	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
 
   	float actual_spin_speed = throw_container.current_disc_state.disc_rotation_vel;
   	float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
-
   	initial_release_stats.initial_spin_percent = actual_spin_speed / theoretical_max_spin_speed * 100;
+
+
+
   	initial_release_stats.initial_direction = 0;
-  	initial_release_stats.initial_loft = 0;
+
+  	float vertical_speed   = throw_container.current_disc_state.disc_velocity [2];
+	float horizontal_speed = sqrt (throw_container.current_disc_state.disc_velocity [0] * throw_container.current_disc_state.disc_velocity [0] +throw_container.current_disc_state.disc_velocity [1] * throw_container.current_disc_state.disc_velocity [1]);
+  	initial_release_stats.initial_loft = 57.3 * atan(vertical_speed/horizontal_speed);
+
+
+
   	initial_release_stats.initial_hyzer = 0;
-  	initial_release_stats.initial_nose_up = 0;
+
+
+    
+  	initial_release_stats.initial_nose_up = throw_container.current_disc_state.forces_state.aoar * 57.3;
+
+
+
   	initial_release_stats.initial_wobble = 0;
+/////////////     end Initial release Stats            ////////////////////////////////////
 }
 
 void ADiscThrow::new_captured_throw(
