@@ -4,7 +4,7 @@
 #include "DiscThrow.h"
 #include "FollowFlight.h"
 #include "dvd_maths.hpp"
-
+#include "Math/Vector.h"
 #include "disc_layouts.hpp"
 
 // include for debug stuff
@@ -164,7 +164,7 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
 
-`
+
 
   //TEXT(throw_container.disc_object.mold_name)));
 
@@ -181,31 +181,37 @@ void ADiscThrow::new_throw_world_frame(
 
 
 /////////        Initial release Stats          /////////////////////////////
+
+  	//these two arent for hud 
+    initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
+    initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
+	//end these two arent for hud 
+
+    //initial_speed
   	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
 
+  	//initial_spin_percent
   	float actual_spin_speed = throw_container.current_disc_state.disc_rotation_vel;
   	float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
   	initial_release_stats.initial_spin_percent = actual_spin_speed / theoretical_max_spin_speed * 100;
 
-
-
+  	//initial_direction
   	initial_release_stats.initial_direction = 0;
 
+  	//initial_loft
   	float vertical_speed   = throw_container.current_disc_state.disc_velocity [2];
 	float horizontal_speed = sqrt (throw_container.current_disc_state.disc_velocity [0] * throw_container.current_disc_state.disc_velocity [0] +throw_container.current_disc_state.disc_velocity [1] * throw_container.current_disc_state.disc_velocity [1]);
   	initial_release_stats.initial_loft = 57.3 * atan(vertical_speed/horizontal_speed);
 
-
-
+  	//initial_hyzer
   	initial_release_stats.initial_hyzer = 0;
 
-
-    
+  	//initial_nose_up
   	initial_release_stats.initial_nose_up = throw_container.current_disc_state.forces_state.aoar * 57.3;
 
-
-
+  	//initial_wobble
   	initial_release_stats.initial_wobble = 0;
+  	
 /////////////     end Initial release Stats            ////////////////////////////////////
 }
 
@@ -314,7 +320,15 @@ void ADiscThrow::generate_flight_cumulative_stats()
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
   	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel;
-  	flight_cumulative_stats.current_turnfade   = 0; ///will add later
+
+  	FVector n = initial_release_stats.initial_direction_vector;
+  	n.Normalize();
+  	FVector a = initial_release_stats.initial_location_vector;
+  	FVector p = ptr_disc_projectile->GetActorLocation();
+  	FVector a_p = a - p;
+  	FVector tf_vector = a_p - (FVector::DotProduct(a_p,n))*n;
+
+  	flight_cumulative_stats.current_turnfade   = tf_vector.Size(); 
   	flight_cumulative_stats.current_wobble     = 0; ///will add later
 
   	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,(FString::SanitizeFloat(flight_cumulative_stats.current_spin)));

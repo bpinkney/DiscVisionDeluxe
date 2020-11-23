@@ -24,6 +24,8 @@ public:
   
     struct Initial_Release_Stats
   {
+  	FVector initial_direction_vector; ////maybe not needed for hud
+  	FVector initial_location_vector; ////maybe not needed for hud
   	float initial_speed;
   	float initial_spin_percent;
   	float initial_direction;
