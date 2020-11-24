@@ -42,11 +42,11 @@ void ARangeHUD::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
-void ARangeHUD::PopulateHUD(float current_distance, float current_speed, float current_spin, float current_turnfade, float current_wobble)
+void ARangeHUD::PopulateHUD(ADiscThrow* DiscThrowPtr)
 {
 	if (RangeUserWidget)
 	{
-		RangeUserWidget->PopulateHUD(current_distance, current_speed, current_spin, current_turnfade, current_wobble);
+		RangeUserWidget->PopulateHUD(DiscThrowPtr);
 	}
 }
 

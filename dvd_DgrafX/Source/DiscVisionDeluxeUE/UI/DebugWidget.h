@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/UMG.h"
 #include "UMG/Public/Components/Button.h"
+#include "../DfisX/disc_params.hpp"
 #include "DebugWidget.generated.h"
 
 

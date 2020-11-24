@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "RangeUserWidget.h"
 #include "DebugWidget.h"
+#include "../DiscThrow.h"
 #include "RangeHUD.generated.h"
 
 
@@ -28,7 +29,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-	void PopulateHUD(float current_distance, float current_speed, float current_spin, float current_turnfade, float current_wobble);
+	void PopulateHUD(ADiscThrow* DiscThrowPtr);
 
 	UFUNCTION()
 	void UpdateHUD();

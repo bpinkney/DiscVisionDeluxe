@@ -297,8 +297,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
     if (RangeHUD)
     {
-        RangeHUD->PopulateHUD(flight_cumulative_stats.current_distance, flight_cumulative_stats.current_speed, flight_cumulative_stats.current_spin, flight_cumulative_stats.current_turnfade, flight_cumulative_stats.current_wobble);
-
+        RangeHUD->PopulateHUD(this);
         static bool initialized = false;
         if(!initialized)
         {
@@ -316,11 +315,11 @@ void ADiscThrow::generate_flight_cumulative_stats()
         throw_container.debug.debug5 = RangeHUD->GetAero6Input();
     }
     
-
+    
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
   	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel;
-
+     
   	FVector n = initial_release_stats.initial_direction_vector;
   	n.Normalize();
   	FVector a = initial_release_stats.initial_location_vector;

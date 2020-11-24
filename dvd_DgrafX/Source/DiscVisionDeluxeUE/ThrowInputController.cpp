@@ -5,6 +5,7 @@
 #include "DvisEstInterface.h"
 #include "DiscThrow.h"
 #include "DiscCharacter.h"
+#include "UI/RangeHUD.h"
 
 // convenience settings for dvd_DvisEst interface
 #define DVISEST_INTERFACE_ENABLED              (true)
@@ -12,8 +13,8 @@
 
 // all throws in queue
 //std::deque<ADiscThrow> DiscThrowQueue;
-TQueue<TSubclassOf<class ADiscThrow>> DiscThrowQueue;
-
+//TQueue<ADiscThrow> DiscThrowQueue;
+ADiscThrow *sv_latest_discthrow;
 // Sets default values
 AThrowInputController::AThrowInputController()
 {
@@ -59,7 +60,11 @@ void AThrowInputController::Tick(float DeltaTime)
 
       PerformCapturedThrow(&new_disc_init_state);
     }
-    
+    ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+    if (RangeHUD)
+    {
+        //RangeHUD->PopulateHUD(sv_latest_discthrow);
+    }
     DvisEstInterface_PrintStuff();
   }
   // end dvd_DvisEst Interface
@@ -77,15 +82,15 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
     SpawnParams.Instigator = GetInstigator();
 
     ADiscThrow* disc_throw = World->SpawnActor<ADiscThrow>(DiscThrowBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    
+    sv_latest_discthrow = disc_throw;
     // add new disc_throw to queue
-    const bool queue_empty_before = DiscThrowQueue.IsEmpty();
-    DiscThrowQueue.Enqueue(DiscThrowBP);
-    const bool queue_empty_after = DiscThrowQueue.IsEmpty();
+    //const bool queue_empty_before = DiscThrowQueue.IsEmpty();
+    //DiscThrowQueue.Enqueue(*disc_throw);
+    //const bool queue_empty_after = DiscThrowQueue.IsEmpty();
 
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
-      FString::Printf(TEXT("DiscThrowQueue empty? = %d/%d"),
-        queue_empty_before, queue_empty_after));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
+      //FString::Printf(TEXT("DiscThrowQueue empty? = %d/%d"),
+        //queue_empty_before, queue_empty_after));
 
           // Some magic will happen here for the mapping between the DvisEst DiscIndex
           // e.g. MIDRANGE_OS

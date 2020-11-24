@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/UMG.h"
+#include "../DiscThrow.h"
 #include "RangeUserWidget.generated.h"
 
 /**
@@ -21,7 +22,7 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void PopulateHUD(float current_distance, float current_speed, float current_spin, float current_turnfade, float current_wobble);
+	void PopulateHUD(ADiscThrow* DiscThrowPtr);
 
 	void UpdateHUD();
 
