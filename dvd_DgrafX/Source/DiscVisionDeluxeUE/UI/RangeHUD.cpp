@@ -40,13 +40,18 @@ void ARangeHUD::BeginPlay()
 void ARangeHUD::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (ADiscThrow::latest_disc_throw != nullptr)
+	{
+		ARangeHUD::PopulateHUD();
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
+	}
 }
 
-void ARangeHUD::PopulateHUD(ADiscThrow* DiscThrowPtr)
+void ARangeHUD::PopulateHUD()
 {
 	if (RangeUserWidget)
 	{
-		RangeUserWidget->PopulateHUD(DiscThrowPtr);
+		RangeUserWidget->PopulateHUD();
 	}
 }
 

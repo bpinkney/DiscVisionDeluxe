@@ -17,12 +17,15 @@ class DISCVISIONDELUXEUE_API URangeUserWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+
+	ADiscThrow::Initial_Release_Stats* release_stats;
+	ADiscThrow::Flight_Cumulative_Stats* cumulative_stats;
 	
 	URangeUserWidget(const FObjectInitializer& ObjectInitializer);
 
 	virtual void NativeConstruct() override;
 
-	void PopulateHUD(ADiscThrow* DiscThrowPtr);
+	void PopulateHUD();
 
 	void UpdateHUD();
 
@@ -34,15 +37,24 @@ public:
 	class UTextBlock* discspeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* spinpercentage;
+	class UTextBlock* releasediscspeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* turn;
+	class UTextBlock* turnfade;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* fade;
+	class UTextBlock* discspin;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	//class UTextBlock* fade;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* wobble;
+	class UTextBlock* currentwobble;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* releasewobble;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* releasespinpercent;
 
 };

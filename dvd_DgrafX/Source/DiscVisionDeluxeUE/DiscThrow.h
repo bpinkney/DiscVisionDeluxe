@@ -48,13 +48,15 @@ protected:
 	virtual void BeginPlay() override;
 
   DfisX::Throw_Container throw_container;
-  Initial_Release_Stats initial_release_stats;
-  Flight_Cumulative_Stats flight_cumulative_stats;
+
 
 public:	
 
-   void get_initial_release_stats(Initial_Release_Stats* release_stats);
-   void get_flight_cumulative_stats(Flight_Cumulative_Stats* cumulative_stats);
+  Initial_Release_Stats initial_release_stats;
+  Flight_Cumulative_Stats flight_cumulative_stats;
+  static ADiscThrow* latest_disc_throw;
+   Initial_Release_Stats* get_initial_release_stats();
+   Flight_Cumulative_Stats* get_flight_cumulative_stats();
    void generate_flight_cumulative_stats();
 
 	// Called every frame

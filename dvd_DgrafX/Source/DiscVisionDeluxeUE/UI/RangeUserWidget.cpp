@@ -15,18 +15,25 @@ void URangeUserWidget::NativeConstruct()
 }
 
 // Takes in params from new Throw, populates the HUD. Intended for initial population.
-void URangeUserWidget::PopulateHUD(ADiscThrow* DiscThrowPtr)
+void URangeUserWidget::PopulateHUD()
 {
-	ADiscThrow::Initial_Release_Stats release_stats;
-	ADiscThrow::Flight_Cumulative_Stats cumulative_stats;
-	DiscThrowPtr->get_initial_release_stats(&release_stats);
-	DiscThrowPtr->get_flight_cumulative_stats(&cumulative_stats);
+	release_stats = ADiscThrow::latest_disc_throw->get_initial_release_stats();
+	cumulative_stats = ADiscThrow::latest_disc_throw->get_flight_cumulative_stats();
 
-	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(cumulative_stats.current_distance)));
-	//discspeed->SetText(FText::FromString(FString::SanitizeFloat()));
-	spinpercentage->SetText(FText::FromString(FString::SanitizeFloat(release_stats.initial_spin_percent)));
-	//turn->SetText(FText::FromString(FString::SanitizeFloat()));
-	//wobble->SetText(FText::FromString(FString::SanitizeFloat()));
+
+
+	
+	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_distance))));
+	discspeed->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_speed))));
+	turnfade->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_turnfade))));
+	discspin->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_spin))));
+    //currentwobble->SetText(FText::FromString(FString::SanitizeFloat(cumulative_stats->current_wobble)));
+
+
+
+	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_percent)));
+	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_speed)));
+	//releasewobble->SetText(FText::FromString(FString::SanitizeFloat(release_stats.initial_wobble)));
 
 }
 

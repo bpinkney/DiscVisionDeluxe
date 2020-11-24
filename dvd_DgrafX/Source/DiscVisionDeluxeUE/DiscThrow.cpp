@@ -15,7 +15,8 @@
 
  //ACameraManager* camera_manager;
  //AThrowInputController* throw_input_controller;
-
+//memset(&latest_disc_throw, 0, sizeof(ADiscThrow::ADiscThrow));
+ADiscThrow* ADiscThrow::latest_disc_throw = nullptr;
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
@@ -25,6 +26,7 @@ ADiscThrow::ADiscThrow()
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
   memset(&initial_release_stats, 0, sizeof(Initial_Release_Stats));
   memset(&flight_cumulative_stats, 0, sizeof(Flight_Cumulative_Stats));
+
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +37,7 @@ void ADiscThrow::BeginPlay()
   
   if (GEngine)
   {
+  latest_disc_throw = this;
   ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
   ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
   follow_flight_hue = 000.0;
@@ -282,14 +285,14 @@ void ADiscThrow::end_throw_simulation ()
   ptr_follow_flight->unselect();
 }
 
-void ADiscThrow::get_initial_release_stats(Initial_Release_Stats *release_stats)
+ADiscThrow::Initial_Release_Stats* ADiscThrow::get_initial_release_stats()
   {
-    release_stats = &initial_release_stats;
+    return &initial_release_stats;
   }
 
-void ADiscThrow::get_flight_cumulative_stats(Flight_Cumulative_Stats *cumulative_stats)
+ADiscThrow::Flight_Cumulative_Stats* ADiscThrow::get_flight_cumulative_stats()
   {
-    cumulative_stats = &flight_cumulative_stats;
+    return &flight_cumulative_stats;
   }
 
 void ADiscThrow::generate_flight_cumulative_stats()
@@ -297,7 +300,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
     if (RangeHUD)
     {
-        RangeHUD->PopulateHUD(this);
+        
         static bool initialized = false;
         if(!initialized)
         {

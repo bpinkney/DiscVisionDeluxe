@@ -29,7 +29,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-	void PopulateHUD(ADiscThrow* DiscThrowPtr);
+	void PopulateHUD();
 
 	UFUNCTION()
 	void UpdateHUD();
