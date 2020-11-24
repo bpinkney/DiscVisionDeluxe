@@ -24,6 +24,13 @@ void UDebugWidget::InitializeDAero()
 	DebugAero4Text->SetText(FText::FromString(FString(gv_aero_label_debug3.c_str())));
 	DebugAero5Text->SetText(FText::FromString(FString(gv_aero_label_debug4.c_str())));
 	DebugAero6Text->SetText(FText::FromString(FString(gv_aero_label_debug5.c_str())));
+
+	int i;
+	for (i = 0; i < DfisX::disc_object_array.size(); i++)
+	{
+		DebugDiscMoldDropDown->AddOption(DfisX::disc_object_array[i].mold_name);
+	}
+	
 }
 
 // Override of Native Construct. This can be used to enact listeners for Button Clicks/Input field changes.
