@@ -324,7 +324,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
-  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel;
+  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel/6.28;
      
   	FVector n = initial_release_stats.initial_direction_vector;
   	n.Normalize();

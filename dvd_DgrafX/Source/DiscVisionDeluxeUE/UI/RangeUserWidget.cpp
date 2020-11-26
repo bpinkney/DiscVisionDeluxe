@@ -23,17 +23,17 @@ void URangeUserWidget::PopulateHUD()
 
 
 	
-	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_distance))));
-	discspeed->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_speed))));
-	turnfade->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_turnfade))));
-	discspin->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_spin))));
+	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_distance))+ " M"));
+	discspeed->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_speed))+ " M/s"));
+	turnfade->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_turnfade))+" M"));
+	discspin->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_spin))+" rotations/s"));
     //currentwobble->SetText(FText::FromString(FString::SanitizeFloat(cumulative_stats->current_wobble)));
 
 
 
-	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_percent)));
-	releasespinrate->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_rate)));
-	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_speed)));
+	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_percent)+ " %"));
+	releasespinrate->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_rate)+" rotations/s"));
+	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_speed)+ " M/s"));
 	//releasewobble->SetText(FText::FromString(FString::SanitizeFloat(release_stats.initial_wobble)));
 
 }
