@@ -32,6 +32,7 @@ void URangeUserWidget::PopulateHUD()
 
 
 	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_percent)));
+	releasespinrate->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_spin_rate)));
 	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_speed)));
 	//releasewobble->SetText(FText::FromString(FString::SanitizeFloat(release_stats.initial_wobble)));
 

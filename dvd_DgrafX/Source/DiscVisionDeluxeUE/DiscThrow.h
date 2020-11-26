@@ -26,8 +26,11 @@ public:
   {
   	FVector initial_direction_vector; ////maybe not needed for hud
   	FVector initial_location_vector; ////maybe not needed for hud
+    float initial_polarity;          ////maybe not needed for hud
+
   	float initial_speed;
   	float initial_spin_percent;
+    float initial_spin_rate;
   	float initial_direction;
   	float initial_loft;
   	float initial_hyzer;
