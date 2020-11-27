@@ -188,18 +188,23 @@ void ADiscThrow::new_throw_world_frame(
   	//these 3 arent for hud 
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
+    initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orientation[0],throw_container.current_disc_state.disc_orientation[1],throw_container.current_disc_state.disc_orientation[2]);
 	  initial_release_stats.initial_polarity = copysignf(1.0, throw_container.current_disc_state.disc_rotation_vel);
+
+    initial_release_stats.initial_direction_vector.Normalize();
+    initial_release_stats.initial_location_vector.Normalize();
+    initial_release_stats.initial_orientation_vector.Normalize();
     //end these 3 arent for hud 
 
     //initial_speed
   	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
 
     //inital_spin_rate
-    initial_release_stats.initial_spin_rate = throw_container.current_disc_state.disc_rotation_vel;
+    initial_release_stats.initial_spin_rate = throw_container.current_disc_state.disc_rotation_vel / 6.28 * 60;
 
   	//initial_spin_percent
   	float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
-  	initial_release_stats.initial_spin_percent = initial_release_stats.initial_spin_rate / theoretical_max_spin_speed * 100;
+  	initial_release_stats.initial_spin_percent = throw_container.current_disc_state.disc_rotation_vel / theoretical_max_spin_speed * 100;
 
   	//initial_direction
   	initial_release_stats.initial_direction = 0;
@@ -210,8 +215,21 @@ void ADiscThrow::new_throw_world_frame(
   	initial_release_stats.initial_loft = 57.3 * atan(vertical_speed/horizontal_speed);
 
   	//initial_hyzer
-  	initial_release_stats.initial_hyzer = 0;
+    //directions as unit vectors
+    FVector disc_right_vector = initial_release_stats.initial_direction_vector ^ FVector (0,0,1);
+    FVector velocity_up_vector = disc_right_vector ^ initial_release_stats.initial_direction_vector;
 
+    //projections of orientation onto the direction vectors
+    disc_right_vector = (initial_release_stats.initial_orientation_vector | disc_right_vector) * disc_right_vector;
+    velocity_up_vector = (initial_release_stats.initial_orientation_vector | velocity_up_vector) * velocity_up_vector;
+
+  	initial_release_stats.initial_hyzer = atan2 (disc_right_vector.Size() , velocity_up_vector.Size()) * 57.3;
+    /*
+     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(initial_release_stats.initial_orientation_vector[1])));
+ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(disc_right_vector.Size())));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(velocity_up_vector.Size())));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(initial_release_stats.initial_hyzer)));
+*/
   	//initial_nose_up
   	initial_release_stats.initial_nose_up = throw_container.current_disc_state.forces_state.aoar * 57.3;
 
@@ -324,7 +342,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
-  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel/6.28;
+  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel/6.28*60;
      
   	FVector n = initial_release_stats.initial_direction_vector;
   	n.Normalize();
