@@ -27,6 +27,7 @@ public:
   	FVector initial_direction_vector; ////maybe not needed for hud
   	FVector initial_location_vector; ////maybe not needed for hud
     FVector initial_orientation_vector; ////maybe not needed for hud
+    FVector initial_disc_right_vector; ////maybe not needed for hud
     float initial_polarity;          ////maybe not needed for hud
 
   	float initial_speed;
@@ -103,6 +104,12 @@ public:
     const float thrown_disc_pitch, 
     const float thrown_disc_radians_per_second, 
     const float thrown_disc_wobble);
+
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void on_collision(
+    const FVector disc_position,
+    const FVector hit_location,
+    const FVector hit_normal);
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void end_throw_simulation();

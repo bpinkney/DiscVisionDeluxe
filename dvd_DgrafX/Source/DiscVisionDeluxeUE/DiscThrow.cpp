@@ -216,14 +216,14 @@ void ADiscThrow::new_throw_world_frame(
 
   	//initial_hyzer
     //directions as unit vectors
-    FVector disc_right_vector = initial_release_stats.initial_direction_vector ^ FVector (0,0,1);
-    FVector velocity_up_vector = disc_right_vector ^ initial_release_stats.initial_direction_vector;
+    initial_release_stats.initial_disc_right_vector = initial_release_stats.initial_direction_vector ^ FVector (0,0,1);
+    FVector velocity_up_vector = initial_release_stats.initial_disc_right_vector ^ initial_release_stats.initial_direction_vector;
 
     //projections of orientation onto the direction vectors
-    disc_right_vector = (initial_release_stats.initial_orientation_vector | disc_right_vector) * disc_right_vector;
+    initial_release_stats.initial_disc_right_vector = (initial_release_stats.initial_orientation_vector | initial_release_stats.initial_disc_right_vector) * initial_release_stats.initial_disc_right_vector;
     velocity_up_vector = (initial_release_stats.initial_orientation_vector | velocity_up_vector) * velocity_up_vector;
 
-  	initial_release_stats.initial_hyzer = atan2 (disc_right_vector.Size() , velocity_up_vector.Size()) * 57.3;
+  	initial_release_stats.initial_hyzer = atan2 (initial_release_stats.initial_disc_right_vector.Size() , velocity_up_vector.Size()) * 57.3;
     /*
      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(initial_release_stats.initial_orientation_vector[1])));
  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(disc_right_vector.Size())));
@@ -343,7 +343,9 @@ void ADiscThrow::generate_flight_cumulative_stats()
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
   	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel/6.28*60;
-     
+    
+
+    //find the distance from the intial velocity vector 
   	FVector n = initial_release_stats.initial_direction_vector;
   	n.Normalize();
   	FVector a = initial_release_stats.initial_location_vector;
@@ -351,11 +353,34 @@ void ADiscThrow::generate_flight_cumulative_stats()
   	FVector a_p = a - p;
   	FVector tf_vector = a_p - (FVector::DotProduct(a_p,n))*n;
 
-  	flight_cumulative_stats.current_turnfade   = tf_vector.Size(); 
+    //find the polarity
+    FVector fade_vector = initial_release_stats.initial_disc_right_vector * initial_release_stats.initial_polarity;
+    if ((a_p-fade_vector).Size()>(a_p-fade_vector).Size())
+      flight_cumulative_stats.current_turnfade   = -tf_vector.Size(); 
+    else
+      flight_cumulative_stats.current_turnfade   = tf_vector.Size(); 
+
+    
+
+
+  	
   	flight_cumulative_stats.current_wobble     = 0; ///will add later
 
-  	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,(FString::SanitizeFloat(flight_cumulative_stats.current_spin)));
+
 
 }
+
+  void ADiscThrow::on_collision(
+    const FVector disc_position,
+    const FVector hit_location,
+    const FVector hit_normal)
+
+    {
+
+      //hit_location is world location in unreal unit (cm)
+    //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
+      GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
+ 
+    }
 
 
