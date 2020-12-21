@@ -109,7 +109,7 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
   }
 }
 
-FString dvd_DvisEst_bin_path = "../../Binaries/dvd_DvisEst/2020-10-11/";
+FString dvd_DvisEst_bin_path = "../../Binaries/dvd_DvisEst/2020-12-21/";
 
 void DvisEstInterface::RunDvisEst() 
 {
