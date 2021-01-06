@@ -223,7 +223,7 @@ namespace DfisX
         break;
     }
 
-    if(1)
+    if(0)
     {
       // generate a random disc mold index from all possible sets
       const float index = (float)rand() / (float)RAND_MAX;
@@ -251,7 +251,10 @@ namespace DfisX
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
-      if(1)
+
+      //disc_mold = find_disc_mold_index_by_name("Destroyer");
+
+      if(0)
       {
         switch(disc2throw)
         {
