@@ -535,9 +535,9 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
             if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))
             {
-              imshow("Exposure Gain Search", img_grey);
+              //imshow("Exposure Gain Search", img_grey);
               last_show_time = image_capture.timestamp_ns;
-              cv::waitKey(10);
+              //cv::waitKey(10);
             }
           }          
         }
