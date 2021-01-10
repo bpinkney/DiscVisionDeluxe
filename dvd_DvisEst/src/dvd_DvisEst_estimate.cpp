@@ -1393,7 +1393,7 @@ static void kf_meas_update_step()
     }
 
     // no more meas? complete! (more prediction steps aren't going to help us after this)
-    if(meas_prime_queue.size() <= 0)
+    if(meas_prime_queue.size() <= 0 && sv_kf_estimate_stage < KF_EST_STAGE_COMPLETE)
     {
       cerr << "Empty queue at " << NS_TO_MS(sv_kf_state.timestamp_ns) << " ms " << endl;
       sv_kf_estimate_stage = KF_EST_STAGE_COMPLETE;

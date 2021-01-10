@@ -527,17 +527,17 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           // assume that we need to make the scene progressively lighter for now
           // target is 0.5, so 0.05 of centroid error
           // wait until we lose detections before trying to sweep
-          if(image_capture.timestamp_ns - last_frame_detect_ns > MS_TO_NS(5000))
+          if(image_capture.timestamp_ns - last_frame_detect_ns > MS_TO_NS(10000))
           {
             // sweep up with a fixed error
-            dvd_DvisEst_image_capture_calculate_exposure_gain(0.5, 0.35, false);
+            dvd_DvisEst_image_capture_calculate_exposure_gain(0.5, 0.45, false);
             static uint64_t last_show_time = 0;
 
             if(image_capture.timestamp_ns - last_show_time > MS_TO_NS(1000))
             {
-              //imshow("Exposure Gain Search", img_grey);
+              imshow("Exposure Gain Search", img_grey);
               last_show_time = image_capture.timestamp_ns;
-              //cv::waitKey(10);
+              cv::waitKey(10);
             }
           }          
         }

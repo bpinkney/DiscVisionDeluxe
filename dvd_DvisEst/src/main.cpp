@@ -251,8 +251,12 @@ static void dvd_DvisEst_display_rotate_mat(cv::Mat& src, cv::Mat& dst, double an
   cv::warpAffine(src, dst, M, src.size(), cv::INTER_CUBIC); //Nearest is too rough, 
 }
 
-static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const int time_s, const float hyzer_rad, const float pitch_rad, const float VEC3(lin_vel_xyz))
+static void dvd_DvisEst_display_text(const std::string * text_to_show, const int num_strings, const float time_s, const float hyzer_rad, const float pitch_rad, const float VEC3(lin_vel_xyz))
 {
+
+  // in case a new throw happens before the old windows is gone (need gianttext threading before this wil work)
+  cv::destroyAllWindows(); 
+
   int res_x;
   int res_y;
   dvd_DvisEst_get_desktop_resolution(&res_x, &res_y);
@@ -415,7 +419,13 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
 
   cv::imshow("Throw Stats", throw_stats);
   cv::moveWindow("Throw Stats",0,0);
-  cv::waitKey(time_s*1000);
+  int time_ms = 0;
+  while(time_ms < time_s * 1000)
+  {
+    cv::waitKey(1);
+    time_ms++;
+  }
+  cv::destroyAllWindows(); 
 }
 
 static std::string get_datestring(void)
@@ -1057,7 +1067,7 @@ int main(int argc, char** argv )
           ) * 3.6;
       if(got_output)
       {
-        if(lin_vel_mag_kph < 5.0)
+        if(lin_vel_mag_kph < 10.0)
         {
           got_output = false;
         }
