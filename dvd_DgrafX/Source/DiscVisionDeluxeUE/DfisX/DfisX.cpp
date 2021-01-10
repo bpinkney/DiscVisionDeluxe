@@ -286,6 +286,42 @@ namespace DfisX
       }    
     }
 
+    // override for Loft Test Throws
+    if(1)
+    {
+      static int test_throw = 0;
+      throw_container->current_disc_state.disc_velocity = {85.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
+
+      disc_mold = find_disc_mold_index_by_name("Hydrogen");
+
+
+      Eigen::Vector3d hps = {0,0,0};
+      switch(test_throw)
+      {
+        case 0:
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          test_throw++;
+        break;
+        case 1:
+          hps = {DEG_TO_RAD(15), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          test_throw++;
+        break;
+        case 2:
+          hps = {DEG_TO_RAD(-15), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          test_throw = 0;
+        break;
+      }
+
+      const double loft_x_component = sin (-hps[1]) * cos (hps[0]);
+      const double loft_y_component = sin (hps[0])  * cos (hps[1]);
+      const double loft_z_component = cos (hps[1])  * cos (hps[0]);
+
+      Eigen::Vector3d loft_thrown_disc_orientation = {loft_x_component, loft_y_component, loft_z_component};
+
+      throw_container->current_disc_state.disc_orientation = loft_thrown_disc_orientation;
+    }
+
     throw_container->disc_object = disc_object_array[disc_mold];
 
     std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << std::endl;
