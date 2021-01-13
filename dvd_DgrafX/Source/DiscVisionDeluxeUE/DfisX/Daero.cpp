@@ -46,7 +46,7 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.025) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
@@ -577,8 +577,28 @@ namespace DfisX
       // WHEN that edgfe is exposed is a function of the slope of that camber, and the AOA
       // anything less than zero here is not a contributing factor, since you can't curve the air around and smack
       // it into an hidden surface (not much anyway)
-      const double rim_camber_surface_exposed_front_edge  = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - rim_camber_norm_angle)));
-      const double rim_camber_surface_exposed_back_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2)));
+      // add a quick multiplier for concave rim cambers
+      float rim_camber_shape_multiplier = 1.0;
+      if(strcmp(d_object.rim_camber, "Flat") == 0)
+      {
+        // no multiplier
+        rim_camber_shape_multiplier = 1.0;
+      }
+      else if(strcmp(d_object.rim_camber, "Concave") == 0)
+      {
+        // Assume a 'concave' surface produces more force
+        // TODO: actually extrapolate the normal angle change
+        // and the change in effective angles for a concave rim camber
+        rim_camber_shape_multiplier = 1.25;
+      }
+      if(strcmp(d_object.rim_camber, "Convex") == 0)
+      {
+        // We're assuming air is more easily diverted around this surface
+        rim_camber_shape_multiplier = 0.75;
+      }
+
+      const double rim_camber_surface_exposed_front_edge  = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - rim_camber_norm_angle))) * rim_camber_shape_multiplier;
+      const double rim_camber_surface_exposed_back_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2))) * rim_camber_shape_multiplier;
 
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
       // TODO: Experimentally add a multiplier here for concave rims, and a negative multiplier for convex rims
