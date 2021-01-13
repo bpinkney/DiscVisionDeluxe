@@ -36,38 +36,58 @@ for i=1:length(files)
   split_filename = strsplit(split_filename{end},'.');
   manufacturer   = split_filename{1};
   
+  disp(sprintf('Reading from %s', manufacturer));
   M = readtable([current_dir, file_names{i}]);
   
   for k = 1:length(M{:, 1})
  
-    mold_name     = char(M{k, 1});
-    disc_type     = char(M{k, 3});
-    plastic       = char(M{k, 4});
-    stability     = char(M{k, 2});
-    mass          = double((M{k, 5}))  * 0.001;
-    radius        = double((M{k, 6}))  * 0.001 * 0.5; % halve diameter
-    rim_width     = double((M{k, 7}))  * 0.001;
-    thickness     = double((M{k, 8}))  * 0.001;
-    rim_depth     = double((M{k, 9}))  * 0.001;
-    edge_height   = double((M{k, 10})) * 0.001;
+    try
+    mold_name         = char(M{k, 1});
+    disc_type         = char(M{k, 3});
+    plastic           = char(M{k, 4});
+    stability         = char(M{k, 2});
+    mass              = double((M{k, 5}))  * 0.001;
+    radius            = double((M{k, 6}))  * 0.001 * 0.5; % halve diameter
+    rim_width         = double((M{k, 7}))  * 0.001;
+    thickness         = double((M{k, 8}))  * 0.001;
+    rim_depth         = double((M{k, 9}))  * 0.001;
+    rim_camber_height = double((M{k, 10}))  * 0.001;
+    dome_height       = double((M{k, 11}))  * 0.001;
+    rim_camber_shape  = char(M{k, 12}); 
     
-    fprintf(fileID,'    // %d\n', count);
-    fprintf(fileID,'    Disc_Model\n');
-    fprintf(fileID,'    { // %s %s (%s)\n', manufacturer, mold_name, plastic);
-    fprintf(fileID,'      /*.mold_name =*/     "%s",\n',    mold_name);
-    fprintf(fileID,'      /*.manufacturer =*/  "%s",\n',    manufacturer);
-    fprintf(fileID,'      /*.disc_type =*/     "%s",\n',    disc_type);
-    fprintf(fileID,'      /*.stability =*/     "%s",\n',    stability);
-    fprintf(fileID,'      /*.mass =*/          %0.4f,\n', mass);
-    fprintf(fileID,'      /*.radius =*/        %0.4f,\n', radius);
-    fprintf(fileID,'      /*.rim_width =*/     %0.4f,\n', rim_width);
-    fprintf(fileID,'      /*.thickness =*/     %0.4f,\n', thickness);
-    fprintf(fileID,'      /*.rim_depth =*/     %0.4f,\n', rim_depth);
-    fprintf(fileID,'      /*.edge_height =*/   %0.4f\n', edge_height);
-    fprintf(fileID,'    },\n');
+    %deprecated
+    edge_height   = double((M{k, 13})) * 0.001;
+    
+    catch
+      disp('Parsing error!');
+    end 
+    
+    % screen out incomplete entries after latest model update
+    if(~strcmp(rim_camber_shape,'NONE'))
+    
+      fprintf(fileID,'    // %d\n', count);
+      fprintf(fileID,'    Disc_Model\n');
+      fprintf(fileID,'    { // %s %s (%s)\n', manufacturer, mold_name, plastic);
+      fprintf(fileID,'      /*.mold_name =*/          "%s",\n',    mold_name);
+      fprintf(fileID,'      /*.manufacturer =*/       "%s",\n',    manufacturer);
+      fprintf(fileID,'      /*.disc_type =*/          "%s",\n',    disc_type);
+      fprintf(fileID,'      /*.stability =*/          "%s",\n',    stability);
+      fprintf(fileID,'      /*.mass =*/               %0.5f,\n', mass);
+      fprintf(fileID,'      /*.radius =*/             %0.5f,\n', radius);
+      fprintf(fileID,'      /*.rim_width =*/          %0.5f,\n', rim_width);
+      fprintf(fileID,'      /*.thickness =*/          %0.5f,\n', thickness);
+      fprintf(fileID,'      /*.rim_depth =*/          %0.5f,\n', rim_depth);
+      fprintf(fileID,'      /*.rim_camber_height =*/  %0.5f,\n', rim_camber_height);
+      fprintf(fileID,'      /*.dome_height =*/        %0.5f,\n', dome_height);
+      fprintf(fileID,'      /*.rim_camber_shape =*/   "%s",\n',rim_camber_shape);
+      %fprintf(fileID,'      /*.edge_height =*/   %0.4f\n', edge_height);
+      fprintf(fileID,'    },\n');
 
-    disp(sprintf('Wrote %s %s (%s) entry', manufacturer, mold_name, plastic));
-    count = count + 1;
+      disp(sprintf('Wrote %s %s (%s) entry', manufacturer, mold_name, plastic));
+      count = count + 1;
+    else  
+      disp(sprintf('--> %s %s has incomplete stats and will be skipped', manufacturer, mold_name));
+    end
     
   end
   
