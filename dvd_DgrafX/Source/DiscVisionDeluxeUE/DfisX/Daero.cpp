@@ -27,14 +27,14 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_BASE  (0.6)  // base lift cofficient for all bernoulli lift effects
-#define CAVITY_EDGE_LIFT_FACTOR (0.8) // lift factor as a function of effective exposed cavity edge area inverse
+#define Cl_CAVITY  (1.0)  // base lift cofficient for cavity bernoulli lift effect
+#define Cl_CAMBER  (1.0)  // base lift cofficient for dome camber bernoulli lift effect
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (0.0)//(50.0) // rad/s cavity lift is linearly amplified about this spin speed
+#define CAVITY_EDGE_NORM_ROT_SPEED (75.0) // rad/s cavity lift is linearly amplified about this spin speed
   #define CAVITY_EDGE_LIFT_EXP     (2.0)
-  #define CAVITY_EDGE_LIFT_GAIN    (0.25)
+  #define CAVITY_EDGE_LIFT_GAIN    (1.0)
 
 // effective area using cavity width * depth rectangle approx
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
@@ -46,26 +46,26 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.025) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
 //#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
-#define RIM_CAMBER_EXPOSURE (0.5) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (0.8) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
-std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
-double gv_aero_debug0             = (CAVITY_EDGE_LIFT_GAIN);
+std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_EXP";
+double gv_aero_debug0             = (CAVITY_EDGE_LIFT_EXP);
 
-std::string gv_aero_label_debug1  = "Cl_BASE";
-double gv_aero_debug1             = (Cl_BASE);
+std::string gv_aero_label_debug1  = "Cl_CAVITY";
+double gv_aero_debug1             = (Cl_CAVITY);
 
-std::string gv_aero_label_debug2  = "CAVITY_EDGE_LIFT_FACTOR";
-double gv_aero_debug2             = (CAVITY_EDGE_LIFT_FACTOR);
+std::string gv_aero_label_debug2  = "Cl_CAMBER";
+double gv_aero_debug2             = (Cl_CAMBER);
 
-std::string gv_aero_label_debug3  = "RIM_CAMBER_EXPOSURE";
-double gv_aero_debug3             = (RIM_CAMBER_EXPOSURE);
+std::string gv_aero_label_debug3  = "CAVITY_EDGE_NORM_ROT_SPEED";
+double gv_aero_debug3             = (CAVITY_EDGE_NORM_ROT_SPEED);
 
 std::string gv_aero_label_debug4  = "PITCHING_MOMENT_CAVITY_LIFT_OFFSET";
 double gv_aero_debug4             = (PITCHING_MOMENT_CAVITY_LIFT_OFFSET);
@@ -438,18 +438,18 @@ namespace DfisX
       double lift_factor = 0;
       if(A_eff_lip > 0)
       {
-        lift_factor = (1.0 / A_eff_lip) * throw_container->debug.debug2 * 0.00035302903145605;
-        if(CAVITY_EDGE_NORM_ROT_SPEED > 0)
+        lift_factor = (1.0 / A_eff_lip) * 0.8 * 0.00035302903145605;
+        if(throw_container->debug.debug3 > 0)
         {
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
           // set to 1.0. It is probably < 1
           double lift_factor_spin_bonus = 
-            pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
-            pow(CAVITY_EDGE_NORM_ROT_SPEED, CAVITY_EDGE_LIFT_EXP) *
-            throw_container->debug.debug0;
+            pow(abs(d_state.disc_rotation_vel), throw_container->debug.debug0) / 
+            pow(throw_container->debug.debug3, throw_container->debug.debug0) *
+            CAVITY_EDGE_LIFT_GAIN;
 
-          // max of 1.5x
-          lift_factor_spin_bonus = 1.0 + lift_factor_spin_bonus;
+          // max of 1.5x?
+          BOUND_VARIABLE(lift_factor_spin_bonus, 0.25, 1.5);
 
           lift_factor *= lift_factor_spin_bonus;
         }
@@ -471,9 +471,11 @@ namespace DfisX
       // height above edge for camber dome peak
 
       // now measured directly
-      const double camber_height = d_object.dome_height;
+      // assume there is always a little bit of extra added onto this from the first bit of the curve?
+      // this will also de-weight discs with huge domes 
+      const double camber_height = (d_object.dome_height + 0.003) * 0.5;
 
-      // treat this like a triangle approx
+      // treat this like a rect approx
       const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + camber_height * camber_height) * 2.0;
       const double camber_arc_to_diameter_ratio = camber_rect_arc_length / (d_object.radius * 2.0) - 1.0;
       const double camber_rect_arc_length_ref_scale = 1.0 / (sqrt(d_object.radius * d_object.radius + 0.02 * 0.02) * 2.0 / (d_object.radius * 2.0) - 1.0);
@@ -487,9 +489,17 @@ namespace DfisX
       // TODO: Do we actually expect the lift force fall-off to simply be cos(AOA)?
       // we may want a better function to describe how the separation-point of laminar air
       // affects this lift force
+      // e.g.
+      const float camber_lift_max_angle = DEG_TO_RAD( 50.0);
+      const float camber_lift_min_angle = DEG_TO_RAD(-30.0);
+      //const float camber_lift_linear_falloff_factor = d_forces.aoar < 0 ? fabs(d_forces.aoar / camber_lift_min_angle) : fabs(d_forces.aoar / camber_lift_max_angle);
+
+      // not sure about this square.... it seems like things with a lot of dome are too stable, so I added this for now...
+      // TODO: re-evaluate the function of this effect
+      const float camber_lift_factor = (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale);
       d_forces.lift_force_camber_N = 
-        rhov2o2 * A_plate * throw_container->debug.debug1 * (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale) * cos(d_forces.aoar) *
-        (d_forces.aoar <= DEG_TO_RAD(50) && d_forces.aoar >= DEG_TO_RAD(-30) ? 1.0 : 0.0);
+        rhov2o2 * A_plate * throw_container->debug.debug2 * camber_lift_factor * cos(d_forces.aoar) *
+        (d_forces.aoar <= camber_lift_max_angle && d_forces.aoar >= camber_lift_min_angle ? 1.0 : 0.0);
 
       //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Linear Lift Model ** ** //////
@@ -555,7 +565,7 @@ namespace DfisX
       // use the hypot here
       const double rim_camber_area = 
         sqrt(d_object.rim_width*d_object.rim_width + d_object.rim_camber_height*d_object.rim_camber_height) *
-        d_object.radius * 2.0 * throw_container->debug.debug3;
+        d_object.radius * 2.0 * RIM_CAMBER_EXPOSURE;
 
       // if the angle is too far nose-down, this is no longer a factor
       // TODO: make this better! effective range is whenever 'camber_surface_exposed_*_edge' is > 0
@@ -593,7 +603,7 @@ namespace DfisX
       // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
       // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
       // assume this moment arm attenuates with non-zero AOA ???
-      const double Fl_lip_moment_arm_length = throw_container->debug.debug4 * d_object.radius * 2;// * cos(d_forces.aoar);
+      const double Fl_lip_moment_arm_length = throw_container->debug.debug4 * d_object.radius * 2.0;// * cos(d_forces.aoar);
       d_forces.rot_torque_cavity_edge_offset_Nm = -Fl_lip_moment_arm_length * d_forces.lift_force_cavity_edge_N;
 
       //------------------------------------------------------------------------------------------------------------------

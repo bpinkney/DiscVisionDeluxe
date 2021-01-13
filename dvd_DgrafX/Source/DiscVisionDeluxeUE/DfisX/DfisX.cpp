@@ -221,7 +221,7 @@ namespace DfisX
       case DiscIndex::SPECIAL:
         disc_mold = find_disc_mold_index_by_name("P3");
         break;
-    }
+    }    
 
     if(1)
     {
@@ -235,7 +235,7 @@ namespace DfisX
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 0;
-      if(1)
+      if(0)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -254,21 +254,21 @@ namespace DfisX
 
       //disc_mold = find_disc_mold_index_by_name("Destroyer");
 
-      if(0)
+      if(1)
       {
         switch(disc2throw)
         {
           case 0:
-            disc_mold = find_disc_mold_index_by_name("Mako3");
+            disc_mold = find_disc_mold_index_by_name("Mako3");//"Mako3");
             disc2throw = 1;
             break;
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Destroyer");
+            disc_mold = find_disc_mold_index_by_name("Valkyrie");//"Destroyer");
             disc2throw = 2;
             break;
           case 2:
             disc_mold = find_disc_mold_index_by_name("Wraith");
-            disc2throw = 3;
+            disc2throw = 0;
             break;
           case 3:
             disc_mold = find_disc_mold_index_by_name("Zone");
@@ -291,23 +291,29 @@ namespace DfisX
     {
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
+      throw_container->current_disc_state.disc_location[0] = 1.0;
       throw_container->current_disc_state.disc_velocity = {85.0/3.6, 0, 0};
       throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
 
-      disc_mold = find_disc_mold_index_by_name("Hydrogen");
+      //disc_mold = find_disc_mold_index_by_name("Valkyrie");
+      // disc_mold = find_disc_mold_index_by_name("Hydrogen");
 
 
       Eigen::Vector3d hps = {0,0,0};
       switch(test_throw)
       {
         case 0:
+          disc_mold = find_disc_mold_index_by_name("Valkyrie");
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
           test_throw++;
           //hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
         break;
         case 1:
-          hps = {DEG_TO_RAD(15), DEG_TO_RAD(10), DEG_TO_RAD(0)};
-          test_throw++;
+          disc_mold = find_disc_mold_index_by_name("Shryke");
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          //hps = {DEG_TO_RAD(15), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          //test_throw++;
+          test_throw = 0;
         break;
         case 2:
           hps = {DEG_TO_RAD(-15), DEG_TO_RAD(10), DEG_TO_RAD(0)};

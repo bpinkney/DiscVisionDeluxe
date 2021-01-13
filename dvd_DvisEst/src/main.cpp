@@ -1029,10 +1029,16 @@ int main(int argc, char** argv )
                     sprintf(output_cmd, "%s,", 
                       "hyzer:-0.26173,pitch:0.10885,posx:0.424,posy:0.093,posz:2.078,velx:19.621,vely:4.785,velz:2.194,spin_d:-71.48774,wobble:0.200,discmold:4");
                     break;
-                  default:
-                  // Basic Fast Throw with discmold1
+                  case 666:
+                  // Basic Fast Throw, 10 degrees up, with discmold1
                     sprintf(output_cmd, "%s,", 
-                      "hyzer:0.0,pitch:0.0,posx:0.0,posy:-2.0,posz:2.0,velx:22.0,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                      "hyzer:0.0,pitch:0.1745,posx:0.0,posy:-2.0,posz:2.0,velx:22.0,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                    break;
+                  case 777:
+                  default:
+                  // Very Fast Throw (Loft) with discmold1
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:0.0,pitch:0.0,posx:0.0,posy:-2.0,posz:2.0,velx:23.61,vely:0.0,velz:0.0,spin_d:-125.66,wobble:0.0,discmold:1");
                     break;
                 }
               }
