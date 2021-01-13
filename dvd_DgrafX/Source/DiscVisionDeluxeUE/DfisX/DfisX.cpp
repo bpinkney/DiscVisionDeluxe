@@ -223,7 +223,7 @@ namespace DfisX
         break;
     }
 
-    if(0)
+    if(1)
     {
       // generate a random disc mold index from all possible sets
       const float index = (float)rand() / (float)RAND_MAX;
@@ -235,7 +235,7 @@ namespace DfisX
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 0;
-      if(0)
+      if(1)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -279,7 +279,7 @@ namespace DfisX
             disc2throw = 5;
             break;
           default:
-            disc_mold = find_disc_mold_index_by_name("Buzzz");
+            disc_mold = find_disc_mold_index_by_name("Buzzz Foil");
             disc2throw = 0;
             break;
         }
@@ -287,9 +287,10 @@ namespace DfisX
     }
 
     // override for Loft Test Throws
-    if(1)
+    if(0)
     {
       static int test_throw = 0;
+      throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_velocity = {85.0/3.6, 0, 0};
       throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
 
@@ -302,6 +303,7 @@ namespace DfisX
         case 0:
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
           test_throw++;
+          //hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
         break;
         case 1:
           hps = {DEG_TO_RAD(15), DEG_TO_RAD(10), DEG_TO_RAD(0)};

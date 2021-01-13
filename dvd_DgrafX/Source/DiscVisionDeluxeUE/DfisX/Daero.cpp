@@ -27,12 +27,12 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_BASE  (0.7)  // base lift cofficient for all bernoulli lift effects
+#define Cl_BASE  (0.6)  // base lift cofficient for all bernoulli lift effects
 #define CAVITY_EDGE_LIFT_FACTOR (0.8) // lift factor as a function of effective exposed cavity edge area inverse
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (50.0) // rad/s cavity lift is linearly amplified about this spin speed
+#define CAVITY_EDGE_NORM_ROT_SPEED (0.0)//(50.0) // rad/s cavity lift is linearly amplified about this spin speed
   #define CAVITY_EDGE_LIFT_EXP     (2.0)
   #define CAVITY_EDGE_LIFT_GAIN    (0.25)
 
@@ -46,13 +46,13 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.16) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.28) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
 //#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
-#define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (0.5) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
 std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_GAIN";
@@ -334,7 +334,7 @@ namespace DfisX
         0.5 * 
         throw_container->disc_environment.air_density * 
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
-        r5 * 
+        r5 * 1.0 *
         Cm;
 
       //------------------------------------------------------------------------------------------------------------------
@@ -555,7 +555,7 @@ namespace DfisX
       // use the hypot here
       const double rim_camber_area = 
         sqrt(d_object.rim_width*d_object.rim_width + d_object.rim_camber_height*d_object.rim_camber_height) *
-        d_object.radius * 2 * throw_container->debug.debug3;
+        d_object.radius * 2.0 * throw_container->debug.debug3;
 
       // if the angle is too far nose-down, this is no longer a factor
       // TODO: make this better! effective range is whenever 'camber_surface_exposed_*_edge' is > 0
@@ -578,7 +578,7 @@ namespace DfisX
         rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
-      const double rim_camber_moment_arm_length = d_object.radius * 2.0 - d_object.rim_width * 0.5;
+      const double rim_camber_moment_arm_length = d_object.radius - d_object.rim_width * 0.5;
 
       // take the delta between the two rims for this torque
       // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
