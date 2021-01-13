@@ -583,7 +583,7 @@ namespace DfisX
       // take the delta between the two rims for this torque
       // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
       // cos(rim_camber_norm_angle) * F
-      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * cos(rim_camber_norm_angle)
+      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * cos(rim_camber_norm_angle) *
         (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);            
 
       //------------------------------------------------------------------------------------------------------------------
