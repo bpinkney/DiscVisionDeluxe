@@ -51,7 +51,7 @@ Also gravity.
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
-#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
+//#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
 #define RIM_CAMBER_EXPOSURE (0.75) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
@@ -261,6 +261,10 @@ namespace DfisX
     const float r2 = (d_object.radius * d_object.radius);
     const float r5 = (d_object.radius * d_object.radius * d_object.radius * d_object.radius * d_object.radius);
     
+    // calculate height of 'flat front edge' approximation
+    // this should be whatever is left over for thickness - lower_rim_camber_height - dome_height
+    const float edge_height = MAX(0.0, d_object.thickness - d_object.rim_camber_height - d_object.dome_height);
+
     ////// ** ** Start Rotational Drag Model ** ** //////
       //------------------------------------------------------------------------------------------------------------------
 
@@ -342,7 +346,7 @@ namespace DfisX
       // effective edge heighr for our simplified 'edge' and 'plate' model approximation
       // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
       const double A_plate  = r2 * M_PI;
-      const double A_edge   = d_object.radius * 2 * d_object.edge_height * A_EDGE_EFFECTIVE_GAIN; // approximated as a rectangle
+      const double A_edge   = d_object.radius * 2 * edge_height * A_EDGE_EFFECTIVE_GAIN; // approximated as a rectangle
       const double rhov2o2  = throw_container->disc_environment.air_density * d_forces.v2 * 0.5;
 
       // Disc 'Form' Drag
@@ -466,8 +470,8 @@ namespace DfisX
       // above the disc, results in a higher airspeed, and a lower pressure than below, resulting in lift
       // height above edge for camber dome peak
 
-      // intuit camber height from the total thickness, and edge height delta
-      const double camber_height = d_object.thickness - d_object.edge_height;
+      // now measured directly
+      const double camber_height = d_object.dome_height;
 
       // treat this like a triangle approx
       const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + camber_height * camber_height) * 2.0;
@@ -535,8 +539,7 @@ namespace DfisX
       // perpendicular to the rim camber
       // optimal angle would be rim_camber_norm_angle = atan2(rim width, edge height)
       // the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
-      const double rim_camber_height = d_object.edge_height * RIM_CAMBER_EDGE_HEIGHT_PCT;
-      const double rim_camber_norm_angle = atan2(d_object.rim_width, rim_camber_height);
+      const double rim_camber_norm_angle = atan2(d_object.rim_width, d_object.rim_camber_height);
 
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
       // force projected along disc normal unit vector is sin(rim_camber_norm_angle)
@@ -549,7 +552,10 @@ namespace DfisX
       // consequence of the asymmetry between the leading and trailing rim camber angles
 
       const double rim_camber_incidence_angle = rim_camber_norm_angle - d_forces.aoar;
-      const double rim_camber_area = d_object.rim_width * d_object.radius * 2 * throw_container->debug.debug3;
+      // use the hypot here
+      const double rim_camber_area = 
+        sqrt(d_object.rim_width*d_object.rim_width + d_object.rim_camber_height*d_object.rim_camber_height) *
+        d_object.radius * 2 * throw_container->debug.debug3;
 
       // if the angle is too far nose-down, this is no longer a factor
       // TODO: make this better! effective range is whenever 'camber_surface_exposed_*_edge' is > 0
@@ -565,17 +571,19 @@ namespace DfisX
       const double rim_camber_surface_exposed_back_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2)));
 
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
+      // TODO: Experimentally add a multiplier here for concave rims, and a negative multiplier for convex rims
       d_forces.lin_drag_force_front_rim_camber_N =
         rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_front_edge;
       d_forces.lin_drag_force_back_rim_camber_N =
         rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
-      // TODO: could this force centre change whether the rim is concave or not? 
       const double rim_camber_moment_arm_length = d_object.radius * 2.0 - d_object.rim_width * 0.5;
 
       // take the delta between the two rims for this torque
-      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length *
+      // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
+      // cos(rim_camber_norm_angle) * F
+      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * cos(rim_camber_norm_angle)
         (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);            
 
       //------------------------------------------------------------------------------------------------------------------
@@ -626,11 +634,13 @@ namespace DfisX
     // to compute the pitching moment from the lower rim camber.
     // HOWEVER: There is a non-zero ampunt of 'along disc normal' upward force generated when the disc is at 0 AOA
     // which is NOT covered by the plate form drag. For now, we'll just include it.
-    // Note: this is only the 'disc normal' component, we do assume that the 'edge' form drag
-    // approximation covers everything required for the 'along disc plane' forces
-    // both of these act along the disc normal, and are positive
-    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N  * d_orientation;
-    d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N   * d_orientation;
+    // Get component along disc normal from rim_camber_norm_angle
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * cos(rim_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N  * cos(rim_camber_norm_angle)  * d_orientation;
+    // get edge vector component from rim_camber_norm_angle
+    // remember that the rear rim pushes us FORWARD (COOL!)
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * sin(rim_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_rim_camber_N  * sin(rim_camber_norm_angle)  * edge_force_vector;
 
     d_forces.lift_force_vector *= 0;
     d_forces.lift_force_vector += d_forces.lift_force_cavity_edge_N     * d_orientation;
