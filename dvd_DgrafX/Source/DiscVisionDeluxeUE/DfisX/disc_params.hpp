@@ -21,6 +21,7 @@ namespace DfisX
       /*.manufacturer =*/       "AAADiscs",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               3.00000,
       /*.radius =*/             0.12000,
       /*.rim_width =*/          0.00000,
@@ -28,7 +29,6 @@ namespace DfisX
       /*.rim_depth =*/          0.00000,
       /*.rim_camber_height =*/  0.00000,
       /*.dome_height =*/        0.00000,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 1
     Disc_Model
@@ -37,6 +37,7 @@ namespace DfisX
       /*.manufacturer =*/       "Daredevil_Discs",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17300,
       /*.radius =*/             0.10600,
       /*.rim_width =*/          0.01000,
@@ -44,7 +45,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01450,
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00350,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 2
     Disc_Model
@@ -53,6 +53,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discmania",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02250,
@@ -60,7 +61,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01100,
       /*.rim_camber_height =*/  0.00350,
       /*.dome_height =*/        0.00300,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 3
     Disc_Model
@@ -69,6 +69,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10525,
       /*.rim_width =*/          0.01900,
@@ -76,7 +77,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00475,
       /*.dome_height =*/        0.00500,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 4
     Disc_Model
@@ -85,6 +85,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.18000,
       /*.radius =*/             0.11000,
       /*.rim_width =*/          0.01300,
@@ -92,7 +93,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01300,
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00200,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 5
     Disc_Model
@@ -101,6 +101,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17400,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.01000,
@@ -108,7 +109,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01500,
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00225,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 6
     Disc_Model
@@ -117,6 +117,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17400,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02350,
@@ -124,7 +125,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01125,
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00300,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 7
     Disc_Model
@@ -133,6 +133,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17400,
       /*.radius =*/             0.10550,
       /*.rim_width =*/          0.01000,
@@ -140,7 +141,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01500,
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00275,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 8
     Disc_Model
@@ -149,6 +149,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17200,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.01900,
@@ -156,7 +157,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01300,
       /*.rim_camber_height =*/  0.00400,
       /*.dome_height =*/        0.00550,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 9
     Disc_Model
@@ -165,6 +165,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.06400,
       /*.radius =*/             0.07500,
       /*.rim_width =*/          0.00900,
@@ -172,7 +173,6 @@ namespace DfisX
       /*.rim_depth =*/          0.00900,
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00050,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 10
     Disc_Model
@@ -181,6 +181,7 @@ namespace DfisX
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17400,
       /*.radius =*/             0.10700,
       /*.rim_width =*/          0.01150,
@@ -188,7 +189,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01400,
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00000,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 11
     Disc_Model
@@ -197,6 +197,7 @@ namespace DfisX
       /*.manufacturer =*/       "Infinite_Discs",
       /*.disc_type =*/          "Fairway Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10550,
       /*.rim_width =*/          0.01800,
@@ -204,7 +205,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01200,
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00800,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 12
     Disc_Model
@@ -213,6 +213,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16000,
       /*.radius =*/             0.10512,
       /*.rim_width =*/          0.02450,
@@ -220,7 +221,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00475,
       /*.dome_height =*/        0.00400,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 13
     Disc_Model
@@ -229,6 +229,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02100,
@@ -236,7 +237,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01175,
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00400,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 14
     Disc_Model
@@ -245,6 +245,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10525,
       /*.rim_width =*/          0.02450,
@@ -252,7 +253,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00200,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 15
     Disc_Model
@@ -261,6 +261,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16000,
       /*.radius =*/             0.10525,
       /*.rim_width =*/          0.02450,
@@ -268,7 +269,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00325,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 16
     Disc_Model
@@ -277,6 +277,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10450,
       /*.rim_width =*/          0.02450,
@@ -284,7 +285,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01200,
       /*.rim_camber_height =*/  0.00375,
       /*.dome_height =*/        0.00500,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 17
     Disc_Model
@@ -293,6 +293,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10600,
       /*.rim_width =*/          0.01950,
@@ -300,7 +301,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01175,
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00300,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 18
     Disc_Model
@@ -309,6 +309,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17200,
       /*.radius =*/             0.10850,
       /*.rim_width =*/          0.01300,
@@ -316,7 +317,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01500,
       /*.rim_camber_height =*/  0.00825,
       /*.dome_height =*/        0.00450,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 19
     Disc_Model
@@ -325,6 +325,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10450,
       /*.rim_width =*/          0.02400,
@@ -332,7 +333,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00400,
       /*.dome_height =*/        0.00350,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 20
     Disc_Model
@@ -341,6 +341,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02200,
@@ -348,7 +349,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01250,
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00450,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 21
     Disc_Model
@@ -357,6 +357,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Fairway Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10560,
       /*.rim_width =*/          0.01680,
@@ -364,7 +365,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01100,
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00250,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 22
     Disc_Model
@@ -373,6 +373,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Convex",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10850,
       /*.rim_width =*/          0.01250,
@@ -380,7 +381,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01300,
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00075,
-      /*.rim_camber_shape =*/   "Convex",
     },
     // 23
     Disc_Model
@@ -389,6 +389,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02100,
@@ -396,7 +397,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00575,
       /*.dome_height =*/        0.00275,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 24
     Disc_Model
@@ -405,6 +405,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17100,
       /*.radius =*/             0.10575,
       /*.rim_width =*/          0.02350,
@@ -412,7 +413,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01100,
       /*.rim_camber_height =*/  0.00425,
       /*.dome_height =*/        0.00525,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 25
     Disc_Model
@@ -421,6 +421,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.15000,
       /*.radius =*/             0.10450,
       /*.rim_width =*/          0.02100,
@@ -428,7 +429,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00275,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 26
     Disc_Model
@@ -437,6 +437,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Convex",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10600,
       /*.rim_width =*/          0.01050,
@@ -444,7 +445,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01400,
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00100,
-      /*.rim_camber_shape =*/   "Convex",
     },
     // 27
     Disc_Model
@@ -453,6 +453,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10450,
       /*.rim_width =*/          0.01925,
@@ -460,7 +461,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00275,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 28
     Disc_Model
@@ -469,6 +469,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16700,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02200,
@@ -476,7 +477,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01200,
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00600,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 29
     Disc_Model
@@ -485,6 +485,7 @@ namespace DfisX
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "MidRange",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.15500,
       /*.radius =*/             0.10650,
       /*.rim_width =*/          0.01200,
@@ -492,7 +493,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01275,
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00300,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 30
     Disc_Model
@@ -501,6 +501,7 @@ namespace DfisX
       /*.manufacturer =*/       "Latitude_64",
       /*.disc_type =*/          "Fairway Driver",
       /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17300,
       /*.radius =*/             0.10600,
       /*.rim_width =*/          0.01975,
@@ -508,7 +509,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01200,
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00250,
-      /*.rim_camber_shape =*/   "Concave",
     },
     // 31
     Disc_Model
@@ -517,6 +517,7 @@ namespace DfisX
       /*.manufacturer =*/       "Loft",
       /*.disc_type =*/          "Putter",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
       /*.radius =*/             0.10570,
       /*.rim_width =*/          0.00671,
@@ -524,7 +525,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01400,
       /*.rim_camber_height =*/  0.00870,
       /*.dome_height =*/        0.00100,
-      /*.rim_camber_shape =*/   "Flat",
     },
     // 32
     Disc_Model
@@ -533,6 +533,7 @@ namespace DfisX
       /*.manufacturer =*/       "Prodigy_Discs",
       /*.disc_type =*/          "Distance Driver",
       /*.stability =*/          "Stable",
+      /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
       /*.radius =*/             0.10500,
       /*.rim_width =*/          0.02400,
@@ -540,7 +541,6 @@ namespace DfisX
       /*.rim_depth =*/          0.01150,
       /*.rim_camber_height =*/  0.00425,
       /*.dome_height =*/        0.00475,
-      /*.rim_camber_shape =*/   "Concave",
     }
   };
 

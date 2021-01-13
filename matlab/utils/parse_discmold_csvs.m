@@ -72,14 +72,14 @@ for i=1:length(files)
       fprintf(fileID,'      /*.manufacturer =*/       "%s",\n',    manufacturer);
       fprintf(fileID,'      /*.disc_type =*/          "%s",\n',    disc_type);
       fprintf(fileID,'      /*.stability =*/          "%s",\n',    stability);
+      fprintf(fileID,'      /*.rim_camber_shape =*/   "%s",\n',rim_camber_shape);
       fprintf(fileID,'      /*.mass =*/               %0.5f,\n', mass);
       fprintf(fileID,'      /*.radius =*/             %0.5f,\n', radius);
       fprintf(fileID,'      /*.rim_width =*/          %0.5f,\n', rim_width);
       fprintf(fileID,'      /*.thickness =*/          %0.5f,\n', thickness);
       fprintf(fileID,'      /*.rim_depth =*/          %0.5f,\n', rim_depth);
       fprintf(fileID,'      /*.rim_camber_height =*/  %0.5f,\n', rim_camber_height);
-      fprintf(fileID,'      /*.dome_height =*/        %0.5f,\n', dome_height);
-      fprintf(fileID,'      /*.rim_camber_shape =*/   "%s",\n',rim_camber_shape);
+      fprintf(fileID,'      /*.dome_height =*/        %0.5f,\n', dome_height);      
       %fprintf(fileID,'      /*.edge_height =*/   %0.4f\n', edge_height);
       fprintf(fileID,'    },\n');
 
