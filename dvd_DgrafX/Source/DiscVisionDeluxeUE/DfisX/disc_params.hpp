@@ -496,6 +496,22 @@ namespace DfisX
     },
     // 30
     Disc_Model
+    { // Innova TeeBird3 (Champion)
+      /*.mold_name =*/          "TeeBird3",
+      /*.manufacturer =*/       "Innova",
+      /*.disc_type =*/          "Fairway Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01900,
+      /*.thickness =*/          0.01500,
+      /*.rim_depth =*/          0.01200,
+      /*.rim_camber_height =*/  0.00600,
+      /*.dome_height =*/        0.00400,
+    },
+    // 31
+    Disc_Model
     { // Latitude_64 Pioneer (Opto)
       /*.mold_name =*/          "Pioneer",
       /*.manufacturer =*/       "Latitude_64",
@@ -510,7 +526,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00250,
     },
-    // 31
+    // 32
     Disc_Model
     { // Loft Hydrogen (Alpha-Solid)
       /*.mold_name =*/          "Hydrogen",
@@ -526,7 +542,23 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00870,
       /*.dome_height =*/        0.00100,
     },
-    // 32
+    // 33
+    Disc_Model
+    { // MVP Wave (Mixed Premium)
+      /*.mold_name =*/          "Wave",
+      /*.manufacturer =*/       "MVP",
+      /*.disc_type =*/          "Distance Driver",
+      /*.stability =*/          "Understable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10550,
+      /*.rim_width =*/          0.02100,
+      /*.thickness =*/          0.01500,
+      /*.rim_depth =*/          0.01200,
+      /*.rim_camber_height =*/  0.00500,
+      /*.dome_height =*/        0.00400,
+    },
+    // 34
     Disc_Model
     { // Prodigy_Discs D4 (400G)
       /*.mold_name =*/          "D4",

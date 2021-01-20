@@ -1,7 +1,6 @@
 
 
 %{
-
   //Disc Model
   //contains the name and the physics/aerodynamic properties of a disc mold
   struct Disc_Model
@@ -9,12 +8,15 @@
     char mold_name[32];     // text for disc name, e.g. Buzzz Big Z
     char manufacturer[32];  // e.g. innova (could do this with an enum later)
     char disc_type[32];     // e.g. putter, midrange, distance driver, etc. (could do this with an enum later)
+    char stability[32];     // e.g. stable, overstable, understable, etc. (could do this with an enum later)
+    char rim_camber[32];    // e.g. Concave, Convex, Flat (could do this with an enum later)
     float mass;             // (kg), this is just a default can be changed later as part of user config
     float radius;           // (m)
     float rim_width;        // width of rim, from edge of cavity, to edge of disc (m)
     float thickness;        // total thickness of disc, from bottom of rim, to top of camber (m)
     float rim_depth;        // height of cavity, measured at the edge of the cavity (m)
-    float edge_height;      // approximation of 'edge height' for our simpified disc model (m)    
+    float rim_camber_height;// height of lower rim camber
+    float dome_height;      // height of upper dome camber
   };
 %}
 
