@@ -23,12 +23,12 @@ Also gravity.
 #define Cm_BASE  (0.08) // base z-axis rotational parasitic skin drag coeff
 // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
 #define Cd_PLATE (1.17) // base form drag coeff for 'plate' section of disc
-#define Cd_EDGE  (1.10) // base form drag coeff for the 'edge' approximated section of disc
+#define Cd_EDGE  (0.5)  // base form drag coeff for the 'edge' approximated section of disc
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_CAVITY  (1.0)  // base lift cofficient for cavity bernoulli lift effect
-#define Cl_CAMBER  (1.0)  // base lift cofficient for dome camber bernoulli lift effect
+#define Cl_CAVITY  (0.6)  // base lift cofficient for cavity bernoulli lift effect
+#define Cl_CAMBER  (0.6)  // base lift cofficient for dome camber bernoulli lift effect
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
@@ -46,7 +46,7 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.065) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
@@ -55,8 +55,8 @@ Also gravity.
 #define RIM_CAMBER_EXPOSURE (0.8) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
-std::string gv_aero_label_debug0  = "CAVITY_EDGE_LIFT_EXP";
-double gv_aero_debug0             = (CAVITY_EDGE_LIFT_EXP);
+std::string gv_aero_label_debug0  = "Cd_EDGE";
+double gv_aero_debug0             = (Cd_EDGE);
 
 std::string gv_aero_label_debug1  = "Cl_CAVITY";
 double gv_aero_debug1             = (Cl_CAVITY);
@@ -378,7 +378,7 @@ namespace DfisX
       // this is only considering form drag, and NOT parasitic surface drag
 
       // Fd_edge
-      d_forces.lin_drag_force_edge_N  = rhov2o2 * Cd_EDGE  * A_edge  * abs(cos(d_forces.aoar));
+      d_forces.lin_drag_force_edge_N  = rhov2o2 * throw_container->debug.debug0  * A_edge  * abs(cos(d_forces.aoar));
       // Fd_plate
       d_forces.lin_drag_force_plate_N = rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar);
 
@@ -419,7 +419,7 @@ namespace DfisX
       // TODO: make this better! effective range is [-15deg, 70deg] AOA, peak at 20 AOA
       // attenuated with AOA as a sinusoid
       d_forces.lin_drag_force_cavity_edge_N = 
-        rhov2o2 * Cd_EDGE * A_eff_lip_at_aoa * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
+        rhov2o2 * throw_container->debug.debug0 * A_eff_lip_at_aoa * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
         (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
 
       //------------------------------------------------------------------------------------------------------------------
@@ -444,8 +444,8 @@ namespace DfisX
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
           // set to 1.0. It is probably < 1
           double lift_factor_spin_bonus = 
-            pow(abs(d_state.disc_rotation_vel), throw_container->debug.debug0) / 
-            pow(throw_container->debug.debug3, throw_container->debug.debug0) *
+            pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
+            pow(throw_container->debug.debug3, CAVITY_EDGE_LIFT_EXP) *
             CAVITY_EDGE_LIFT_GAIN;
 
           // max of 1.5x?
@@ -603,9 +603,9 @@ namespace DfisX
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
       // TODO: Experimentally add a multiplier here for concave rims, and a negative multiplier for convex rims
       d_forces.lin_drag_force_front_rim_camber_N =
-        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_front_edge;
+        rhov2o2 * throw_container->debug.debug0  * rim_camber_area * rim_camber_surface_exposed_front_edge;
       d_forces.lin_drag_force_back_rim_camber_N =
-        rhov2o2 * Cd_EDGE  * rim_camber_area * rim_camber_surface_exposed_back_edge;
+        rhov2o2 * throw_container->debug.debug0  * rim_camber_area * rim_camber_surface_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
       const double rim_camber_moment_arm_length = d_object.radius - d_object.rim_width * 0.5;
