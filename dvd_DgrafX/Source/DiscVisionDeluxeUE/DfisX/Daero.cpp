@@ -263,6 +263,8 @@ namespace DfisX
     
     // calculate height of 'flat front edge' approximation
     // this should be whatever is left over for thickness - lower_rim_camber_height - dome_height
+    // use this ONLY for the blunt edge at the front. The 'disc normal' component of the dome is computed below
+    // as dome_form_drag
     const float edge_height = MAX(0.0, d_object.thickness - d_object.rim_camber_height - d_object.dome_height);
 
     ////// ** ** Start Rotational Drag Model ** ** //////
@@ -377,10 +379,60 @@ namespace DfisX
       // and similarly, a flat disc in vertical free-fall would have NO EDGE DRAG FORCE
       // this is only considering form drag, and NOT parasitic surface drag
 
-      // Fd_edge
+      // Fd_edge (only the thin blunt edge at the front)
       d_forces.lin_drag_force_edge_N  = rhov2o2 * Cd_EDGE  * A_edge  * abs(cos(d_forces.aoar));
-      // Fd_plate
-      d_forces.lin_drag_force_plate_N = rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar);
+      // Fd_plate (simplified, deprecated)
+      const double A_plate_under  = (d_object.radius - d_object.rim_width) * (d_object.radius - d_object.rim_width) * M_PI;
+      // Note: we still use this model for + AOA to simulate the air blowing UP under the disc
+      // HOWEVER: since the lower rim camber forces are already included, we reduce the area of this effect to
+      // just the inside (e.g. radius - rim_width)
+      d_forces.lin_drag_force_plate_N = d_forces.aoar > 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
+
+      //------------------------------------------------------------------------------------------------------------------
+      // Fd_plate (with disc-normal component using trianglar dome approx      
+      // Try to repeat the idea of the lower rim camber for the upper dome.
+      // In this case, we extend the triangular approximation used for the bernoulli lift, and 
+      // use it compute a small component of form drag
+      // For now, this replaces the 'plate form drag' a few models up
+
+      // Angle between the trianglar approx of the dome, and 'flat'
+
+      // subtract the 1cm from the offset we used for dome height measurement from the effective radius
+      const float effective_dome_radius = MAX(0.0, d_object.radius - 0.01);
+      const double dome_camber_norm_angle = atan2(effective_dome_radius, d_object.dome_height);
+
+      // effect is maxed at cos(dome_camber_norm_angle - aoa)
+      // force projected along disc normal unit vector is sin(dome_camber_norm_angle)
+      //const double dome_camber_incidence_angle = dome_camber_norm_angle - d_forces.aoar;
+      // is you use the hypot here, Area = pi * (dh^2 + r^2)^2, the models result in the same
+      // force along the disc normal after the back edge is exposed!
+      // for now, we assume the area is the same to give some 'edge' to domey discs..?
+      //const double dome_camber_area = 
+      //  M_PI * (effective_dome_radius*effective_dome_radius + d_object.dome_height*d_object.dome_height) *
+
+      // if the angle is too far nose-down, this is no longer a factor
+      // like the rim camber below, we compute this for both 'surfaces' (front and back)|
+      // using half the area for each
+      const double dome_camber_surface_exposed_front = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - dome_camber_norm_angle)));
+      const double dome_camber_surface_exposed_back  = MAX(0.0, sin(d_forces.aoar + (dome_camber_norm_angle - M_PI_2)));
+
+      // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
+      // assume the front and back are 'split down the middle' for area
+      // forces along the normals of the dome sides!
+      d_forces.lin_drag_force_front_dome_camber_N =
+        rhov2o2 * Cd_PLATE  * (A_plate*0.5) * dome_camber_surface_exposed_front;
+      d_forces.lin_drag_force_back_dome_camber_N =
+        rhov2o2 * Cd_PLATE  * (A_plate*0.5) * dome_camber_surface_exposed_back;
+
+      // assume the force is applied somewhere between the centre of the 'front' and 'back'
+      // assumed triangular surfaces, as a function of the force magnitude on each
+      // e.g. if only the front surface of the dome is exposed, the force is applied halfway toward the front of the disc
+      // which results in a big moment arm!
+      // OR, if the back is exposed somewhat, the force centre is dictated as:
+      // radius/2 * (front - back) / |front and back| or something
+      // TODO: actually add this torque?
+
+      //------------------------------------------------------------------------------------------------------------------
 
       // Parasitic Skin Drag
       // This is not included in the two components of form drag listed above, but will change with AOA
@@ -421,13 +473,6 @@ namespace DfisX
       d_forces.lin_drag_force_cavity_edge_N = 
         rhov2o2 * Cd_EDGE * A_eff_lip_at_aoa * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
         (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
-
-      //------------------------------------------------------------------------------------------------------------------
-    ////// ** ** End Linear Form Drag Model ** ** //////
-
-
-    ////// ** ** Start Linear Lift Model ** ** //////
-      //------------------------------------------------------------------------------------------------------------------
 
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
@@ -508,12 +553,13 @@ namespace DfisX
     ////// ** ** Start Pitching Moment Model ** ** //////
       //------------------------------------------------------------------------------------------------------------------
 
+      //// THIS MODEL IS DISABLED IN EXCHANGE FOR DOME_FORM_DRAG stuff below
       //// Use form drag terms to apply some of the resulting pitching moment
       // for now, we just assume that the centre of application for 'plate drag' is 15% forward from the 
       // disc centre. This actually changes with thickness, and other factors, but this approximation is OK
       // for now.
       // assume this moment arm attenuates with non-zero AOA ???
-      const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2.0 * cos(d_forces.aoar);
+      //const double plate_moment_arm_length = PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET * d_object.radius * 2.0 * cos(d_forces.aoar);
 
       // The paper seems to imply that the camber (see below) causes extra torque due to the plate drag
       // We could add this to the torque term as a function of 'amplified' torque here
@@ -522,19 +568,20 @@ namespace DfisX
       // Copied from below:
       // treat this like the pulled out edges of a rectangle for now (seems OK)
       // attenuate this factor with AOA since the entire 'plate' is exposed at some point...?
-      const double Fd_plate_pitching_factor = 
-        MAX(1.0, (camber_rect_arc_length / (d_object.radius * 2)));
+      //const double Fd_plate_pitching_factor = 
+      //  MAX(1.0, (camber_rect_arc_length / (d_object.radius * 2)));
 
       // AOA is about the 'X' axis to the right, positive wrt Fd_plate sign, arm is toward the leading end
       //Fd_plate_induced_moment_Nm 
       // TODO: make this better! effective range is [-45, 45deg] AOA, peak at 0 AOA
       // We're only going to limit this for the applied torque for now
       // sign is already handled by the "lin_drag_force_plate_N"
-      d_forces.rot_torque_plate_offset_Nm = 
-        plate_moment_arm_length * d_forces.lin_drag_force_plate_N * Fd_plate_pitching_factor * abs(sin(d_forces.aoar)) *
-        (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-45) ? 1.0 : 0.0);
-
+      //d_forces.rot_torque_plate_offset_Nm = 
+      //  plate_moment_arm_length * d_forces.lin_drag_force_plate_N * Fd_plate_pitching_factor * abs(sin(d_forces.aoar)) *
+      //  (d_forces.aoar <= DEG_TO_RAD(45) && d_forces.aoar >= DEG_TO_RAD(-45) ? 1.0 : 0.0);
       // HOWEVER: thise nose-down effect here seems too strong.
+      // END DISABLED MODEL
+
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -561,7 +608,7 @@ namespace DfisX
       // CONSEQUENTLY: We only need to add the pitching moment here, as we expect that only as a 
       // consequence of the asymmetry between the leading and trailing rim camber angles
 
-      const double rim_camber_incidence_angle = rim_camber_norm_angle - d_forces.aoar;
+      //const double rim_camber_incidence_angle = rim_camber_norm_angle - d_forces.aoar;
       // use the hypot here
       const double rim_camber_area = 
         sqrt(d_object.rim_width*d_object.rim_width + d_object.rim_camber_height*d_object.rim_camber_height) *
@@ -614,7 +661,7 @@ namespace DfisX
       // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
       // cos(rim_camber_norm_angle) * F
       d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * cos(rim_camber_norm_angle) *
-        (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);            
+        (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -657,13 +704,15 @@ namespace DfisX
 
     d_forces.drag_force_vector *= 0;
     d_forces.drag_force_vector += d_forces.lin_drag_force_edge_N        * edge_force_vector;
+    // Note: this force is only for 'up from under the disc' airflows now that 
+    // the 'lin_drag_force_*_dome_camber_N' stuff has been added
     d_forces.drag_force_vector += d_forces.lin_drag_force_plate_N       * d_orientation;
     d_forces.drag_force_vector += d_forces.lin_drag_force_skin_N        * -d_forces.disc_velocity_unit_vector;
     d_forces.drag_force_vector += d_forces.lin_drag_force_cavity_edge_N * edge_force_vector;
-    // This should be partly covered by the 'plate' form drag already, realistically, this force should only be used
-    // to compute the pitching moment from the lower rim camber.
-    // HOWEVER: There is a non-zero ampunt of 'along disc normal' upward force generated when the disc is at 0 AOA
-    // which is NOT covered by the plate form drag. For now, we'll just include it.
+
+    // Lower rim camber form drag forces
+    // There is a non-zero ampunt of 'along disc normal' upward force generated when the disc is at 0 AOA
+    // which is NOT covered by the plate form drag since that only uses the inner cavity area.
     // Get component along disc normal from rim_camber_norm_angle
     d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * cos(rim_camber_norm_angle)  * d_orientation;
     d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N  * cos(rim_camber_norm_angle)  * d_orientation;
@@ -671,6 +720,16 @@ namespace DfisX
     // remember that the rear rim pushes us FORWARD (COOL!)
     d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * sin(rim_camber_norm_angle)  * edge_force_vector;
     d_forces.drag_force_vector -= d_forces.lin_drag_force_back_rim_camber_N  * sin(rim_camber_norm_angle)  * edge_force_vector;
+
+    // Dome camber form drag forces
+    // Get component along disc normal from dome_camber_norm_angle
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * cos(dome_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_back_dome_camber_N  * cos(dome_camber_norm_angle)  * d_orientation;
+    // get edge vector component from dome_camber_norm_angle
+    // remember that the rear surface of the dome pushes us FORWARD (COOL!)
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * sin(dome_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * sin(dome_camber_norm_angle)  * edge_force_vector;
+
 
     d_forces.lift_force_vector *= 0;
     d_forces.lift_force_vector += d_forces.lift_force_cavity_edge_N     * d_orientation;
