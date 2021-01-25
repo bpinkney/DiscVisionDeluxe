@@ -32,7 +32,7 @@ Also gravity.
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (75.0) // rad/s cavity lift is linearly amplified about this spin speed
+#define CAVITY_EDGE_NORM_ROT_SPEED (85.0) // rad/s cavity lift is linearly amplified about this spin speed
   #define CAVITY_EDGE_LIFT_EXP     (2.0)
   #define CAVITY_EDGE_LIFT_GAIN    (1.0)
 
@@ -46,7 +46,7 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.065) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
@@ -387,7 +387,7 @@ namespace DfisX
       // Note: we still use this model for + AOA to simulate the air blowing UP under the disc
       // HOWEVER: since the lower rim camber forces are already included, we reduce the area of this effect to
       // just the inside (e.g. radius - rim_width)
-      d_forces.lin_drag_force_plate_N = d_forces.aoar > 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
+      d_forces.lin_drag_force_plate_N = rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar);//d_forces.aoar < 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
 
       //------------------------------------------------------------------------------------------------------------------
       // Fd_plate (with disc-normal component using trianglar dome approx      
@@ -495,7 +495,7 @@ namespace DfisX
             CAVITY_EDGE_LIFT_GAIN;
 
           // max of 1.5x?
-          BOUND_VARIABLE(lift_factor_spin_bonus, 0.25, 1.5);
+          BOUND_VARIABLE(lift_factor_spin_bonus, 0.5, 1.5);
 
           lift_factor *= lift_factor_spin_bonus;
         }
@@ -724,8 +724,8 @@ namespace DfisX
 
     // Dome camber form drag forces
     // Get component along disc normal from dome_camber_norm_angle
-    d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * cos(dome_camber_norm_angle)  * d_orientation;
-    d_forces.drag_force_vector += d_forces.lin_drag_force_back_dome_camber_N  * cos(dome_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_front_dome_camber_N * cos(dome_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * cos(dome_camber_norm_angle)  * d_orientation;
     // get edge vector component from dome_camber_norm_angle
     // remember that the rear surface of the dome pushes us FORWARD (COOL!)
     d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * sin(dome_camber_norm_angle)  * edge_force_vector;

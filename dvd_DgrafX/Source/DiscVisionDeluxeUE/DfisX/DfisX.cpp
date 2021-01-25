@@ -259,11 +259,11 @@ namespace DfisX
         switch(disc2throw)
         {
           case 0:
-            disc_mold = find_disc_mold_index_by_name("Wave");//"Mako3");
+            disc_mold = find_disc_mold_index_by_name("Mako3");
             disc2throw = 1;
             break;
           case 1:
-            disc_mold = find_disc_mold_index_by_name("TeeBird3");//"Destroyer");
+            disc_mold = find_disc_mold_index_by_name("Wraith");//"Destroyer");
             disc2throw = 0;
             break;
           case 2:
@@ -303,7 +303,7 @@ namespace DfisX
       switch(test_throw)
       {
         case 0:
-          hps = {DEG_TO_RAD(-15), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
           //test_throw++;
         break;
         case 1:
