@@ -20,19 +20,19 @@ Also gravity.
 
 // Model Constants for all discs
 // Form Drag Base coefficients
-#define Cm_BASE  (0.08) // base z-axis rotational parasitic skin drag coeff
+#define Cm_BASE  (0.18) // base z-axis rotational parasitic skin drag coeff
 // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
 #define Cd_PLATE (1.17) // base form drag coeff for 'plate' section of disc
-#define Cd_EDGE  (0.5)  // base form drag coeff for the 'edge' approximated section of disc
+#define Cd_EDGE  (1.1)  // base form drag coeff for the 'edge' approximated section of disc
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_CAVITY  (0.6)  // base lift cofficient for cavity bernoulli lift effect
-#define Cl_CAMBER  (0.6)  // base lift cofficient for dome camber bernoulli lift effect
+#define Cl_CAVITY  (0.55)  // base lift cofficient for cavity bernoulli lift effect
+#define Cl_CAMBER  (0.5)  // base lift cofficient for dome camber bernoulli lift effect
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (85.0) // rad/s cavity lift is linearly amplified about this spin speed
+#define CAVITY_EDGE_NORM_ROT_SPEED (75.0) // rad/s cavity lift is linearly amplified about this spin speed
   #define CAVITY_EDGE_LIFT_EXP     (2.0)
   #define CAVITY_EDGE_LIFT_GAIN    (1.0)
 
@@ -46,13 +46,13 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.03) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.3) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.07) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.2) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
 //#define RIM_CAMBER_EDGE_HEIGHT_PCT (0.8)
-#define RIM_CAMBER_EXPOSURE (0.8) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
+#define RIM_CAMBER_EXPOSURE (1.0) // % of lower rim camber exposed to the airflow vs a rim_width * diameter rectangle
 
 // add some runtime tuning hook-ups
 std::string gv_aero_label_debug0  = "Cd_EDGE";
@@ -387,7 +387,7 @@ namespace DfisX
       // Note: we still use this model for + AOA to simulate the air blowing UP under the disc
       // HOWEVER: since the lower rim camber forces are already included, we reduce the area of this effect to
       // just the inside (e.g. radius - rim_width)
-      d_forces.lin_drag_force_plate_N = rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar);//d_forces.aoar < 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
+      d_forces.lin_drag_force_plate_N = d_forces.aoar > 0 ? rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar): 0.0;//d_forces.aoar < 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
 
       //------------------------------------------------------------------------------------------------------------------
       // Fd_plate (with disc-normal component using trianglar dome approx      
@@ -495,7 +495,7 @@ namespace DfisX
             CAVITY_EDGE_LIFT_GAIN;
 
           // max of 1.5x?
-          BOUND_VARIABLE(lift_factor_spin_bonus, 0.5, 1.5);
+          BOUND_VARIABLE(lift_factor_spin_bonus, 0.75, 1.25);
 
           lift_factor *= lift_factor_spin_bonus;
         }
@@ -660,8 +660,8 @@ namespace DfisX
 
       // take the delta between the two rims for this torque
       // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
-      // cos(rim_camber_norm_angle) * F
-      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * cos(rim_camber_norm_angle) *
+      // sin(rim_camber_norm_angle) * F
+      d_forces.rot_torque_rim_camber_offset_Nm = rim_camber_moment_arm_length * sin(rim_camber_norm_angle) *
         (d_forces.lin_drag_force_front_rim_camber_N - d_forces.lin_drag_force_back_rim_camber_N);
 
       //------------------------------------------------------------------------------------------------------------------
@@ -715,21 +715,21 @@ namespace DfisX
     // There is a non-zero ampunt of 'along disc normal' upward force generated when the disc is at 0 AOA
     // which is NOT covered by the plate form drag since that only uses the inner cavity area.
     // Get component along disc normal from rim_camber_norm_angle
-    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * cos(rim_camber_norm_angle)  * d_orientation;
-    d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N  * cos(rim_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * sin(rim_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_back_rim_camber_N  * sin(rim_camber_norm_angle)  * d_orientation;
     // get edge vector component from rim_camber_norm_angle
     // remember that the rear rim pushes us FORWARD (COOL!)
-    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * sin(rim_camber_norm_angle)  * edge_force_vector;
-    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_rim_camber_N  * sin(rim_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_rim_camber_N * cos(rim_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_rim_camber_N  * cos(rim_camber_norm_angle)  * edge_force_vector;
 
     // Dome camber form drag forces
     // Get component along disc normal from dome_camber_norm_angle
-    d_forces.drag_force_vector -= d_forces.lin_drag_force_front_dome_camber_N * cos(dome_camber_norm_angle)  * d_orientation;
-    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * cos(dome_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_front_dome_camber_N * sin(dome_camber_norm_angle)  * d_orientation;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * sin(dome_camber_norm_angle)  * d_orientation;
     // get edge vector component from dome_camber_norm_angle
     // remember that the rear surface of the dome pushes us FORWARD (COOL!)
-    d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * sin(dome_camber_norm_angle)  * edge_force_vector;
-    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * sin(dome_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector += d_forces.lin_drag_force_front_dome_camber_N * cos(dome_camber_norm_angle)  * edge_force_vector;
+    d_forces.drag_force_vector -= d_forces.lin_drag_force_back_dome_camber_N  * cos(dome_camber_norm_angle)  * edge_force_vector;
 
 
     d_forces.lift_force_vector *= 0;

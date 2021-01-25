@@ -235,7 +235,7 @@ namespace DfisX
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 1;
-      if(0)
+      if(1)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -254,7 +254,7 @@ namespace DfisX
 
       //disc_mold = find_disc_mold_index_by_name("Destroyer");
 
-      if(1)
+      if(0)
       {
         switch(disc2throw)
         {
@@ -264,10 +264,10 @@ namespace DfisX
             break;
           case 1:
             disc_mold = find_disc_mold_index_by_name("Wraith");//"Destroyer");
-            disc2throw = 0;
+            disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Wraith");
+            disc_mold = find_disc_mold_index_by_name("Valkyrie");
             disc2throw = 0;
             break;
           case 3:
@@ -287,7 +287,7 @@ namespace DfisX
     }
 
     // override for Loft Test Throws
-    if(1)
+    if(0)
     {
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
