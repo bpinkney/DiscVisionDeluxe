@@ -398,7 +398,7 @@ namespace DfisX
       
       // get effective area exposed by inner lip
       const double A_eff_lip = 
-        (d_object.radius * 2 - d_object.rim_width * 2) *
+        (d_object.radius * 2 - d_object.rim_width * 2) * // cross sectional area rectangle approx
         d_object.rim_depth * CAVITY_EDGE_EXPOSED_AREA_FACTOR;
 
       const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar);
@@ -406,9 +406,15 @@ namespace DfisX
       // Fd_lip
       // along edge_force_vector
       // TODO: make this better! effective range is [-15deg, 70deg] AOA, peak at 20 AOA
-      // attenuated with AOA as a sinusoid for now
-      const double cavity_edge_effective_magnitude = cos(d_forces.aoar - DEG_TO_RAD(20)) * 
-        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
+      // attenuated with AOA as a sinusoid for now since that makes sense for the surface area
+      // it makes less sense for the Bernoulli lift below...
+
+      const float cavity_lift_max_angle  = DEG_TO_RAD( 90.0);
+      const float cavity_lift_min_angle  = DEG_TO_RAD(-15.0);
+      const float cavity_lift_peak_angle = DEG_TO_RAD( 20.0);
+
+      const double cavity_edge_effective_magnitude = cos(d_forces.aoar - cavity_lift_peak_angle) * 
+        (d_forces.aoar <= cavity_lift_max_angle && d_forces.aoar >= cavity_lift_min_angle ? 1.0 : 0.0);
       const double A_eff_lip_at_aoa_bounded = A_eff_lip_at_aoa * cavity_edge_effective_magnitude;
 
       d_forces.lin_drag_force_cavity_edge_N = 
@@ -442,11 +448,25 @@ namespace DfisX
           lift_factor *= lift_factor_spin_bonus;
         }
       }
+
+      // try out computing this lift effect as a linear falloff instead of a sinusoid:
+      const bool cavity_lift_use_linear_attenuation = true;
+
+      double cavity_edge_effective_magnitude_lift_model = cavity_edge_effective_magnitude;
+      if(cavity_lift_use_linear_attenuation)
+      {
+        const double aoa_eff = d_forces.aoar - cavity_lift_peak_angle;
+
+        cavity_edge_effective_magnitude_lift_model = 
+          aoa_eff >= 0 ? 
+            1.0 - (aoa_eff / (cavity_lift_max_angle - cavity_lift_peak_angle)) :
+            1.0 - (aoa_eff / (cavity_lift_min_angle - cavity_lift_peak_angle));
+      }
       
       // same angular range as above! This time we are doing some fancy Bernoulli lift forces instead
       // TODO: This is should probably be linear across the effective range
       d_forces.lift_force_cavity_edge_N = 
-        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cavity_edge_effective_magnitude;
+        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cavity_edge_effective_magnitude_lift_model;
 
       // Only attenuate this lift for nose-down, i.e. negative AOAs
       // TODO: Is this right? who knows 
@@ -478,16 +498,30 @@ namespace DfisX
       // we may want a better function to describe how the separation-point of laminar air
       // affects this lift force
       // e.g.
-      const float camber_lift_max_angle = DEG_TO_RAD( 50.0);
-      const float camber_lift_min_angle = DEG_TO_RAD(-30.0);
+      const float dome_camber_lift_max_angle  = DEG_TO_RAD( 50.0);
+      const float dome_camber_lift_min_angle  = DEG_TO_RAD(-30.0);
+      const float dome_camber_lift_peak_angle = DEG_TO_RAD(  0.0);
       //const float camber_lift_linear_falloff_factor = d_forces.aoar < 0 ? fabs(d_forces.aoar / camber_lift_min_angle) : fabs(d_forces.aoar / camber_lift_max_angle);
 
-      // not sure about this square.... it seems like things with a lot of dome are too stable, so I added this for now...
-      // TODO: re-evaluate the function of this effect
+      // try out computing this lift effect as a linear falloff instead of a sinusoid:
+      const bool dome_camber_lift_use_linear_attenuation = true;
+
+      double dome_camber_effective_magnitude_lift_model = 
+        cos(d_forces.aoar - dome_camber_lift_peak_angle) *
+        (d_forces.aoar <= dome_camber_lift_max_angle && d_forces.aoar >= dome_camber_lift_min_angle ? 1.0 : 0.0)
+      if(dome_camber_lift_use_linear_attenuation)
+      {
+        const double aoa_eff = d_forces.aoar - dome_camber_lift_peak_angle;
+
+        dome_camber_effective_magnitude_lift_model = 
+          aoa_eff >= 0 ? 
+            1.0 - (aoa_eff / (dome_camber_lift_max_angle - dome_camber_lift_peak_angle)) :
+            1.0 - (aoa_eff / (dome_camber_lift_min_angle - dome_camber_lift_peak_angle));
+      }
+
       const float camber_lift_factor = (camber_arc_to_diameter_ratio * camber_rect_arc_length_ref_scale);
       d_forces.lift_force_camber_N = 
-        rhov2o2 * A_plate * throw_container->debug.debug2 * camber_lift_factor * cos(d_forces.aoar) *
-        (d_forces.aoar <= camber_lift_max_angle && d_forces.aoar >= camber_lift_min_angle ? 1.0 : 0.0);
+        rhov2o2 * A_plate * throw_container->debug.debug2 * camber_lift_factor * dome_camber_effective_magnitude_lift_model;
 
       //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Linear Lift Model ** ** //////
