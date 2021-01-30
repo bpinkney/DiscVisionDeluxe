@@ -450,7 +450,7 @@ namespace DfisX
       }
 
       // try out computing this lift effect as a linear falloff instead of a sinusoid:
-      const bool cavity_lift_use_linear_attenuation = true;
+      const bool cavity_lift_use_linear_attenuation = false;
 
       double cavity_edge_effective_magnitude_lift_model = cavity_edge_effective_magnitude;
       if(cavity_lift_use_linear_attenuation)
@@ -504,11 +504,11 @@ namespace DfisX
       //const float camber_lift_linear_falloff_factor = d_forces.aoar < 0 ? fabs(d_forces.aoar / camber_lift_min_angle) : fabs(d_forces.aoar / camber_lift_max_angle);
 
       // try out computing this lift effect as a linear falloff instead of a sinusoid:
-      const bool dome_camber_lift_use_linear_attenuation = true;
+      const bool dome_camber_lift_use_linear_attenuation = false;
 
       double dome_camber_effective_magnitude_lift_model = 
         cos(d_forces.aoar - dome_camber_lift_peak_angle) *
-        (d_forces.aoar <= dome_camber_lift_max_angle && d_forces.aoar >= dome_camber_lift_min_angle ? 1.0 : 0.0)
+        (d_forces.aoar <= dome_camber_lift_max_angle && d_forces.aoar >= dome_camber_lift_min_angle ? 1.0 : 0.0);
       if(dome_camber_lift_use_linear_attenuation)
       {
         const double aoa_eff = d_forces.aoar - dome_camber_lift_peak_angle;
