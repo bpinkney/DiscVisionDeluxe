@@ -268,15 +268,15 @@ namespace DfisX
             break;
           case 2:
             disc_mold = find_disc_mold_index_by_name("Valkyrie");
-            disc2throw = 0;
+            disc2throw = 3;
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Zone");
+            disc_mold = find_disc_mold_index_by_name("Destroyer");
             disc2throw = 4;
             break;
           case 4:
-            disc_mold = find_disc_mold_index_by_name("Valkyrie");
-            disc2throw = 5;
+            disc_mold = find_disc_mold_index_by_name("Beast");
+            disc2throw = 0;
             break;
           default:
             disc_mold = find_disc_mold_index_by_name("Buzzz Foil");

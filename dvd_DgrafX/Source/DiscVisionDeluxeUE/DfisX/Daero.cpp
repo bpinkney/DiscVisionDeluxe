@@ -572,7 +572,7 @@ namespace DfisX
       // and if we assume a flat-ish rim camber, the optimal angle would be the angle until the airflow is
       // perpendicular to the rim camber
       // optimal angle would be rim_camber_norm_angle = atan2(rim width, edge height)
-      // the 'centre' of this effect should be at cos(AOA + rim_camber_norm_angle)
+      // the 'centre' of this effect should be at cos(AOA - rim_camber_norm_angle)
       const double rim_camber_norm_angle = atan2(d_object.rim_width, d_object.rim_camber_height);
 
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
@@ -638,7 +638,7 @@ namespace DfisX
       total_exposed_surface_area_m2 += rim_camber_surface_area_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
-      const double rim_camber_moment_arm_length = d_object.radius - d_object.rim_width * 0.5;
+      const double rim_camber_moment_arm_length = d_object.radius - (d_object.rim_width * 0.5);
 
       // take the delta between the two rims for this torque
       // since we know 'rim_camber_norm_angle', we can compute the component along the disc normal as 
@@ -653,8 +653,8 @@ namespace DfisX
       // the centre offset for the 'Fl_lip' seems to be around 0.1*diameter offset to the back
       // AOA is about the 'X' axis to the right, negative wrt Fl_lip sign, arm is toward the trailing end
       // assume this moment arm attenuates with non-zero AOA ???
-      const double Fl_lip_moment_arm_length = throw_container->debug.debug4 * d_object.radius * 2.0;// * cos(d_forces.aoar);
-      d_forces.rot_torque_cavity_edge_offset_Nm = -Fl_lip_moment_arm_length * d_forces.lift_force_cavity_edge_N;
+      const double Fl_cavity_edge_moment_arm_length = throw_container->debug.debug4 * d_object.radius * 2.0;// * cos(d_forces.aoar);
+      d_forces.rot_torque_cavity_edge_offset_Nm = -Fl_cavity_edge_moment_arm_length * d_forces.lift_force_cavity_edge_N;
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -665,19 +665,35 @@ namespace DfisX
       // since the laminar airflow separates further toward the front of the disc, we should expect
       // the centre of force to ALSO move toward the front of the disc with increased AOA
       // Could this be symmetric? Not likely, better look at some smokey wind tunnel images to be certain!
-      // TODO: Make this better, for now, we are just moving the moment arm further forward with non-zero AOA
-      // in a symmetric way
-      // (we should cover this effect while computing the mangitude of 'lift_force_camber_N' above as well!)
-      const double FL_arc_airflow_separation_factor = 1.0;// + abs(sin(d_forces.aoar));
-      //2.0 - cos(d_forces.aoar);
+      // TODO: Make this better, for now, we are not moving this moment arm at all!
+      // (we should cover this effect while computing the magnitude of 'lift_force_camber_N' above as well!)
+      // does this correlate to the force centre of the form drag above? hmm
+      const double FL_dome_camber_airflow_separation_factor = 1.0;
 
-      const double Fl_arc_moment_arm_length = FL_arc_airflow_separation_factor * throw_container->debug.debug5 * d_object.radius * 2;
+      const double Fl_dome_camber_moment_arm_length = FL_dome_camber_airflow_separation_factor * throw_container->debug.debug5 * d_object.radius * 2;
 
       // We observe that the camber (below) causes extra torque due to the plate drag
       // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
       d_forces.rot_torque_camber_offset_Nm = Fl_arc_moment_arm_length * d_forces.lift_force_camber_N;
 
       //------------------------------------------------------------------------------------------------------------------
+
+      // Not really certain this should be a thing yet
+      const bool apply_torque_from_dome_form_drag = true;
+      // Use the disparate forces generated on the top of the disc, and the small disc normal components
+      // to form and additional torque here
+      // Apply between [-effective_dome_radius/2 and effective_dome_radius/2] depending on the force distribution?
+      if(apply_torque_from_dome_form_drag)
+      {
+        const float dome_camber_form_drag_moment_arm_length = 
+          effective_dome_radius * 0.5 * (d_forces.lin_drag_force_front_dome_camber_N - d_forces.lin_drag_force_back_dome_camber_N)/(d_forces.lin_drag_force_front_dome_camber_N + d_forces.lin_drag_force_back_dome_camber_N);
+
+        d_forces.rot_torque_plate_offset_Nm = -1.0 * moment_arm_length * sin(dome_camber_norm_angle) *
+          (d_forces.lin_drag_force_front_dome_camber_N - d_forces.lin_drag_force_back_dome_camber_N);
+      }
+
+      //------------------------------------------------------------------------------------------------------------------
+
     ////// ** ** End Pitching Moment Model ** ** //////
 
     //------------------------------------------------------------------------------------------------------------------
