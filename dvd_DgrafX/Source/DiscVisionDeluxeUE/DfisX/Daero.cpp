@@ -41,7 +41,7 @@ Also gravity.
 
 // effective area using cavity width * depth rectangle approx
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
-#define CAVITY_EDGE_EXPOSED_AREA_FACTOR (0.4)
+#define CAVITY_EDGE_EXPOSED_AREA_FACTOR (1.0)
 
 // how much deviation we expect from a 'true rectangle' for the edge form drag model
 // (equivalent to changing the Cd_EDGE really, but more correct this way)
@@ -49,8 +49,8 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.2) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.045) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.14) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
@@ -67,8 +67,8 @@ double gv_aero_debug1             = (Cl_CAVITY);
 std::string gv_aero_label_debug2  = "Cl_CAMBER";
 double gv_aero_debug2             = (Cl_CAMBER);
 
-std::string gv_aero_label_debug3  = "CAVITY_EDGE_NORM_ROT_SPEED";
-double gv_aero_debug3             = (CAVITY_EDGE_NORM_ROT_SPEED);
+std::string gv_aero_label_debug3  = "CAVITY_EDGE_EXPOSED_AREA_FACTOR";
+double gv_aero_debug3             = (CAVITY_EDGE_EXPOSED_AREA_FACTOR);
 
 std::string gv_aero_label_debug4  = "PITCHING_MOMENT_CAVITY_LIFT_OFFSET";
 double gv_aero_debug4             = (PITCHING_MOMENT_CAVITY_LIFT_OFFSET);
@@ -397,9 +397,11 @@ namespace DfisX
       // 1. Effective drag in increase from air hitting the back of the disc inner lip
       
       // get effective area exposed by inner lip
+      const double cavity_exposed_circumference = 0.3;
       const double A_eff_lip = 
-        (d_object.radius * 2 - d_object.rim_width * 2) * // cross sectional area rectangle approx
-        d_object.rim_depth * CAVITY_EDGE_EXPOSED_AREA_FACTOR;
+      // approximate this as a % of the circumference od the cavity circle
+        2.0 * cavity_exposed_circumference * M_PI * (d_object.radius - d_object.rim_width) * //(d_object.radius * 2 - d_object.rim_width * 2) * 
+        d_object.rim_depth * throw_container->debug.debug3;
 
       const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar);
 
@@ -433,13 +435,13 @@ namespace DfisX
       if(A_eff_lip > 0)
       {
         lift_factor = (1.0 / A_eff_lip) * 0.8 * 0.00035302903145605;
-        if(throw_container->debug.debug3 > 0)
+        if(CAVITY_EDGE_NORM_ROT_SPEED > 0)
         {
           // Discs are really turing over stable by the time they hit the ground with CAVITY_EDGE_LIFT_EXP
           // set to 1.0. It is probably < 1
           double lift_factor_spin_bonus = 
             pow(abs(d_state.disc_rotation_vel), CAVITY_EDGE_LIFT_EXP) / 
-            pow(throw_container->debug.debug3, CAVITY_EDGE_LIFT_EXP) *
+            pow(CAVITY_EDGE_NORM_ROT_SPEED, CAVITY_EDGE_LIFT_EXP) *
             CAVITY_EDGE_LIFT_GAIN;
 
           // max of 1.0x to keep things simple
@@ -481,7 +483,7 @@ namespace DfisX
       // now measured directly
       // assume there is always a little bit of extra added onto this from the first bit of the curve?
       // this will also de-weight discs with huge domes 
-      const double camber_height = (d_object.dome_height + 0.003) * 0.5;
+      const double camber_height = d_object.dome_height;// works OK? (d_object.dome_height + 0.003) * 0.5;
 
       // treat this like a rect approx
       const double camber_rect_arc_length = sqrt(d_object.radius * d_object.radius + camber_height * camber_height) * 2.0;
@@ -573,7 +575,7 @@ namespace DfisX
       // perpendicular to the rim camber
       // optimal angle would be rim_camber_norm_angle = atan2(rim width, edge height)
       // the 'centre' of this effect should be at cos(AOA - rim_camber_norm_angle)
-      const double rim_camber_norm_angle = atan2(d_object.rim_width, d_object.rim_camber_height);
+      double rim_camber_norm_angle = atan2(d_object.rim_width, d_object.rim_camber_height);
 
       // effect is maxed at cos(rim_camber_norm_angle - aoa)
       // force projected along disc normal unit vector is sin(rim_camber_norm_angle)
@@ -614,6 +616,13 @@ namespace DfisX
         // TODO: actually extrapolate the normal angle change
         // and the change in effective angles for a concave rim camber
         rim_camber_shape_multiplier = 1.25;
+        // what if a concave rim camber just changes the normal vector of applied force?
+        // something similar might happen with the convex shape, but with a different function...
+        // presumably in the concave case, the normal vector is more similar to the vector of
+        // the incoming airflow. What if rim_camber_norm_angle -> aoa when this happens?
+        // nominally, that would mean a concave-rim-disc would be less stable when flat
+        // and more stable when air is coming from below.... 
+        //rim_camber_norm_angle = (rim_camber_norm_angle + d_forces.aoar) / 2.0;
       }
       if(strcmp(d_object.rim_camber, "Convex") == 0)
       {
@@ -674,21 +683,22 @@ namespace DfisX
 
       // We observe that the camber (below) causes extra torque due to the plate drag
       // AOA is about the 'X' axis to the right, so this is positive wrt Fl_arc sign, arm is toward the leading end
-      d_forces.rot_torque_camber_offset_Nm = Fl_arc_moment_arm_length * d_forces.lift_force_camber_N;
+      d_forces.rot_torque_camber_offset_Nm = Fl_dome_camber_moment_arm_length * d_forces.lift_force_camber_N;
 
       //------------------------------------------------------------------------------------------------------------------
 
       // Not really certain this should be a thing yet
-      const bool apply_torque_from_dome_form_drag = true;
+      // Do we expect more domey discs to be more understable....? No... so this probably doesn't make sense
+      const bool apply_torque_from_dome_form_drag = false;
       // Use the disparate forces generated on the top of the disc, and the small disc normal components
       // to form and additional torque here
       // Apply between [-effective_dome_radius/2 and effective_dome_radius/2] depending on the force distribution?
       if(apply_torque_from_dome_form_drag)
       {
         const float dome_camber_form_drag_moment_arm_length = 
-          effective_dome_radius * 0.5 * (d_forces.lin_drag_force_front_dome_camber_N - d_forces.lin_drag_force_back_dome_camber_N)/(d_forces.lin_drag_force_front_dome_camber_N + d_forces.lin_drag_force_back_dome_camber_N);
+          effective_dome_radius * 0.5 * fabs(d_forces.lin_drag_force_front_dome_camber_N - d_forces.lin_drag_force_back_dome_camber_N)/(d_forces.lin_drag_force_front_dome_camber_N + d_forces.lin_drag_force_back_dome_camber_N);
 
-        d_forces.rot_torque_plate_offset_Nm = -1.0 * moment_arm_length * sin(dome_camber_norm_angle) *
+        d_forces.rot_torque_plate_offset_Nm = -1.0 * dome_camber_form_drag_moment_arm_length * sin(dome_camber_norm_angle) *
           (d_forces.lin_drag_force_front_dome_camber_N - d_forces.lin_drag_force_back_dome_camber_N);
       }
 

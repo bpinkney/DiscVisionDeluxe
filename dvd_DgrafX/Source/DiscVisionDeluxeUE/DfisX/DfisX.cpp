@@ -276,10 +276,10 @@ namespace DfisX
             break;
           case 4:
             disc_mold = find_disc_mold_index_by_name("Beast");
-            disc2throw = 0;
+            disc2throw = 5;
             break;
           default:
-            disc_mold = find_disc_mold_index_by_name("Buzzz Foil");
+            disc_mold = find_disc_mold_index_by_name("Heat");
             disc2throw = 0;
             break;
         }
