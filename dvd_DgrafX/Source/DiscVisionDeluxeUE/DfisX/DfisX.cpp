@@ -235,7 +235,7 @@ namespace DfisX
       // OR just proceed through all of them in order
       // (skipping the brick)
       static uint8_t disc2throw = 1;
-      if(1)
+      if(0)
       {
         disc2throw++;
         if(disc2throw > disc_object_array.size() - 1)
@@ -254,7 +254,7 @@ namespace DfisX
 
       //disc_mold = find_disc_mold_index_by_name("Destroyer");
 
-      if(0)
+      if(1)
       {
         switch(disc2throw)
         {
