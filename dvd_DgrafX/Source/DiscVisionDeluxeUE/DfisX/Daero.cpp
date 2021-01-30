@@ -27,13 +27,16 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_CAVITY  (0.55)  // base lift cofficient for cavity bernoulli lift effect
-#define Cl_CAMBER  (0.5)  // base lift cofficient for dome camber bernoulli lift effect
+#define Cl_CAVITY  (1.0)  // base lift cofficient for cavity bernoulli lift effect
+#define Cl_CAMBER  (1.0)  // base lift cofficient for dome camber bernoulli lift effect
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
 // need to wait and see before enabling this one
-#define CAVITY_EDGE_NORM_ROT_SPEED (75.0) // rad/s cavity lift is linearly amplified about this spin speed
-  #define CAVITY_EDGE_LIFT_EXP     (2.0)
+// NOTE: This doesn't really seem to be a useful model after the 'dome' form drag got added
+// perhaps this was simply duplicating the effects of it?
+// DISABLED for now consequently
+#define CAVITY_EDGE_NORM_ROT_SPEED (0.0) // rad/s cavity lift is linearly amplified about this spin speed
+  #define CAVITY_EDGE_LIFT_EXP     (1.0)
   #define CAVITY_EDGE_LIFT_GAIN    (1.0)
 
 // effective area using cavity width * depth rectangle approx
@@ -46,7 +49,7 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.07) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.05) // % of diameter toward the back of the disc for cavity lift force centre
 #define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.2) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
@@ -433,8 +436,8 @@ namespace DfisX
             pow(throw_container->debug.debug3, CAVITY_EDGE_LIFT_EXP) *
             CAVITY_EDGE_LIFT_GAIN;
 
-          // max of 1.5x?
-          BOUND_VARIABLE(lift_factor_spin_bonus, 0.75, 1.25);
+          // max of 1.0x to keep things simple
+          BOUND_VARIABLE(lift_factor_spin_bonus, 0.5, 1.0);
 
           lift_factor *= lift_factor_spin_bonus;
         }
