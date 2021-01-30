@@ -400,26 +400,33 @@ namespace DfisX
 
       // subtract the 1cm from the offset we used for dome height measurement from the effective radius
       const float effective_dome_radius = MAX(0.0, d_object.radius - 0.01);
+      // The norm angle here is defined as the deviation from the -ve disc normal
+      // e.g. for a dome_height of zero, the dome_camber_norm_angle is 90 degrees
+      // more than likely between 80-90 degrees in practice
       const double dome_camber_norm_angle = atan2(effective_dome_radius, d_object.dome_height);
 
-      // effect is maxed at cos(dome_camber_norm_angle - aoa)
-      // force projected along disc normal unit vector is sin(dome_camber_norm_angle)
-      //const double dome_camber_incidence_angle = dome_camber_norm_angle - d_forces.aoar;
+      // force projected along the disc plane vector is cos(dome_camber_norm_angle)
+      // force projected along -ve disc normal unit vector is sin(dome_camber_norm_angle)
+
+      // const double dome_camber_incidence_angle = dome_camber_norm_angle - d_forces.aoar;
       // is you use the hypot here, Area = pi * (dh^2 + r^2)^2, the models result in the same
       // force along the disc normal after the back edge is exposed!
       // for now, we assume the area is the same to give some 'edge' to domey discs..?
       //const double dome_camber_area = 
       //  M_PI * (effective_dome_radius*effective_dome_radius + d_object.dome_height*d_object.dome_height) *
 
-      // if the angle is too far nose-down, this is no longer a factor
-      // like the rim camber below, we compute this for both 'surfaces' (front and back)|
+      // if the angle is too far nose-up, this is no longer a factor
+      // like the rim camber below, we compute this for both 'surfaces' (front and back)
       // using half the area for each
-      const double dome_camber_surface_exposed_front = MAX(0.0, sin(d_forces.aoar + (M_PI_2 - dome_camber_norm_angle)));
-      const double dome_camber_surface_exposed_back  = MAX(0.0, sin(d_forces.aoar + (dome_camber_norm_angle - M_PI_2)));
+      // remember we need -ve aoa here to get a positive value for the exposed surface
+      const double dome_camber_surface_exposed_front = MAX(0.0, sin(-d_forces.aoar + (M_PI_2 - dome_camber_norm_angle)));
+      const double dome_camber_surface_exposed_back  = MAX(0.0, sin(-d_forces.aoar + (dome_camber_norm_angle - M_PI_2)));
 
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
       // assume the front and back are 'split down the middle' for area
       // forces along the normals of the dome sides!
+      // this is the force magnitude along these surface normals,
+      // the components along the disc plane and disc normal are computed further down
       d_forces.lin_drag_force_front_dome_camber_N =
         rhov2o2 * Cd_PLATE  * (A_plate*0.5) * dome_camber_surface_exposed_front;
       d_forces.lin_drag_force_back_dome_camber_N =
