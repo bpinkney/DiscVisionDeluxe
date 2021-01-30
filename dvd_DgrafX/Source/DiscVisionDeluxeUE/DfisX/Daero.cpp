@@ -405,7 +405,7 @@ namespace DfisX
       // TODO: make this better! effective range is [-15deg, 70deg] AOA, peak at 20 AOA
       // attenuated with AOA as a sinusoid for now
       const double cavity_edge_effective_magnitude = cos(d_forces.aoar - DEG_TO_RAD(20)) * 
-        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0)
+        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
       const double A_eff_lip_at_aoa_bounded = A_eff_lip_at_aoa * cavity_edge_effective_magnitude;
 
       d_forces.lin_drag_force_cavity_edge_N = 
