@@ -267,81 +267,17 @@ namespace DfisX
     // as dome_form_drag
     const float edge_height = MAX(0.0, d_object.thickness - d_object.rim_camber_height - d_object.dome_height);
 
-    ////// ** ** Start Rotational Drag Model ** ** //////
-      //------------------------------------------------------------------------------------------------------------------
+    // now we can determine the unit vector to apply the edge drag force in
+    // get orth vector to airspeed and disc norm
+    // then use this vector to get the projected edge force vector along the disc plane
+    Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
+    make_unit_vector(edge_force_vector);
 
-      // from 'drag of rotating disc pitching'
-      // k = 0.13412
-      // Td = 2.0 * k * Cwdxy * r^5 * rho * w^2
-
-      //// Form Drag from the disc Rotation about
-      //// The forward veloicty vector (-ve disc Y axis)
-      //// and the right orthogonal vector (disc X axis)
-      //// This is this like a paddle boat paddle (disc rotates and smashes into nearby air)
-      //// Uses the same drag coeff as our standard 'plate form drag'
-
-      // 0.13412 is an constant for taking the limit for this drag force
-      // see dvd_DfisX_drag_of_rotating_disc_pitching.m
-      const double xy_rot_form_drag_limit = 0.13412;
-      d_forces.rot_drag_torque_x_Nm = 
-        -signum(d_state.disc_pitching_vel) *
-        2.0 * xy_rot_form_drag_limit *
-        Cd_PLATE *
-        r5 *
-        throw_container->disc_environment.air_density *
-        (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
-
-      d_forces.rot_drag_torque_y_Nm = 
-        -signum(d_state.disc_rolling_vel) *
-        2.0 * xy_rot_form_drag_limit *
-        Cd_PLATE *
-        r5 *
-        throw_container->disc_environment.air_density *
-        (d_state.disc_rolling_vel*d_state.disc_rolling_vel);
-
-      //------------------------------------------------------------------------------------------------------------------
-
-      //// Parasitic Skin Drag from the disc Rotation about the normal (disc Z axis)
-      //// Think of this like small eddys and friction from the plastic surface of the disc
-
-      // rotational Reynolds number = Re = omega * r^2 / linear_v
-      // where (I think) linear_v is along the rotational plane (not sure)
-      // for now, we can just take the total lin vel magnitude...
-
-      // (I think?) The rotational reynolds number is a function only of the linear aispeed
-      // across the disc surface (orthogonal to the disc normal)
-      // So we can compute the dot product between the disc normal unit vector, and the airspeed vector
-      // to compute the effective angle between the airspeed vector and the disc normal
-      // then, we can use this angle to attenuate the magnitude of the airspeed vector to produce 
-      // the magnitude of airflow in the disc plane only
-      const float ang_disc_normal_to_airspeed = angle_between_vectors(disc_air_velocity_vector, d_state.disc_orientation);
-      const float airspeed_vel_mag_disc_plane = sin(ang_disc_normal_to_airspeed) * d_forces.velocity_magnitude;
-      const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(airspeed_vel_mag_disc_plane, CLOSE_TO_ZERO);
-
-      // https://www.sciencedirect.com/topics/engineering/rotating-disc
-      // approximate surrounded by laminar   Cm = 3.87Re^(-1/2)
-      // approximate surrounded by turbulent Cm = 0.146Re^(-1/5)
-      // NO IDEA, let's just tune this with the laminar formula
-      float Cm = 0.0;
-      if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
-      {
-        Cm = Cm_BASE * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
-      }
-
-      // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
-      // where omega is the angular vel in m/s
-      // and 'r' is the radius in m
-      d_forces.rot_drag_torque_z_Nm =
-        -signum(d_state.disc_rotation_vel) *
-        0.5 * 
-        throw_container->disc_environment.air_density * 
-        (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
-        r5 * 1.0 *
-        Cm;
-
-      //------------------------------------------------------------------------------------------------------------------
-    ////// ** ** End Rotational Drag Model ** ** //////
-
+    // We'll use this variable to add up all the exposed disc surface areas throughout these models
+    // e.g. lower rim camber, top dome camber, underside, etc.
+    // then eventually use them for the parasitic skin drag model (linear)
+    // maybe this should be applied to the angular models as well?
+    float total_exposed_surface_area_m2 = 0.0;
 
     ////// ** ** Start Linear Form Drag Model ** ** //////
       //------------------------------------------------------------------------------------------------------------------
@@ -387,7 +323,11 @@ namespace DfisX
       // Note: we still use this model for + AOA to simulate the air blowing UP under the disc
       // HOWEVER: since the lower rim camber forces are already included, we reduce the area of this effect to
       // just the inside (e.g. radius - rim_width)
-      d_forces.lin_drag_force_plate_N = d_forces.aoar > 0 ? rhov2o2 * Cd_PLATE * A_plate * sin(d_forces.aoar): 0.0;//d_forces.aoar < 0 ? rhov2o2 * Cd_PLATE * A_plate_under * sin(d_forces.aoar) : 0.0;
+      const float exposed_cavity_plate_surface = d_forces.aoar > 0 ? A_plate * sin(d_forces.aoar) : 0.0;
+      d_forces.lin_drag_force_plate_N = rhov2o2 * Cd_PLATE * exposed_cavity_plate_surface;
+
+      // incrememt exposed total surfaces
+      total_exposed_surface_area_m2 += exposed_cavity_plate_surface;
 
       //------------------------------------------------------------------------------------------------------------------
       // Fd_plate (with disc-normal component using trianglar dome approx      
@@ -427,10 +367,17 @@ namespace DfisX
       // forces along the normals of the dome sides!
       // this is the force magnitude along these surface normals,
       // the components along the disc plane and disc normal are computed further down
+      const double dome_camber_surface_area_exposed_front = (A_plate*0.5) * dome_camber_surface_exposed_front;
+      const double dome_camber_surface_area_exposed_back  = (A_plate*0.5) * dome_camber_surface_exposed_back;
+
       d_forces.lin_drag_force_front_dome_camber_N =
-        rhov2o2 * Cd_PLATE  * (A_plate*0.5) * dome_camber_surface_exposed_front;
+        rhov2o2 * Cd_PLATE  * dome_camber_surface_area_exposed_front;
       d_forces.lin_drag_force_back_dome_camber_N =
-        rhov2o2 * Cd_PLATE  * (A_plate*0.5) * dome_camber_surface_exposed_back;
+        rhov2o2 * Cd_PLATE  * dome_camber_surface_area_exposed_back;
+
+      // incrememt exposed total surfaces
+      total_exposed_surface_area_m2 += dome_camber_surface_area_exposed_front;
+      total_exposed_surface_area_m2 += dome_camber_surface_area_exposed_back;
 
       // assume the force is applied somewhere between the centre of the 'front' and 'back'
       // assumed triangular surfaces, as a function of the force magnitude on each
@@ -439,27 +386,6 @@ namespace DfisX
       // OR, if the back is exposed somewhat, the force centre is dictated as:
       // radius/2 * (front - back) / |front and back| or something
       // TODO: actually add this torque?
-
-      //------------------------------------------------------------------------------------------------------------------
-
-      // Parasitic Skin Drag
-      // This is not included in the two components of form drag listed above, but will change with AOA
-      // It is akin to 'air friction', and is addressed for the rotational case in 'aero_torque_z' above
-      // For the linear airflow interaction, 
-      // we assume that maximum skin drag occurs when the most surface area is exposed to an airflow
-      // this is very probably when the disc is flat
-      // The effective area used for this drag term may be related to the boundary layer, and how
-      // long laminar airflows stay attached to the disc.
-      // For now, we'll just approximate it as a fixed valuefor any AOA (to be revisited later if required)
-      // Skin drag is considered to be in the direction of the airflow vector
-      // Fd_skin
-      d_forces.lin_drag_force_skin_N = rhov2o2 * Cd_SKIN * (A_edge + A_plate);
-
-      // now we can determine the unit vector to apply the edge drag force in
-      // get orth vector to airspeed and disc norm
-      // then use this vector to get the projected edge force vector along the disc plane
-      Eigen::Vector3d edge_force_vector = d_orientation.cross(d_orientation.cross(d_forces.disc_velocity_unit_vector));
-      make_unit_vector(edge_force_vector);
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -477,10 +403,16 @@ namespace DfisX
       // Fd_lip
       // along edge_force_vector
       // TODO: make this better! effective range is [-15deg, 70deg] AOA, peak at 20 AOA
-      // attenuated with AOA as a sinusoid
+      // attenuated with AOA as a sinusoid for now
+      const double cavity_edge_effective_magnitude = cos(d_forces.aoar - DEG_TO_RAD(20)) * 
+        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0)
+      const double A_eff_lip_at_aoa_bounded = A_eff_lip_at_aoa * cavity_edge_effective_magnitude;
+
       d_forces.lin_drag_force_cavity_edge_N = 
-        rhov2o2 * throw_container->debug.debug0 * A_eff_lip_at_aoa * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
-        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
+        rhov2o2 * throw_container->debug.debug0 * A_eff_lip_at_aoa_bounded;
+
+      // incrememt exposed total surfaces
+      total_exposed_surface_area_m2 += A_eff_lip_at_aoa_bounded;
 
       // from the model validation and comparison with wind tunnel data in
       // "dvd_DfisX_form_drag_and_stall_drag_comparison.m"
@@ -508,10 +440,10 @@ namespace DfisX
         }
       }
       
-      // same angular range as above!
+      // same angular range as above! This time we are doing some fancy Bernoulli lift forces instead
+      // TODO: This is should probably be linear across the effective range
       d_forces.lift_force_cavity_edge_N = 
-        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cos(d_forces.aoar - DEG_TO_RAD(20)) * 
-        (d_forces.aoar <= DEG_TO_RAD(70) && d_forces.aoar >= DEG_TO_RAD(-15) ? 1.0 : 0.0);
+        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cavity_edge_effective_magnitude;
 
       // Only attenuate this lift for nose-down, i.e. negative AOAs
       // TODO: Is this right? who knows 
@@ -656,11 +588,17 @@ namespace DfisX
       const double rim_camber_surface_exposed_back_edge = MAX(0.0, sin(d_forces.aoar + (rim_camber_norm_angle - M_PI_2))) * rim_camber_shape_multiplier;
 
       // The bounding above zero for the two surfaces above enforces the effective range of this effect, nice!
-      // TODO: Experimentally add a multiplier here for concave rims, and a negative multiplier for convex rims
+      const double rim_camber_surface_area_exposed_front_edge = rim_camber_area * rim_camber_surface_exposed_front_edge;
+      const double rim_camber_surface_area_exposed_back_edge  = rim_camber_area * rim_camber_surface_exposed_back_edge;
+
       d_forces.lin_drag_force_front_rim_camber_N =
-        rhov2o2 * throw_container->debug.debug0  * rim_camber_area * rim_camber_surface_exposed_front_edge;
+        rhov2o2 * throw_container->debug.debug0  * rim_camber_surface_area_exposed_front_edge;
       d_forces.lin_drag_force_back_rim_camber_N =
-        rhov2o2 * throw_container->debug.debug0  * rim_camber_area * rim_camber_surface_exposed_back_edge;
+        rhov2o2 * throw_container->debug.debug0  * rim_camber_surface_area_exposed_back_edge;
+
+      // incrememt exposed total surfaces
+      total_exposed_surface_area_m2 += rim_camber_surface_area_exposed_front_edge;
+      total_exposed_surface_area_m2 += rim_camber_surface_area_exposed_back_edge;
 
       // assume the force is applied halfway along the rim width
       const double rim_camber_moment_arm_length = d_object.radius - d_object.rim_width * 0.5;
@@ -704,6 +642,105 @@ namespace DfisX
 
       //------------------------------------------------------------------------------------------------------------------
     ////// ** ** End Pitching Moment Model ** ** //////
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    ////// ** ** Start Rotational Drag Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
+
+      // from 'drag of rotating disc pitching'
+      // k = 0.13412
+      // Td = 2.0 * k * Cwdxy * r^5 * rho * w^2
+
+      //// Form Drag from the disc Rotation about
+      //// The forward veloicty vector (-ve disc Y axis)
+      //// and the right orthogonal vector (disc X axis)
+      //// This is this like a paddle boat paddle (disc rotates and smashes into nearby air)
+      //// Uses the same drag coeff as our standard 'plate form drag'
+
+      // 0.13412 is an constant for taking the limit for this drag force
+      // see dvd_DfisX_drag_of_rotating_disc_pitching.m
+      const double xy_rot_form_drag_limit = 0.13412;
+      d_forces.rot_drag_torque_x_Nm = 
+        -signum(d_state.disc_pitching_vel) *
+        2.0 * xy_rot_form_drag_limit *
+        Cd_PLATE *
+        r5 *
+        throw_container->disc_environment.air_density *
+        (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
+
+      d_forces.rot_drag_torque_y_Nm = 
+        -signum(d_state.disc_rolling_vel) *
+        2.0 * xy_rot_form_drag_limit *
+        Cd_PLATE *
+        r5 *
+        throw_container->disc_environment.air_density *
+        (d_state.disc_rolling_vel*d_state.disc_rolling_vel);
+
+      //------------------------------------------------------------------------------------------------------------------
+
+      //// Parasitic Skin Drag from the disc Rotation about the normal (disc Z axis)
+      //// Think of this like small eddys and friction from the plastic surface of the disc
+
+      // rotational Reynolds number = Re = omega * r^2 / linear_v
+      // where (I think) linear_v is along the rotational plane (not sure)
+      // for now, we can just take the total lin vel magnitude...
+
+      // (I think?) The rotational reynolds number is a function only of the linear aispeed
+      // across the disc surface (orthogonal to the disc normal)
+      // So we can compute the dot product between the disc normal unit vector, and the airspeed vector
+      // to compute the effective angle between the airspeed vector and the disc normal
+      // then, we can use this angle to attenuate the magnitude of the airspeed vector to produce 
+      // the magnitude of airflow in the disc plane only
+      const float ang_disc_normal_to_airspeed = angle_between_vectors(disc_air_velocity_vector, d_state.disc_orientation);
+      const float airspeed_vel_mag_disc_plane = sin(ang_disc_normal_to_airspeed) * d_forces.velocity_magnitude;
+      const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(airspeed_vel_mag_disc_plane, CLOSE_TO_ZERO);
+
+      // https://www.sciencedirect.com/topics/engineering/rotating-disc
+      // approximate surrounded by laminar   Cm = 3.87Re^(-1/2)
+      // approximate surrounded by turbulent Cm = 0.146Re^(-1/5)
+      // NO IDEA, let's just tune this with the laminar formula
+      float Cm = 0.0;
+      if(airspeed_vel_mag_disc_plane > CLOSE_TO_ZERO)
+      {
+        Cm = Cm_BASE * (1.0 / MAX(std::sqrt(Re_rot), CLOSE_TO_ZERO));
+      }
+
+      // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
+      // where omega is the angular vel in m/s
+      // and 'r' is the radius in m
+      d_forces.rot_drag_torque_z_Nm =
+        -signum(d_state.disc_rotation_vel) *
+        0.5 * 
+        throw_container->disc_environment.air_density * 
+        (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
+        r5 * 1.0 *
+        Cm;
+
+      //------------------------------------------------------------------------------------------------------------------
+    ////// ** ** End Rotational Drag Model ** ** //////
+
+    ////// ** ** Start Liner Skin Drag Model ** ** //////
+      //------------------------------------------------------------------------------------------------------------------
+
+      // Parasitic Skin Drag
+      // This is not included in the two components of form drag listed above, but will change with AOA
+      // It is akin to 'air friction', and is addressed for the rotational case in 'aero_torque_z' above
+      // For the linear airflow interaction, 
+      // we assume that maximum skin drag occurs when the most surface area is exposed to an airflow
+      // this is very probably when the disc is flat
+      // The effective area used for this drag term may be related to the boundary layer, and how
+      // long laminar airflows stay attached to the disc.
+      
+      // Let's try to use some of the 'exposed surfaces' computed throughout to get an idea of the
+      // effective area to apply this to! (fun)
+
+      // Skin drag is considered to be in the direction of the airflow vector
+      // Fd_skin
+      d_forces.lin_drag_force_skin_N = rhov2o2 * Cd_SKIN * total_exposed_surface_area_m2;//(A_edge + A_plate);
+
+      //------------------------------------------------------------------------------------------------------------------
+    ////// ** ** End Liner Skin Drag Model ** ** //////
 
     // sum all forces and torques for aero effects
     d_forces.aero_torque_x = d_forces.rot_drag_torque_x_Nm;
