@@ -835,7 +835,11 @@ int dvd_DvisEst_image_capture_thread()
 
       if(sv_enable_chime)
       {
+        #if !defined(IS_WINDOWS)
         std::system("ffplay -nodisp -autoexit ../resources/chime.mp3 >/dev/null 2>&1 &");
+        #else
+        std::system("vlc -I dummy --dummy-quiet ../resources/chime.mp3");
+        #endif
       }
 
       // Begin acquiring images
