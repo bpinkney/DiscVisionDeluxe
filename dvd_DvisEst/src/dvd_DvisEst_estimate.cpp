@@ -1134,7 +1134,7 @@ static void kf_check_for_ideal_output_state()
 // Kalman Filter Functions
 #define MEAS_PRIME_QUEUE_MAX_AGE_NS           (MS_TO_NS(100)) // no older than 100ms
 #define MEAS_PRIME_QUEUE_PRIME_MAX_ENTRIES    (20)
-#define MEAS_PRIME_QUEUE_PRIME_COUNT          (10)
+#define MEAS_PRIME_QUEUE_PRIME_COUNT          (8)
 #define MEAS_PRIME_QUEUE_PRIME_MIN_VAR        (2.0) // (m/s)^2
 static void kf_meas_update_step()
 {

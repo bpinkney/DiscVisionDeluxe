@@ -522,11 +522,19 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
             }
             else if(!calc_groundplane)
             {
-              // calculate normal disc measurements from AprilTag measurements
-              dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
+              // don't consume groundplane tags for actual estimates
+              //if((disc_index == DiscIndex::GROUNDPLANE || disc_index == DiscIndex::GROUNDPLANE_BIG) && detect_num == 1)
+              //{
+              //  dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS, image_capture.frame_id);
+              //}
+              //else if(disc_index != DiscIndex::GROUNDPLANE && disc_index != DiscIndex::GROUNDPLANE_BIG)
+              //{
+                // calculate normal disc measurements from AprilTag measurements
+                dvd_DvisEst_estimate_transform_measurement(R_CD, T_CD, &kf_meas);
 
-              // fulfill measurement reservation
-              dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, image_capture.frame_id, &kf_meas);
+                // fulfill measurement reservation
+                dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, image_capture.frame_id, &kf_meas);
+              //}
             }
             else
             {
