@@ -9,7 +9,7 @@
 
 // convenience settings for dvd_DvisEst interface
 #define DVISEST_INTERFACE_ENABLED              (true)
-#define DVISEST_INTERFACE_USE_GENERATED_THROWS (true)
+#define DVISEST_INTERFACE_USE_GENERATED_THROWS (false)
 
 // all throws in queue
 //std::deque<ADiscThrow> DiscThrowQueue;

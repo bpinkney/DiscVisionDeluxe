@@ -27,7 +27,7 @@ Also gravity.
 #define Cd_SKIN  (0.01) // base linear parasitic skin drag coeff
 
 // Lift Base coefficients
-#define Cl_CAVITY  (1.0)  // base lift cofficient for cavity bernoulli lift effect
+#define Cl_CAVITY  (45.0)  // base lift cofficient for cavity bernoulli lift effect
 #define Cl_CAMBER  (1.0)  // base lift cofficient for dome camber bernoulli lift effect
 // this can add more stability at the end of a flight if the threshold is low enough
 // but it will also add more stability for higher spin speeds above CAVITY_EDGE_NORM_ROT_SPEED
@@ -39,7 +39,7 @@ Also gravity.
   #define CAVITY_EDGE_LIFT_EXP     (1.0)
   #define CAVITY_EDGE_LIFT_GAIN    (1.0)
 
-// effective area using cavity width * depth rectangle approx
+// effective area using a portion of the inner circumference
 // this was shown to be aroun 0.5 by comparison with the wind tunnel models
 #define CAVITY_EDGE_EXPOSED_AREA_FACTOR (1.0)
 
@@ -49,8 +49,8 @@ Also gravity.
 
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
-#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.045) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.14) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.042) // % of diameter toward the back of the disc for cavity lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.10) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber
@@ -400,7 +400,8 @@ namespace DfisX
       const double cavity_exposed_circumference = 0.3;
       const double A_eff_lip = 
       // approximate this as a % of the circumference od the cavity circle
-        2.0 * cavity_exposed_circumference * M_PI * (d_object.radius - d_object.rim_width) * //(d_object.radius * 2 - d_object.rim_width * 2) * 
+        2.0 * cavity_exposed_circumference * M_PI * (d_object.radius - d_object.rim_width) * //
+        //(d_object.radius * 2 - d_object.rim_width * 2) * 
         d_object.rim_depth * throw_container->debug.debug3;
 
       const double A_eff_lip_at_aoa = A_eff_lip * cos(d_forces.aoar);
@@ -467,8 +468,9 @@ namespace DfisX
       
       // same angular range as above! This time we are doing some fancy Bernoulli lift forces instead
       // TODO: This is should probably be linear across the effective range
+      // this used to use A_plate, it has now been changed
       d_forces.lift_force_cavity_edge_N = 
-        rhov2o2 * throw_container->debug.debug1 * A_plate * lift_factor * cavity_edge_effective_magnitude_lift_model;
+        rhov2o2 * throw_container->debug.debug1 * lift_factor * A_eff_lip_at_aoa * cavity_edge_effective_magnitude_lift_model;
 
       // Only attenuate this lift for nose-down, i.e. negative AOAs
       // TODO: Is this right? who knows 

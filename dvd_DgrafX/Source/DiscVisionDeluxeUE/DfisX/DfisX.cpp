@@ -234,7 +234,7 @@ namespace DfisX
 
       // OR just proceed through all of them in order
       // (skipping the brick)
-      static uint8_t disc2throw = 1;
+      static uint8_t disc2throw = 0;
       if(0)
       {
         disc2throw++;
@@ -259,7 +259,7 @@ namespace DfisX
         switch(disc2throw)
         {
           case 0:
-            disc_mold = find_disc_mold_index_by_name("Mako3");
+            disc_mold = find_disc_mold_index_by_name("Shryke");
             disc2throw = 1;
             break;
           case 1:

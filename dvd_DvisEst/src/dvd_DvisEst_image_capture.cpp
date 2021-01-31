@@ -129,7 +129,7 @@ std::atomic<uint32_t> sv_image_capture_frame_rate (0);
 // e.g. 1.1 assumes that 1/10 of the exposure time is required for frame capture and admin
 // tested experimentally at 522fps to be between 6-7%
 #define MIN_EXPOSURE_US (10)
-#define MAX_EXPOSURE_US ((1.0 / 522.0) * (1000000.0 / 1.07) * 0.5) // set this to 1/2 for now
+#define MAX_EXPOSURE_US ((1.0 / 522.0) * (1000000.0 / 1.07) * 0.25) // set this to 1/4 for now
 
 #define MIN_GAIN        (1.0)
 #define MAX_GAIN        (100.0)

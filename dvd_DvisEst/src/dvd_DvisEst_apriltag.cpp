@@ -403,7 +403,7 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           cerr << "*** GOT TAG ***" << endl;
         }*/
 
-        if(detect_num > 0)
+        if(detect_num > 0 && !calc_groundplane)
         {
           last_frame_detect_ns = image_capture.timestamp_ns;
         }
@@ -417,6 +417,9 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           dvd_DvisEst_estimate_set_tags_detected(true, image_capture.frame_id);
         }
 
+        // check whether we need to do an exposure sweep to find a groundplane tag
+        bool sweep_up_groundplane = false;
+
         if(detect_num > 0 && (at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS || calc_groundplane))
         {
           /*if(!log_dir.empty())
@@ -427,7 +430,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           }*/
 
           // TODO: take first detection which falls within our lookup sets
-          for (int tag = 0; tag < min(detect_num, 1); tag++) 
+          // Look at all tags when calcing the ground plane, since we want to make sure discs are showing up OK if they are in frame
+          for (int tag = 0; tag < (calc_groundplane ? detect_num : min(detect_num, 1)); tag++) 
           {
             apriltag_detection_t *det;
             zarray_get(detections, tag, &det);
@@ -482,6 +486,9 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
 
             if(calc_groundplane && (disc_index == DiscIndex::GROUNDPLANE || disc_index == DiscIndex::GROUNDPLANE_BIG))
             {
+              // only update this timestamp if we get a GROUNDPLANE DETECT
+              last_frame_detect_ns = image_capture.timestamp_ns;
+
               // Update ground plane
               dvd_DvisEst_estimate_update_groundplane(R_CD, T_CD);
 
@@ -498,7 +505,14 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               // also an issue if you print things on non-white cardstock like I did..... skip and fudge factors for this for now
               // GROUNDPLANE     -> tag 386 for 36h11 -> 18 white squares, 46 black squares, des_centroid_for_balance = 18/46 = 0.39
               // GROUNDPLANE_BIG -> tag 387 for 36h11 -> 15 white squares, 49 black squares, des_centroid_for_balance = 15/49 = 0.31
-              const double des_centroid = (disc_index == DiscIndex::GROUNDPLANE ? 0.39 : 0.31);
+              // for a direct light source, this results in thrown discs which are too bright
+              // (the thrown discs are closer to the source)
+              // decrease the centroid by 'des_centroid_direct_light_factor' for each case
+              const double des_centroid_direct_light_factor = 0.1;
+              const double des_centroid = 
+                (disc_index == DiscIndex::GROUNDPLANE ? 
+                  0.39 - des_centroid_direct_light_factor : 
+                  0.31 - des_centroid_direct_light_factor);
 
               // later, we could add this to the regular tag detection and continue to adjust the 
               // gain/exposure throughout throws. For now, just do it when the ground plane is set.
@@ -514,6 +528,14 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               // fulfill measurement reservation
               dvd_DvisEst_estimate_fulfill_measurement_slot(meas_slot_id, image_capture.frame_id, &kf_meas);
             }
+            else
+            {
+              // we only got one tag, and it wasn't a ground plane.... sweep time
+              if(detect_num == 1)
+              {
+                sweep_up_groundplane = true;
+              }
+            }
           }
         }
         else if(!calc_groundplane)
@@ -522,6 +544,11 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
           dvd_DvisEst_estimate_cancel_measurement_slot(meas_slot_id, at_detection_thread_mode[thread_id] == AT_DETECTION_THREAD_MODE_MEAS, image_capture.frame_id);
         }
         else
+        {
+          sweep_up_groundplane = true;
+        }
+
+        if(sweep_up_groundplane)
         {
           // We're setting the ground plane, and the exposure starts from "very dark"
           // assume that we need to make the scene progressively lighter for now
