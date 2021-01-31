@@ -508,7 +508,8 @@ int at_detection_thread_run(uint8_t thread_id, const bool convert_from_bayer, co
               // for a direct light source, this results in thrown discs which are too bright
               // (the thrown discs are closer to the source)
               // decrease the centroid by 'des_centroid_direct_light_factor' for each case
-              const double des_centroid_direct_light_factor = 0.1;
+              // UGH, this is terrible, we need to add dynamic exposure and gain correction for stationary discs!
+              const double des_centroid_direct_light_factor = 0.0;//0.1;
               const double des_centroid = 
                 (disc_index == DiscIndex::GROUNDPLANE ? 
                   0.39 - des_centroid_direct_light_factor : 
