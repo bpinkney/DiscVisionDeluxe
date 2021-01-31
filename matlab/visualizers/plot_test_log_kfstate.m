@@ -54,18 +54,18 @@ filt_active         = M_meas(:, 12);
 % get delta between meas and state times for better meas plotting (need to sort this)
 %dtimemeas = mean(time_ms_meas - meas_time_ms_meas);
 
-
+time_ms_state(1)
 % find first index for non-zero state
 nonzero_idx = (time_ms_state > 0);
 t_start = time_ms_state(nonzero_idx);
 t_start = t_start(1)
 
 waitidx = figure; hold on;
-plot(time_ms_state, lin_xyz_pos_state, '-', 'LineWidth', 2)
+plot((time_ms_state - time_ms_state(1)), lin_xyz_pos_state, '-', 'LineWidth', 2)
 reset_colours
-plot(out_time_ms_state(1), out_lin_xyz_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
+plot((out_time_ms_state(1) - time_ms_state(1)), out_lin_xyz_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
-plot(meas_time_ms_meas, lin_xyz_pos_meas, 'o', 'MarkerSize', 3)
+plot((meas_time_ms_meas - time_ms_state(1)), lin_xyz_pos_meas, 'o', 'MarkerSize', 3)
 legend('X', 'Y', 'Z')
 grid on;
 title('Lin Pos Meas and State')
@@ -74,11 +74,11 @@ fig.Units='normalized';
 fig.OuterPosition=[0 1 0.4 0.5];
 
 figure; hold on;
-plot(time_ms_state, lin_xyz_vel_state, '-')
+plot((time_ms_state - time_ms_state(1)), lin_xyz_vel_state, '-')
 reset_colours
-plot(out_time_ms_state(1), out_lin_xyz_vel_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
+plot((out_time_ms_state(1) - time_ms_state(1)), out_lin_xyz_vel_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
-plot(meas_time_ms_meas(2:end), diff(lin_xyz_pos_meas)./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
+plot((meas_time_ms_meas(2:end) - time_ms_state(1)), diff(lin_xyz_pos_meas)./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
 %reset_colours
 %plot(time_ms_state(2:end), diff(lin_xyz_pos_state)./repmat(diff(time_ms_state*0.001), 1, 3), '--')
 legend('X', 'Y', 'Z')
@@ -90,14 +90,14 @@ fig.Units='normalized';
 fig.OuterPosition=[0 0 0.4 0.5];
 
 figure; hold on;
-plot(time_ms_state, ang_hps_pos_state, '.-', 'LineWidth', 2)
+plot((time_ms_state - time_ms_state(1)), ang_hps_pos_state, '.-', 'LineWidth', 2)
 reset_colours
-plot(out_time_ms_state(1), out_ang_hps_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
+plot((out_time_ms_state(1) - time_ms_state(1)), out_ang_hps_pos_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
 % average line
-plot(time_ms_state, repmat(time_ms_state.*0, 1, 2)+repmat(out_ang_hps_pos_state(1, 1:2), length(time_ms_state), 1), '--')
+plot((time_ms_state - time_ms_state(1)), repmat(time_ms_state.*0, 1, 2)+repmat(out_ang_hps_pos_state(1, 1:2), length(time_ms_state), 1), '--')
 reset_colours
-plot(meas_time_ms_meas, ang_hps_pos_meas, 'o', 'MarkerSize', 3)
+plot((meas_time_ms_meas - time_ms_state(1)), ang_hps_pos_meas, 'o', 'MarkerSize', 3)
 legend('HYZER', 'PITCH', 'SPIN')
 grid on;
 title('Ang Pos Meas and State')
@@ -106,12 +106,12 @@ fig.Units='normalized';
 fig.OuterPosition=[0.4 1 0.4 0.5];
 
 figure; hold on;
-plot(time_ms_state, ang_hps_vel_state, '-')
+plot((time_ms_state - time_ms_state(1)), ang_hps_vel_state, '-')
 reset_colours
-plot(out_time_ms_state(1), out_ang_hps_vel_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
+plot((out_time_ms_state(1) - time_ms_state(1)), out_ang_hps_vel_state(1, :), 'p', 'LineWidth', 2, 'MarkerSize', 15)
 reset_colours
 dang = wrap2pi(diff(ang_hps_pos_meas));
-plot(meas_time_ms_meas(2:end), dang./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
+plot((meas_time_ms_meas(2:end) - time_ms_state(1)), dang./repmat(diff(meas_time_ms_meas*0.001), 1, 3), '.')
 legend('HYZER', 'PITCH', 'SPIN')
 grid on;
 title('Ang Vel State')
@@ -121,8 +121,8 @@ fig.Units='normalized';
 fig.OuterPosition=[0.4 0 0.4 0.5];
 
 figure; hold on;
-plot(time_ms_state, lin_xyz_pos_var_state)
-plot(time_ms_state, ang_hps_pos_var_state)
+plot((time_ms_state - time_ms_state(1)), lin_xyz_pos_var_state)
+plot((time_ms_state - time_ms_state(1)), ang_hps_pos_var_state)
 legend('X', 'Y', 'Z', 'HYZER', 'PITCH', 'SPIN')
 title('Lin and Ang Pos Variance')
 fig=gcf;
@@ -130,8 +130,8 @@ fig.Units='normalized';
 fig.OuterPosition=[0.8 1 0.2 0.5];
 
 figure; hold on;
-plot(time_ms_state, lin_xyz_vel_var_state)
-plot(time_ms_state, ang_hps_vel_var_state)
+plot((time_ms_state - time_ms_state(1)), lin_xyz_vel_var_state)
+plot((time_ms_state - time_ms_state(1)), ang_hps_vel_var_state)
 legend('X', 'Y', 'Z', 'HYZER', 'PITCH', 'SPIN')
 title('Lin and Ang Vel Variance')
 fig=gcf;
