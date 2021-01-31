@@ -177,7 +177,7 @@ void DvisEstInterface::RunDvisEst()
   }
   else
   {
-    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr 2> nul";
+    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -ch 2> nul";
   }
   batFile.close();
 

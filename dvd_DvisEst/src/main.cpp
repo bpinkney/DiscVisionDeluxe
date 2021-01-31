@@ -420,11 +420,16 @@ static void dvd_DvisEst_display_text(const std::string * text_to_show, const int
   cv::imshow("Throw Stats", throw_stats);
   cv::moveWindow("Throw Stats",0,0);
   int time_ms = 0;
+
+  #if defined(IS_WINDOWS)
+  cv::waitKey(time_s * 1000);
+  #else
   while(time_ms < time_s * 1000)
   {
     cv::waitKey(1);
     time_ms++;
   }
+  #endif
   cv::destroyAllWindows(); 
 }
 
