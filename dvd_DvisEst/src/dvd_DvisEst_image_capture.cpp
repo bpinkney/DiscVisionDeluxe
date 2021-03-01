@@ -833,16 +833,6 @@ int dvd_DvisEst_image_capture_thread()
       cerr << "*************** GOGOGOGO! ******************" << endl << endl;
       cerr << "*************** GOGOGOGO! ******************" << endl << endl;
 
-      if(sv_enable_chime)
-      {
-        #if !defined(IS_WINDOWS)
-        std::system("ffplay -nodisp -autoexit ../resources/chime.mp3 >/dev/null 2>&1 &");
-        #else
-        std::system("START /B vlc -I dummy --dummy-quiet ../../resources/chime.mp3");
-        std::system("START /B vlc -I dummy --dummy-quiet ../../../resources/chime.mp3");
-        #endif
-      }
-
       // Begin acquiring images
       pCam->BeginAcquisition();
     }
@@ -865,6 +855,16 @@ int dvd_DvisEst_image_capture_thread()
         ready_to_throw = true;
         //print status update
         cout << "ready:1," << endl;
+
+        if(sv_enable_chime)
+        {
+          #if !defined(IS_WINDOWS)
+          std::system("ffplay -nodisp -autoexit ../resources/chime.mp3 >/dev/null 2>&1 &");
+          #else
+          std::system("START /B vlc -I dummy --dummy-quiet ../../resources/chime.mp3");
+          std::system("START /B vlc -I dummy --dummy-quiet ../../../resources/chime.mp3");
+          #endif
+        }
       }
 
       if(ready_to_throw && dvd_DvisEst_get_estimate_stage() > KF_EST_STAGE_MEAS_COLLECT)
