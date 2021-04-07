@@ -112,7 +112,7 @@ public:
     const FVector hit_location,
     const FVector hit_normal,
     const FVector normal_impulse,
-    const FRotator rotation_delta,
+    const FVector ang_vel_delta,
     const float delta_time
     );
 
