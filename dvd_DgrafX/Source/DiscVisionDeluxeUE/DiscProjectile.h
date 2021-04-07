@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void SetDiscPosRot(FVector position,FRotator rotation, FVector velocity, float disc_spin);
 
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void SetDiscVelRot(FRotator rotation, FVector velocity, FVector ang_velocity);
+
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
