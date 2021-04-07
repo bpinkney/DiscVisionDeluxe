@@ -72,18 +72,21 @@ void ADiscThrow::Tick(const float DeltaTime)
 
     FVector disc_direction = FVector (disc_state.disc_velocity[0],disc_state.disc_velocity[1],disc_state.disc_velocity[2]);
     
-    float ll = disc_state.disc_velocity[0];
-    float mm = disc_state.disc_velocity[1];
-    float nn = disc_state.disc_velocity[2];
+    float ll = disc_state.disc_velocity[0]*100;
+    float mm = disc_state.disc_velocity[1]*100;
+    float nn = disc_state.disc_velocity[2]*100;
 
     FVector disc_velocity = {ll,mm,nn};
   
-    float disc_spin = -disc_state.disc_rotation/10;
+    //float disc_spin = -disc_state.disc_rotation/10;
+    //FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation_vel);
+    FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation*57.3);
 
    FRotator disc_rotation = {pitch,roll,yaw};
 
   
-    ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin);
+    //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
+   ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
@@ -371,15 +374,19 @@ void ADiscThrow::generate_flight_cumulative_stats()
 }
 
   void ADiscThrow::on_collision(
-    const FVector disc_position,
-    const FVector hit_location,
-    const FVector hit_normal)
+    const FVector disc_position,  //world frame
+    const FVector hit_location,   //world frame
+    const FVector hit_normal,     //unit direction
+    const FVector normal_impulse) //looks si, magnitude and direction
 
     {
 
+    const FVector disc_relative_hit_location = hit_location-disc_position; 
+
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
-      GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
+    //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
+    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((normal_impulse).ToString()));
  
     }
 
