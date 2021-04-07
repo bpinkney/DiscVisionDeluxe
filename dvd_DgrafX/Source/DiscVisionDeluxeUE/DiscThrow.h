@@ -111,7 +111,10 @@ public:
     const FVector disc_position,
     const FVector hit_location,
     const FVector hit_normal,
-    const FVector normal_impulse);
+    const FVector normal_impulse,
+    const FVector ang_vel_delta,
+    const float delta_time
+    );
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void end_throw_simulation();

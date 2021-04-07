@@ -377,7 +377,9 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const FVector disc_position,  //world frame
     const FVector hit_location,   //world frame
     const FVector hit_normal,     //unit direction
-    const FVector normal_impulse) //looks si, magnitude and direction
+    const FVector normal_impulse, //looks si, magnitude and direction
+    const FVector ang_vel_delta,//FRotator, oof
+    const float delta_time)       //si
 
     {
 
@@ -387,6 +389,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((normal_impulse).ToString()));
+
  
     }
 
