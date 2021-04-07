@@ -374,15 +374,19 @@ void ADiscThrow::generate_flight_cumulative_stats()
 }
 
   void ADiscThrow::on_collision(
-    const FVector disc_position,
-    const FVector hit_location,
-    const FVector hit_normal)
+    const FVector disc_position,  //world frame
+    const FVector hit_location,   //world frame
+    const FVector hit_normal,     //unit direction
+    const FVector normal_impulse) //looks si, magnitude and direction
 
     {
+
+    const FVector disc_relative_hit_location = hit_location-disc_position; 
 
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
+    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((normal_impulse).ToString()));
  
     }
 

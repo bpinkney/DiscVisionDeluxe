@@ -47,12 +47,13 @@ public:
   	float current_turnfade; 
   	float current_wobble;
   };
+  DfisX::Throw_Container throw_container;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-  DfisX::Throw_Container throw_container;
+  
 
 
 public:	
@@ -109,7 +110,8 @@ public:
   void on_collision(
     const FVector disc_position,
     const FVector hit_location,
-    const FVector hit_normal);
+    const FVector hit_normal,
+    const FVector normal_impulse);
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void end_throw_simulation();

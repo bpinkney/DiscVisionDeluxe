@@ -20,7 +20,7 @@ Also gravity.
 
 // Model Constants for all discs
 // Form Drag Base coefficients
-#define Cm_BASE  (0.18) // base z-axis rotational parasitic skin drag coeff
+#define Cm_BASE  (0.05) // base z-axis rotational parasitic skin drag coeff
 // https://www.engineeringtoolbox.com/drag-coefficient-d_627.html
 #define Cd_PLATE (1.17) // base form drag coeff for 'plate' section of disc
 #define Cd_EDGE  (1.1)  // base form drag coeff for the 'edge' approximated section of disc
