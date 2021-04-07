@@ -65,7 +65,7 @@ for i=1:length(files)
     end 
     
     % screen out incomplete entries after latest model update
-    if(~strcmp(rim_camber_shape,'NONE'))
+    if(rim_camber_height >= 0)%~strcmp(rim_camber_shape,'NONE'))
     
       fprintf(fileID,'    // %d\n', count);
       fprintf(fileID,'    Disc_Model\n');

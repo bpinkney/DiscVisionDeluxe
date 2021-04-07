@@ -609,7 +609,7 @@ namespace DfisX
       float rim_camber_shape_multiplier = 1.0;
       if(strcmp(d_object.rim_camber, "Flat") == 0)
       {
-        // no multiplier
+        // no multiplier (we also use this for NONE incomplete/unverified discs)
         rim_camber_shape_multiplier = 1.0;
       }
       else if(strcmp(d_object.rim_camber, "Concave") == 0)
