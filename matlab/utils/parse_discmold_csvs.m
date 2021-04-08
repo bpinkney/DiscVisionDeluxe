@@ -26,7 +26,7 @@ for i=1:length(files)
    file_names{i}=files(i).name;
 end
 
-out_filename = [current_dir, 'disc_params.hpp_innards'];
+out_filename = [current_dir, 'disc_params.hpp_innards']
 
 fileID = fopen(out_filename,'w');
 
