@@ -8816,8 +8816,8 @@ namespace DfisX
     },
     // 550
     Disc_Model
-    { // Westside Pine (Hornan Honka1) (NONE)
-      /*.mold_name =*/          "Pine (Hornan Honka1)",
+    { // Westside Pine (NONE)
+      /*.mold_name =*/          "Pine",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8832,8 +8832,8 @@ namespace DfisX
     },
     // 551
     Disc_Model
-    { // Westside Fortress (Linnoitus1) (NONE)
-      /*.mold_name =*/          "Fortress (Linnoitus1)",
+    { // Westside Fortress (NONE)
+      /*.mold_name =*/          "Fortress",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8864,8 +8864,8 @@ namespace DfisX
     },
     // 553
     Disc_Model
-    { // Westside Crown (Kruunu1) (NONE)
-      /*.mold_name =*/          "Crown (Kruunu1)",
+    { // Westside Crown (NONE)
+      /*.mold_name =*/          "Crown",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8880,8 +8880,8 @@ namespace DfisX
     },
     // 554
     Disc_Model
-    { // Westside Queen (Pohjolan Emäntä1) (NONE)
-      /*.mold_name =*/          "Queen (Pohjolan Emäntä1)",
+    { // Westside Queen (NONE)
+      /*.mold_name =*/          "Queen",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8896,8 +8896,8 @@ namespace DfisX
     },
     // 555
     Disc_Model
-    { // Westside Catapult (Katapultt1) (NONE)
-      /*.mold_name =*/          "Catapult (Katapultt1)",
+    { // Westside Catapult (NONE)
+      /*.mold_name =*/          "Catapult",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8912,8 +8912,8 @@ namespace DfisX
     },
     // 556
     Disc_Model
-    { // Westside Destiny (Kohtalo1) (NONE)
-      /*.mold_name =*/          "Destiny (Kohtalo1)",
+    { // Westside Destiny (NONE)
+      /*.mold_name =*/          "Destiny",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8928,8 +8928,8 @@ namespace DfisX
     },
     // 557
     Disc_Model
-    { // Westside Sling (Linko1) (NONE)
-      /*.mold_name =*/          "Sling (Linko1)",
+    { // Westside Sling (NONE)
+      /*.mold_name =*/          "Sling",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8944,8 +8944,8 @@ namespace DfisX
     },
     // 558
     Disc_Model
-    { // Westside Longbowman (Jousimies1) (NONE)
-      /*.mold_name =*/          "Longbowman (Jousimies1)",
+    { // Westside Longbowman (NONE)
+      /*.mold_name =*/          "Longbowman",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8976,8 +8976,8 @@ namespace DfisX
     },
     // 560
     Disc_Model
-    { // Westside Seer (Ennustaja1) (NONE)
-      /*.mold_name =*/          "Seer (Ennustaja1)",
+    { // Westside Seer (NONE)
+      /*.mold_name =*/          "Seer",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -8992,8 +8992,8 @@ namespace DfisX
     },
     // 561
     Disc_Model
-    { // Westside Swan Reborn (Tuonelan Joutsen1) (NONE)
-      /*.mold_name =*/          "Swan Reborn (Tuonelan Joutsen1)",
+    { // Westside Swan Reborn (NONE)
+      /*.mold_name =*/          "Swan Reborn",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9008,8 +9008,8 @@ namespace DfisX
     },
     // 562
     Disc_Model
-    { // Westside Bard (Laulaja1) (NONE)
-      /*.mold_name =*/          "Bard (Laulaja1)",
+    { // Westside Bard (NONE)
+      /*.mold_name =*/          "Bard",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9024,8 +9024,8 @@ namespace DfisX
     },
     // 563
     Disc_Model
-    { // Westside Northman VIP Air (VIP Air Pohjan Poika1) (NONE)
-      /*.mold_name =*/          "Northman VIP Air (VIP Air Pohjan Poika1)",
+    { // Westside Northman VIP Air (NONE)
+      /*.mold_name =*/          "Northman VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9040,8 +9040,8 @@ namespace DfisX
     },
     // 564
     Disc_Model
-    { // Westside Tursas VIP Air (VIP Air Tursas1) (NONE)
-      /*.mold_name =*/          "Tursas VIP Air (VIP Air Tursas1)",
+    { // Westside Tursas VIP Air (NONE)
+      /*.mold_name =*/          "Tursas VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9056,8 +9056,8 @@ namespace DfisX
     },
     // 565
     Disc_Model
-    { // Westside Boatman VIP Air (VIP Air Tuonelan Lautturi1) (NONE)
-      /*.mold_name =*/          "Boatman VIP Air (VIP Air Tuonelan Lautturi1)",
+    { // Westside Boatman VIP Air (NONE)
+      /*.mold_name =*/          "Boatman VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9072,8 +9072,8 @@ namespace DfisX
     },
     // 566
     Disc_Model
-    { // Westside Underworld VIP Air (VIP Air Manala1) (NONE)
-      /*.mold_name =*/          "Underworld VIP Air (VIP Air Manala1)",
+    { // Westside Underworld VIP Air (NONE)
+      /*.mold_name =*/          "Underworld VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9088,8 +9088,8 @@ namespace DfisX
     },
     // 567
     Disc_Model
-    { // Westside Shield (Kilpi1) (NONE)
-      /*.mold_name =*/          "Shield (Kilpi1)",
+    { // Westside Shield (NONE)
+      /*.mold_name =*/          "Shield",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9104,8 +9104,8 @@ namespace DfisX
     },
     // 568
     Disc_Model
-    { // Westside World (Maailma1) (NONE)
-      /*.mold_name =*/          "World (Maailma1)",
+    { // Westside World (NONE)
+      /*.mold_name =*/          "World",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9120,8 +9120,8 @@ namespace DfisX
     },
     // 569
     Disc_Model
-    { // Westside Harp (Kannel1) (NONE)
-      /*.mold_name =*/          "Harp (Kannel1)",
+    { // Westside Harp (NONE)
+      /*.mold_name =*/          "Harp",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9136,8 +9136,8 @@ namespace DfisX
     },
     // 570
     Disc_Model
-    { // Westside Sorcerer (Tietäjä1) (NONE)
-      /*.mold_name =*/          "Sorcerer (Tietäjä1)",
+    { // Westside Sorcerer (NONE)
+      /*.mold_name =*/          "Sorcerer",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9152,8 +9152,8 @@ namespace DfisX
     },
     // 571
     Disc_Model
-    { // Westside Hatchet (Sotakipves1) (NONE)
-      /*.mold_name =*/          "Hatchet (Sotakipves1)",
+    { // Westside Hatchet (NONE)
+      /*.mold_name =*/          "Hatchet",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9168,8 +9168,8 @@ namespace DfisX
     },
     // 572
     Disc_Model
-    { // Westside Warship VIP Air (VIP Air Pursi1) (NONE)
-      /*.mold_name =*/          "Warship VIP Air (VIP Air Pursi1)",
+    { // Westside Warship VIP Air (NONE)
+      /*.mold_name =*/          "Warship VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9184,8 +9184,8 @@ namespace DfisX
     },
     // 573
     Disc_Model
-    { // Westside Giant VIP Air (VIP Air Vipunen1) (NONE)
-      /*.mold_name =*/          "Giant VIP Air (VIP Air Vipunen1)",
+    { // Westside Giant VIP Air (NONE)
+      /*.mold_name =*/          "Giant VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9200,8 +9200,8 @@ namespace DfisX
     },
     // 574
     Disc_Model
-    { // Westside Stag VIP Air (VIP Air Hiiden Hirvi1) (NONE)
-      /*.mold_name =*/          "Stag VIP Air (VIP Air Hiiden Hirvi1)",
+    { // Westside Stag VIP Air (NONE)
+      /*.mold_name =*/          "Stag VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9216,8 +9216,8 @@ namespace DfisX
     },
     // 575
     Disc_Model
-    { // Westside Sword VIP Air (VIP Air Kalevan Miekka1) (NONE)
-      /*.mold_name =*/          "Sword VIP Air (VIP Air Kalevan Miekka1)",
+    { // Westside Sword VIP Air (NONE)
+      /*.mold_name =*/          "Sword VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9232,8 +9232,8 @@ namespace DfisX
     },
     // 576
     Disc_Model
-    { // Westside Underworld (Manala1) (NONE)
-      /*.mold_name =*/          "Underworld (Manala1)",
+    { // Westside Underworld (NONE)
+      /*.mold_name =*/          "Underworld",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9248,8 +9248,8 @@ namespace DfisX
     },
     // 577
     Disc_Model
-    { // Westside Stag (Hiiden Hirvi1) (NONE)
-      /*.mold_name =*/          "Stag (Hiiden Hirvi1)",
+    { // Westside Stag (NONE)
+      /*.mold_name =*/          "Stag",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9264,8 +9264,8 @@ namespace DfisX
     },
     // 578
     Disc_Model
-    { // Westside King VIP Air (VIP Air Pohjolan Isäntä1) (NONE)
-      /*.mold_name =*/          "King VIP Air (VIP Air Pohjolan Isäntä1)",
+    { // Westside King VIP Air (NONE)
+      /*.mold_name =*/          "King VIP Air",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9280,8 +9280,8 @@ namespace DfisX
     },
     // 579
     Disc_Model
-    { // Westside Tursas (Tursas1) (NONE)
-      /*.mold_name =*/          "Tursas (Tursas1)",
+    { // Westside Tursas (NONE)
+      /*.mold_name =*/          "Tursas",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9296,8 +9296,8 @@ namespace DfisX
     },
     // 580
     Disc_Model
-    { // Westside Giant (Vipunen1) (NONE)
-      /*.mold_name =*/          "Giant (Vipunen1)",
+    { // Westside Giant (NONE)
+      /*.mold_name =*/          "Giant",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9312,8 +9312,8 @@ namespace DfisX
     },
     // 581
     Disc_Model
-    { // Westside Warship (Pursi1) (NONE)
-      /*.mold_name =*/          "Warship (Pursi1)",
+    { // Westside Warship (NONE)
+      /*.mold_name =*/          "Warship",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9328,8 +9328,8 @@ namespace DfisX
     },
     // 582
     Disc_Model
-    { // Westside Sword (Kalevan Miekka1) (NONE)
-      /*.mold_name =*/          "Sword (Kalevan Miekka1)",
+    { // Westside Sword (NONE)
+      /*.mold_name =*/          "Sword",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9344,8 +9344,8 @@ namespace DfisX
     },
     // 583
     Disc_Model
-    { // Westside Boatman (Tuonelan Lautturi1) (NONE)
-      /*.mold_name =*/          "Boatman (Tuonelan Lautturi1)",
+    { // Westside Boatman (NONE)
+      /*.mold_name =*/          "Boatman",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9360,8 +9360,8 @@ namespace DfisX
     },
     // 584
     Disc_Model
-    { // Westside King (Pohjolan Isäntä1) (NONE)
-      /*.mold_name =*/          "King (Pohjolan Isäntä1)",
+    { // Westside King (NONE)
+      /*.mold_name =*/          "King",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9376,8 +9376,8 @@ namespace DfisX
     },
     // 585
     Disc_Model
-    { // Westside Swan (retooled, Tuonelan Joutsen1) (NONE)
-      /*.mold_name =*/          "Swan (retooled, Tuonelan Joutsen1)",
+    { // Westside Swan (NONE)
+      /*.mold_name =*/          "Swan",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9392,8 +9392,8 @@ namespace DfisX
     },
     // 586
     Disc_Model
-    { // Westside Swan (Tuonelan Joutsen1) (NONE)
-      /*.mold_name =*/          "Swan (Tuonelan Joutsen1)",
+    { // Westside Swan (NONE)
+      /*.mold_name =*/          "Swan",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -9408,8 +9408,8 @@ namespace DfisX
     },
     // 587
     Disc_Model
-    { // Westside Northman (Pohjan Poika1) (NONE)
-      /*.mold_name =*/          "Northman (Pohjan Poika1)",
+    { // Westside Northman (NONE)
+      /*.mold_name =*/          "Northman",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",

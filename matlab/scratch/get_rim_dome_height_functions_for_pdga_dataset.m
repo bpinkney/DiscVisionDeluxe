@@ -9,7 +9,7 @@
 % 'unverified', so they can be updated later
 
 clc;
-clear all;
+% clear all;
 
 thickness = [ ...
 20
