@@ -6,12 +6,12 @@
 namespace DfisX
 {
 
-
-
   // For now, this is just a hard-coded mapping to fixed discs from test data
   // and using the ordering of the 'DiscIndex' enums
   // duplicate entries are just copied from the destroyer stats
 
+  // have to ignore this warning since Visual Studio is a whiny baby when vectors get too big
+  #pragma warning(disable: 4883)
   const std::vector<DfisX::Disc_Model> disc_object_array = 
   {
     // 0
