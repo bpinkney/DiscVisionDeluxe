@@ -13,7 +13,7 @@ void UMapUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-void OnPaint(UPARAM(ref) FPaintContext& Context) const override
+void UMapUserWidget::OnPaint(UPARAM(ref) FPaintContext& Context)
 {
 
 }
