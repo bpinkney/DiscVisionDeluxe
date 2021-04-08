@@ -283,7 +283,18 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
 
-    ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    const bool turn_off_collision   = false;
+    const bool turn_off_follow_cam  = false;
+
+    if(turn_off_collision)
+    {
+      ptr_disc_projectile->SetActorEnableCollision(false);
+    }
+
+    if(!turn_off_follow_cam)
+    {
+      ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+    }
 
 
 

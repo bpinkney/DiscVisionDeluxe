@@ -2305,7 +2305,7 @@ namespace DfisX
     // 143
     Disc_Model
     { // Discraft Malta (Paul McBeth Proto Mid-Range) (NONE)
-      /*.mold_name =*/          "Malta (Paul McBeth Proto Mid-Range)",
+      /*.mold_name =*/          "Malta",
       /*.manufacturer =*/       "Discraft",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
@@ -11201,7 +11201,7 @@ namespace DfisX
     // 699
     Disc_Model
     { // Westside Swan (NONE)
-      /*.mold_name =*/          "Swan",
+      /*.mold_name =*/          "Swan1",
       /*.manufacturer =*/       "Westside",
       /*.disc_type =*/          "NONE",
       /*.stability =*/          "NONE",
