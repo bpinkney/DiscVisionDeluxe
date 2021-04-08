@@ -389,7 +389,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const FVector hit_location,   //world frame
     const FVector hit_normal,     //unit direction
     const FVector normal_impulse, //looks si, magnitude and direction
-    const FVector ang_vel_delta,//FRotator, oof
+    const FVector ang_vel_delta,//FVector, rads, pitch roll yaw?
     const float delta_time)       //si
 
     {
