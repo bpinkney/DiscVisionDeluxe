@@ -389,7 +389,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const FVector hit_location,   //world frame
     const FVector hit_normal,     //unit direction
     const FVector normal_impulse, //looks si, magnitude and direction
-    const FVector ang_vel_delta,  //FVector, rads, pitch roll yaw?
+    const FVector ang_vel,
+    const FVector ang_vel_delta,  //FVector, rads, pitch roll yaw? in local disc object frame
     const float delta_time)       //si
 
     {
@@ -413,7 +414,10 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 
     float impact_force = sqrt(normal_impulse[0]*normal_impulse[0] + normal_impulse[1]*normal_impulse[1] + normal_impulse[2]*normal_impulse[2]);
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(impact_force)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[2])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
 /*        Eigen::Vector3d disc_position;  // world frame
     Eigen::Vector3d hit_location;   // world frame
