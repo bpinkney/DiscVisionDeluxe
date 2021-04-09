@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void SetDiscVelRot(FRotator rotation, FVector velocity, FVector ang_velocity);
 
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void kill_control();
+
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;

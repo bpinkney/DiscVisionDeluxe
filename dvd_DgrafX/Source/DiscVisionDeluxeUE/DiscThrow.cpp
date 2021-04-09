@@ -282,7 +282,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     SpawnParams.Instigator = ptr_disc_character;
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-
+    
     const bool turn_off_collision   = false;
     const bool turn_off_follow_cam  = false;
 
