@@ -13,13 +13,13 @@ ADiscProjectile::ADiscProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	
 
 	
 
-	//Dies after 5 seconds.
-	InitialLifeSpan = 60.0f;
+	
+
+	//Dies after 10m seconds.
+	InitialLifeSpan = 600.0f;
 	
 	
 	
