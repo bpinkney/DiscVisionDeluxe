@@ -389,6 +389,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const FVector hit_location,   //world frame
     const FVector hit_normal,     //unit direction
     const FVector normal_impulse, //looks si, magnitude and direction
+    const FVector lin_vel,
+    const FVector lin_vel_delta, 
     const FVector ang_vel,
     const FVector ang_vel_delta,//FVector, rads, pitch roll yaw?
     const float delta_time)       //si
@@ -400,7 +402,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
-    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((normal_impulse).ToString()));
+    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((lin_vel_delta).ToString()));
 
  
     }
