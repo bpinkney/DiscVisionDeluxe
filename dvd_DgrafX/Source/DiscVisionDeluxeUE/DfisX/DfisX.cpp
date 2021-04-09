@@ -97,9 +97,9 @@ namespace DfisX
     return (throw_container->disc_state_array);
   }
 
-  uint8_t find_disc_mold_index_by_name(std::string disc_mold_name)
+  static uint32_t find_disc_mold_index_by_name(std::string disc_mold_name)
   {
-    int i;
+    uint32_t i;
     for(i = 0; i < disc_object_array.size(); i++)
     {
       if(disc_object_array[i].mold_name == disc_mold_name)
@@ -173,7 +173,7 @@ namespace DfisX
 
     // build an abitrary 'bag' for now so we have a mapping between the DiscIndex and DiscModel
     // this will be handled by a user mapping later, and probably an encapsulating object for DiscModel
-    uint8_t disc_mold = 0;
+    uint32_t disc_mold = 0;
     switch(disc_index)
     {
       default:
@@ -226,15 +226,15 @@ namespace DfisX
     if(1)
     {
       // generate a random disc mold index from all possible sets
-      const float index = (float)rand() / (float)RAND_MAX;
-      disc_mold = floor(index * disc_object_array.size());
+      //const float index = (float)rand() / (float)RAND_MAX;
+      //disc_mold = floor(index * disc_object_array.size());
 
       // OR just override explicitly
       //disc_mold = find_disc_mold_index_by_name("Mako3");
 
       // OR just proceed through all of them in order
       // (skipping the brick)
-      static uint8_t disc2throw = 0;
+      static uint32_t disc2throw = 1;
       if(0)
       {
         disc2throw++;
@@ -258,42 +258,42 @@ namespace DfisX
       {
         switch(disc2throw)
         {
-          case 0:
-            disc_mold = find_disc_mold_index_by_name("Shryke");
-            disc2throw = 1;
-            break;
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Wraith");//"Destroyer");
+            disc_mold = find_disc_mold_index_by_name("Zone");
             disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Valkyrie");
+            disc_mold = find_disc_mold_index_by_name("Pure");
             disc2throw = 3;
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Destroyer");
+            disc_mold = find_disc_mold_index_by_name("Envy");
             disc2throw = 4;
             break;
           case 4:
-            disc_mold = find_disc_mold_index_by_name("Beast");
+            disc_mold = find_disc_mold_index_by_name("Swan");
             disc2throw = 5;
             break;
+          case 5:
+            disc_mold = find_disc_mold_index_by_name("Buzzz");
+            disc2throw = 6;
+            break;
           default:
-            disc_mold = find_disc_mold_index_by_name("Heat");
-            disc2throw = 0;
+            disc_mold = find_disc_mold_index_by_name("Luna");
+            disc2throw = 1;
             break;
         }
       }    
     }
 
     // override for Loft Test Throws
-    if(0)
+    if(1)
     {
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {95.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
+      throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};//{95.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_rotation_vel = -50.0;//-125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");
       //disc_mold = find_disc_mold_index_by_name("Hydrogen");
@@ -303,15 +303,15 @@ namespace DfisX
       switch(test_throw)
       {
         case 0:
-          hps = {DEG_TO_RAD(0), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           //test_throw++;
         break;
         case 1:
-          hps = {DEG_TO_RAD(15), DEG_TO_RAD(5), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(15), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           test_throw++;
         break;
         case 2:
-          hps = {DEG_TO_RAD(-15), DEG_TO_RAD(5), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(-15), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           test_throw = 0;
         break;
       }
