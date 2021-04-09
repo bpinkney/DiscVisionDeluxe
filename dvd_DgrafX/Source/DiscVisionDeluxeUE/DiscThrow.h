@@ -22,7 +22,7 @@ public:
   // Sets default values for this actor's properties
   ADiscThrow();
   
-    struct Initial_Release_Stats
+  struct Initial_Release_Stats
   {
   	FVector initial_direction_vector; ////maybe not needed for hud
   	FVector initial_location_vector; ////maybe not needed for hud

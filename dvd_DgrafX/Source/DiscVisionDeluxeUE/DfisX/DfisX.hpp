@@ -62,7 +62,7 @@ namespace DfisX
     Eigen::Vector3d ang_vel_delta;  //FVector, rads, pitch roll yaw?
     double delta_time_s;
     bool consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
-  }
+  };
 
   // Forces State
   //Aerodynamic simulation step variables
@@ -214,7 +214,7 @@ namespace DfisX
 
   //Throw Container
   //contains all of the info needed to simulate and display a disc
-  struct Throw_Containers
+  struct Throw_Container
   {
     Disc_State current_disc_state;              // current state of disc
     Disc_State previous_disc_state;             // state of disc last step
@@ -226,6 +226,8 @@ namespace DfisX
     Disc_Debug debug;
   };
 
+
+  void consume_Dcollision(Throw_Container *throw_container);
 
   bool                is_finished_simulating(Throw_Container *throw_container);
 
