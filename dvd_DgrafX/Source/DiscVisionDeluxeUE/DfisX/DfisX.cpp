@@ -30,11 +30,11 @@
 namespace DfisX
 {
 
-  void consume_Dcollision(Throw_Container *throw_container)
+  void consume_Dcollision(Throw_Container *throw_container, const float dt)
   {
-    const bool disable = 1;
+    const bool disable = 0;
 
-    const float collision_apply_frames = 3;
+    const float collision_apply_frames = 1;
     if(!disable && throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
     {
       throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
@@ -47,12 +47,87 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.normal_force_N[1];
       throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.normal_force_N[2];
 
+      // Apply some random friction for now since this doesn't seem to be included.....
+      const float mu = 0.4; // grass??
+      Eigen::Vector3d lin_vel_unit = throw_container->current_disc_state.disc_velocity / throw_container->current_disc_state.disc_velocity.norm();
+      const float friction_force_N = mu * throw_container->collision_input.normal_force_N.norm();
+      //throw_container->current_disc_state.forces_state.collision_force += -lin_vel_unit * friction_force_N;
+
+      /*throw_container->current_disc_state.forces_state.collision_force[0] += 
+        mu * sqrt(throw_container->collision_input.normal_force_N[1]*throw_container->collision_input.normal_force_N[1] + throw_container->collision_input.normal_force_N[2]*throw_container->collision_input.normal_force_N[2]) * 
+        -signum(throw_container->current_disc_state.disc_velocity[0]);
+      throw_container->current_disc_state.forces_state.collision_force[1] += 
+        mu * sqrt(throw_container->collision_input.normal_force_N[0]*throw_container->collision_input.normal_force_N[0] + throw_container->collision_input.normal_force_N[2]*throw_container->collision_input.normal_force_N[2]) * 
+        -signum(throw_container->current_disc_state.disc_velocity[1]);
+      throw_container->current_disc_state.forces_state.collision_force[2] += 
+        mu * sqrt(throw_container->collision_input.normal_force_N[1]*throw_container->collision_input.normal_force_N[1] + throw_container->collision_input.normal_force_N[0]*throw_container->collision_input.normal_force_N[0]) * 
+        -signum(throw_container->current_disc_state.disc_velocity[2]);*/
+
+
+      // get velocity change?
+     // Eigen::Vector3d lin_vel = (throw_container->collision_input.disc_position_m - throw_container->current_disc_state.disc_location) / throw_container->collision_input.delta_time_s;
+
+      // override vel?
+      //throw_container->current_disc_state.disc_velocity[0] = lin_vel[0];
+      //throw_container->current_disc_state.disc_velocity[1] = lin_vel[1];
+      //throw_container->current_disc_state.disc_velocity[2] = lin_vel[2];
+
+      // override position states?
+      //throw_container->current_disc_state.disc_location[0] = throw_container->collision_input.disc_position_m[0];
+      //throw_container->current_disc_state.disc_location[1] = throw_container->collision_input.disc_position_m[1];
+      //throw_container->current_disc_state.disc_location[2] = throw_container->collision_input.disc_position_m[2];
+
+      // determine relative hit location in local disc frames:
+      Eigen::Vector3d relative_hit_location_world_m = throw_container->collision_input.hit_location_m - throw_container->collision_input.disc_position_m;
+      Eigen::Vector3d relative_hit_torque_world_Nm = throw_container->current_disc_state.forces_state.collision_force.cwiseProduct(relative_hit_location_world_m);
+
+      const double Ix = 1.0/4.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
+      const double Iy = 1.0/4.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
       const double Iz = 1.0/2.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
-      const double spin_ang_accel = throw_container->collision_input.ang_vel_delta_radps[2] / throw_container->collision_input.delta_time_s;
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = -spin_ang_accel * Iz;
+
+      // hackily use the unit vectors to find porjection component of this moment arm in disc local frame (this needs to be revised, it is almost certainly wrong)
+
+      Eigen::Vector3d a;
+      Eigen::Vector3d b;
+      a = throw_container->current_disc_state.forces_state.disc_x_unit_vector;
+      b = relative_hit_torque_world_Nm;
+      Eigen::Vector3d proj_hit_world_onto_local_x = (a.dot(b) * a) / (a.norm()*a.norm());
+      a = throw_container->current_disc_state.forces_state.disc_y_unit_vector;
+      b = relative_hit_torque_world_Nm;
+      Eigen::Vector3d proj_hit_world_onto_local_y = (a.dot(b) * a) / (a.norm()*a.norm());
+      a = throw_container->current_disc_state.disc_orientation;
+      b = relative_hit_torque_world_Nm;
+      Eigen::Vector3d proj_hit_world_onto_local_z = (a.dot(b) * a) / (a.norm()*a.norm());
+
+      // Get angular torques in local frame
+      Eigen::Vector3d local_hit_torque_xyz_m = proj_hit_world_onto_local_x + proj_hit_world_onto_local_y + proj_hit_world_onto_local_z;
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = -local_hit_torque_xyz_m[1];
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = -local_hit_torque_xyz_m[0]; // roll about y axis
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = local_hit_torque_xyz_m[2];
+      
+      // get local frame rotations? (hacky)
+/*      Eigen::Vector3d a;
+      Eigen::Vector3d b;
+      a = throw_container->current_disc_state.forces_state.disc_x_unit_vector;
+      b = throw_container->collision_input.ang_vel_delta_radps;
+      Eigen::Vector3d ang_vel_delta_radps_local_x = (a.dot(b) * a) / (a.norm()*a.norm());
+      a = throw_container->current_disc_state.forces_state.disc_y_unit_vector;
+      b = throw_container->collision_input.ang_vel_delta_radps;
+      Eigen::Vector3d ang_vel_delta_radps_local_y = (a.dot(b) * a) / (a.norm()*a.norm());
+      a = throw_container->current_disc_state.disc_orientation;
+      b = throw_container->collision_input.ang_vel_delta_radps;
+      Eigen::Vector3d ang_vel_delta_radps_local_z = (a.dot(b) * a) / (a.norm()*a.norm());
+
+      Eigen::Vector3d ang_vel_delta_radps_local = ang_vel_delta_radps_local_x + ang_vel_delta_radps_local_y + ang_vel_delta_radps_local_z;*/
+
+      //const double spin_ang_accel = throw_container->collision_input.ang_vel_delta_radps[2] / throw_container->collision_input.delta_time_s;
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = -ang_vel_delta_radps_local[0]/throw_container->collision_input.delta_time_s * Ix;
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = -ang_vel_delta_radps_local[1]/throw_container->collision_input.delta_time_s * Iy;
+      // why is this negative???
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = -throw_container->collision_input.ang_vel_delta_radps[2]/throw_container->collision_input.delta_time_s * Iz;
 
       // janked up friction
-      const float mu = 50.4; // grass??
+      //const float mu = 50.4; // grass??
     /*  const float normal_force_N = sqrt(
         throw_container->current_disc_state.forces_state.collision_force[0]*throw_container->current_disc_state.forces_state.collision_force[0] +
         throw_container->current_disc_state.forces_state.collision_force[1]*throw_container->current_disc_state.forces_state.collision_force[1] +
@@ -62,7 +137,7 @@ namespace DfisX
       // just assume that we are using the full moment arm of the disc for friction spin torque
       const float t_friction = F_friction * throw_container->disc_object.radius;*/
 
-      const float r5 = (throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius);
+      /*const float r5 = (throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius);
 
       const float t_friction_pitch =
         -signum(throw_container->current_disc_state.disc_pitching_vel) *
@@ -83,15 +158,16 @@ namespace DfisX
         0.5 * 
         (throw_container->current_disc_state.disc_rotation_vel * throw_container->current_disc_state.disc_rotation_vel) * 
         r5 *
-        mu;
+        mu;*/
 
       // apply in the opposite direction to angular spin vel
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = t_friction_pitch;
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = t_friction_roll; // roll about y axis
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = t_friction_spin;
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = t_friction_pitch;
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = t_friction_roll; // roll about y axis
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = t_friction_spin;
 
 
       throw_container->collision_input.consumed_input++;
+
     }
     else
     {
@@ -124,7 +200,7 @@ namespace DfisX
     // step_Dcollision (throw_container, dt);
     step_Dgyro(throw_container, dt);
     // consume incoming collisions
-    consume_Dcollision(throw_container);
+    consume_Dcollision(throw_container, dt);
 
     propagate(throw_container, dt); 
 
@@ -338,7 +414,7 @@ namespace DfisX
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Zone");
+            disc_mold = find_disc_mold_index_by_name("Wraith");
             disc2throw = 2;
             break;
           case 2:
@@ -371,7 +447,7 @@ namespace DfisX
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {95.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
       throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");

@@ -227,7 +227,7 @@ namespace DfisX
   };
 
 
-  void consume_Dcollision(Throw_Container *throw_container);
+  void consume_Dcollision(Throw_Container *throw_container, const float dt);
 
   bool                is_finished_simulating(Throw_Container *throw_container);
 

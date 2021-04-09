@@ -397,16 +397,29 @@ void ADiscThrow::generate_flight_cumulative_stats()
 
     //const FVector disc_relative_hit_location = hit_location-disc_position;
 
+
+    // if we fall below 10 rad/s (~100rpm) and 2 m/s?, relinquich control to Unreal completely
+    /*if(
+      abs(throw_container.current_disc_state.disc_rotation_vel) < 10
+      &&
+      throw_container.current_disc_state.disc_velocity.norm() < 2.0
+    )
+    {*/
+      //ptr_disc_projectile->kill_control();
+    //}
+
     // set throw controller collision input states
     throw_container.collision_input.consumed_input = 999; // mark as invalid first for thread safety?
 
     uint8_t i;
     for(i = 0; i < 3; i++)
     {
-      throw_container.collision_input.disc_position_m[i]      = disc_position[i]*0.01;
-      throw_container.collision_input.hit_location_m[i]       = hit_location[i]*0.01;
+      throw_container.collision_input.disc_position_m[i]      = disc_position[i]*0.01; //cm to m
+      throw_container.collision_input.hit_location_m[i]       = hit_location[i]*0.01;  //cm to m
       throw_container.collision_input.hit_normal[i]           = hit_normal[i];
-      throw_container.collision_input.normal_force_N[i]       = normal_impulse[i]/delta_time;
+      // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
+      // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
+      throw_container.collision_input.normal_force_N[i]       = normal_impulse[i]/delta_time*0.01; 
       throw_container.collision_input.ang_vel_delta_radps[i]  = ang_vel_delta[i];
     }
     throw_container.collision_input.delta_time_s = delta_time;
@@ -414,16 +427,17 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
     float normal_force_N[3] = 
     {
-      normal_impulse[0]/delta_time,
-      normal_impulse[1]/delta_time,
-      normal_impulse[2]/delta_time
+      throw_container.collision_input.normal_force_N[0],
+      throw_container.collision_input.normal_force_N[1],
+      throw_container.collision_input.normal_force_N[2]
     };
 
-    float impact_force_N = sqrt(normal_force_N[0]*normal_force_N[0] + normal_force_N[1]*normal_force_N[1] + normal_force_N[2]*normal_force_N[2]) * 0.01 * 101.3 * 0.001;
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(impact_force_N)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[1])));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(ang_vel[2])));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    float impact_force_N = sqrt(normal_force_N[0]*normal_force_N[0] + normal_force_N[1]*normal_force_N[1] + normal_force_N[2]*normal_force_N[2]);
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(impact_force_N)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel_delta[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel_delta[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(ang_vel_delta[2])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
 /*        Eigen::Vector3d disc_position;  // world frame
     Eigen::Vector3d hit_location;   // world frame
