@@ -29,14 +29,14 @@ namespace DfisX
     //// Pitching moment
     // tack on change to Roll from the gyroscopic precession only
     // we'll need to update this when collisions get added!
-    d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x;
-    d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y;
+    d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0];
+    d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1];
     // use inertia here to compute the resulting rotation accel (only about 'rolling' axis for now)
     d_state.disc_rolling_accel  = d_forces.net_torque_y / Ix;
     d_state.disc_pitching_accel = d_forces.net_torque_x / Iy;
 
     //// Spin/Rotation moment
-    d_forces.net_torque_z = d_forces.aero_torque_z;
+    d_forces.net_torque_z = d_forces.aero_torque_z + d_forces.collision_torque_xyz[2];
     // use inertia here to compute the resulting rotation accel (only about 'spin' axis for now)
     d_state.disc_rotation_accel = d_forces.net_torque_z / Iz;
 

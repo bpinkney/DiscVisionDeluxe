@@ -32,13 +32,66 @@ namespace DfisX
 
   void consume_Dcollision(Throw_Container *throw_container)
   {
-    if(!throw_container->collision_input.consumed_input)
+    const bool disable = 1;
+
+    const float collision_apply_frames = 3;
+    if(!disable && throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
     {
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0.0;
+
       // Compute forces and torques
       // This is just a direct copy maybe?
-      //throw_container->current_disc_state.forces_state.collision_force_xyz[0] = throw_container->collision_input.normal_impulse[0];
-      //throw_container->current_disc_state.forces_state.collision_force_xyz[1] = throw_container->collision_input.normal_impulse[1];
-      //throw_container->current_disc_state.forces_state.collision_force_xyz[2] = throw_container->collision_input.normal_impulse[2];
+      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.normal_force_N[0];
+      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.normal_force_N[1];
+      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.normal_force_N[2];
+
+      const double Iz = 1.0/2.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
+      const double spin_ang_accel = throw_container->collision_input.ang_vel_delta_radps[2] / throw_container->collision_input.delta_time_s;
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = -spin_ang_accel * Iz;
+
+      // janked up friction
+      const float mu = 50.4; // grass??
+    /*  const float normal_force_N = sqrt(
+        throw_container->current_disc_state.forces_state.collision_force[0]*throw_container->current_disc_state.forces_state.collision_force[0] +
+        throw_container->current_disc_state.forces_state.collision_force[1]*throw_container->current_disc_state.forces_state.collision_force[1] +
+        throw_container->current_disc_state.forces_state.collision_force[2]*throw_container->current_disc_state.forces_state.collision_force[2]);
+      const float F_friction = normal_force_N * mu;
+
+      // just assume that we are using the full moment arm of the disc for friction spin torque
+      const float t_friction = F_friction * throw_container->disc_object.radius;*/
+
+      const float r5 = (throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius * throw_container->disc_object.radius);
+
+      const float t_friction_pitch =
+        -signum(throw_container->current_disc_state.disc_pitching_vel) *
+        0.5 * 
+        (throw_container->current_disc_state.disc_pitching_vel * throw_container->current_disc_state.disc_pitching_vel) * 
+        r5 *
+        mu;
+
+      const float t_friction_roll =
+        -signum(throw_container->current_disc_state.disc_rolling_vel) *
+        0.5 * 
+        (throw_container->current_disc_state.disc_rolling_vel * throw_container->current_disc_state.disc_rolling_vel) * 
+        r5 *
+        mu;
+
+      const float t_friction_spin =
+        -signum(throw_container->current_disc_state.disc_rotation_vel) *
+        0.5 * 
+        (throw_container->current_disc_state.disc_rotation_vel * throw_container->current_disc_state.disc_rotation_vel) * 
+        r5 *
+        mu;
+
+      // apply in the opposite direction to angular spin vel
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = t_friction_pitch;
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = t_friction_roll; // roll about y axis
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = t_friction_spin;
+
+
+      throw_container->collision_input.consumed_input++;
     }
     else
     {
@@ -318,8 +371,8 @@ namespace DfisX
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {1, 0, 0};//{95.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = 0.1;//-125.6637; // 1200 rpm righty backhand
+      throw_container->current_disc_state.disc_velocity = {95.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_rotation_vel = -125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");
       //disc_mold = find_disc_mold_index_by_name("Hydrogen");

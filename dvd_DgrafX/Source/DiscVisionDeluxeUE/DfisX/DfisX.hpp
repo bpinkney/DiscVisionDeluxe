@@ -55,13 +55,13 @@ namespace DfisX
 
   struct Collision_Input
   {
-    Eigen::Vector3d disc_position;  // world frame
-    Eigen::Vector3d hit_location;   // world frame
-    Eigen::Vector3d hit_normal;     // unit direction
-    Eigen::Vector3d normal_impulse; //looks si, magnitude and direction
-    Eigen::Vector3d ang_vel_delta;  //FVector, rads, pitch roll yaw?
+    Eigen::Vector3d disc_position_m;  // world frame
+    Eigen::Vector3d hit_location_m;   // world frame
+    Eigen::Vector3d hit_normal;         // unit direction
+    Eigen::Vector3d normal_force_N;     //looks si, magnitude and direction
+    Eigen::Vector3d ang_vel_delta_radps;  //FVector, rads, pitch roll yaw?
     double delta_time_s;
-    bool consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
+    uint16_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
   };
 
   // Forces State
