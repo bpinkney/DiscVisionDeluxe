@@ -115,6 +115,7 @@ public:
     const FVector lin_vel,
     const FVector lin_vel_delta,
     const FVector ang_vel,
+    const FVector world_ang_vel,
     const FVector ang_vel_delta,
     const float delta_time
     );
