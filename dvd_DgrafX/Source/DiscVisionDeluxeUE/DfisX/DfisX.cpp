@@ -29,6 +29,29 @@
 
 namespace DfisX
 {
+
+  void consume_Dcollision(Throw_Container *throw_container)
+  {
+    if(!throw_container->collision_input.consumed_input)
+    {
+      // Compute forces and torques
+      // This is just a direct copy maybe?
+      //throw_container->current_disc_state.forces_state.collision_force_xyz[0] = throw_container->collision_input.normal_impulse[0];
+      //throw_container->current_disc_state.forces_state.collision_force_xyz[1] = throw_container->collision_input.normal_impulse[1];
+      //throw_container->current_disc_state.forces_state.collision_force_xyz[2] = throw_container->collision_input.normal_impulse[2];
+    }
+    else
+    {
+      throw_container->current_disc_state.forces_state.collision_force_xyz[0] = 
+      throw_container->current_disc_state.forces_state.collision_force_xyz[1] = 
+      throw_container->current_disc_state.forces_state.collision_force_xyz[2] = 0.0;
+
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 
+      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0.0;
+    }
+  }
+
   //Simulate Throw
   //simulates the current throw to completion
   void simulate_throw(Throw_Container *throw_container, const float dt)
@@ -45,8 +68,11 @@ namespace DfisX
   {
     // all steps must be completed before propagation
     step_Daero(throw_container, dt);
-    //step_Dcollision (throw_container, dt);
+    // step_Dcollision (throw_container, dt);
     step_Dgyro(throw_container, dt);
+    // consume incoming collisions
+    consume_Dcollision(throw_container);
+
     propagate(throw_container, dt); 
 
     //temporary ground collision detection

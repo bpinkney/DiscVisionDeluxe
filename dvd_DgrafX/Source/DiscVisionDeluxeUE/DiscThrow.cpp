@@ -389,12 +389,38 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const FVector hit_location,   //world frame
     const FVector hit_normal,     //unit direction
     const FVector normal_impulse, //looks si, magnitude and direction
-    const FVector ang_vel_delta,//FVector, rads, pitch roll yaw?
+    const FVector ang_vel_delta,  //FVector, rads, pitch roll yaw?
     const float delta_time)       //si
 
     {
 
-    const FVector disc_relative_hit_location = hit_location-disc_position; 
+    //const FVector disc_relative_hit_location = hit_location-disc_position;
+
+    // set throw controller collision input states
+    throw_container.collision_input.consumed_input = true; // mark as invalid first for thread safety?
+
+    uint8_t i;
+    for(i = 0; i < 3; i++)
+    {
+      throw_container.collision_input.disc_position[i]  = disc_position[i];
+      throw_container.collision_input.hit_location[i]   = hit_location[i];
+      throw_container.collision_input.hit_normal[i]     = hit_normal[i];
+      throw_container.collision_input.normal_impulse[i] = normal_impulse[i];
+      throw_container.collision_input.ang_vel_delta[i]  = ang_vel_delta[i];
+    }
+    throw_container.collision_input.delta_time_s = delta_time;
+    throw_container.collision_input.consumed_input = false;
+    
+
+    float impact_force = sqrt(normal_impulse[0]*normal_impulse[0] + normal_impulse[1]*normal_impulse[1] + normal_impulse[2]*normal_impulse[2]);
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(impact_force)));
+
+/*        Eigen::Vector3d disc_position;  // world frame
+    Eigen::Vector3d hit_location;   // world frame
+    Eigen::Vector3d hit_normal;     // unit direction
+    Eigen::Vector3d normal_impulse; //looks si, magnitude and direction
+    Eigen::Vector3d ang_vel_delta;  //FVector, rads, pitch roll yaw?
+    double delta_time_s;*/
 
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));

@@ -53,6 +53,17 @@ namespace DfisX
   };
 
 
+  struct Collision_Input
+  {
+    Eigen::Vector3d disc_position;  // world frame
+    Eigen::Vector3d hit_location;   // world frame
+    Eigen::Vector3d hit_normal;     // unit direction
+    Eigen::Vector3d normal_impulse; //looks si, magnitude and direction
+    Eigen::Vector3d ang_vel_delta;  //FVector, rads, pitch roll yaw?
+    double delta_time_s;
+    bool consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
+  }
+
   // Forces State
   //Aerodynamic simulation step variables
   //  used to calculate the forces/accelerations on a disc in flight
@@ -73,12 +84,8 @@ namespace DfisX
     double aero_torque_y;
     double aero_torque_z;
 
-    Eigen::Vector3d collision_force;
-    Eigen::Vector3d collision_location;
-    //Eigen::Vector3d collision_angle;
-    double collision_torque_x;
-    double collision_torque_y;
-    double collision_torque_z;
+    Eigen::Vector3d collision_force;  // linear collision force (N) in the world frame
+    Eigen::Vector3d collision_torque_xyz; // angular collision torque about the XYZ body frame axes (hyzer, pitch, spin) (defined wrt lin vel vector)
 
     int step_count;
 
@@ -207,13 +214,14 @@ namespace DfisX
 
   //Throw Container
   //contains all of the info needed to simulate and display a disc
-  struct Throw_Container
+  struct Throw_Containers
   {
     Disc_State current_disc_state;              // current state of disc
     Disc_State previous_disc_state;             // state of disc last step
     Disc_Model disc_object;                     // aero properties of disc being simulated
     Disc_Statistics disc_statistics;            // used to track stats of a flight
     Disc_Env disc_environment;                  // environmental states and parameters
+    Collision_Input collision_input;            // Incoming forces/torques from the Unreal engine collisions
     std::vector <Disc_State> disc_state_array;  // array of disc states: used to hold the flight data of a simulated throw
     Disc_Debug debug;
   };
