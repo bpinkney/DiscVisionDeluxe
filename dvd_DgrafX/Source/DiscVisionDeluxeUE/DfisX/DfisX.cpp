@@ -57,14 +57,14 @@ namespace DfisX
 
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
       }
 
       if(!filter_for_deceleration || abs(throw_container->current_disc_state.disc_rotation_vel) > abs(throw_container->collision_input.ang_vel_radps[2]))
       {
         //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
         //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
-        throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        //throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
       }      
 
       // Just change the rotational vel directly?
@@ -341,7 +341,7 @@ namespace DfisX
         {
           case 1:
             disc_mold = find_disc_mold_index_by_name("Roadrunner");//"Wraith");
-            disc2throw = 2;
+            //disc2throw = 2;
             break;
           case 2:
             disc_mold = find_disc_mold_index_by_name("Pure");

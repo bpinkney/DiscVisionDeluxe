@@ -388,8 +388,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
 #define DISABLE_COMPLEX_DISC_COLLISION (false)
 // disables aero and DfisX if both of these conditions are met
 // disable for now
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (1.0)
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (5.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (2.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (10.0)
 
 void ADiscThrow::on_collision(
   const FVector disc_position,          //world frame
