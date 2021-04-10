@@ -59,7 +59,12 @@ namespace DfisX
     Eigen::Vector3d hit_location_m;   // world frame
     Eigen::Vector3d hit_normal;         // unit direction
     Eigen::Vector3d normal_force_N;     //looks si, magnitude and direction
-    Eigen::Vector3d ang_vel_delta_radps;  //FVector, rads, pitch roll yaw?
+    Eigen::Vector3d world_lin_vel_mps;  // XYZ unreal world frame
+    Eigen::Vector3d world_lin_vel_delta_mps;  // XYZ unreal world frame
+    Eigen::Vector3d disc_frame_torque_Nm;  //XYZ local xyz frame based on vel vector and disc normal
+    Eigen::Vector3d disc_ang_vel_delta_radps;
+    Eigen::Vector3d disc_ang_vel_radps; // XYZ unreal object frame
+    Eigen::Vector3d world_ang_vel_radps; // XYZ unreal world frame
     double delta_time_s;
     uint16_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
   };
