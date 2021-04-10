@@ -43,20 +43,21 @@ namespace DfisX
 
       //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.disc_frame_torque_Nm[0];
       //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.disc_frame_torque_Nm[1];
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.disc_frame_torque_Nm[2];
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.disc_frame_torque_Nm[2];
 
-      // Just change the vel?
+      // Just change the rotational vel directly?
       //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.disc_ang_vel_radps[0]; // roll about y, should be [1]
       //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.disc_ang_vel_radps[1];
       throw_container->current_disc_state.disc_rotation_vel = -throw_container->collision_input.disc_ang_vel_radps[2];
 
-      throw_container->current_disc_state.disc_location = throw_container->collision_input.disc_position_m;
-      throw_container->current_disc_state.disc_velocity = throw_container->collision_input.world_lin_vel_mps;
+      // if you update the vel AND add the force, the disc will go backwards!
+      //throw_container->current_disc_state.disc_location = throw_container->collision_input.disc_position_m;
+      //throw_container->current_disc_state.disc_velocity = throw_container->collision_input.world_lin_vel_mps;
 
-      const double force_mult = 1.0;
-      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.normal_force_N[0] * force_mult;
-      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.normal_force_N[1] * force_mult;
-      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.normal_force_N[2] * force_mult;
+      // Add linear forces in world frame axis
+      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.normal_force_N[0];
+      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.normal_force_N[1];
+      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.normal_force_N[2];
 
       throw_container->collision_input.consumed_input++;
 

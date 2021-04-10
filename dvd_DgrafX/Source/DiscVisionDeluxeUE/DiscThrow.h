@@ -109,14 +109,15 @@ public:
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void on_collision(
     const FVector disc_position,
-    const FVector hit_location,
-    const FVector hit_normal,
-    const FVector normal_impulse,
+    const TArray<FVector> hit_location,
+    const TArray<FVector> hit_normal,
+    const TArray<FVector> normal_impulse,
     const FVector lin_vel,
     const FVector lin_vel_delta,
     const FVector ang_vel,
     const FVector world_ang_vel,
     const FVector ang_vel_delta,
+    const int total_hit_events,
     const float delta_time
     );
 
