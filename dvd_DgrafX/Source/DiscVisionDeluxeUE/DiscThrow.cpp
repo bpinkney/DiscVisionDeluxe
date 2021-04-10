@@ -80,7 +80,9 @@ void ADiscThrow::Tick(const float DeltaTime)
   
     //float disc_spin = -disc_state.disc_rotation/10;
     //FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation_vel);
-    FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation*57.3);
+    
+    
+    FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation*57.3);
 
    FRotator disc_rotation = {pitch,roll,yaw};
 
