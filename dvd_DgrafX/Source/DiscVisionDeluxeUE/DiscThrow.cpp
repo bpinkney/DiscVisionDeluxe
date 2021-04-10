@@ -403,7 +403,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
-    GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,FString::FromInt(total_hit_events));
+    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,FString::FromInt(total_hit_events));
 
  
     }
