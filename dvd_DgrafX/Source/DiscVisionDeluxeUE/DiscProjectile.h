@@ -37,6 +37,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void kill_control();
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void kill_control_with_delay();
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)

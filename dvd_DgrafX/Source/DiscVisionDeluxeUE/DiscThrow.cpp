@@ -378,6 +378,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 
 
   	
+
   	flight_cumulative_stats.current_wobble     = 0; ///will add later
 
 
