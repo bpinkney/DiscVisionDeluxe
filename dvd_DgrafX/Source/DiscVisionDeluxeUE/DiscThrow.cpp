@@ -370,9 +370,9 @@ void ADiscThrow::generate_flight_cumulative_stats()
     //find the polarity
     FVector fade_vector = initial_release_stats.initial_disc_right_vector * initial_release_stats.initial_polarity;
     if ((a_p-fade_vector).Size()>(a_p-fade_vector).Size())
-      flight_cumulative_stats.current_turnfade   = -tf_vector.Size(); 
+      flight_cumulative_stats.current_turnfade   = -tf_vector.Size();
     else
-      flight_cumulative_stats.current_turnfade   = tf_vector.Size(); 
+      flight_cumulative_stats.current_turnfade   = tf_vector.Size();
 
     
 
@@ -398,12 +398,125 @@ void ADiscThrow::generate_flight_cumulative_stats()
     const float delta_time)       //si
 
     {
+    //const FVector disc_relative_hit_location = hit_location-disc_position;
+
+    // if we fall below 20 rad/s (~200rpm) and 3 m/s?, relinquich control to Unreal completely
+    if(
+      abs(throw_container.current_disc_state.disc_rotation_vel) < 30
+      ||
+      throw_container.current_disc_state.disc_velocity.norm() < 3.0
+    )
+    {
+      //ptr_disc_projectile->kill_control();
+    }
+
+    // set throw controller collision input states
+    throw_container.collision_input.consumed_input = 999; // mark as invalid first for thread safety?
+
+    throw_container.collision_input.delta_time_s = delta_time;
+
+    Eigen::Vector3d world_ang_vel_radps;
+
+    uint8_t i;
+    for(i = 0; i < 3; i++)
+    {
+      throw_container.collision_input.disc_position_m[i]          = disc_position[i]*0.01; //cm to m
+      //throw_container.collision_input.hit_location_m[i]           = hit_location[i]*0.01;  //cm to m
+      //throw_container.collision_input.hit_normal[i]               = hit_normal[i];
+      // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
+      // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
+      //throw_container.collision_input.normal_force_N[i]           = normal_impulse[i]/delta_time*0.01; 
+
+      throw_container.collision_input.world_lin_vel_mps[i]        = lin_vel[i]*0.01;//(i==2 ? lin_vel[i]*-1 : lin_vel[i]);  // XYZ unreal world frame, Z is backwards
+      //throw_container.collision_input.world_lin_vel_delta_mps[i]  = (i==2 ? lin_vel_delta[i]*-1 : lin_vel_delta[i]);  // XYZ unreal world frame, Z is backwards
+      //throw_container.collision_input.disc_ang_vel_delta_radps[i] = ang_vel_delta[i];  //XYZ unreal object frame
+      //throw_container.collision_input.disc_ang_vel_radps[i]       = ang_vel[i]; // XYZ unreal object frame
+      world_ang_vel_radps[i]                                      = world_ang_vel[i]; // XYZ unreal world frame
+    }
+
+    // try to build a rotation matrix from the local disc unit vectors
+    // ideally, this will result in a rotation from the world frame to the local disc frame
+    // validation on this should be possible by comparing 
+    // (R*world_ang_vel_radps)[2] and disc_ang_vel_radps[2], since the Z axis frames are aligned
+
+    Eigen::Matrix3d Rwd; 
+    Rwd << throw_container.current_disc_state.forces_state.disc_x_unit_vector[0], throw_container.current_disc_state.forces_state.disc_y_unit_vector[0], throw_container.current_disc_state.disc_orientation[0],
+           throw_container.current_disc_state.forces_state.disc_x_unit_vector[1], throw_container.current_disc_state.forces_state.disc_y_unit_vector[1], throw_container.current_disc_state.disc_orientation[1],
+           throw_container.current_disc_state.forces_state.disc_x_unit_vector[2], throw_container.current_disc_state.forces_state.disc_y_unit_vector[2], throw_container.current_disc_state.disc_orientation[2];
+
+    // Now we should be able to rotate the XYZ angular rates into the disc frame:
+    Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps;
+
+    const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+    const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+    const double Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+
+    // overwrite for now!
+    throw_container.collision_input.disc_ang_vel_radps = local_ang_vel_radps;
+
+    // 1. derive torque from the ang vel:
+    //Eigen::Vector3d local_ang_accel_radps2 = local_ang_vel_radps / throw_container.collision_input.delta_time_s;
+    //Eigen::Vector3d local_ang_torque_Nm;
+    //local_ang_torque_Nm[0] = local_ang_accel_radps2[0] * Ix;
+    //local_ang_torque_Nm[1] = local_ang_accel_radps2[1] * Iy;
+    //local_ang_torque_Nm[2] = local_ang_accel_radps2[2] * Iz;
+    //throw_container.collision_input.disc_frame_torque_Nm = local_ang_torque_Nm;
+
+    // OR
+    // 2. Derive torque from the hit location
+    int k = 0;
+
+    // reset torque sum
+    throw_container.collision_input.disc_frame_torque_Nm *= 0;
+    throw_container.collision_input.normal_force_N *= 0;
+    for(i = 0; i < total_hit_events; i++)
+    {
+      Eigen::Vector3d world_frame_moment_arm;
+      Eigen::Vector3d world_frame_normal_force_N;
+      for(k = 0; k < 3; k++)
+      {
+        world_frame_moment_arm[k] = hit_location[i][k]*0.01; // cm to m
+        // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
+        // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
+        world_frame_normal_force_N[k] = normal_impulse[i][k]/delta_time*0.01; 
+      }
+     
+      // Compute torque
+      Eigen::Vector3d world_frame_torque_Nm = world_frame_moment_arm.cross(world_frame_normal_force_N);
+
+      // rotate to disc frame
+      Eigen::Vector3d disc_frame_torque_Nm = Rwd * world_frame_torque_Nm;
+
+      // add linear force to total force vector
+      throw_container.collision_input.normal_force_N += world_frame_normal_force_N;
+
+      // add impulse step to input torque
+      throw_container.collision_input.disc_frame_torque_Nm += disc_frame_torque_Nm;
+    }
+    
+    throw_container.collision_input.consumed_input = 0;
+
+    float normal_force_N[3] = 
+    {
+      throw_container.collision_input.normal_force_N[0],
+      throw_container.collision_input.normal_force_N[1],
+      throw_container.collision_input.normal_force_N[2]
+    };
+
+    float impact_force_N = sqrt(normal_force_N[0]*normal_force_N[0] + normal_force_N[1]*normal_force_N[1] + normal_force_N[2]*normal_force_N[2]);
 
 
-      //hit_location is world location in unreal unit (cm)
-    //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
-    //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
-    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,FString::FromInt(total_hit_events));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.disc_frame_torque_Nm[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.disc_frame_torque_Nm[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(throw_container.collision_input.disc_frame_torque_Nm[2])));
+/*    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[2])));*/
+
+        GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+            GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+                GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
  
     }
