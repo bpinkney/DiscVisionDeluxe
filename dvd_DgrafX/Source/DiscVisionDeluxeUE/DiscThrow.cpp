@@ -385,7 +385,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 }
 
 
-#define DISABLE_COMPLEX_DISC_COLLISION (true)
+#define DISABLE_COMPLEX_DISC_COLLISION (false)
 
 void ADiscThrow::on_collision(
   const FVector disc_position,          //world frame
