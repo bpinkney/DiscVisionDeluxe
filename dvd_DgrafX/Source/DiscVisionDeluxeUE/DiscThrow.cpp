@@ -385,25 +385,25 @@ void ADiscThrow::generate_flight_cumulative_stats()
 }
 
   void ADiscThrow::on_collision(
-    const FVector disc_position,  //world frame
-    const FVector hit_location,   //world frame
-    const FVector hit_normal,     //unit direction
-    const FVector normal_impulse, //looks si, magnitude and direction
-    const FVector lin_vel,        //world frame
-    const FVector lin_vel_delta,  //world frame
-    const FVector ang_vel,        //disc frame
+    const FVector disc_position,          //world frame
+    const TArray<FVector> hit_location,   //disc frame, cms
+    const TArray<FVector> hit_normal,     //unit direction
+    const TArray<FVector> normal_impulse, //looks si, magnitude and direction
+    const FVector lin_vel,                //world frame
+    const FVector lin_vel_delta,          //world frame
+    const FVector ang_vel,                //disc frame
     const FVector world_ang_vel,
-    const FVector ang_vel_delta,//disc frame
+    const FVector ang_vel_delta,          //disc frame
+    const int total_hit_events,
     const float delta_time)       //si
 
     {
 
-    const FVector disc_relative_hit_location = hit_location-disc_position; 
 
       //hit_location is world location in unreal unit (cm)
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,(hit_location.ToString()));
     //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,((hit_location-disc_position).ToString()));
-    //GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,((lin_vel_delta).ToString()));
+    GEngine->AddOnScreenDebugMessage(-1, 10.6f, FColor::Green,FString::FromInt(total_hit_events));
 
  
     }
