@@ -32,32 +32,52 @@ namespace DfisX
 
   void consume_Dcollision(Throw_Container *throw_container, const float dt)
   {
-    const bool disable = 0;
+    const bool filter_for_deceleration = false;
 
     const float collision_apply_frames = 1;
-    if(!disable && throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
+    if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
     {
       throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
       throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 
       throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0.0;
 
+      throw_container->current_disc_state.forces_state.collision_force[0] = 
+      throw_container->current_disc_state.forces_state.collision_force[1] = 
+      throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
+
       //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.disc_frame_torque_Nm[0];
       //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.disc_frame_torque_Nm[1];
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.disc_frame_torque_Nm[2];
+
+      // any collision torque which would speed up our spin is not correct, silter these out
+      if(!filter_for_deceleration || signum(throw_container->collision_input.ang_torque_from_delta_vel_Nm[2]) != signum(throw_container->current_disc_state.disc_rotation_vel))
+      {
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+      }
 
       // Just change the rotational vel directly?
       //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.disc_ang_vel_radps[0]; // roll about y, should be [1]
       //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.disc_ang_vel_radps[1];
-      throw_container->current_disc_state.disc_rotation_vel = -throw_container->collision_input.disc_ang_vel_radps[2];
+      //throw_container->current_disc_state.disc_rotation_vel = -throw_container->collision_input.disc_ang_vel_radps[2];
 
       // if you update the vel AND add the force, the disc will go backwards!
       //throw_container->current_disc_state.disc_location = throw_container->collision_input.disc_position_m;
       //throw_container->current_disc_state.disc_velocity = throw_container->collision_input.world_lin_vel_mps;
 
       // Add linear forces in world frame axis
-      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.normal_force_N[0];
-      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.normal_force_N[1];
-      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.normal_force_N[2];
+      // same idea for linear forces, they should counter our existing velocities.....
+     /* if
+      (
+        signum(throw_container->collision_input.lin_force_from_delta_vel_N[0]) != signum(throw_container->current_disc_state.disc_velocity[0])
+        &&
+        signum(throw_container->collision_input.lin_force_from_delta_vel_N[1]) != signum(throw_container->current_disc_state.disc_velocity[1])
+        &&
+        signum(throw_container->collision_input.lin_force_from_delta_vel_N[2]) != signum(throw_container->current_disc_state.disc_velocity[2])
+      )
+      {*/
+        throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
+        throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
+        throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
+      //}
 
       throw_container->collision_input.consumed_input++;
 

@@ -55,11 +55,14 @@ namespace DfisX
 
   struct Collision_Input
   {
-    Eigen::Vector3d disc_position_m;  // world frame
-    Eigen::Vector3d normal_force_N;     //looks si, magnitude and direction
-    Eigen::Vector3d world_lin_vel_mps;  // XYZ unreal world frame
-    Eigen::Vector3d disc_frame_torque_Nm;  //XYZ local xyz frame based on vel vector and disc normal
-    Eigen::Vector3d disc_ang_vel_radps; // XYZ unreal object frame
+    Eigen::Vector3d lin_pos_m;                      // world frame
+    Eigen::Vector3d lin_vel_mps;                    // world frame
+    Eigen::Vector3d lin_force_from_impulses_N;      // world frame
+    Eigen::Vector3d lin_force_from_delta_vel_N;     // world frame
+    Eigen::Vector3d ang_vel_radps;                  // about local disc axes unit axes (DfisX defines)
+    Eigen::Vector3d ang_torque_from_impulses_Nm;    // about local disc axes unit axes (DfisX defines)
+    Eigen::Vector3d ang_torque_from_delta_vel_Nm;   // about local disc axes unit axes (DfisX defines)
+    
     double delta_time_s;
     uint16_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
   };
