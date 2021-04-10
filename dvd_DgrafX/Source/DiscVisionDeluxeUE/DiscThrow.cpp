@@ -384,8 +384,12 @@ void ADiscThrow::generate_flight_cumulative_stats()
 
 }
 
-
-#define DISABLE_COMPLEX_DISC_COLLISION (true)
+// disables aero and DfisX immediately after a hit
+#define DISABLE_COMPLEX_DISC_COLLISION (false)
+// disables aero and DfisX if both of these conditions are met
+// disable for now
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (1.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (5.0)
 
 void ADiscThrow::on_collision(
   const FVector disc_position,          //world frame
@@ -409,7 +413,16 @@ void ADiscThrow::on_collision(
     ||
     throw_container.current_disc_state.disc_velocity.norm() < 2.0
   )*/
-  if(DISABLE_COMPLEX_DISC_COLLISION)
+  if
+  (
+    DISABLE_COMPLEX_DISC_COLLISION
+    ||
+    (
+      throw_container.current_disc_state.disc_velocity.norm() < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS
+      &&
+      abs(throw_container.current_disc_state.disc_rotation_vel) < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS
+    )
+  )
   {
     ptr_disc_projectile->kill_control();
   }
