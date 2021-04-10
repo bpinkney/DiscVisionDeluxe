@@ -414,10 +414,13 @@ void ADiscThrow::on_collision(
     ptr_disc_projectile->kill_control();
   }
 
-  // set throw controller collision input states
-  throw_container.collision_input.consumed_input = 999; // mark as invalid first for thread safety?
+  // try overriding with the sim time? (NOPE, fun and bouncy tho)
+  const float dt = delta_time;
 
-  throw_container.collision_input.delta_time_s = delta_time;
+  // set throw controller collision input states
+  throw_container.collision_input.consumed_input = 255; // mark as invalid first for thread safety?
+
+  throw_container.collision_input.delta_time_s = dt;
 
   Eigen::Vector3d world_ang_vel_radps;
   Eigen::Vector3d world_lin_acc;
@@ -430,7 +433,7 @@ void ADiscThrow::on_collision(
     world_ang_vel_radps[i]                                        = world_ang_vel[i];      // about the XYZ unreal world frame (we think)
 
     // Try to re-derive the linear force from the vel delta for comparison and validation
-    world_lin_acc[i] = lin_vel_delta[i]*0.01 / delta_time;
+    world_lin_acc[i] = lin_vel_delta[i]*0.01 / dt;
   }
 
   throw_container.collision_input.lin_force_from_delta_vel_N = world_lin_acc * throw_container.disc_object.mass;
@@ -476,7 +479,7 @@ void ADiscThrow::on_collision(
       world_frame_moment_arm[k] = hit_location[i][k]*0.01; // cm to m
       // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
       // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
-      world_frame_normal_force_N[k] = normal_impulse[i][k]/delta_time*0.01; 
+      world_frame_normal_force_N[k] = normal_impulse[i][k]/dt*0.01; 
     }
    
     // Compute torque

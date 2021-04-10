@@ -15,7 +15,9 @@
 #define d_object        throw_container->disc_object
 
 //disc aerodynamic constant
-#define PI_X_AR   3.99
+#define PI_X_AR  (3.99)
+
+#define SIM_DT_S (0.001)
 
 namespace DfisX
 {
@@ -64,7 +66,7 @@ namespace DfisX
     Eigen::Vector3d ang_torque_from_delta_vel_Nm;   // about local disc axes unit axes (DfisX defines)
     
     double delta_time_s;
-    uint16_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
+    uint8_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
   };
 
   // Forces State

@@ -51,7 +51,7 @@ namespace DfisX
       // any collision torque which would speed up our spin is not correct, silter these out
       if(!filter_for_deceleration || signum(throw_container->collision_input.ang_torque_from_delta_vel_Nm[2]) != signum(throw_container->current_disc_state.disc_rotation_vel))
       {
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = -throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
       }
 
       // Just change the rotational vel directly?
@@ -401,7 +401,7 @@ namespace DfisX
 
 
 /////////// used to populate disc states
-    step_simulation(throw_container, 0.001);
+    step_simulation(throw_container, SIM_DT_S);
   }
 
   // overloaded
