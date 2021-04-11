@@ -32,7 +32,7 @@ namespace DfisX
 
   void consume_Dcollision(Throw_Container *throw_container, const float dt)
   {
-    const bool filter_for_deceleration = true;
+    const bool filter_for_deceleration = false;
 
     const float collision_apply_frames = 1;
     if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
@@ -45,18 +45,17 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[1] = 
       throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
 
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-
-      // any collision torque which would speed up our spin is not correct, silter these out
+      // any collision torque which would speed up our spin is not correct, optionally filter these out
       if(!filter_for_deceleration || signum(throw_container->collision_input.ang_torque_from_delta_vel_Nm[2]) != signum(throw_container->current_disc_state.disc_rotation_vel))
       {
+        // likely omits firction (sadly)
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[0]; 
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_impulses_Nm[2];
 
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        // probably the way to go since it includes the normal force and friction
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
         throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
       }
 
@@ -69,28 +68,21 @@ namespace DfisX
 
       // Just change the rotational vel directly?
       //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0]; // roll about y, should be [1]
-      //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_radps[1];
-      
+      //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_radps[1];      
 
-      // if you update the vel AND add the force, the disc will go backwards!
-      //throw_container->current_disc_state.disc_location = throw_container->collision_input.disc_position_m;
-      //throw_container->current_disc_state.disc_velocity = throw_container->collision_input.world_lin_vel_mps;
+      // Note: if you update the vel AND add the force, the disc will go backwards!
 
       // Add linear forces in world frame axis
-      // same idea for linear forces, they should counter our existing velocities.....
-     /* if
-      (
-        signum(throw_container->collision_input.lin_force_from_delta_vel_N[0]) != signum(throw_container->current_disc_state.disc_velocity[0])
-        &&
-        signum(throw_container->collision_input.lin_force_from_delta_vel_N[1]) != signum(throw_container->current_disc_state.disc_velocity[1])
-        &&
-        signum(throw_container->collision_input.lin_force_from_delta_vel_N[2]) != signum(throw_container->current_disc_state.disc_velocity[2])
-      )
-      {*/
-        throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
-        throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
-        throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
-      //}
+      // likely omits friction (sadly)
+      /*throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_impulses_N[0];
+      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_impulses_N[1];
+      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_impulses_N[2];*/
+
+      // probably the way to go since it includes the normal force and friction
+      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
+      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
+      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
+
 
       throw_container->collision_input.consumed_input++;
 
@@ -373,8 +365,8 @@ namespace DfisX
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {120.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = -80.0;//-125.6637; // 1200 rpm righty backhand
+      throw_container->current_disc_state.disc_velocity = {70.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_rotation_vel = -50.0;//-125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");
       //disc_mold = find_disc_mold_index_by_name("Hydrogen");

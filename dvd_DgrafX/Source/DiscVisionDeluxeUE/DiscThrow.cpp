@@ -84,7 +84,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     
     FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation*57.3);
 
-   FRotator disc_rotation = {pitch,roll,yaw};
+    FRotator disc_rotation = {pitch,roll,yaw};
 
   
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
@@ -388,7 +388,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 }
 
 // disables aero and DfisX immediately after a hit
-#define DISABLE_COMPLEX_DISC_COLLISION (false)
+#define DISABLE_COMPLEX_DISC_COLLISION (true)
 // disables aero and DfisX if both of these conditions are met
 // disable for now
 #define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (2.0)
@@ -464,6 +464,9 @@ void ADiscThrow::on_collision(
          throw_container.current_disc_state.forces_state.disc_x_unit_vector[1], throw_container.current_disc_state.forces_state.disc_y_unit_vector[1], throw_container.current_disc_state.disc_orientation[1],
          throw_container.current_disc_state.forces_state.disc_x_unit_vector[2], throw_container.current_disc_state.forces_state.disc_y_unit_vector[2], throw_container.current_disc_state.disc_orientation[2];
 
+  // is this correct? It seems to make a better alignment between ang_vel[2] and (R * world_ang_vel)[2]
+  Rwd = Rwd.transpose();
+
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
   Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps;
 
@@ -517,13 +520,25 @@ void ADiscThrow::on_collision(
   }
 
   // Compare summed linear forces from impulses, and that from differentiated velocity deltas
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[0])));
+  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[2])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[2])));*/
+
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(ang_vel[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
 
       GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
           GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
