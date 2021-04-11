@@ -113,7 +113,7 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 ///convert to world frame here
 void ADiscThrow::new_throw_camera_relative(
   const int disc_index, 
-  const FVector thrown_disc_position, 
+  const FVector thrown_disc_position,
   const float thrown_disc_speed, 
   const float thrown_disc_direction, 
   const float thrown_disc_loft, 
@@ -395,6 +395,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 
 void ADiscThrow::on_collision(
   const FVector disc_position,          //world frame
+  const FVector disc_rotation, 
   const TArray<FVector> hit_location,   //disc frame, cms
   const TArray<FVector> hit_normal,     //unit direction
   const TArray<FVector> normal_impulse, //looks si, magnitude and direction

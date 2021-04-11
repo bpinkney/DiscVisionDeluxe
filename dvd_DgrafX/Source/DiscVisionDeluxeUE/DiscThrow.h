@@ -109,6 +109,7 @@ public:
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void on_collision(
     const FVector disc_position,
+    const FVector disc_rotation,
     const TArray<FVector> hit_location,
     const TArray<FVector> hit_normal,
     const TArray<FVector> normal_impulse,
