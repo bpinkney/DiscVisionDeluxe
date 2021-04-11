@@ -332,7 +332,7 @@ namespace DfisX
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Wraith");//Roadrunner");//"Wraith");
+            disc_mold = find_disc_mold_index_by_name("Roadrunner");//"Wraith");
             //disc2throw = 2;
             break;
           case 2:
@@ -366,7 +366,7 @@ namespace DfisX
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
       throw_container->current_disc_state.disc_velocity = {75.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = -70.0;//-125.6637; // 1200 rpm righty backhand
+      throw_container->current_disc_state.disc_rotation_vel = -50.0;//-125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");
       //disc_mold = find_disc_mold_index_by_name("Hydrogen");
