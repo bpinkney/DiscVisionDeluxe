@@ -81,14 +81,13 @@ void ADiscThrow::Tick(const float DeltaTime)
     //float disc_spin = -disc_state.disc_rotation/10;
     //FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation_vel);
     
-    
-    FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation*57.3);
+    //FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation);
+    FVector ang_velocity = FVector (0,0,0);
 
     FRotator disc_rotation = {pitch,roll,yaw};
-
   
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
-   ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity);
+    ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
