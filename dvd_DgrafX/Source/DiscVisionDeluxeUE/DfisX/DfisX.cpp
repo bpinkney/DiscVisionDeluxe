@@ -54,17 +54,26 @@ namespace DfisX
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_impulses_Nm[2];
 
         // probably the way to go since it includes the normal force and friction
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
       }
 
       if(!filter_for_deceleration || abs(throw_container->current_disc_state.disc_rotation_vel) > abs(throw_container->collision_input.ang_vel_radps[2]))
       {
         //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
         //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
-        //throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
-      }      
+        throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+      }
+
+      throw_container->current_disc_state.disc_velocity[0] = throw_container->collision_input.lin_vel_mps[0];
+      throw_container->current_disc_state.disc_velocity[1] = throw_container->collision_input.lin_vel_mps[1];
+      throw_container->current_disc_state.disc_velocity[2] = throw_container->collision_input.lin_vel_mps[2];
+
+      // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
+      throw_container->current_disc_state.disc_location[0] = throw_container->collision_input.lin_pos_m[0];
+      throw_container->current_disc_state.disc_location[1] = throw_container->collision_input.lin_pos_m[1];
+      throw_container->current_disc_state.disc_location[2] = throw_container->collision_input.lin_pos_m[2];
 
       // Just change the rotational vel directly?
       //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0]; // roll about y, should be [1]
@@ -79,9 +88,9 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_impulses_N[2];*/
 
       // probably the way to go since it includes the normal force and friction
-      throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
-      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
-      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
+      //throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
+      //throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
+      //throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
 
 
       throw_container->collision_input.consumed_input++;
@@ -113,12 +122,12 @@ namespace DfisX
   //used to simulate one 'step' of physics
   void step_simulation(Throw_Container *throw_container, const float dt)
   {
-    // all steps must be completed before propagation
+    // consume incoming collisions (do this first in case we need to override states)
+    consume_Dcollision(throw_container, dt);
+    // determine Aero forces
     step_Daero(throw_container, dt);
     // step_Dcollision (throw_container, dt);
     step_Dgyro(throw_container, dt);
-    // consume incoming collisions
-    consume_Dcollision(throw_container, dt);
 
     propagate(throw_container, dt); 
 
@@ -365,8 +374,8 @@ namespace DfisX
       static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {75.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = -50.0;//-125.6637; // 1200 rpm righty backhand
+      throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
+      throw_container->current_disc_state.disc_rotation_vel = -70.0;//-125.6637; // 1200 rpm righty backhand
 
       //disc_mold = find_disc_mold_index_by_name("Valkyrie");
       //disc_mold = find_disc_mold_index_by_name("Hydrogen");
