@@ -99,6 +99,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     last_pitch = pitch;
     last_yaw   = yaw;*/
     
+    float spin_position = -disc_state.disc_rotation;
 
     FVector disc_direction = FVector (disc_state.disc_velocity[0],disc_state.disc_velocity[1],disc_state.disc_velocity[2]);
     
@@ -111,13 +112,13 @@ void ADiscThrow::Tick(const float DeltaTime)
     //float disc_spin = -disc_state.disc_rotation/10;
     //FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation_vel);
     
-    FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation);
+    FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation_vel);
     //FVector ang_velocity = FVector (0,0,0);
 
     FRotator disc_rotation = {pitch,roll,yaw};
   
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
-    ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity);
+    ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity,spin_position);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
@@ -559,6 +560,7 @@ void ADiscThrow::on_collision(
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[2])));*/
 
+<<<<<<< Updated upstream
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(disc_rotation[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(disc_rotation[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(disc_rotation[2])));
@@ -566,14 +568,23 @@ void ADiscThrow::on_collision(
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.current_disc_state.disc_orientation[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.current_disc_state.disc_orientation[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.current_disc_state.disc_orientation[2])));
+=======
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[1])));
+              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(ang_vel[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
+              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
+>>>>>>> Stashed changes
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
 
-      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-          GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-              GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+          //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
 }
 
