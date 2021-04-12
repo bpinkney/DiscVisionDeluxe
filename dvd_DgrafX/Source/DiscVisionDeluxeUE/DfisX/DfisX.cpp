@@ -61,19 +61,52 @@ namespace DfisX
 
       if(!filter_for_deceleration || abs(throw_container->current_disc_state.disc_rotation_vel) > abs(throw_container->collision_input.ang_vel_radps[2]))
       {
-        //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
-        //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
-        throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        // angular positions using normal unit vector
+
+        // filter for gimbal lock
+        int reverse_count = 0;
+        if(signum(throw_container->current_disc_state.disc_orientation[0]) != signum(throw_container->collision_input.disc_rotation[0]))
+        {
+          reverse_count++;
+        }
+        if(signum(throw_container->current_disc_state.disc_orientation[1]) != signum(throw_container->collision_input.disc_rotation[1]))
+        {
+          reverse_count++;
+        }
+        if(signum(throw_container->current_disc_state.disc_orientation[2]) != signum(throw_container->collision_input.disc_rotation[2]))
+        {
+          reverse_count++;
+        }
+
+        /*if(reverse_count > 1)
+        {
+          throw_container->current_disc_state.disc_orientation[0]  = -throw_container->collision_input.disc_rotation[0];
+          throw_container->current_disc_state.disc_orientation[1]  = -throw_container->collision_input.disc_rotation[1];
+          throw_container->current_disc_state.disc_orientation[2]  = -throw_container->collision_input.disc_rotation[2];
+
+          // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock)
+          //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0];
+          //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_radps[1];
+          throw_container->current_disc_state.disc_rotation_vel = -throw_container->collision_input.ang_vel_radps[2];
+        }*/
+        //else
+        //{
+          throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
+          throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
+          throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+
+          // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock)
+          //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
+          //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
+          throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        //}
       }
 
-      throw_container->current_disc_state.disc_velocity[0] = throw_container->collision_input.lin_vel_mps[0];
-      throw_container->current_disc_state.disc_velocity[1] = throw_container->collision_input.lin_vel_mps[1];
-      throw_container->current_disc_state.disc_velocity[2] = throw_container->collision_input.lin_vel_mps[2];
-
       // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
-      throw_container->current_disc_state.disc_location[0] = throw_container->collision_input.lin_pos_m[0];
-      throw_container->current_disc_state.disc_location[1] = throw_container->collision_input.lin_pos_m[1];
-      throw_container->current_disc_state.disc_location[2] = throw_container->collision_input.lin_pos_m[2];
+      throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
+      throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+
+
 
       // Just change the rotational vel directly?
       //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0]; // roll about y, should be [1]
@@ -385,7 +418,7 @@ namespace DfisX
       switch(test_throw)
       {
         case 0:
-          hps = {DEG_TO_RAD(45), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(45), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           //test_throw++;
         break;
         case 1:

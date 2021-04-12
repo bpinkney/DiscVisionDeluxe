@@ -61,6 +61,7 @@ namespace DfisX
     Eigen::Vector3d lin_vel_mps;                    // world frame
     Eigen::Vector3d lin_force_from_impulses_N;      // world frame
     Eigen::Vector3d lin_force_from_delta_vel_N;     // world frame
+    Eigen::Vector3d disc_rotation;                  // Disc Z normal unit vector (same as state)
     Eigen::Vector3d ang_vel_radps;                  // about local disc axes unit axes (DfisX defines)
     Eigen::Vector3d ang_torque_from_impulses_Nm;    // about local disc axes unit axes (DfisX defines)
     Eigen::Vector3d ang_torque_from_delta_vel_Nm;   // about local disc axes unit axes (DfisX defines)
