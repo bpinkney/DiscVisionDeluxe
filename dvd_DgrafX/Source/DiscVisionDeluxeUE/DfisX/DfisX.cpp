@@ -45,86 +45,21 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[1] = 
       throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
 
-      // any collision torque which would speed up our spin is not correct, optionally filter these out
-      if(!filter_for_deceleration || signum(throw_container->collision_input.ang_torque_from_delta_vel_Nm[2]) != signum(throw_container->current_disc_state.disc_rotation_vel))
-      {
-        // likely omits firction (sadly)
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[0]; 
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_impulses_Nm[2];
-
-        // probably the way to go since it includes the normal force and friction
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0]; 
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
-      }
-
-      if(!filter_for_deceleration || abs(throw_container->current_disc_state.disc_rotation_vel) > abs(throw_container->collision_input.ang_vel_radps[2]))
-      {
-        // angular positions using normal unit vector
-
-        // filter for gimbal lock
-        int reverse_count = 0;
-        if(signum(throw_container->current_disc_state.disc_orientation[0]) != signum(throw_container->collision_input.disc_rotation[0]))
-        {
-          reverse_count++;
-        }
-        if(signum(throw_container->current_disc_state.disc_orientation[1]) != signum(throw_container->collision_input.disc_rotation[1]))
-        {
-          reverse_count++;
-        }
-        if(signum(throw_container->current_disc_state.disc_orientation[2]) != signum(throw_container->collision_input.disc_rotation[2]))
-        {
-          reverse_count++;
-        }
-
-        /*if(reverse_count > 1)
-        {
-          throw_container->current_disc_state.disc_orientation[0]  = -throw_container->collision_input.disc_rotation[0];
-          throw_container->current_disc_state.disc_orientation[1]  = -throw_container->collision_input.disc_rotation[1];
-          throw_container->current_disc_state.disc_orientation[2]  = -throw_container->collision_input.disc_rotation[2];
-
-          // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock)
-          //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0];
-          //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_radps[1];
-          throw_container->current_disc_state.disc_rotation_vel = -throw_container->collision_input.ang_vel_radps[2];
-        }*/
-        //else
-        //{
-          throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
-          throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
-          throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
-
-          // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock)
-          //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
-          //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
-          throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
-        //}
-      }
 
       // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
+      // Seems like the positions don't even get sent to unreal for the moment, and we just assume a constant velocity each dt
+      // TODO: look into whether this assumption is hurting us later!
       throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
       throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
+      throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
+      throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
+      throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
-
-      // Just change the rotational vel directly?
-      //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[0]; // roll about y, should be [1]
-      //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_radps[1];      
-
-      // Note: if you update the vel AND add the force, the disc will go backwards!
-
-      // Add linear forces in world frame axis
-      // likely omits friction (sadly)
-      /*throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_impulses_N[0];
-      throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_impulses_N[1];
-      throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_impulses_N[2];*/
-
-      // probably the way to go since it includes the normal force and friction
-      //throw_container->current_disc_state.forces_state.collision_force[0] = throw_container->collision_input.lin_force_from_delta_vel_N[0];
-      //throw_container->current_disc_state.forces_state.collision_force[1] = throw_container->collision_input.lin_force_from_delta_vel_N[1];
-      //throw_container->current_disc_state.forces_state.collision_force[2] = throw_container->collision_input.lin_force_from_delta_vel_N[2];
-
+      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)      
+      //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+      //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+      throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
       throw_container->collision_input.consumed_input++;
 
@@ -338,6 +273,7 @@ namespace DfisX
         break;
     }    
 
+    static uint32_t disc2throw = 1;
     if(1)
     {
       // generate a random disc mold index from all possible sets
@@ -349,7 +285,6 @@ namespace DfisX
 
       // OR just proceed through all of them in order
       // (skipping the brick)
-      static uint32_t disc2throw = 1;
       if(0)
       {
         disc2throw++;
@@ -374,12 +309,12 @@ namespace DfisX
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Roadrunner");//"Wraith");
+            disc_mold = find_disc_mold_index_by_name("Roadrunner");
             //disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Pure");
-            disc2throw = 3;
+            disc_mold = find_disc_mold_index_by_name("Shryke");
+            //disc2throw = 1;// just do the first 2
             break;
           case 3:
             disc_mold = find_disc_mold_index_by_name("Envy");
@@ -390,11 +325,15 @@ namespace DfisX
             disc2throw = 5;
             break;
           case 5:
-            disc_mold = find_disc_mold_index_by_name("Buzzz");
+            disc_mold = find_disc_mold_index_by_name("Shryke");
             disc2throw = 6;
             break;
+          case 6:
+            disc_mold = find_disc_mold_index_by_name("Valkyrie");
+            disc2throw = 7;
+            break;
           default:
-            disc_mold = find_disc_mold_index_by_name("Zone");
+            disc_mold = find_disc_mold_index_by_name("Wraith");
             disc2throw = 1;
             break;
         }
@@ -404,40 +343,37 @@ namespace DfisX
     // override for Loft Test Throws
     if(1)
     {
-      static int test_throw = 0;
+      //static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
-      throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
-      throw_container->current_disc_state.disc_rotation_vel = -70.0;//-125.6637; // 1200 rpm righty backhand
-
-      //disc_mold = find_disc_mold_index_by_name("Valkyrie");
-      //disc_mold = find_disc_mold_index_by_name("Hydrogen");
 
 
       Eigen::Vector3d hps = {0,0,0};
-      switch(test_throw)
+      switch(disc2throw)
       {
-        case 0:
-          hps = {DEG_TO_RAD(45), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          //test_throw++;
-        break;
         case 1:
-          hps = {DEG_TO_RAD(15), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          test_throw++;
+          // roadrunner roller!
+          throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -50.0;
+          hps = {DEG_TO_RAD(45), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          disc2throw = 2;
         break;
         case 2:
-          hps = {DEG_TO_RAD(-15), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          test_throw = 0;
+          // regular flat throw
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -70.0;
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
+          disc2throw = 1;
         break;
       }
 
-      const double loft_x_component = sin (-hps[1]) * cos (hps[0]);
-      const double loft_y_component = sin (hps[0])  * cos (hps[1]);
-      const double loft_z_component = cos (hps[1])  * cos (hps[0]);
+      const double new_x_component = sin (-hps[1]) * cos (hps[0]);
+      const double new_y_component = sin (hps[0])  * cos (hps[1]);
+      const double new_z_component = cos (hps[1])  * cos (hps[0]);
 
-      Eigen::Vector3d loft_thrown_disc_orientation = {loft_x_component, loft_y_component, loft_z_component};
+      Eigen::Vector3d new_thrown_disc_orientation = {new_x_component, new_y_component, new_z_component};
 
-      throw_container->current_disc_state.disc_orientation = loft_thrown_disc_orientation;
+      throw_container->current_disc_state.disc_orientation = new_thrown_disc_orientation;
     }
 
     throw_container->disc_object = disc_object_array[disc_mold];

@@ -545,39 +545,42 @@ void ADiscThrow::on_collision(
     // add impulse step to input torque
     throw_container.collision_input.ang_torque_from_impulses_Nm += disc_frame_torque_Nm;
   }
+
+  // Check for ang vel reversal, this is annoying, but necessary, probably due to the atan stuff at the top of this file
+  int reverse_count = 0;
+  if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
+  {
+    reverse_count++;
+  }
+  if(signum(throw_container.current_disc_state.disc_rolling_vel) != signum(throw_container.collision_input.ang_vel_radps[1]))
+  {
+    reverse_count++;
+  }
+  if(signum(throw_container.current_disc_state.disc_rotation_vel) != signum(throw_container.collision_input.ang_vel_radps[2]))
+  {
+    reverse_count++;
+  }
+
+  if(reverse_count > 1)
+  {
+    throw_container.collision_input.ang_vel_radps *= -1;
+  }
   
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
     throw_container.collision_input.consumed_input = 0;
   }
 
-  // Compare summed linear forces from impulses, and that from differentiated velocity deltas
-  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N[2])));
+/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_delta_vel_N[2])));*/
-
-
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[0])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(ang_vel[1])));
-              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(ang_vel[2])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
-              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
-
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
-
-      //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-          //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-              //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 }
 
 
