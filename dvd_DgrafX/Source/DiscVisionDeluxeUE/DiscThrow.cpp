@@ -357,7 +357,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
 	float set_hue = 000.0;
-	enum_ff_display_shape set_shape = enum_ff_display_shape::Spiral;//Bandsaw;
+	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
 	bool set_rainbow = true;
 
     ptr_follow_flight->init (set_hue,set_shape,set_rainbow);

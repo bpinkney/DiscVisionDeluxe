@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "DiscProjectile.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "FlightLog.generated.h"
@@ -32,6 +32,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
 	void toggle_displayed_mode();
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
     class ADiscProjectile* ptr_disc_projectile;
