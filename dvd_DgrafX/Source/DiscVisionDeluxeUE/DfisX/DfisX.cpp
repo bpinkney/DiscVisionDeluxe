@@ -56,10 +56,15 @@ namespace DfisX
       throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
       throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
-      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)      
-      //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
-      //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
+      // Why set this to zero? who cares is why, bleh
+      throw_container->current_disc_state.disc_pitching_vel = 0*throw_container->collision_input.ang_vel_radps[0];
+      throw_container->current_disc_state.disc_rolling_vel  = 0*throw_container->collision_input.ang_vel_radps[1];
       throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+
+      // use torques for this instead for now? Nope, also not working...
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
 
       throw_container->collision_input.consumed_input++;
 
@@ -309,16 +314,16 @@ namespace DfisX
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Roadrunner");
+            disc_mold = find_disc_mold_index_by_name("Roc 3");
             //disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Shryke");
-            //disc2throw = 1;// just do the first 2
+            disc_mold = find_disc_mold_index_by_name("Roadrunner");
+            //disc2throw = 3;// just do the first 2
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Envy");
-            disc2throw = 4;
+            disc_mold = find_disc_mold_index_by_name("Shryke");//"Envy");
+            //disc2throw = 4;
             break;
           case 4:
             disc_mold = find_disc_mold_index_by_name("Swan");
@@ -352,13 +357,20 @@ namespace DfisX
       switch(disc2throw)
       {
         case 1:
+          // IN THE TREE
+          throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -80.0;
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
+          disc2throw = 2;
+        break;
+        case 2:
           // roadrunner roller!
           throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
           hps = {DEG_TO_RAD(45), DEG_TO_RAD(10), DEG_TO_RAD(0)};
-          disc2throw = 2;
+          disc2throw = 3;
         break;
-        case 2:
+        case 3:
           // regular flat throw
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -70.0;
