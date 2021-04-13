@@ -7,6 +7,7 @@
 #include "Math/Vector.h"
 #include "disc_layouts.hpp"
 #include "dvd_maths.hpp"
+#include "FlightLog.h"
 
 // include for debug stuff
 #include "Daero.hpp"
@@ -144,6 +145,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
     
     ptr_follow_flight->log_position();
+    ptr_flight_log->log_position(DeltaTime);
     //end ff stuff
     //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
   }
@@ -353,9 +355,10 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 ////Follow flight spawn and init
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-
+    ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
 	float set_hue = 000.0;
-	enum_ff_display_shape set_shape = enum_ff_display_shape::Spiral;//Bandsaw;
+	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
 	bool set_rainbow = true;
 
     ptr_follow_flight->init (set_hue,set_shape,set_rainbow);

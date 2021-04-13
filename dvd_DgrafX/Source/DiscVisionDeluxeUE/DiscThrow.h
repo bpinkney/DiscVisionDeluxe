@@ -8,6 +8,7 @@
 #include "DiscProjectile.h"
 
 
+
 #include "GameFramework/Actor.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -137,17 +138,23 @@ public:
   UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
   TSubclassOf<class ADiscCharacter> DiscCharacterBP;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
-      class ADiscCharacter* ptr_disc_character;
+  UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
+  TSubclassOf<class AFlightLog> FlightLogBP;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
-      class ACameraManager* ptr_camera_manager;
+    class ADiscCharacter* ptr_disc_character;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
-      class AFollowFlight* ptr_follow_flight;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    class ACameraManager* ptr_camera_manager;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
-      class ADiscProjectile* ptr_disc_projectile;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    class AFollowFlight* ptr_follow_flight;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    class ADiscProjectile* ptr_disc_projectile;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    class AFlightLog* ptr_flight_log;
 
    // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
     //  class ADiscProjectile* ptr_HUD_Main_Readout;
