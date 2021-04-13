@@ -45,26 +45,47 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[1] = 
       throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
 
+      //const bool overwrite_states_ignore_forces_torques = false;
+      //if(overwrite_states_ignore_forces_torques)
+      //{
 
-      // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
-      // Seems like the positions don't even get sent to unreal for the moment, and we just assume a constant velocity each dt
-      // TODO: look into whether this assumption is hurting us later!
-      throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
-      throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+        // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
+        // Seems like the positions don't even get sent to unreal for the moment, and we just assume a constant velocity each dt
+        // TODO: look into whether this assumption is hurting us later!
+        throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
+        throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
-      throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
-      throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
-      throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+        throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
+        throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
+        throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
-      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
-      // Why set this to zero? who cares is why, bleh
-      throw_container->current_disc_state.disc_pitching_vel = 0*throw_container->collision_input.ang_vel_radps[0];
-      throw_container->current_disc_state.disc_rolling_vel  = 0*throw_container->collision_input.ang_vel_radps[1];
-      throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
+        // Why set this to zero? who cares is why, bleh
+        // bound the roll and pitch vel?
+        const double bound_ang_rate_rp = 1.0;
 
-      // use torques for this instead for now? Nope, also not working...
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
-      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
+        BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -bound_ang_rate_rp, bound_ang_rate_rp);
+        BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[1], -bound_ang_rate_rp, bound_ang_rate_rp);
+
+        //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
+        //{
+          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+       // }
+        throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+
+      //}
+      //else
+      //{
+        // Better idea since it prevents propagation from JUST collisions, however, harder to sync timing wise
+        //throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
+        //throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_delta_vel_N[1];
+        //throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];
+
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+      ///}
 
       throw_container->collision_input.consumed_input++;
 
@@ -282,8 +303,11 @@ namespace DfisX
     if(1)
     {
       // generate a random disc mold index from all possible sets
-      //const float index = (float)rand() / (float)RAND_MAX;
-      //disc_mold = floor(index * disc_object_array.size());
+      if(1)
+      {
+        const float index = (float)rand() / (float)RAND_MAX;
+        disc_mold = floor(index * disc_object_array.size());
+      }
 
       // OR just override explicitly
       //disc_mold = find_disc_mold_index_by_name("Mako3");
@@ -292,12 +316,11 @@ namespace DfisX
       // (skipping the brick)
       if(0)
       {
-        disc2throw++;
-        if(disc2throw > disc_object_array.size() - 1)
+        disc_mold++;
+        if(disc_mold > disc_object_array.size() - 1)
         {
-          disc2throw = 1;
+          disc_mold = 1;
         }
-        disc_mold = disc2throw;
       }
 
       // OR throw a cycling set for test purposes
@@ -309,20 +332,20 @@ namespace DfisX
 
       //disc_mold = find_disc_mold_index_by_name("Destroyer");
 
-      if(1)
+      if(0)
       {
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Roc 3");
-            //disc2throw = 2;
+            disc_mold = find_disc_mold_index_by_name("Northman");
+            disc2throw = 2;
             break;
           case 2:
             disc_mold = find_disc_mold_index_by_name("Roadrunner");
-            //disc2throw = 3;// just do the first 2
+            disc2throw = 1;// just do the first 2
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Shryke");//"Envy");
+            disc_mold = find_disc_mold_index_by_name("Shryke");
             //disc2throw = 4;
             break;
           case 4:
@@ -357,9 +380,9 @@ namespace DfisX
       switch(disc2throw)
       {
         case 1:
-          // IN THE TREE
-          throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = -80.0;
+          // regular flat throw
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -70.0;
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           disc2throw = 2;
         break;
@@ -367,13 +390,13 @@ namespace DfisX
           // roadrunner roller!
           throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
-          hps = {DEG_TO_RAD(45), DEG_TO_RAD(10), DEG_TO_RAD(0)};
-          disc2throw = 3;
+          hps = {DEG_TO_RAD(50), DEG_TO_RAD(10), DEG_TO_RAD(0)};
+          disc2throw = 1; // skip step 3
         break;
         case 3:
-          // regular flat throw
-          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = -70.0;
+          // IN THE TREE
+          throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -80.0;
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           disc2throw = 1;
         break;
@@ -390,7 +413,7 @@ namespace DfisX
 
     throw_container->disc_object = disc_object_array[disc_mold];
 
-    std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << std::endl;
+    std::cout << std::endl << std::endl << "Throwing a " << throw_container->disc_object.manufacturer << " " << throw_container->disc_object.mold_name << "(" << disc_object_array.size() << " available disc molds)" << std::endl;
 
     throw_container->disc_state_array.clear();
 

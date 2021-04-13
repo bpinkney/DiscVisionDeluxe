@@ -6,6 +6,7 @@
 #include "dvd_maths.hpp"
 #include "Math/Vector.h"
 #include "disc_layouts.hpp"
+#include "dvd_maths.hpp"
 
 // include for debug stuff
 #include "Daero.hpp"
@@ -119,7 +120,7 @@ void ADiscThrow::Tick(const float DeltaTime)
            disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
            disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
 
-    //Rwd = Rwd.transpose();
+    //Rdw = Rdw.transpose();
 
     // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
     // NEGATIVE Z due to unreal's weird frame!
@@ -526,15 +527,25 @@ void ADiscThrow::on_collision(
   Rwd = Rwd.transpose();
 
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
+  // Reverse Z direction?
+  //world_ang_vel_radps[2] *= -1;
   Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps;
 
   throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
+
+  local_ang_vel_radps[2] *= -1;
 
   // 1. derive torque from the ang vel:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   const double Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   Eigen::Vector3d local_ang_accel_radps2 = throw_container.collision_input.ang_vel_radps / throw_container.collision_input.delta_time_s;
+
+  // There are some off results with the angular vels right now, can we hackily limit the ang accels to work around this?
+  //const double max_ang_accel = 5.0 / Ix;
+  //BOUND_VARIABLE(local_ang_accel_radps2[0], -max_ang_accel, max_ang_accel);
+  //BOUND_VARIABLE(local_ang_accel_radps2[1], -max_ang_accel, max_ang_accel);
+
   Eigen::Vector3d local_ang_torque_Nm;
   local_ang_torque_Nm[0] = local_ang_accel_radps2[0] * Ix;
   local_ang_torque_Nm[1] = local_ang_accel_radps2[1] * Iy;
@@ -587,7 +598,7 @@ void ADiscThrow::on_collision(
     reverse_count++;
   }
 
-  if(reverse_count > 1)
+  if(reverse_count > 1) // just base this on the spin for now?
   {
     throw_container.collision_input.ang_vel_radps *= -1;
   }
@@ -613,18 +624,17 @@ void ADiscThrow::on_collision(
 
 
 
-
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_rate_about_x)));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_rate_about_y)));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_vel[0])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_vel[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(ang_vel[2])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
