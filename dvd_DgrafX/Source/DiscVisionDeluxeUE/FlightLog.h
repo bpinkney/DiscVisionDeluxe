@@ -30,6 +30,7 @@ public:
   	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
 	void log_position(float DeltaTime);
 
+
 	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
 	void toggle_displayed_mode();
 

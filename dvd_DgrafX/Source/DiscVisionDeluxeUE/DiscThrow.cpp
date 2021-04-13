@@ -146,6 +146,8 @@ void ADiscThrow::Tick(const float DeltaTime)
     
     ptr_follow_flight->log_position();
     ptr_flight_log->log_position(DeltaTime);
+    log_string(ang_velocity.ToString());
+
     //end ff stuff
     //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
   }

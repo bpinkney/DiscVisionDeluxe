@@ -49,6 +49,9 @@ public:
   	float current_wobble;
   };
   DfisX::Throw_Container throw_container;
+  
+  UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+  void log_string(const FString& stringlog);
 
 protected:
 	// Called when the game starts or when spawned
