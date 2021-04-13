@@ -629,7 +629,7 @@ void ADiscThrow::on_collision(
 
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
+/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
@@ -641,7 +641,7 @@ void ADiscThrow::on_collision(
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
