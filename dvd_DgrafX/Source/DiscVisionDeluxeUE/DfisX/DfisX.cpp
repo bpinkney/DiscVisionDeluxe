@@ -314,16 +314,16 @@ namespace DfisX
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Roadrunner");
+            disc_mold = find_disc_mold_index_by_name("Roc 3");
             //disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Shryke");
-            //disc2throw = 1;// just do the first 2
+            disc_mold = find_disc_mold_index_by_name("Roadrunner");
+            //disc2throw = 3;// just do the first 2
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Envy");
-            disc2throw = 4;
+            disc_mold = find_disc_mold_index_by_name("Shryke");//"Envy");
+            //disc2throw = 4;
             break;
           case 4:
             disc_mold = find_disc_mold_index_by_name("Swan");
@@ -357,13 +357,20 @@ namespace DfisX
       switch(disc2throw)
       {
         case 1:
+          // IN THE TREE
+          throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -80.0;
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
+          disc2throw = 2;
+        break;
+        case 2:
           // roadrunner roller!
           throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
           hps = {DEG_TO_RAD(45), DEG_TO_RAD(10), DEG_TO_RAD(0)};
-          disc2throw = 2;
+          disc2throw = 3;
         break;
-        case 2:
+        case 3:
           // regular flat throw
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -70.0;
