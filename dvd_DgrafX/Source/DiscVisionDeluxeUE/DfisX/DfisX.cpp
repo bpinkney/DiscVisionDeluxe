@@ -56,10 +56,15 @@ namespace DfisX
       throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
       throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
-      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)      
-      //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
-      //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+      // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
+      // Why set this to zero? who cares is why, bleh
+      throw_container->current_disc_state.disc_pitching_vel = 0.0*throw_container->collision_input.ang_vel_radps[0];
+      throw_container->current_disc_state.disc_rolling_vel  = 0.0*throw_container->collision_input.ang_vel_radps[1];
       throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+
+      // use torques for this instead for now? Nope, also not working...
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
+      //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
 
       throw_container->collision_input.consumed_input++;
 
