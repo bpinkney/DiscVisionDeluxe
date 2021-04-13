@@ -112,7 +112,26 @@ void ADiscThrow::Tick(const float DeltaTime)
     //float disc_spin = -disc_state.disc_rotation/10;
     //FVector ang_velocity = FVector (0,0,-disc_state.disc_rotation_vel);
     
-    FVector ang_velocity = FVector (disc_state.disc_pitching_vel,disc_state.disc_rolling_vel,-disc_state.disc_rotation_vel);
+    // Convert angular rates into the world frame before passing back to unreal
+    // (They have no concept of our locally defined 'velocity vector' frame)
+    Eigen::Matrix3d Rdw; 
+    Rdw << disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
+           disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
+           disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
+
+    //Rwd = Rwd.transpose();
+
+    // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
+    // NEGATIVE Z due to unreal's weird frame!
+    Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
+    Eigen::Vector3d world_ang_vel_radps = Rdw * local_ang_vel_radps;
+
+    FVector ang_velocity = FVector 
+      (
+        world_ang_vel_radps[0], 
+        world_ang_vel_radps[1], 
+        world_ang_vel_radps[2]
+      );
     //FVector ang_velocity = FVector (0,0,0);
 
     FRotator disc_rotation = {pitch,roll,yaw};
@@ -593,19 +612,23 @@ void ADiscThrow::on_collision(
   // NVM, this makes BIG numbers.... why? must be that dt is wrong...
 
 
-/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
+
+
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_x_units)));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_rate_about_x)));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_rate_about_y)));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
