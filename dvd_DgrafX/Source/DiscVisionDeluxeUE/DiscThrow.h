@@ -50,8 +50,17 @@ public:
   };
   DfisX::Throw_Container throw_container;
   
-  UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+  UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="Disc Throwing")
   void log_string(const FString& stringlog);
+
+  UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="Disc Throwing")
+  void log_hit(bool issa_hit);
+
+  UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+  void log_launch(bool issa_launch);
+
+  UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+  void dump_string_log();
 
 protected:
 	// Called when the game starts or when spawned

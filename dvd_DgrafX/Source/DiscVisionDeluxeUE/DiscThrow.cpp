@@ -491,6 +491,7 @@ void ADiscThrow::on_collision(
   )
   {
     ptr_disc_projectile->kill_control();
+    
   }
 
   // try overriding with the sim time? (NOPE, fun and bouncy tho)

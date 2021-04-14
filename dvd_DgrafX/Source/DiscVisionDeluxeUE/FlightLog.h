@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "FlightLog.generated.h"
 
+    UENUM()
+	enum Log_type
+	{
+  	STRING_LOG     UMETA(DisplayName = "String log"),
+ 	HIT_LOG      UMETA(DisplayName = "Hit log"),
+  	LAUNCH_LOG   UMETA(DisplayName = "Launch log"),
+	};
+
+
 UCLASS()
 class DISCVISIONDELUXEUE_API AFlightLog : public AActor
 {
@@ -27,8 +36,11 @@ public:
 
 
 
-  	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
+  	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing") ///////////////log position needs to be called first for recording to be accurate!!!!!!!!!!!
 	void log_position(float DeltaTime);
+
+
+
 
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Disc Throwing")
@@ -38,6 +50,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
     class ADiscProjectile* ptr_disc_projectile;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	TEnumAsByte<Log_type> log_type;
 
 };
 
