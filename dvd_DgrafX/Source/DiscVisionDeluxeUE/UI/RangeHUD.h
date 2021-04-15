@@ -122,6 +122,34 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeDebugClass;
 
+
+
+
+
+	//DrawLine
+FORCEINLINE void DrawJoyLine
+(
+	const FVector2D& Start, 
+	const FVector2D& End, 
+	const FLinearColor& TheColor, 
+	const float& Thick
+)
+{
+
+	if (!Canvas) return;
+	//
+	
+	FCanvasLineItem NewLine(Start,End);
+	NewLine.SetColor(TheColor);
+	NewLine.LineThickness = Thick;
+	Canvas->DrawItem(NewLine);
+}	
+
+
+
+
+
+
 private:
 	// Pointers to Widgets to be used.
 	URangeUserWidget* RangeUserWidget;

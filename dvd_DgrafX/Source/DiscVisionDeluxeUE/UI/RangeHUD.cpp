@@ -11,6 +11,7 @@ ARangeHUD::ARangeHUD()
 void ARangeHUD::DrawHUD()
 {
 	Super::DrawHUD();
+	DrawJoyLine (FVector2D(0,0),FVector2D(50,50),FLinearColor(0, 0, 0, 1),5.0);
 }
 
 // Check existence of HUD Class, if present, set HUD class to Widget, add to viewport.
@@ -43,6 +44,7 @@ void ARangeHUD::Tick(float DeltaSeconds)
 	if (ADiscThrow::latest_disc_throw != nullptr)
 	{
 		ARangeHUD::PopulateHUD();
+		
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
 	}
 }
