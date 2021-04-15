@@ -139,7 +139,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     FRotator disc_rotation = {pitch,roll,yaw};
   
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
-    ptr_disc_projectile->SetDiscVelRot(disc_rotation,disc_velocity,ang_velocity,spin_position);
+    ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
@@ -468,7 +468,9 @@ void ADiscThrow::on_collision(
   const FVector world_ang_vel,
   const FVector ang_vel_delta,          //disc frame
   const int total_hit_events,
-  const float delta_time)       //si
+  const float delta_time,               //si
+  const float hit_friction,
+  const float hit_restitution)       
 
   {
   //const FVector disc_relative_hit_location = hit_location-disc_position;
