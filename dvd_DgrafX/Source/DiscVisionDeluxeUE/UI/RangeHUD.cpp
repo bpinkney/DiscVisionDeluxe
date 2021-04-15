@@ -36,6 +36,15 @@ void ARangeHUD::BeginPlay()
 			DebugWidget->AddToViewport();
 		}
 	}
+
+	if (MapDebugClass)
+	{
+		MapWidget = CreateWidget<UMapUserWidget>(GetWorld(), MapDebugClass);
+		if (MapWidget)
+		{
+			MapWidget->AddToViewport();
+		}
+	}
 }
 
 void ARangeHUD::Tick(float DeltaSeconds)
