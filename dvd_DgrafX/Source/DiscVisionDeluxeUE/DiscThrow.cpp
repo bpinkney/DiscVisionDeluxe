@@ -473,7 +473,8 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_restitution)       
 
   {
-  //const FVector disc_relative_hit_location = hit_location-disc_position;
+
+ 
 
   // if we fall below 10 rad/s (~100rpm) or 2 m/s?, relinquich control to Unreal completely
   /*if(
@@ -644,6 +645,7 @@ void ADiscThrow::on_collision(
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_vel[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(ang_vel[2])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
+
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
