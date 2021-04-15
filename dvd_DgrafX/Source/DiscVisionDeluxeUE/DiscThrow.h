@@ -133,8 +133,8 @@ public:
     const FVector ang_vel_delta,
     const int total_hit_events,
     const float delta_time,
-    const float hit_friction,
-    const float hit_restitution
+    const TArray<float> hit_friction,
+    const TArray<float> hit_restitution
     );
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
