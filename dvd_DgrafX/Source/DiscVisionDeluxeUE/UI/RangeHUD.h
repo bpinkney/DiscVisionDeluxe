@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "RangeUserWidget.h"
 #include "DebugWidget.h"
+#include "MainMenuWidget.h"
 #include "MapUserWidget.h"
 #include "../DiscThrow.h"
 #include "RangeHUD.generated.h"
@@ -34,6 +35,9 @@ public:
 
 	UFUNCTION()
 	void UpdateHUD();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_open_btn();
 
 	UFUNCTION()
 	double GetGenThrow1Input();
@@ -155,7 +159,7 @@ FORCEINLINE void DrawJoyLine
 private:
 	// Pointers to Widgets to be used.
 	URangeUserWidget* RangeUserWidget;
-
+    UMainMenuWidget* RangeUserWidget;
 	UDebugWidget* DebugWidget;
 
 	UMapUserWidget* MapWidget;

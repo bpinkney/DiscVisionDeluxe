@@ -37,6 +37,15 @@ void ARangeHUD::BeginPlay()
 		}
 	}
 
+		if (MainMenuClass)
+	{
+		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuDebugClass);
+		if (MainMenuWidget)
+		{
+			MainMenuWidget->AddToViewport();
+		}
+	}
+
 	if (MapDebugClass)
 	{
 		MapWidget = CreateWidget<UMapUserWidget>(GetWorld(), MapDebugClass);
@@ -73,6 +82,13 @@ void ARangeHUD::UpdateHUD()
 		RangeUserWidget->UpdateHUD();
 	}
 }
+
+void ARangeHUD::main_menu_open_btn()
+{
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm open c++ hooked"));
+}
+
 
 double ARangeHUD::GetGenThrow1Input()
 {
