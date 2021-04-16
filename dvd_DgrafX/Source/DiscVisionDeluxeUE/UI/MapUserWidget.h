@@ -22,8 +22,6 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	virtual void OnPaint(UPARAM(ref) FPaintContext& Context);
-
 	FVector2D GetGameViewportSize();
 
 	FVector2D GetGameResolution();

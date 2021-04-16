@@ -13,11 +13,6 @@ void UMapUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-void UMapUserWidget::OnPaint(UPARAM(ref) FPaintContext& Context)
-{
-
-}
-
 FVector2D GetGameViewportSize()
 {
     FVector2D Result = FVector2D(1, 1);
@@ -40,9 +35,4 @@ FVector2D GetGameResolution()
     return Result;
 }
 
-void DrawTopLine()
-{
-	
-
-}
 

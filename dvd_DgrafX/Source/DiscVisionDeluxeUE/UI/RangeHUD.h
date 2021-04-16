@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "RangeUserWidget.h"
 #include "DebugWidget.h"
+#include "MapUserWidget.h"
 #include "../DiscThrow.h"
 #include "RangeHUD.generated.h"
 
@@ -122,7 +123,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeDebugClass;
 
-
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> MapDebugClass;
 
 
 
@@ -155,4 +157,6 @@ private:
 	URangeUserWidget* RangeUserWidget;
 
 	UDebugWidget* DebugWidget;
+
+	UMapUserWidget* MapWidget;
 };
