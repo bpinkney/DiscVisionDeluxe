@@ -39,6 +39,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Buttons")
 	void main_menu_open_btn();
 
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_cancel_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_next_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_prev_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_choose_location_btn();
+
 	UFUNCTION()
 	double GetGenThrow1Input();
 	UFUNCTION()
@@ -125,6 +137,9 @@ public:
 	TSubclassOf<UUserWidget> RangeHUDClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UMainMenuWidget> MainMenuClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeDebugClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -159,7 +174,7 @@ FORCEINLINE void DrawJoyLine
 private:
 	// Pointers to Widgets to be used.
 	URangeUserWidget* RangeUserWidget;
-    UMainMenuWidget* RangeUserWidget;
+    UMainMenuWidget* MainMenuWidget;
 	UDebugWidget* DebugWidget;
 
 	UMapUserWidget* MapWidget;

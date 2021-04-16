@@ -39,11 +39,8 @@ void ARangeHUD::BeginPlay()
 
 		if (MainMenuClass)
 	{
-		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuDebugClass);
-		if (MainMenuWidget)
-		{
-			MainMenuWidget->AddToViewport();
-		}
+		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuClass);
+
 	}
 
 	if (MapDebugClass)
@@ -86,9 +83,41 @@ void ARangeHUD::UpdateHUD()
 void ARangeHUD::main_menu_open_btn()
 {
 
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm open c++ hooked"));
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm open btn"));
+			if (MainMenuWidget)
+		{
+			MainMenuWidget->AddToViewport();
+		}
 }
 
+
+void ARangeHUD::main_menu_cancel_btn()
+{
+
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm cancel btn"));
+				if (MainMenuWidget)
+		{
+			MainMenuWidget->RemoveFromViewport();
+		}
+}
+
+void ARangeHUD::main_menu_next_btn()
+{
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm next btn"));
+}
+
+void ARangeHUD::main_menu_prev_btn()
+{
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm prev btn"));
+}
+
+void ARangeHUD::main_menu_choose_location_btn()
+{
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm engage btn"));
+}
 
 double ARangeHUD::GetGenThrow1Input()
 {
