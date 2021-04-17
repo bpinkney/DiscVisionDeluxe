@@ -14,7 +14,7 @@ ADiscProjectile::ADiscProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	
+	//kill_control_with_delay();
 
 	
 
@@ -30,7 +30,7 @@ void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+ kill_control_with_delay();
 
 }
 

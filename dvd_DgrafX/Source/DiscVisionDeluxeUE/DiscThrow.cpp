@@ -44,6 +44,7 @@ void ADiscThrow::BeginPlay()
   ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
   follow_flight_hue = 000.0;
   }
+
 }
 
 // Called every frame
@@ -473,7 +474,8 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_restitution)       
 
   {
-
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("ang_vel_delta "));
+GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, ang_vel_delta.ToString());
  
 
   // if we fall below 10 rad/s (~100rpm) or 2 m/s?, relinquish control to Unreal completely
@@ -632,7 +634,7 @@ void ADiscThrow::on_collision(
   // NVM, this makes BIG numbers.... why? must be that dt is wrong...
 
 
-
+/*
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
@@ -649,7 +651,7 @@ void ADiscThrow::on_collision(
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-
+*/
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
     throw_container.collision_input.consumed_input = 0;
