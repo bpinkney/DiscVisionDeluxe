@@ -380,20 +380,22 @@ namespace DfisX
       switch(disc2throw)
       {
         case 1:
+        case 2:
+        case 3:
           // regular flat throw
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -70.0;
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           disc2throw = 2;
         break;
-        case 2:
+        
           // roadrunner roller!
           throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
           hps = {DEG_TO_RAD(50), DEG_TO_RAD(10), DEG_TO_RAD(0)};
           disc2throw = 1; // skip step 3
         break;
-        case 3:
+        
           // IN THE TREE
           throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -80.0;

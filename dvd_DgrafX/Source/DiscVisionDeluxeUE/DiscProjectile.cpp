@@ -30,7 +30,7 @@ void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
- kill_control_with_delay();
+ //kill_control_with_delay();
 
 }
 

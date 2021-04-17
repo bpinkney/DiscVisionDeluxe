@@ -15,14 +15,13 @@
 #include "UI/RangeHUD.h"
 
 
- //ACameraManager* camera_manager;
- //AThrowInputController* throw_input_controller;
-//memset(&latest_disc_throw, 0, sizeof(ADiscThrow::ADiscThrow));
+ 
 ADiscThrow* ADiscThrow::latest_disc_throw = nullptr;
+
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
-   // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+   
 
   PrimaryActorTick.bCanEverTick = true;
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
@@ -165,38 +164,39 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 }
 
 
-
-///convert to world frame here
-void ADiscThrow::new_throw_camera_relative(
-  const int disc_index, 
-  const FVector thrown_disc_position,
-  const float thrown_disc_speed, 
-  const float thrown_disc_direction, 
-  const float thrown_disc_loft, 
-  const float thrown_disc_roll,
-  const float thrown_disc_pitch,
-  const float thrown_disc_spin_percent, 
-  const float thrown_disc_wobble)
+void ADiscThrow::new_captured_throw(
+  const int captured_disc_index, 
+  const FVector captured_position, 
+  const FVector captured_velocity, 
+  const float captured_world_roll, 
+  const float captured_world_pitch, 
+  const float captured_spin_speed, 
+  const float captured_wobble)
 {
-	/*
-  spawn_disc_and_follow_flight();
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("New Disc Throw made with captured data!"));
 
-  // get current wind state (we'll need to update this periodically later as the disc changes environments)
-  GenerateDiscEnv(&(throw_container.disc_environment));
+  
 
-  DfisX::new_throw(
-    &throw_container,
-    static_cast<DiscIndex>(disc_index),
-    Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100+1.4),
-    thrown_disc_speed,
-    thrown_disc_direction,
-    thrown_disc_loft,
-    thrown_disc_roll,
-    thrown_disc_pitch,
-    thrown_disc_spin_percent,
-    thrown_disc_wobble);
-    */
+  FRotator character_rotation = ptr_disc_character->GetActorRotation();
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, character_rotation.ToString());
+  
+  FVector character_location = ptr_disc_character->GetActorLocation();
+  FVector disc_rotation = FVector(captured_world_roll,captured_world_pitch,0); ///this is a vector just for the transform function
+  FVector forward_offset = FVector(100,0,0); ///temporarily offset forward so we dont collide with the invisible mesh
+
+  FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
+  
+  FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
+  FVector thrown_disc_rotation = FTransform(character_rotation).TransformVector(disc_rotation);
+ 
+  float thrown_disc_roll  = thrown_disc_rotation.X;
+  float thrown_disc_pitch = thrown_disc_rotation.Y;
+  new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
 }
+
+
 
 
 ///used for captured throws
@@ -209,10 +209,12 @@ void ADiscThrow::new_throw_world_frame(
   const float thrown_disc_radians_per_second, 
   const float thrown_disc_wobble)
 {
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("is happening"));
   spawn_disc_and_follow_flight();
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100,thrown_disc_position.Y/100,thrown_disc_position.Z/100);
   Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
+
   
   // get current wind state (we'll need to update this periodically later as the disc changes environments)
   GenerateDiscEnv(&(throw_container.disc_environment));
@@ -229,8 +231,8 @@ void ADiscThrow::new_throw_world_frame(
 
 
 
-  //TEXT(throw_container.disc_object.mold_name)));
 
+////////////////////////print disc name
   std::stringstream ss;
   ss << "Threw a ";
   ss << throw_container.disc_object.manufacturer << " ";
@@ -238,7 +240,7 @@ void ADiscThrow::new_throw_world_frame(
 
   FString output_text(ss.str().c_str());
   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, output_text); 
-
+////////////////////////end print disc name
 
 
 
@@ -299,30 +301,6 @@ void ADiscThrow::new_throw_world_frame(
 /////////////     end Initial release Stats            ////////////////////////////////////
 }
 
-void ADiscThrow::new_captured_throw(
-  const int captured_disc_index, 
-  const FVector captured_position, 
-  const FVector captured_velocity, 
-  const float captured_world_roll, 
-  const float captured_world_pitch, 
-  const float captured_spin_speed, 
-  const float captured_wobble)
-{
-  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Disc Throw made with captured data!"));
-  //float character_rotation = disc_character->GetActorRotation()->Yaw;
-  FRotator character_rotation = ptr_disc_character->GetActorRotation();
-  FVector character_location = ptr_disc_character->GetActorLocation();
-  FVector disc_rotation = FVector(captured_world_roll,captured_world_pitch,0); ///this is a vector just for the transform function
-  FVector forward_offset = FVector(100,0,0); ///temporarily offset forward so we dont collide with the invisible mesh
-
-  FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
-  FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
-  FVector thrown_disc_rotation = FTransform(character_rotation).TransformVector(disc_rotation);
-  
-  float thrown_disc_roll  = thrown_disc_rotation.X;
-  float thrown_disc_pitch = thrown_disc_rotation.Y;
-  new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
-}
 
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
@@ -474,9 +452,9 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_restitution)       
 
   {
-GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("ang_vel_delta "));
-GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, ang_vel_delta.ToString());
- 
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,ang_vel_delta.ToString());
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" Ang vel delta disc frame:"));
+//ptr_disc_projectile->kill_control_with_delay();
 
   // if we fall below 10 rad/s (~100rpm) or 2 m/s?, relinquish control to Unreal completely
   /*if(
@@ -484,6 +462,7 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, ang_vel_delta.ToString
     ||
     throw_container.current_disc_state.disc_velocity.norm() < 2.0
   )*/
+
   if
   (
     DISABLE_COMPLEX_DISC_COLLISION
@@ -651,11 +630,13 @@ GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, ang_vel_delta.ToString
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-*/
+
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
     throw_container.collision_input.consumed_input = 0;
   }
+  */
 }
+
 
 

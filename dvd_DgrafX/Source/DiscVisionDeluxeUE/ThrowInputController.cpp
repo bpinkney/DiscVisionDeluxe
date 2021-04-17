@@ -107,7 +107,7 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
             FVector(
               100 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here
               100 * new_disc_init_state->lin_pos_xyz[1], // negative for some reason? no idea what the world frame is here
-               0 * new_disc_init_state->lin_pos_xyz[2]), // just zero this until the UI is sorted
+              100 * new_disc_init_state->lin_pos_xyz[2]), // just zero this until the UI is sorted
             FVector(
               1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
               1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here

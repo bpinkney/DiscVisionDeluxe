@@ -113,13 +113,12 @@ void ADiscCharacter::main_menu_choose_location_btn()
 	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc engage btn"));
 
 	FHitResult OutSweepHitResult = FHitResult();
-	
+	GetController()->SetControlRotation(teepad_locations[teepad_locations_iterator].GetRotation().Rotator());
 	SetActorTransform(
 	teepad_locations[teepad_locations_iterator],
     false,
     0,
     ETeleportType::None);
-    GetController()->SetControlRotation(teepad_locations[teepad_locations_iterator].GetRotation().Rotator());
     ptr_camera_manager->focus_on_player();
 
 

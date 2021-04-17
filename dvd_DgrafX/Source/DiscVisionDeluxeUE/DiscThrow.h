@@ -87,17 +87,7 @@ public:
   void GenerateDiscEnv(DfisX::Disc_Env * disc_environment);
 
   // Projectile class to spawn.
-  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
-  void new_throw_camera_relative(
-    const int disc_index, 
-    const FVector thrown_disc_position, 
-    const float thrown_disc_speed, 
-    const float thrown_disc_direction, 
-    const float thrown_disc_loft, 
-    const float thrown_disc_roll,
-    const float thrown_disc_pitch,
-    const float thrown_disc_spin_percent, 
-    const float thrown_disc_wobble);
+
 
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void new_captured_throw(
