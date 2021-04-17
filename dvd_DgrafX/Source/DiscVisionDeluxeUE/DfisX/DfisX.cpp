@@ -62,15 +62,15 @@ namespace DfisX
         // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
         // Why set this to zero? who cares is why, bleh
         // bound the roll and pitch vel?
-        const double bound_ang_rate_rp = 1.0;
+        //const double bound_ang_rate_rp = 1.0;
 
-        BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -bound_ang_rate_rp, bound_ang_rate_rp);
-        BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[1], -bound_ang_rate_rp, bound_ang_rate_rp);
+        //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -bound_ang_rate_rp, bound_ang_rate_rp);
+        //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[1], -bound_ang_rate_rp, bound_ang_rate_rp);
 
         //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
         //{
-          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
-          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+          //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+          //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
        // }
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
