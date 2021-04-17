@@ -19,11 +19,17 @@ class DISCVISIONDELUXEUE_API ADiscCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ADiscCharacter();
+	FTransform set_location;
+	int teepad_locations_iterator;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Editor Set Pieces")
+	TArray<FTransform> teepad_locations;
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+
 
 
 public:	
@@ -32,6 +38,15 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_next_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_prev_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_choose_location_btn();
 
 
 

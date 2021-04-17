@@ -104,19 +104,22 @@ void ARangeHUD::main_menu_cancel_btn()
 void ARangeHUD::main_menu_next_btn()
 {
 
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm next btn"));
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud next btn"));
+	ptr_disc_character->main_menu_next_btn();
 }
 
 void ARangeHUD::main_menu_prev_btn()
 {
 
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm prev btn"));
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud prev btn"));
+	ptr_disc_character->main_menu_prev_btn();
 }
 
 void ARangeHUD::main_menu_choose_location_btn()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud engage btn"));
+	ptr_disc_character->main_menu_choose_location_btn();
 
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm engage btn"));
 }
 
 double ARangeHUD::GetGenThrow1Input()

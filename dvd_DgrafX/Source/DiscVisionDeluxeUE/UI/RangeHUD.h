@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "RangeUserWidget.h"
 #include "DebugWidget.h"
+#include "../DiscCharacter.h"
 #include "MainMenuWidget.h"
 #include "MapUserWidget.h"
 #include "../DiscThrow.h"
@@ -169,13 +170,15 @@ FORCEINLINE void DrawJoyLine
 
 
 
-
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "pointers")
+	class ADiscCharacter* ptr_disc_character;
 
 private:
 	// Pointers to Widgets to be used.
 	URangeUserWidget* RangeUserWidget;
     UMainMenuWidget* MainMenuWidget;
 	UDebugWidget* DebugWidget;
-
 	UMapUserWidget* MapWidget;
+
+
 };

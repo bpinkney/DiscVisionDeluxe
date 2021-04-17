@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+
 // DfisX stuff
 #include "dvd_maths.hpp"
 #include "DfisX\DfisX.hpp"
@@ -25,6 +26,7 @@ ADiscCharacter::ADiscCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	teepad_locations_iterator = 0;
 
 
 
@@ -35,6 +37,7 @@ ADiscCharacter::ADiscCharacter()
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
   
   ///Camera manager init
   FActorSpawnParameters SpawnParams;
@@ -86,6 +89,39 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Action2", IE_Pressed, this, &ADiscCharacter::Action2);
     PlayerInputComponent->BindAction("Action3", IE_Pressed, this, &ADiscCharacter::Action3);
     PlayerInputComponent->BindAction("Action4", IE_Pressed, this, &ADiscCharacter::Action4);
+
+}
+
+void ADiscCharacter::main_menu_next_btn()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc next btn"));
+	teepad_locations_iterator ++;
+	if (teepad_locations_iterator > (teepad_locations.Num()-1)) teepad_locations_iterator = 0;
+    ptr_camera_manager->focus_on_teepad (teepad_locations_iterator);
+}
+
+void ADiscCharacter::main_menu_prev_btn()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+	teepad_locations_iterator--;
+	if (teepad_locations_iterator < 0) teepad_locations_iterator =  teepad_locations.Num()-1;
+	ptr_camera_manager->focus_on_teepad (teepad_locations_iterator);
+}
+
+void ADiscCharacter::main_menu_choose_location_btn()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc engage btn"));
+
+	FHitResult OutSweepHitResult = FHitResult();
+	
+	SetActorTransform(
+	teepad_locations[teepad_locations_iterator],
+    false,
+    0,
+    ETeleportType::None);
+    GetController()->SetControlRotation(teepad_locations[teepad_locations_iterator].GetRotation().Rotator());
+    ptr_camera_manager->focus_on_player();
+
 
 }
 
