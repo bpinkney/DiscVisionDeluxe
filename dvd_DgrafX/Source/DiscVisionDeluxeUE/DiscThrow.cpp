@@ -452,8 +452,9 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_restitution)       
 
   {
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,ang_vel_delta.ToString());
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" Ang vel delta disc frame:"));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,FString::SanitizeFloat(hit_friction[0]));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,ang_vel_delta.ToString());
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" Ang vel delta disc frame:"));
 //ptr_disc_projectile->kill_control_with_delay();
 
   // if we fall below 10 rad/s (~100rpm) or 2 m/s?, relinquish control to Unreal completely
@@ -462,7 +463,7 @@ void ADiscThrow::on_collision(
     ||
     throw_container.current_disc_state.disc_velocity.norm() < 2.0
   )*/
-
+/*
   if
   (
     DISABLE_COMPLEX_DISC_COLLISION
