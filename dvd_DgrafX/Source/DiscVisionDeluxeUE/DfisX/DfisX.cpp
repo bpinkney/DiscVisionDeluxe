@@ -69,8 +69,8 @@ namespace DfisX
 
         //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
         //{
-          //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
-          //throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
+          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
        // }
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 

@@ -517,6 +517,14 @@ void ADiscThrow::on_collision(
   // is this correct? It seems to make a better alignment between ang_vel[2] and (R * world_ang_vel)[2]
   Rwd = Rwd.transpose();
 
+  // We can use the yaw provided by Mike in unreal to rotate the 'unreal disc frame' 'ang_vel' and 'ang_vel_delta'
+/*  // into the DfisX disc frame (unit vectors based on air velocity vector and disc normal)
+  Eigen::Matrix3d Ryaw; 
+  Ryaw << cos(yaw), -sin(yaw), 0,
+          sin(yaw),  cos(yaw), 0,
+          0,         0,        1;*/
+
+
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
   // Reverse Z direction?
   //world_ang_vel_radps[2] *= -1;
@@ -525,6 +533,11 @@ void ADiscThrow::on_collision(
   throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
 
   local_ang_vel_radps[2] *= -1;
+
+  // Overwrite the rotated ang_vel_radps with the new locally rotated one in the k-1 DfisX disc frame:
+  throw_container.collision_input.ang_vel_radps[0] = ang_vel[0];
+  throw_container.collision_input.ang_vel_radps[1] = ang_vel[1];
+  throw_container.collision_input.ang_vel_radps[2] = ang_vel[2];
 
   // 1. derive torque from the ang vel:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
@@ -574,6 +587,7 @@ void ADiscThrow::on_collision(
     throw_container.collision_input.ang_torque_from_impulses_Nm += disc_frame_torque_Nm;
   }
 
+
   // Check for ang vel reversal, this is annoying, but necessary, probably due to the atan stuff at the top of this file
   int reverse_count = 0;
   if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
@@ -614,7 +628,7 @@ void ADiscThrow::on_collision(
   // NVM, this makes BIG numbers.... why? must be that dt is wrong...
 
 
-/*
+
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
@@ -623,9 +637,9 @@ void ADiscThrow::on_collision(
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_vel[0])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(ang_vel[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(ang_vel[2])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
 
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
@@ -636,7 +650,7 @@ void ADiscThrow::on_collision(
   {
     throw_container.collision_input.consumed_input = 0;
   }
-  */
+  
 }
 
 
