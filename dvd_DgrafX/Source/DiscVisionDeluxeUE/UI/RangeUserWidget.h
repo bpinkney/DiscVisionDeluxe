@@ -2,11 +2,13 @@
 
 #pragma once
 
+#include <cmath>
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/UMG.h"
 #include "../DiscThrow.h"
 #include "RangeUserWidget.generated.h"
+
 
 /**
  * 
