@@ -23,21 +23,21 @@ void URangeUserWidget::PopulateHUD()
 
 
 	
-	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_distance))+ " M"));
-	discspeed->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_speed))+ " M/s"));
-	turnfade->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_turnfade))+" M"));
-	discspin->SetText(FText::FromString(FString::SanitizeFloat(round(abs(cumulative_stats->current_spin)))+" rpm"));
+	currentdistance->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_distance))));
+	discspeed->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_speed))));
+	turnfade->SetText(FText::FromString(FString::SanitizeFloat(round(cumulative_stats->current_turnfade))));
+	discspin->SetText(FText::FromString(FString::SanitizeFloat(round(abs(cumulative_stats->current_spin)))));
     //currentwobble->SetText(FText::FromString(FString::SanitizeFloat(cumulative_stats->current_wobble)));
 
 
 
-	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(abs(release_stats->initial_spin_percent))+ " %"));
-	releasespinrate->SetText(FText::FromString(FString::SanitizeFloat(abs(release_stats->initial_spin_rate))+" rpm"));
-	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_speed)+ " M/s"));
-	releasehyzer->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_hyzer)+ " degrees"));
-	releasenoseangle->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_nose_up)+" degrees"));
-	releaseloft->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_loft)+ " degrees"));
-	releasedirection->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_direction)+ " degrees"));
+	releasespinpercent->SetText(FText::FromString(FString::SanitizeFloat(round(abs(release_stats->initial_spin_percent)))));
+	releasespinrate->SetText(FText::FromString(FString::SanitizeFloat(round(abs(release_stats->initial_spin_rate)))));
+	releasediscspeed->SetText(FText::FromString(FString::SanitizeFloat(round(release_stats->initial_speed))));
+	releasehyzer->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_hyzer, 2)));
+	releasenoseangle->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_nose_up, 2)));
+	releaseloft->SetText(FText::FromString(FString::SanitizeFloat(round(release_stats->initial_loft), 2)));
+	releasedirection->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_direction, 2)));
 
 
 }
