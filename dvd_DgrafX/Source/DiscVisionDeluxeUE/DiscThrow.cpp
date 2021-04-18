@@ -516,6 +516,14 @@ void ADiscThrow::on_collision(
   // is this correct? It seems to make a better alignment between ang_vel[2] and (R * world_ang_vel)[2]
   Rwd = Rwd.transpose();
 
+  // We can use the yaw provided by Mike in unreal to rotate the 'unreal disc frame' 'ang_vel' and 'ang_vel_delta'
+/*  // into the DfisX disc frame (unit vectors based on air velocity vector and disc normal)
+  Eigen::Matrix3d Ryaw; 
+  Ryaw << cos(yaw), -sin(yaw), 0,
+          sin(yaw),  cos(yaw), 0,
+          0,         0,        1;*/
+
+
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
   // Reverse Z direction?
   //world_ang_vel_radps[2] *= -1;
