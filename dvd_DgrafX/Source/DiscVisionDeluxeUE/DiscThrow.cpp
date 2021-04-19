@@ -121,7 +121,19 @@ void ADiscThrow::Tick(const float DeltaTime)
            disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
            disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
 
-    //Rdw = Rdw.transpose();
+    // convert to quaternion
+    // define as a simple float, row-major matrix so we can use R2Q
+    float MAT3X3(Rdw_float) = 
+    {
+      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
+      disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
+      disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2]
+    };
+
+    float VEC4(quat) = {0};    
+    R2Q(Rdw_float, quat);
+
+    // MIKE: Try using this quat for orientation
 
     // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
     // NEGATIVE Z due to unreal's weird frame!
@@ -425,7 +437,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 #define DISABLE_COMPLEX_DISC_COLLISION (false)
 // disables aero and DfisX if both of these conditions are met
 // disable for now
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (2.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (3.0)
 #define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (3.0)
 
 double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
@@ -445,7 +457,7 @@ static std::string EigenVect3dToString(Eigen::Vector3d vect)
 void ADiscThrow::on_collision(
   const FVector disc_position,          //world frame
   const FVector disc_rotation, 
-  const TArray<FVector> hit_location,   //disc frame, cms
+  const TArray<FVector> hit_location,   //disc frame? microstepping seems to ruin this, cms
   const TArray<FVector> hit_normal,     //unit direction
   const TArray<FVector> normal_impulse, //looks si, magnitude and direction
   const FVector lin_vel,                //world frame
@@ -482,7 +494,7 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    //ptr_disc_projectile->kill_control();    
+    ptr_disc_projectile->kill_control();    
   }
 
   // try overriding with the sim time? (NOPE, fun and bouncy tho)
@@ -551,6 +563,11 @@ void ADiscThrow::on_collision(
 
   // OR
   // 2. Derive torque from the hit location
+
+  // due to horrible mid-hit propagation and sub-stepping in unreal, we can't trust the hit_location magnitude
+  // we are receiving. Attenuate the signal so the disc doesn't freak out (HACK)
+  const double moment_arm_scale = 0.5;
+
   int k = 0;
   // reset torque sum
   throw_container.collision_input.ang_torque_from_impulses_Nm *= 0;
@@ -561,7 +578,7 @@ void ADiscThrow::on_collision(
     Eigen::Vector3d world_frame_normal_force_N;
     for(k = 0; k < 3; k++)
     {
-      world_frame_moment_arm[k] = hit_location[i][k]*0.01; // cm to m
+      world_frame_moment_arm[k] = hit_location[i][k]*0.01 * moment_arm_scale; // cm to m
       // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
       // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
       world_frame_normal_force_N[k] = normal_impulse[i][k]/dt*0.01; 
@@ -578,6 +595,9 @@ void ADiscThrow::on_collision(
 
     // add impulse step to input torque
     throw_container.collision_input.ang_torque_from_impulses_Nm += disc_frame_torque_Nm;
+
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(world_frame_moment_arm).c_str()));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(world_frame_moment_arm.norm())));
   }
 
   // get ang vel back from the resulting torques since we have decided not to trust Unreal to update our roll/pitch vel
@@ -598,18 +618,18 @@ void ADiscThrow::on_collision(
   int reverse_count = 0;
   if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
   {
-    //reverse_count++;
+    reverse_count++;
   }
   if(signum(throw_container.current_disc_state.disc_rolling_vel) != signum(throw_container.collision_input.ang_vel_radps[1]))
   {
-    //reverse_count++;
+    reverse_count++;
   }
   if(signum(throw_container.current_disc_state.disc_rotation_vel) != signum(throw_container.collision_input.ang_vel_radps[2]))
   {
     reverse_count++;
   }
 
-  if(reverse_count > 0) // just base this on the spin for now, since the roll/pitch are derived from the impulse
+  if(reverse_count > 1) // just base this on the spin for now, since the roll/pitch are derived from the impulse
   {
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
     throw_container.collision_input.ang_vel_radps[2] *= -1;
@@ -641,13 +661,10 @@ void ADiscThrow::on_collision(
   lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
 
 
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(EigenVect3dToString(throw_container.collision_input.lin_force_from_impulses_N).c_str()));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(lin_force_from_vel_delta).c_str()));
-
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_pitching_vel)));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rolling_vel)));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(throw_container.current_disc_state.disc_rotation_vel)));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(EigenVect3dToString(throw_container.collision_input.lin_force_from_impulses_N).c_str()));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(lin_force_from_vel_delta).c_str()));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
