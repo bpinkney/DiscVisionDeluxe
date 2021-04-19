@@ -30,7 +30,7 @@ void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
- kill_control_with_delay();
+ //kill_control_with_delay();
 
 }
 
@@ -44,4 +44,6 @@ void ADiscProjectile::Tick(float DeltaTime)
 
 	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, FString::Printf(TEXT("Disc Location is: %s"), *disc_position.ToString()));
 }
+
+
 

@@ -33,7 +33,8 @@ public:
 	void SetDiscPosRot(FVector position,FRotator rotation, FVector velocity, float disc_spin);
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
-	void SetDiscVelRot(FVector velocity, FVector ang_velocity);
+	void SetDiscVelRot(FVector velocity, FVector ang_velocity, FRotator ang_position);
+
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void kill_control();

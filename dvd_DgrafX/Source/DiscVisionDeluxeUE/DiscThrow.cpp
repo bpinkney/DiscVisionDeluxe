@@ -8,6 +8,7 @@
 #include "disc_layouts.hpp"
 #include "dvd_maths.hpp"
 #include "FlightLog.h"
+#include "PhysXIncludes.h"
 
 // include for debug stuff
 #include "Daero.hpp"
@@ -137,9 +138,9 @@ void ADiscThrow::Tick(const float DeltaTime)
     //FVector ang_velocity = FVector (0,0,0);
 
     FRotator disc_rotation = {pitch,roll,yaw};
-  
+
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
-    ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity);
+    ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity,disc_rotation);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
