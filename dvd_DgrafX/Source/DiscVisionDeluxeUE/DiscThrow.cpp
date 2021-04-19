@@ -116,6 +116,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     
     // Convert angular rates into the world frame before passing back to unreal
     // (They have no concept of our locally defined 'velocity vector' frame)
+    // Note this is column major, so it is really the transpose of what you see here.
     Eigen::Matrix3d Rdw; 
     Rdw << disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
            disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
@@ -125,9 +126,9 @@ void ADiscThrow::Tick(const float DeltaTime)
     // define as a simple float, row-major matrix so we can use R2Q
     float MAT3X3(Rdw_float) = 
     {
-      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
-      disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
-      disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2]
+      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_x_unit_vector[2],
+      disc_state.forces_state.disc_y_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[2],
+                     disc_state.disc_orientation[0],                disc_state.disc_orientation[1],                disc_state.disc_orientation[2]
     };
 
     float VEC4(quat) = {0};    
@@ -527,12 +528,13 @@ void ADiscThrow::on_collision(
   // validation on this should be possible by comparing 
   // (R*world_ang_vel_radps)[2] and disc_ang_vel_radps[2], since the Z axis frames are aligned
 
+  // Note this is column major, so it is really the transpose of what you see here.
   Eigen::Matrix3d Rwd; 
   Rwd << throw_container.current_disc_state.forces_state.disc_x_unit_vector[0], throw_container.current_disc_state.forces_state.disc_y_unit_vector[0], throw_container.current_disc_state.disc_orientation[0],
          throw_container.current_disc_state.forces_state.disc_x_unit_vector[1], throw_container.current_disc_state.forces_state.disc_y_unit_vector[1], throw_container.current_disc_state.disc_orientation[1],
          throw_container.current_disc_state.forces_state.disc_x_unit_vector[2], throw_container.current_disc_state.forces_state.disc_y_unit_vector[2], throw_container.current_disc_state.disc_orientation[2];
 
-  // is this correct? It seems to make a better alignment between ang_vel[2] and (R * world_ang_vel)[2]
+  // per the note above, we need to transpose this
   Rwd = Rwd.transpose();
 
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
