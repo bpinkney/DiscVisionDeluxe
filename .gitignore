@@ -342,6 +342,8 @@ dvd_DgrafX/DiscVisionDeluxeUE.sln
 dvd_DgrafX/Binaries/
 dvd_DgrafX/Intermediate/
 dvd_DgrafX/Saved/
+dvd_DgrafX/Content/CityPark
+
 *.jpg
 *.jpg
 Binaries/dvd_DvisEst/2020-10-11/dvd_DvisEst_abstractor.bat
