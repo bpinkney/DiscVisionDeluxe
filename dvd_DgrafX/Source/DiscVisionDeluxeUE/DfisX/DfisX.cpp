@@ -62,15 +62,15 @@ namespace DfisX
         // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
         // Why set this to zero? who cares is why, bleh
         // bound the roll and pitch vel?
-        const double bound_ang_rate_rp = 10.0;
+        const double bound_ang_rate_rp = 2.0;
 
         BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -bound_ang_rate_rp, bound_ang_rate_rp);
         BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[1], -bound_ang_rate_rp, bound_ang_rate_rp);
 
         //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
         //{
-          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
-          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
+          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[1];
        // }
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
@@ -330,18 +330,18 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Destroyer");
+      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
 
       if(0)
       {
         switch(disc2throw)
         {
           case 1:
-            disc_mold = find_disc_mold_index_by_name("Northman");
+            disc_mold = find_disc_mold_index_by_name("Roadrunner");
             //disc2throw = 2;
             break;
           case 2:
-            disc_mold = find_disc_mold_index_by_name("Roadrunner");
+            disc_mold = find_disc_mold_index_by_name("Northman");
             //disc2throw = 1;// just do the first 2
             break;
           case 3:
@@ -379,29 +379,32 @@ namespace DfisX
       Eigen::Vector3d hps = {0,0,0};
       switch(disc2throw)
       {
+        default:
         case 1:
-        case 2:
-        case 3:
           // regular flat throw
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -70.0;
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          disc2throw = 2;
-        break;
-        
+          ////disc2throw = 2;
+          //throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
+          //throw_container->current_disc_state.disc_rotation_vel = -70.0;
+          //hps = {DEG_TO_RAD(50), DEG_TO_RAD(20), DEG_TO_RAD(0)};
+          //disc2throw = 2; // skip step 3
+          break;
+        //case 2:        
           // roadrunner roller!
           throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
           hps = {DEG_TO_RAD(50), DEG_TO_RAD(10), DEG_TO_RAD(0)};
           disc2throw = 1; // skip step 3
-        break;
-        
+          break;
+        //case 3:
           // IN THE TREE
           throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -80.0;
           hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
           disc2throw = 1;
-        break;
+          break;
       }
 
       const double new_x_component = sin (-hps[1]) * cos (hps[0]);

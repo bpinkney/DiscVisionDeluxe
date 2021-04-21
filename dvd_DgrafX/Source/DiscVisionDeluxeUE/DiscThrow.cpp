@@ -543,9 +543,9 @@ void ADiscThrow::on_collision(
   //world_ang_vel_radps[2] *= -1;
   Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps;
 
-  throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
-
   local_ang_vel_radps[2] *= -1;
+
+  throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;  
 
   // 1. derive torque from the ang vel:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
@@ -599,8 +599,8 @@ void ADiscThrow::on_collision(
     // add impulse step to input torque
     throw_container.collision_input.ang_torque_from_impulses_Nm += disc_frame_torque_Nm;
 
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(world_frame_moment_arm).c_str()));
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(world_frame_moment_arm.norm())));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(world_frame_moment_arm).c_str()));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(world_frame_moment_arm.norm())));
   }
 
   // get ang vel back from the resulting torques since we have decided not to trust Unreal to update our roll/pitch vel
@@ -614,28 +614,28 @@ void ADiscThrow::on_collision(
 
   // overwrite previous ang vel state (this wil behave as if the propagation had occurred on the k-1 timestep, so we see the gyro response during time 'k')
   // only doing this for roll/pitch for now
-  throw_container.collision_input.ang_vel_radps[0] = ang_vel_from_impulses_Nm[0];
-  throw_container.collision_input.ang_vel_radps[1] = ang_vel_from_impulses_Nm[1];
+  //throw_container.collision_input.ang_vel_radps[0] = ang_vel_from_impulses_Nm[0];
+  //throw_container.collision_input.ang_vel_radps[1] = ang_vel_from_impulses_Nm[1];
 
   // Check for ang vel reversal, this is annoying, but necessary, probably due to the atan stuff at the top of this file
   int reverse_count = 0;
   if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
   {
-    reverse_count++;
+    //reverse_count++;
   }
   if(signum(throw_container.current_disc_state.disc_rolling_vel) != signum(throw_container.collision_input.ang_vel_radps[1]))
   {
-    reverse_count++;
+    //reverse_count++;
   }
   if(signum(throw_container.current_disc_state.disc_rotation_vel) != signum(throw_container.collision_input.ang_vel_radps[2]))
   {
     reverse_count++;
   }
 
-  if(reverse_count > 1) // just base this on the spin for now, since the roll/pitch are derived from the impulse
+  if(reverse_count > 0) // just base this on the spin for now, since the roll/pitch are derived from the impulse?? Nope.
   {
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
-    throw_container.collision_input.ang_vel_radps[2] *= -1;
+    throw_container.collision_input.ang_vel_radps *= -1;
   }
 
   // we can compute the angular rates from the change in the velocity and disc normal vectors if necessary
@@ -666,12 +666,16 @@ void ADiscThrow::on_collision(
 
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(EigenVect3dToString(throw_container.collision_input.lin_force_from_impulses_N).c_str()));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(lin_force_from_vel_delta).c_str()));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+  Eigen::Vector3d curret_disc_ang_vel = 
+  {
+    throw_container.current_disc_state.disc_pitching_vel,
+    throw_container.current_disc_state.disc_rolling_vel,
+    throw_container.current_disc_state.disc_rotation_vel
+  };
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(curret_disc_ang_vel).c_str()));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[0])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[1])));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black,(FString::SanitizeFloat(throw_container.collision_input.ang_vel_radps[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
 /*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
