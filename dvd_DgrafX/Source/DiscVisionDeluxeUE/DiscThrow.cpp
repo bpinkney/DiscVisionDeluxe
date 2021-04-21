@@ -634,7 +634,7 @@ void ADiscThrow::on_collision(
 
   if(reverse_count > 0) // just base this on the spin for now, since the roll/pitch are derived from the impulse?? Nope.
   {
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
     throw_container.collision_input.ang_vel_radps *= -1;
   }
 
@@ -659,7 +659,7 @@ void ADiscThrow::on_collision(
 
   // compute linear force from fixed mass of 170g and linear vel change for comparison
   Eigen::Vector3d lin_force_from_vel_delta;
-  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170000; //cm to m, world frame
+  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
 
@@ -672,19 +672,19 @@ void ADiscThrow::on_collision(
     throw_container.current_disc_state.disc_rolling_vel,
     throw_container.current_disc_state.disc_rotation_vel
   };
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(curret_disc_ang_vel).c_str()));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(curret_disc_ang_vel).c_str()));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
 /*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));*/
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
 
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
   if(!DISABLE_COMPLEX_DISC_COLLISION)
   {
