@@ -327,10 +327,10 @@ namespace DfisX
       // REALLY handy for tuning, try throwing a:
       // - straight midrange or putter with not much camber (e.g. Mako3) 
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
-      // - stable fairway driver with a thick lower rim camber
+      // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Shryke");
+      //disc_mold = find_disc_mold_index_by_name("Mako 3");
 
       if(0)
       {
@@ -387,19 +387,32 @@ namespace DfisX
           hps = {DEG_TO_RAD(10), DEG_TO_RAD(5), DEG_TO_RAD(0)};
           throw_set = 1;
           break;
-        case 1:        
+        case 1: 
+          {       
           // roadrunner roller!
+          const double heading = DEG_TO_RAD(-20);
+          const double speed = 80.0/3.6;
+          const double east = -speed * sin(heading);
+          const double north = speed * cos(heading);
+          // not sure why these north and east assignments don't work here
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
           hps = {DEG_TO_RAD(50), DEG_TO_RAD(20), DEG_TO_RAD(0)};
           throw_set = 2;
+          }
           break;
         case 2:
+          {
           // SKIP TIME BROSEPH
-          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 10.0/3.6, 0};
+          const double heading = DEG_TO_RAD(10);
+          const double speed = 80.0/3.6;
+          const double east = -speed * sin(heading);
+          const double north = speed * cos(heading);
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -75.0;
           hps = {DEG_TO_RAD(-5), DEG_TO_RAD(-15), DEG_TO_RAD(0)};
           throw_set = 0;
+          }
           break;
       }
 
