@@ -189,7 +189,7 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 {
   // use default for now
   disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0); // m/s
-  disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;
+  disc_environment->gust_factor = DfisX::Gust_Factor::THREE_BRUSQUE_BREEZE;//ZERO_DEAD_DIDDLY;
   disc_environment->air_density = ISA_RHO;
 }
 
@@ -456,7 +456,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
 // disables aero and DfisX if both of these conditions are met
 // disable for now
 #define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (3.0)
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (3.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (10.0)
 
 double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
 {
