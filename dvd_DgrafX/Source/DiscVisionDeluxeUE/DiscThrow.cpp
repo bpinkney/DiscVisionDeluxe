@@ -14,8 +14,6 @@
 #include "Daero.hpp"
 
 #include "UI/RangeHUD.h"
-
-
  
 ADiscThrow* ADiscThrow::latest_disc_throw = nullptr;
 
@@ -132,10 +130,28 @@ void ADiscThrow::Tick(const float DeltaTime)
                      disc_state.disc_orientation[0],                disc_state.disc_orientation[1],                disc_state.disc_orientation[2]
     };
 
-    float VEC4(quat) = {0};    
-    R2Q(Rdw_float, quat);
+    float MAT3X3(Rwd_float) = 
+    {
+      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0],                disc_state.disc_orientation[0],
+      disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1],                disc_state.disc_orientation[1],
+      disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2],                disc_state.disc_orientation[2]
+    };
 
-    // MIKE: Try using this quat for orientation
+    float VEC3(eulers_yxz);
+    Ryxz2eulyxz(Rwd_float, eulers_yxz);
+
+    //float VEC4(quat) = {0}; 
+    // this function can't be used here, since it expects a [XYZ] (rpy) order of rotations
+    // and not Unreal's dumb-as-hell PRY!
+    // Need to add a version of this function for PRY YXZ before we can do this
+    //R2Q(Rdw_float, quat);
+    // quat is defined as qw, qx, qy, qz
+
+    // try using the stupid built in unreal stuff
+    // recall that we want [p, r, y]
+    // or a 'YXZ' sequence for out rotations
+    //FQuat quat_xyzw = FQuat(quat[1], quat[2], quat[3], quat[0]);
+    //FVector eulers = quat_xyzw.Euler();
 
     // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
     // NEGATIVE Z due to unreal's weird frame!
@@ -148,9 +164,9 @@ void ADiscThrow::Tick(const float DeltaTime)
         world_ang_vel_radps[1], 
         world_ang_vel_radps[2]
       );
-    //FVector ang_velocity = FVector (0,0,0);
 
-    FRotator disc_rotation = {pitch,roll,yaw};
+    float eul_yxz_deg[3] = {RAD_TO_DEG(eulers_yxz[0]), RAD_TO_DEG(eulers_yxz[1]), -RAD_TO_DEG(eulers_yxz[2])};
+    FRotator disc_rotation = {pitch,roll,yaw};//{eul_yxz_deg[0], eul_yxz_deg[1], eul_yxz_deg[2]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
     ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity,disc_rotation);

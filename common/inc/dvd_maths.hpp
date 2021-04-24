@@ -103,6 +103,43 @@ static inline int signum(float x) {
   return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
 
+// only works for +-90deg roll or pitch though...
+// eul returned in rads
+static inline void Ryxz2eulyxz(float MAT3X3(Ryxz), float VEC3(eul_yxz))
+{
+  float X;
+  float Y;
+  float Z;
+
+  if(Ryxz[i3x3(1,2)] < 1)
+  {
+    if(Ryxz[i3x3(1,2)] > -1)
+    {
+      X = asin(-Ryxz[i3x3(1,2)]);
+      Y = atan2(Ryxz[i3x3(0,2)], Ryxz[i3x3(2,2)]);
+      Z = atan2(Ryxz[i3x3(1,0)], Ryxz[i3x3(1,1)]);
+    }
+    else//r12=−1
+    {
+      //Notauniquesolution:thetaZ−thetaY=atan2(−r01,r00)
+      X = M_PI/2;
+      Y = -atan2(-Ryxz[i3x3(0,1)], Ryxz[i3x3(0,0)]);
+      Z = 0;
+    }
+  }
+  else//r12=+1
+  {
+    //Notauniquesolution:thetaZ+thetaY=atan2(−r01,r00)
+    X = -M_PI/2;
+    Y = atan2(-Ryxz[i3x3(0,1)], Ryxz[i3x3(0,0)]);
+    Z = 0;
+  }
+
+  eul_yxz[0] = Y;
+  eul_yxz[1] = X;
+  eul_yxz[2] = Z;
+}
+
 static inline void R2Q( float MAT3X3(R), float VEC4(Q) )
 {
   // Note the reverse ordering
