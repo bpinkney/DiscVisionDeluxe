@@ -702,7 +702,34 @@ void ADiscThrow::on_collision(
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
-  if(!DISABLE_COMPLEX_DISC_COLLISION)
+
+  // We could choose to reject on_collision impulses here if we think they are buggy Unreal (pun intended) garbage
+  // To do this, look at the linear distance travelled, and the kinetci energy and momentum, 
+  // and use that to determine the max force we allow
+
+
+  
+  Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
+  float distance_travelled = delta_distance.norm();
+  float kinetic_energy = 
+    (throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
+    throw_container.disc_object.mass * 0.5;
+
+  float max_force_momentum_N = kinetic_energy / distance_travelled;
+  
+  bool skip_input = false;
+  // check that we exceed the max force expected
+  if(throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+  {
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
+    //skip_input = true;
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  }
+  
+
+  if(!DISABLE_COMPLEX_DISC_COLLISION && !skip_input)
   {
     throw_container.collision_input.consumed_input = 0;
   }

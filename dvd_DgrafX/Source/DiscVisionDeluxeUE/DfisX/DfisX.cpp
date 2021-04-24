@@ -369,7 +369,7 @@ namespace DfisX
     }
 
     // override for Loft Test Throws
-    if(1)
+    if(0)
     {
       //static int test_throw = 0;
       throw_container->current_disc_state.disc_location[1] = 0.0;
