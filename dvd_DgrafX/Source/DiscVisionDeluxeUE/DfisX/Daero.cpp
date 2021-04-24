@@ -137,13 +137,14 @@ namespace DfisX
 
   void Daero_compute_gusts(Throw_Container *throw_container)
   {
-    // apply static var filters (this will need to change for multidisc)
-    // approximate a 1st order butterworth filrter with 0.2Hz cutoff, and 200Hz sampling
-    const float N = 1.0 / (0.2/(200/2)) * 0.3;
+    // approximate a 1st order butterworth filter with 0.2Hz cutoff, and 200Hz sampling
+    const double Fc = 0.2;
+    const double Fs = 200.0;    
     // do it with filtered white noise instead
     // we'll do some noise with a standard deviation of 0.3
     // and then bound it to +-1.0
     const double gust_stddev = 0.3;
+    const double N = 1.0 / (Fc/(Fs/2.0)) * gust_stddev;
     const double scaling_factor = N/10.0;
 
     double raw_gust_noise[3] = 

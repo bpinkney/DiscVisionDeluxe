@@ -330,7 +330,7 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
+      //disc_mold = find_disc_mold_index_by_name("Shryke");
 
       if(0)
       {
@@ -375,35 +375,31 @@ namespace DfisX
       throw_container->current_disc_state.disc_location[1] = 0.0;
       throw_container->current_disc_state.disc_location[0] = 1.0;
 
-
+      static int throw_set = 0;
       Eigen::Vector3d hps = {0,0,0};
-      switch(disc2throw)
+      switch(throw_set)
       {
         default:
-        case 1:
+        case 0:
           // regular flat throw
           throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = -70.0;
-          hps = {DEG_TO_RAD(10), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          ////disc2throw = 2;
-          //throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
-          //throw_container->current_disc_state.disc_rotation_vel = -70.0;
-          //hps = {DEG_TO_RAD(50), DEG_TO_RAD(20), DEG_TO_RAD(0)};
-          //disc2throw = 2; // skip step 3
+          throw_container->current_disc_state.disc_rotation_vel = -75.0;
+          hps = {DEG_TO_RAD(10), DEG_TO_RAD(5), DEG_TO_RAD(0)};
+          throw_set = 1;
           break;
-        //case 2:        
+        case 1:        
           // roadrunner roller!
-          throw_container->current_disc_state.disc_velocity = {90.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = -50.0;
-          hps = {DEG_TO_RAD(50), DEG_TO_RAD(10), DEG_TO_RAD(0)};
-          disc2throw = 1; // skip step 3
+          hps = {DEG_TO_RAD(50), DEG_TO_RAD(20), DEG_TO_RAD(0)};
+          throw_set = 2;
           break;
-        //case 3:
-          // IN THE TREE
-          throw_container->current_disc_state.disc_velocity = {100.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = -80.0;
-          hps = {DEG_TO_RAD(0), DEG_TO_RAD(0), DEG_TO_RAD(0)};
-          disc2throw = 1;
+        case 2:
+          // SKIP TIME BROSEPH
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 10.0/3.6, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -75.0;
+          hps = {DEG_TO_RAD(-5), DEG_TO_RAD(-15), DEG_TO_RAD(0)};
+          throw_set = 0;
           break;
       }
 

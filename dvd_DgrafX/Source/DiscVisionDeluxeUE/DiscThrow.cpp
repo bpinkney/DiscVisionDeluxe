@@ -172,7 +172,7 @@ void ADiscThrow::Tick(const float DeltaTime)
 void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 {
   // use default for now
-  disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0);
+  disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0); // m/s
   disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;
   disc_environment->air_density = ISA_RHO;
 }
