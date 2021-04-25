@@ -1057,7 +1057,7 @@ int main(int argc, char** argv )
                       case 1:
                         // ROLLER!
                         sprintf(output_cmd, "%s,", 
-                          "hyzer:0.872665,pitch:0.349066,posx:0.0,posy:0.0,posz:2.0,velx:20.6,vely:-8.33,velz:0.0,spin_d:-50.0,wobble:0.0,discmold:1");
+                          "hyzer:0.872665,pitch:0.349066,posx:0.0,posy:0.0,posz:2.0,velx:20.6,vely:-8.33,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
                         variety_throw++;
                         break;
                       case 2:

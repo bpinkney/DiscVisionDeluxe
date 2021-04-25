@@ -675,7 +675,7 @@ void ADiscThrow::on_collision(
 
   // compute linear force from fixed mass of 170g and linear vel change for comparison
   Eigen::Vector3d lin_force_from_vel_delta;
-  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.17000; //cm to m, world frame
+  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
 
