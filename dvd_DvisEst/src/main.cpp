@@ -882,6 +882,8 @@ int main(int argc, char** argv )
                 done*/
 
                 // These throws were collected on 2020 jun 5 outside on a very calm day
+                static int variety_throw = 0;
+
                 switch(cannedthrow)
                 {
                   case 1:
@@ -1041,9 +1043,30 @@ int main(int argc, char** argv )
                     break;
                   case 777:
                   default:
-                  // Very Fast Throw (Loft) with discmold1
-                    sprintf(output_cmd, "%s,", 
-                      "hyzer:0.0,pitch:0.0,posx:0.0,posy:-2.0,posz:2.0,velx:23.61,vely:0.0,velz:0.0,spin_d:-125.66,wobble:0.0,discmold:1");
+                  // VARIETY THROWS!
+                  
+                    switch(variety_throw)
+                    {
+                      default:
+                      case 0:
+                        // Standard fast throw
+                        sprintf(output_cmd, "%s,", 
+                          "hyzer:0.0872665,pitch:0.0872665,posx:0.0,posy:0.0,posz:2.0,velx:22.22,vely:0.0,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                        variety_throw++;
+                        break;
+                      case 1:
+                        // ROLLER!
+                        sprintf(output_cmd, "%s,", 
+                          "hyzer:0.872665,pitch:0.349066,posx:0.0,posy:0.0,posz:2.0,velx:20.53,vely:-8.5040,velz:0.0,spin_d:-60.0,wobble:0.0,discmold:1");
+                        variety_throw++;
+                        break;
+                      case 2:
+                        // SKIP SHOT!
+                        sprintf(output_cmd, "%s,", 
+                          "hyzer:-0.174533,pitch:-0.174533,posx:0.0,posy:0.0,posz:2.0,velx:20.53,vely:8.504,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                        variety_throw=0;
+                        break;
+                    }
                     break;
                 }
               }

@@ -69,38 +69,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     float pitch = RAD_TO_DEG(-atan2(ii,kk));
     float yaw   = RAD_TO_DEG( atan2(jj,kk));
     float roll  = 0.0;
-
-    // Check for gimbal lock condition
-    // This is a hacky work around, but should do the trick
-    // In principle, we would only expect one of 'pitch, roll, yaw' to change sign in any one timestep
-    // so reverse signs on 2 or more of these eulers implies we have a 'gimbal lock' solution
-
-    // just hack this in with a local static for now, needs to change later
-/*    static float last_pitch = 0;
-    static float last_yaw   = 0;
-
-    int reverse_count = 0;
-    if(signum(pitch) != signum(last_pitch))
-    {
-      reverse_count++;
-    }
-    if(signum(yaw) != signum(last_yaw))
-    {
-      reverse_count++;
-    }
-
-    // swap signs if we're locked, make sure this is not the first run
-    if(reverse_count > 0 && last_pitch != 0)
-    {
-      pitch = -pitch;
-      yaw   = -yaw;
-      roll  = -roll;
-    }
-
-    last_pitch = pitch;
-    last_yaw   = yaw;*/
     
-    float spin_position = -disc_state.disc_rotation;
 
     FVector disc_direction = FVector (disc_state.disc_velocity[0],disc_state.disc_velocity[1],disc_state.disc_velocity[2]);
     
@@ -120,6 +89,9 @@ void ADiscThrow::Tick(const float DeltaTime)
     Rdw << disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
            disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
            disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
+
+
+    // TODO: compute the pitch, roll, and yaw positions from the rotated disc vel frame orientations
 
     // convert to quaternion
     // define as a simple float, row-major matrix so we can use R2Q
@@ -166,7 +138,8 @@ void ADiscThrow::Tick(const float DeltaTime)
       );
 
     float eul_yxz_deg[3] = {RAD_TO_DEG(eulers_yxz[0]), RAD_TO_DEG(eulers_yxz[1]), -RAD_TO_DEG(eulers_yxz[2])};
-    FRotator disc_rotation = {pitch,roll,yaw};//{eul_yxz_deg[0], eul_yxz_deg[1], eul_yxz_deg[2]};//{pitch,roll,yaw};
+    //yaw = (float)(-disc_state.disc_rotation);
+    FRotator disc_rotation = {pitch,roll,yaw};//{pitch,roll,yaw};//{eul_yxz_deg[0], eul_yxz_deg[1], eul_yxz_deg[2]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
     ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity,disc_rotation);
@@ -710,22 +683,30 @@ void ADiscThrow::on_collision(
 
   
   Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
-  float distance_travelled = delta_distance.norm();
+  float distance_travelled = throw_container.collision_input.lin_vel_mps.norm() * dt;//delta_distance.norm();
+  // use k-1 vel
   float kinetic_energy = 
-    (throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
+    (throw_container.current_disc_state.disc_velocity.norm()*throw_container.current_disc_state.disc_velocity.norm()) * //(throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
     throw_container.disc_object.mass * 0.5;
 
   float max_force_momentum_N = kinetic_energy / distance_travelled;
   
   bool skip_input = false;
-  // check that we exceed the max force expected
-  if(throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+  // check that we exceed the max force expected plus gravity
+  // and also that our speed increases
+  // reject such updates
+  if
+  (
+    (throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+    &&
+    (throw_container.current_disc_state.disc_velocity.norm() < throw_container.collision_input.lin_vel_mps.norm())
+  )
   {
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
-    //skip_input = true;
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
+    skip_input = true;
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   }
   
 
