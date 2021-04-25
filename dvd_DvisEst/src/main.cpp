@@ -1057,13 +1057,13 @@ int main(int argc, char** argv )
                       case 1:
                         // ROLLER!
                         sprintf(output_cmd, "%s,", 
-                          "hyzer:0.872665,pitch:0.349066,posx:0.0,posy:0.0,posz:2.0,velx:20.6,vely:-8.33,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                          "hyzer:0.872665,pitch:0.349066,posx:0.0,posy:0.0,posz:2.0,velx:20.53,vely:-8.5040,velz:0.0,spin_d:-60.0,wobble:0.0,discmold:1");
                         variety_throw++;
                         break;
                       case 2:
                         // SKIP SHOT!
                         sprintf(output_cmd, "%s,", 
-                          "hyzer:-0.174533,pitch:-0.174533,posx:0.0,posy:0.0,posz:2.0,velx:21.52,vely:5.55,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
+                          "hyzer:-0.174533,pitch:-0.174533,posx:0.0,posy:0.0,posz:2.0,velx:20.53,vely:8.504,velz:0.0,spin_d:-75.0,wobble:0.0,discmold:1");
                         variety_throw=0;
                         break;
                     }
