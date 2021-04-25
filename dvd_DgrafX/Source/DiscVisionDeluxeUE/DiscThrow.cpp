@@ -675,7 +675,7 @@ void ADiscThrow::on_collision(
 
   // compute linear force from fixed mass of 170g and linear vel change for comparison
   Eigen::Vector3d lin_force_from_vel_delta;
-  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
+  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.17000; //cm to m, world frame
   lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
 
@@ -710,22 +710,30 @@ void ADiscThrow::on_collision(
 
   
   Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
-  float distance_travelled = delta_distance.norm();
+  float distance_travelled = throw_container.collision_input.lin_vel_mps.norm() * dt;//delta_distance.norm();
+  // use k-1 vel
   float kinetic_energy = 
-    (throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
+    (throw_container.current_disc_state.disc_velocity.norm()*throw_container.current_disc_state.disc_velocity.norm()) * //(throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
     throw_container.disc_object.mass * 0.5;
 
   float max_force_momentum_N = kinetic_energy / distance_travelled;
   
   bool skip_input = false;
-  // check that we exceed the max force expected
-  if(throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+  // check that we exceed the max force expected plus gravity
+  // and also that our speed increases
+  // reject such updates
+  if
+  (
+    (throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+    &&
+    (throw_container.current_disc_state.disc_velocity.norm() < throw_container.collision_input.lin_vel_mps.norm())
+  )
   {
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
-    //skip_input = true;
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
+    skip_input = true;
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   }
   
 
