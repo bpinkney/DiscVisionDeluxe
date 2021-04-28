@@ -105,6 +105,43 @@ static inline int signum(float x) {
 
 // only works for +-90deg roll or pitch though...
 // eul returned in rads
+static inline void Rxyz2eulxyz(float MAT3X3(Rxyz), float VEC3(eul_xyz))
+{
+  float X;
+  float Y;
+  float Z;
+
+  if(Rxyz[i3x3(0,2)] < 1)
+  {
+    if(Rxyz[i3x3(0,2)] > -1)
+    {
+      Y = asin(  Rxyz[i3x3(0,2)]);
+      X = atan2(-Rxyz[i3x3(1,2)], Rxyz[i3x3(2,2)]);
+      Z = atan2(-Rxyz[i3x3(0,1)], Rxyz[i3x3(0,0)]);
+    }
+    else//Rxyz[i3x3(0,2)]=-1
+    {
+      //Notauniquesolution:Z-X=atan2(Rxyz[i3x3(1,0)],Rxyz[i3x3(1,1)])
+      Y = -M_PI / 2.0;
+      X = -atan2(Rxyz[i3x3(1,0)], Rxyz[i3x3(1,1)]);
+      Z = 0;
+    }
+  }
+  else //Rxyz[i3x3(0,2)]=+1
+  {
+    // Notauniquesolution:Z+X=atan2(Rxyz[i3x3(1,0)],Rxyz[i3x3(1,1)])
+    Y = M_PI / 2.0;
+    X = atan2(Rxyz[i3x3(1,0)], Rxyz[i3x3(1,1)]);
+    Z = 0;
+  }
+
+  eul_xyz[0] = X;
+  eul_xyz[1] = Y;
+  eul_xyz[2] = Z;
+}
+
+// only works for +-90deg roll or pitch though...
+// eul returned in rads
 static inline void Ryxz2eulyxz(float MAT3X3(Ryxz), float VEC3(eul_yxz))
 {
   float X;
@@ -139,6 +176,44 @@ static inline void Ryxz2eulyxz(float MAT3X3(Ryxz), float VEC3(eul_yxz))
   eul_yxz[1] = X;
   eul_yxz[2] = Z;
 }
+
+// only works for +-90deg roll or pitch though...
+// eul returned in rads
+static inline void Ryzx2eulyzx(float MAT3X3(Ryzx), float VEC3(eul_yzx))
+{
+  float X;
+  float Y;
+  float Z;
+
+  if(Ryzx[i3x3(1,0)] < 1)
+  {
+    if(Ryzx[i3x3(1,0)] > -1)
+    {
+      Z = asin(Ryzx[i3x3(1,0)]);
+      Y = atan2(-Ryzx[i3x3(2,0)],Ryzx[i3x3(0,0)]);
+      X = atan2(-Ryzx[i3x3(1,2)],Ryzx[i3x3(1,1)]);
+    }
+    else//r10=-1
+    {
+      //Notauniquesolution:X-Y=atan2(r21,r22)
+      Z = -M_PI/2;
+      Y = -atan2(Ryzx[i3x3(2,1)],Ryzx[i3x3(2,2)]);
+      X = 0;
+    }
+  }
+  else
+  {
+    //Notauniquesolution:XY=atan2(r21,r22)
+    Z = M_PI/2;
+    Y = atan2(Ryzx[i3x3(2,1)],Ryzx[i3x3(2,2)]);
+    X = 0;
+  }
+
+  eul_yzx[0] = Y;
+  eul_yzx[1] = Z;
+  eul_yzx[2] = X;
+}
+
 
 static inline void R2Q( float MAT3X3(R), float VEC4(Q) )
 {
