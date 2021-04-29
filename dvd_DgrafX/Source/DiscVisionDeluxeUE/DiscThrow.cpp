@@ -124,12 +124,13 @@ void ADiscThrow::Tick(const float DeltaTime)
            disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
 
     // convert to quaternion
-    // define as a simple float, row-major matrix so we can use R2Q
+    // define as a simple float, row-major matrix so we can use R2eul
+    // Since unreal defines the LOCAL Z with the wrong sign, we flip the 'disc_orientation' normal here
     float MAT3X3(Rdw_float) = 
     {
       disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_x_unit_vector[2],
       disc_state.forces_state.disc_y_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[2],
-                     disc_state.disc_orientation[0],                disc_state.disc_orientation[1],                disc_state.disc_orientation[2]
+                    disc_state.disc_orientation[0],               disc_state.disc_orientation[1],               disc_state.disc_orientation[2]
     };
 
     float MAT3X3(Rwd_float) = 
@@ -139,25 +140,24 @@ void ADiscThrow::Tick(const float DeltaTime)
       disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2],                disc_state.disc_orientation[2]
     };
 
-    float VEC3(eulers_yxz);
-    Ryxz2eulyxz(Rwd_float, eulers_yxz);
+    float VEC3(eulers_xyz);
+    Rxyz2eulxyz(Rdw_float, eulers_xyz);
+    //Ryzx2eulyzx(Rdw_float, eulers_xyz);
 
-    //float VEC4(quat) = {0}; 
-    // this function can't be used here, since it expects a [XYZ] (rpy) order of rotations
-    // and not Unreal's dumb-as-hell PRY!
-    // Need to add a version of this function for PRY YXZ before we can do this
-    //R2Q(Rdw_float, quat);
-    // quat is defined as qw, qx, qy, qz
+    // take negative rotations (except for Z?)
+    float eul_xyz_deg[3] = {RAD_TO_DEG(eulers_xyz[0]), RAD_TO_DEG(eulers_xyz[1]), RAD_TO_DEG(eulers_xyz[2])};
 
-    // try using the stupid built in unreal stuff
-    // recall that we want [p, r, y]
-    // or a 'YXZ' sequence for out rotations
-    //FQuat quat_xyzw = FQuat(quat[1], quat[2], quat[3], quat[0]);
-    //FVector eulers = quat_xyzw.Euler();
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[0])));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[1])));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[2])));  
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(pitch)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(yaw)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
     // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
     // NEGATIVE Z due to unreal's weird frame!
-    Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
+    Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_rolling_vel, disc_state.disc_pitching_vel, -disc_state.disc_rotation_vel};//{disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
     Eigen::Vector3d world_ang_vel_radps = Rdw * local_ang_vel_radps;
 
     FVector ang_velocity = FVector 
@@ -167,8 +167,28 @@ void ADiscThrow::Tick(const float DeltaTime)
         world_ang_vel_radps[2]
       );
 
-    float eul_yxz_deg[3] = {RAD_TO_DEG(eulers_yxz[0]), RAD_TO_DEG(eulers_yxz[1]), -RAD_TO_DEG(eulers_yxz[2])};
-    FRotator disc_rotation = {pitch,roll,yaw};//{eul_yxz_deg[0], eul_yxz_deg[1], eul_yxz_deg[2]};//{pitch,roll,yaw};
+    //{-eul_xyz_deg[1], -eul_xyz_deg[2], -eul_xyz_deg[0]};
+    // FRotator defined as [Pitch, Yaw, Roll] for who knows what reason
+    // Is this the order of rotations??? THESE ARE EULER ANGLES UNREAL, IT MATTERS
+    // IT seems like the rotation order is XYZ (roll, pitch, yaw)
+    // Consquently, the yaw position is not meaningful, and should just be zero
+    // We can populate this with 'd_state.disc_rotation' is we want to see it spin
+    // remember that this is not well defined wrt out airspeed vector unit frame
+    Eigen::Vector3d spin_pos_body = {0.0, 0.0, disc_state.disc_rotation};
+    // remember that this is a rotation position, so in order to change rotational frames
+    // we need ang_pos_vec_world = R * ang_pos_vec * R';
+    Eigen::Matrix<double, 1, 3> spin_pos_world = Rdw * spin_pos_body;
+    spin_pos_world = spin_pos_world * Rdw.transpose();
+    float spin_pos_world_Z = spin_pos_world[2];
+    WRAP_TO_2PI(spin_pos_world_Z);
+    spin_pos_world_Z = RAD_TO_DEG(spin_pos_world_Z);
+
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(spin_pos_body[2])));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(spin_pos_world_Z)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+
+    // args seem to be -ve roll, yaw, pitch
+    FRotator disc_rotation = {(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
     ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity,disc_rotation);
@@ -191,7 +211,7 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 {
   // use default for now
   disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0); // m/s
-  disc_environment->gust_factor = DfisX::Gust_Factor::THREE_BRUSQUE_BREEZE;//ZERO_DEAD_DIDDLY;
+  disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;//ZERO_DEAD_DIDDLY;
   disc_environment->air_density = ISA_RHO;
 }
 
@@ -559,11 +579,14 @@ void ADiscThrow::on_collision(
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
   // Reverse Z direction?
   //world_ang_vel_radps[2] *= -1;
-  Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps;
+
+  Eigen::Vector3d world_ang_vel_radps_rpy = {world_ang_vel_radps[0], world_ang_vel_radps[1], world_ang_vel_radps[2]};
+
+  Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps_rpy;
 
   local_ang_vel_radps[2] *= -1;
 
-  throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;  
+  throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
 
   // 1. derive torque from the ang vel:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
@@ -636,7 +659,7 @@ void ADiscThrow::on_collision(
   //throw_container.collision_input.ang_vel_radps[1] = ang_vel_from_impulses_Nm[1];
 
   // Check for ang vel reversal, this is annoying, but necessary, probably due to the atan stuff at the top of this file
-  int reverse_count = 0;
+  /*int reverse_count = 0;
   if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
   {
     //reverse_count++;
@@ -654,7 +677,7 @@ void ADiscThrow::on_collision(
   {
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
     throw_container.collision_input.ang_vel_radps *= -1;
-  }
+  }*/
 
   // we can compute the angular rates from the change in the velocity and disc normal vectors if necessary
   // since there seems to be something wrong with the Pitch and Roll generated by physX, let's do this
@@ -686,23 +709,23 @@ void ADiscThrow::on_collision(
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   Eigen::Vector3d curret_disc_ang_vel = 
   {
-    throw_container.current_disc_state.disc_pitching_vel,
     throw_container.current_disc_state.disc_rolling_vel,
+    throw_container.current_disc_state.disc_pitching_vel,
     throw_container.current_disc_state.disc_rotation_vel
   };
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(curret_disc_ang_vel).c_str()));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
-/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+ // GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
+  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));*/
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
 
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 
   
   // We could choose to reject on_collision impulses here if we think they are buggy Unreal (pun intended) garbage
