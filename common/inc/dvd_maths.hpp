@@ -214,6 +214,41 @@ static inline void Ryzx2eulyzx(float MAT3X3(Ryzx), float VEC3(eul_yzx))
   eul_yzx[2] = X;
 }
 
+// only works for +-90deg roll or pitch though...
+// eul returned in rads
+static inline void Rzyx2eulxyz(float MAT3X3(Rzyx), float VEC3(eul_zyx))
+{
+  float X;
+  float Y;
+  float Z;
+  if(Rzyx[i3x3(2,0)] < 1)
+  {
+    if(Rzyx[i3x3(2,0)] > -1)
+    {
+      Y = asin(-Rzyx[i3x3(2,0)]);
+      Z = atan2(Rzyx[i3x3(1,0)],Rzyx[i3x3(0,0)]);
+      X = atan2(Rzyx[i3x3(2,1)],Rzyx[i3x3(2,2)]);
+    }
+    else//r20=-1
+    {
+      //Notauniquesolution:X-Z=atan2(-Rzyx[i3x3(1,2)],Rzyx[i3x3(1,1)])
+      Y = M_PI / 2.0;
+      Z = -atan2(-Rzyx[i3x3(1,2)],Rzyx[i3x3(1,1)]);
+      X = 0;
+    }
+  }
+  else//r20=+1
+  {
+    //Notauniquesolution:X+Z=atan2(-Rzyx[i3x3(1,2)],Rzyx[i3x3(1,1)])
+    Y = -M_PI / 2.0;
+    Z = atan2(-Rzyx[i3x3(1,2)],Rzyx[i3x3(1,1)]);
+    X = 0;
+  }
+  eul_zyx[0] = Z;
+  eul_zyx[1] = Y;
+  eul_zyx[2] = X;
+}
+
 
 static inline void R2Q( float MAT3X3(R), float VEC4(Q) )
 {
