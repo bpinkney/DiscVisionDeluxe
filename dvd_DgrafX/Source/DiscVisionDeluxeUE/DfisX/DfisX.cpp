@@ -45,9 +45,9 @@ namespace DfisX
       throw_container->current_disc_state.forces_state.collision_force[1] = 
       throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
 
-      //const bool overwrite_states_ignore_forces_torques = false;
-      //if(overwrite_states_ignore_forces_torques)
-      //{
+      const bool overwrite_states_ignore_forces_torques = true;
+      if(overwrite_states_ignore_forces_torques)
+      {
 
         // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
         // Seems like the positions don't even get sent to unreal for the moment, and we just assume a constant velocity each dt
@@ -69,24 +69,34 @@ namespace DfisX
 
         //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
         //{
-          throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_radps[1] * 1.0;
-          //throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[0];
+          //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_from_impulses_Nm[0];//-throw_container->collision_input.ang_vel_radps[0];
+          //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_from_impulses_Nm[1];//throw_container->collision_input.ang_vel_radps[1];
           
        // }
+        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0]*0.0;
+        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1]*0.0;
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
-      //}
-      //else
-      //{
+      }
+      else
+      {
+
+        throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
+        throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+
+        throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
+        throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
+        throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+
         // Better idea since it prevents propagation from JUST collisions, however, harder to sync timing wise
         //throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
         //throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_delta_vel_N[1];
         //throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];
 
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
-      ///}
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+      }
 
       throw_container->collision_input.consumed_input++;
 
@@ -331,7 +341,7 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
+      disc_mold = find_disc_mold_index_by_name("Roadrunner");
 
       if(0)
       {

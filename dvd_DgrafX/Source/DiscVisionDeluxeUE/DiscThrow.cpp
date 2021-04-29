@@ -160,6 +160,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_rolling_vel, disc_state.disc_pitching_vel, -disc_state.disc_rotation_vel * 1.0};//{disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
     Eigen::Vector3d world_ang_vel_radps = Rdw * local_ang_vel_radps;
 
+    // From the FVector defs in Unreal, we presume this to be rotational rates about the XYZ world axes
     FVector ang_velocity = FVector 
       (
         world_ang_vel_radps[0],
@@ -193,6 +194,18 @@ void ADiscThrow::Tick(const float DeltaTime)
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
     ptr_disc_projectile->SetDiscVelRot(disc_velocity, ang_velocity, disc_rotation, -disc_state.disc_rotation);
     //finish converting dfisx disc state into unreal usable forms
+
+    // read back to check
+    //FVector ang_vel_readback = ptr_disc_projectile->GetPhysicsAngularVelocityInRadians();
+/*    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(local_ang_vel_radps[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(local_ang_vel_radps[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(local_ang_vel_radps[2])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
+    /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel_radps[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel_radps[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel_radps[2])));
+     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
     
@@ -477,8 +490,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
 #define DISABLE_COMPLEX_DISC_COLLISION (false)
 // disables aero and DfisX if both of these conditions are met
 // disable for now
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (3.0)
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (10.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (0.3)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (1.0)
 
 double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
 {
@@ -589,11 +602,16 @@ void ADiscThrow::on_collision(
 
   throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
 
-  // 1. derive torque from the ang vel:
+  // 1. derive torque from the ang vel DELTA:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   const double Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
-  Eigen::Vector3d local_ang_accel_radps2 = throw_container.collision_input.ang_vel_radps / throw_container.collision_input.delta_time_s;
+
+  // Get current ang vel in local disc airspeed vel frame
+  Eigen::Vector3d last_local_ang_vel_radps = {throw_container.current_disc_state.disc_rolling_vel, throw_container.current_disc_state.disc_pitching_vel, throw_container.current_disc_state.disc_rotation_vel};
+
+  Eigen::Vector3d local_ang_accel_radps2 = 
+    (throw_container.collision_input.ang_vel_radps - last_local_ang_vel_radps) / throw_container.collision_input.delta_time_s;
 
   // There are some off results with the angular vels right now, can we hackily limit the ang accels to work around this?
   //const double max_ang_accel = 5.0 / Ix;
@@ -652,7 +670,7 @@ void ADiscThrow::on_collision(
   ang_accel_from_impulses_Nm[2] /= Iz;
 
   // integrate previous ang vel state
-  Eigen::Vector3d ang_vel_from_impulses_Nm = throw_container.collision_input.ang_vel_radps + ang_accel_from_impulses_Nm * dt;
+  throw_container.collision_input.ang_vel_from_impulses_Nm = last_local_ang_vel_radps + ang_accel_from_impulses_Nm * dt; //throw_container.collision_input.ang_vel_radps + ang_accel_from_impulses_Nm * dt;
 
   // overwrite previous ang vel state (this wil behave as if the propagation had occurred on the k-1 timestep, so we see the gyro response during time 'k')
   // only doing this for roll/pitch for now
@@ -718,15 +736,15 @@ void ADiscThrow::on_collision(
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
  // GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
-  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(world_ang_vel[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange,(FString::SanitizeFloat(world_ang_vel[2])));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[0])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[2])));*/
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
 
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
   
   // We could choose to reject on_collision impulses here if we think they are buggy Unreal (pun intended) garbage
@@ -754,6 +772,15 @@ void ADiscThrow::on_collision(
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   }
   
+
+  // check for mas roll and pitch vels
+  float rp_vel_limit = 25.0;// rad/s
+  if(abs(throw_container.collision_input.ang_vel_radps[0]) > rp_vel_limit || abs(throw_container.collision_input.ang_vel_radps[1]) > rp_vel_limit)
+  {
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected update due to bad ang vel!")));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
+    skip_input = true;
+  }
 
   if(!DISABLE_COMPLEX_DISC_COLLISION && !skip_input)
   {
