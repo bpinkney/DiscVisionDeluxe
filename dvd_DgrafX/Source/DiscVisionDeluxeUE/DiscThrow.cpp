@@ -504,6 +504,7 @@ void ADiscThrow::on_collision(
   const FVector lin_vel_delta,          //world frame
   const FVector ang_vel,                //disc frame
   const FVector world_ang_vel,
+  const FVector world_ang_vel_delta,
   const FVector ang_vel_delta,          //disc frame
   const int total_hit_events,
   const float delta_time,               //si
