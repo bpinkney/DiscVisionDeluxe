@@ -140,30 +140,30 @@ void ADiscThrow::Tick(const float DeltaTime)
       disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2],                disc_state.disc_orientation[2]
     };
 
-    float VEC3(eulers_xyz);
-    Rxyz2eulxyz(Rdw_float, eulers_xyz);
-    //Ryzx2eulyzx(Rdw_float, eulers_xyz);
+    float VEC3(eulers_zyx);
+    //Rxyz2eulxyz(Rdw_float, eulers_xyz);
+    Rzyx2eulxyz(Rdw_float, eulers_zyx);
 
     // take negative rotations (except for Z?)
-    float eul_xyz_deg[3] = {RAD_TO_DEG(eulers_xyz[0]), RAD_TO_DEG(eulers_xyz[1]), RAD_TO_DEG(eulers_xyz[2])};
+    float eul_zyx_deg[3] = {RAD_TO_DEG(eulers_zyx[0]), RAD_TO_DEG(eulers_zyx[1]), RAD_TO_DEG(eulers_zyx[2])};
 
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[0])));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[1])));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_xyz_deg[2])));  
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(pitch)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(yaw)));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+/*    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[0])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[1])));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[2])));  
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(pitch)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(yaw)));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 
     // Now we should be able to rotate the XYZ 'velocity disc frame' ang rates into the world frame
     // NEGATIVE Z due to unreal's weird frame!
-    Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_rolling_vel, disc_state.disc_pitching_vel, -disc_state.disc_rotation_vel};//{disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
+    Eigen::Vector3d local_ang_vel_radps = {disc_state.disc_rolling_vel, disc_state.disc_pitching_vel, -disc_state.disc_rotation_vel * 1.0};//{disc_state.disc_pitching_vel, disc_state.disc_rolling_vel, -disc_state.disc_rotation_vel};
     Eigen::Vector3d world_ang_vel_radps = Rdw * local_ang_vel_radps;
 
     FVector ang_velocity = FVector 
       (
-        world_ang_vel_radps[0], 
-        world_ang_vel_radps[1], 
+        world_ang_vel_radps[0],
+        world_ang_vel_radps[1],
         world_ang_vel_radps[2]
       );
 
@@ -174,24 +174,24 @@ void ADiscThrow::Tick(const float DeltaTime)
     // Consquently, the yaw position is not meaningful, and should just be zero
     // We can populate this with 'd_state.disc_rotation' is we want to see it spin
     // remember that this is not well defined wrt out airspeed vector unit frame
-    Eigen::Vector3d spin_pos_body = {0.0, 0.0, disc_state.disc_rotation};
+    //Eigen::Vector3d spin_pos_body = {0.0, 0.0, disc_state.disc_rotation};
     // remember that this is a rotation position, so in order to change rotational frames
     // we need ang_pos_vec_world = R * ang_pos_vec * R';
-    Eigen::Matrix<double, 1, 3> spin_pos_world = Rdw * spin_pos_body;
-    spin_pos_world = spin_pos_world * Rdw.transpose();
-    float spin_pos_world_Z = spin_pos_world[2];
-    WRAP_TO_2PI(spin_pos_world_Z);
-    spin_pos_world_Z = RAD_TO_DEG(spin_pos_world_Z);
+    //Eigen::Matrix<double, 1, 3> spin_pos_world = Rdw * spin_pos_body;
+    //spin_pos_world = spin_pos_world * Rdw.transpose();
+    //float spin_pos_world_Z = spin_pos_world[2];
+    //WRAP_TO_2PI(spin_pos_world_Z);
+    //spin_pos_world_Z = RAD_TO_DEG(spin_pos_world_Z);
 
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(spin_pos_body[2])));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(spin_pos_world_Z)));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 
     // args seem to be -ve roll, yaw, pitch
-    FRotator disc_rotation = {(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
+    FRotator disc_rotation = {eul_zyx_deg[1], (float)0.0, eul_zyx_deg[2]};//{pitch,roll,yaw};//{(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
-    ptr_disc_projectile->SetDiscVelRot(disc_velocity,ang_velocity,disc_rotation);
+    ptr_disc_projectile->SetDiscVelRot(disc_velocity, ang_velocity, disc_rotation, disc_state.disc_rotation);
     //finish converting dfisx disc state into unreal usable forms
 
     //unused sim states for now: SIM_STATE_STOPPED,SIM_STATE_STARTED,SIM_STATE_SKIPPING,SIM_STATE_TREE_HIT,SIM_STATE_ROLLING,SIM_STATE_SLIDING  transition_to_colour
