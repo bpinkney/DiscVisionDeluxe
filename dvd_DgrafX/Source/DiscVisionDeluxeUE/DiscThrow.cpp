@@ -774,13 +774,13 @@ void ADiscThrow::on_collision(
   
 
   // check for mas roll and pitch vels
-  float rp_vel_limit = 25.0;// rad/s
+ /* float rp_vel_limit = 50.0;// rad/s
   if(abs(throw_container.collision_input.ang_vel_radps[0]) > rp_vel_limit || abs(throw_container.collision_input.ang_vel_radps[1]) > rp_vel_limit)
   {
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected update due to bad ang vel!")));
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
     skip_input = true;
-  }
+  }*/
 
   if(!DISABLE_COMPLEX_DISC_COLLISION && !skip_input)
   {
