@@ -59,24 +59,7 @@ namespace DfisX
         throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
         throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
-        // Why does overwriting the roll/pitch rates break this? (could be the gimbal lock? TODO for Brandon)
-        // Why set this to zero? who cares is why, bleh
-        // bound the roll and pitch vel?
-        //const double bound_ang_rate_rp = 2.00000;
-
-        //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -bound_ang_rate_rp, bound_ang_rate_rp);
-        //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[1], -bound_ang_rate_rp, bound_ang_rate_rp);
-
-        //if(sqrt(throw_container->collision_input.ang_vel_radps[0]*throw_container->collision_input.ang_vel_radps[0] + throw_container->collision_input.ang_vel_radps[1]*throw_container->collision_input.ang_vel_radps[1]) < bound_ang_rate_rp)
-        //{
-          //throw_container->current_disc_state.disc_rolling_vel  = -throw_container->collision_input.ang_vel_from_impulses_Nm[0];//-throw_container->collision_input.ang_vel_radps[0];
-          //throw_container->current_disc_state.disc_pitching_vel = -throw_container->collision_input.ang_vel_from_impulses_Nm[1];//throw_container->collision_input.ang_vel_radps[1];
-          
-       // }
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-
-        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0]*1.0;
+        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
         throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
@@ -84,17 +67,17 @@ namespace DfisX
       else
       {
 
-        throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
-        throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+        //throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
+        //throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
-        throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
-        throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
-        throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+        //throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
+        //throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
+        //throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
 
         // Better idea since it prevents propagation from JUST collisions, however, harder to sync timing wise
-        //throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
-        //throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_delta_vel_N[1];
-        //throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];
+        throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
+        throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_delta_vel_N[1];
+        throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];
 
         throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
         throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
@@ -396,9 +379,9 @@ namespace DfisX
         default:
         case 0:
           // regular flat throw
-          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = 100.0;
-          hps = {DEG_TO_RAD(-70), DEG_TO_RAD(0), DEG_TO_RAD(0)};
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, -20/3.6};
+          throw_container->current_disc_state.disc_rotation_vel = 70.0;
+          hps = {DEG_TO_RAD(0), DEG_TO_RAD(-20.0), DEG_TO_RAD(0)};
           //throw_set = 1;
           break;
         case 1: 
