@@ -14,6 +14,7 @@
 #include "GameFramework/Actor.h"
 #include "DiscThrow.generated.h"
 
+
 UCLASS()
 class DISCVISIONDELUXEUE_API ADiscThrow : public AActor
 {
@@ -73,7 +74,7 @@ public:
 
   Initial_Release_Stats initial_release_stats;
   Flight_Cumulative_Stats flight_cumulative_stats;
-  static ADiscThrow* latest_disc_throw;
+  
    Initial_Release_Stats* get_initial_release_stats();
    Flight_Cumulative_Stats* get_flight_cumulative_stats();
    void generate_flight_cumulative_stats();

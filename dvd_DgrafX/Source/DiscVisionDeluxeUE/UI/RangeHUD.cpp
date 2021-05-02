@@ -5,12 +5,23 @@
 
 ARangeHUD::ARangeHUD()
 {
+	
+}
 
+void ARangeHUD::SetLatestDiscThrow(ADiscThrow* latest)
+{
+	this->latest_disc_throw = latest;
+}
+
+void ARangeHUD::GetLatestDiscThrow(ADiscThrow* latest)
+{
+	latest = this->latest_disc_throw;
 }
 
 void ARangeHUD::DrawHUD()
 {
 	Super::DrawHUD();
+	
 	DrawJoyLine (FVector2D(0,0),FVector2D(50,50),FLinearColor(0, 0, 0, 1),5.0);
 }
 
@@ -18,6 +29,10 @@ void ARangeHUD::DrawHUD()
 void ARangeHUD::BeginPlay()
 {
 	Super::BeginPlay();
+	if (IsValid(this->latest_disc_throw)) 
+	{
+		memset(this->latest_disc_throw, 0, sizeof(ADiscThrow));
+	}
 
 	if (RangeHUDClass)
 	{
@@ -56,10 +71,11 @@ void ARangeHUD::BeginPlay()
 void ARangeHUD::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (ADiscThrow::latest_disc_throw != nullptr)
+	if (IsValid(this->latest_disc_throw))
 	{
+
 		ARangeHUD::PopulateHUD();
-		MapWidget->draw_line_from_disc_throw_ptr(ADiscThrow::latest_disc_throw);
+		MapWidget->draw_line_from_disc_throw_ptr(this->latest_disc_throw);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
 	}
 }
