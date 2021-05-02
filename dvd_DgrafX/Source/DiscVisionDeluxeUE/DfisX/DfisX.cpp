@@ -76,8 +76,8 @@ namespace DfisX
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
 
-        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0]*0.0;
-        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1]*0.0;
+        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0]*1.0;
+        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
       }
