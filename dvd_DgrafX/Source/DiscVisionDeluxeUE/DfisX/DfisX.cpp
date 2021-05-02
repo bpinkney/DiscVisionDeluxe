@@ -327,7 +327,7 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
+      disc_mold = find_disc_mold_index_by_name("Roadrunner");
 
       if(0)
       {
@@ -379,15 +379,15 @@ namespace DfisX
         default:
         case 0:
           // regular flat throw
-          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, -20/3.6};
+          throw_container->current_disc_state.disc_velocity = {60.0/3.6, 0, 0};
           throw_container->current_disc_state.disc_rotation_vel = 70.0;
-          hps = {DEG_TO_RAD(0), DEG_TO_RAD(-20.0), DEG_TO_RAD(0)};
+          hps = {DEG_TO_RAD(-90.0), DEG_TO_RAD(0.0), DEG_TO_RAD(0)};
           //throw_set = 1;
           break;
         case 1: 
           {       
           // roadrunner roller!
-          const double heading = DEG_TO_RAD(-20);
+          const double heading = DEG_TO_RAD(-20.0);
           const double speed = 80.0/3.6;
           const double east = -speed * sin(heading);
           const double north = speed * cos(heading);

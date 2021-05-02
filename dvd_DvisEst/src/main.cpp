@@ -1057,7 +1057,7 @@ int main(int argc, char** argv )
                       case 1:
                         // Flick ROLLER!
                         sprintf(output_cmd, "%s,", 
-                          "hyzer:-1.22173,pitch:0.0,posx:0.0,posy:0.0,posz:2.0,velx:22.22,vely:0.0,velz:1.0,spin_d:-90.0,wobble:0.0,discmold:1");
+                          "hyzer:-1.5,pitch:0.0,posx:0.0,posy:0.0,posz:2.0,velx:18.0,vely:0.0,velz:1.0,spin_d:90.0,wobble:0.0,discmold:1");
                         variety_throw++;
                         break;
                       case 2:
