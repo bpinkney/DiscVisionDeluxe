@@ -59,7 +59,7 @@ void ARangeHUD::Tick(float DeltaSeconds)
 	if (ADiscThrow::latest_disc_throw != nullptr)
 	{
 		ARangeHUD::PopulateHUD();
-		
+		MapWidget->draw_line_from_disc_throw_ptr(ADiscThrow::latest_disc_throw);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
 	}
 }

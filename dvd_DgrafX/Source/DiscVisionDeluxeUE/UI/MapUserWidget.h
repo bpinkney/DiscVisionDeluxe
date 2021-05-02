@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UImage* TopDownMap;
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Functions")
+	void draw_line_from_disc_throw_ptr(ADiscThrow* ptr_disc_throw);
 };
