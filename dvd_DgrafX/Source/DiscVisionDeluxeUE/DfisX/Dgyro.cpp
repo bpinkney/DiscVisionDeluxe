@@ -29,11 +29,15 @@ namespace DfisX
     // ######Gyroscopic Precession
     //    #Wp  is rads/sec of off axis rotation (rolling)
     //    Wp = Pitching moment / (Moment of intertia * angular velocity (of gyro))
-    const double Wp = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_x) / (Iz * d_state.disc_rotation_vel);
-
-    // compute resulting angular torque from applied pitching moment vel
-    const double Wp_d  = (Wp - d_state.disc_rolling_vel) / MAX(dt, CLOSE_TO_ZERO);
-    d_forces.gyro_torque_y = Wp_d * Ix;
+    double Wp = 0.0;
+    d_forces.gyro_torque_y = 0.0;
+    if(abs(d_state.disc_rotation_vel) > 0.1)
+    {
+        Wp = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_x) / (Iz * d_state.disc_rotation_vel);
+        // compute resulting angular torque from applied pitching moment vel
+        const double Wp_d  = (Wp - d_state.disc_rolling_vel) / MAX(dt, CLOSE_TO_ZERO);
+        d_forces.gyro_torque_y = Wp_d * Ix;
+    }    
 
     // does this ever get applied?
     //d_forces.gyro_torque_x = d_forces.lift_induced_pitching_moment;

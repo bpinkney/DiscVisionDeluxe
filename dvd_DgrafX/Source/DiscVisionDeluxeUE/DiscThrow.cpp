@@ -403,7 +403,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
-	float set_hue = 000.0;
+	float set_hue = 0.00;
 	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
 	bool set_rainbow = true;
 
@@ -734,18 +734,34 @@ void ADiscThrow::on_collision(
     throw_container.current_disc_state.disc_pitching_vel,
     throw_container.current_disc_state.disc_rotation_vel
   };
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   FString(EigenVect3dToString(local_ang_accel_radps2).c_str()));
+
+  std::stringstream ss0;
+  ss0 << "ang_vel_from_impulses_Nm = ";
+  ss0 << EigenVect3dToString(throw_container.collision_input.ang_vel_from_impulses_Nm);
+  log_string(FString(ss0.str().c_str()));
+
+  std::stringstream ss1;
+  ss1 << "ang_vel_from_rot_world_vel = ";
+  ss1 << EigenVect3dToString(throw_container.collision_input.ang_vel_radps);
+  log_string(FString(ss1.str().c_str()));
+
+  std::stringstream ss2;
+  ss2 << "ang_vel DfisX k-1 = ";
+  ss2 << EigenVect3dToString(curret_disc_ang_vel);
+  log_string(FString(ss2.str().c_str()));
+
+  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   );
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(ang_accel_from_impulses_radps2).c_str()));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(ang_accel_from_impulses_radps2).c_str()));*/
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
 /*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[1])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[2])));*/
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
 
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
+/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
 
   
   // We could choose to reject on_collision impulses here if we think they are buggy Unreal (pun intended) garbage
