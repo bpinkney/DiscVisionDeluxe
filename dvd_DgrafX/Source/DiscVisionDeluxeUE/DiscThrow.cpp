@@ -192,6 +192,23 @@ void ADiscThrow::Tick(const float DeltaTime)
     FRotator disc_rotation = {eul_zyx_deg[1], (float)0.0, eul_zyx_deg[2]};//{pitch,roll,yaw};//{(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
+
+    FVector orientationtestoutput = FVector (ii,jj,kk);
+    ///log_string(ang_velocity.ToString());
+    log_string(FString(" "));
+    log_string(FString("Set states at delta time: "));
+    log_string(FString::SanitizeFloat(DeltaTime));
+    
+    log_string(FString(" "));
+    log_string(FString("set disc vel"));
+    log_string(disc_velocity.ToString());
+    log_string(FString("set ang vel"));
+    log_string(ang_velocity.ToString());
+    log_string(FString("set disc rot"));
+    log_string(disc_rotation.ToString());
+    log_string(FString("raw orientation"));
+    log_string(orientationtestoutput.ToString());
+    log_string(FString(" "));
     ptr_disc_projectile->SetDiscVelRot(disc_velocity, ang_velocity, disc_rotation, -disc_state.disc_rotation);
     //finish converting dfisx disc state into unreal usable forms
 
@@ -211,7 +228,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     
     ptr_follow_flight->log_position();
     ptr_flight_log->log_position(DeltaTime);
-    log_string(ang_velocity.ToString());
+    
 
     //end ff stuff
     //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
@@ -254,8 +271,12 @@ void ADiscThrow::new_captured_throw(
   FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Rotation!"));
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, disc_rotation.ToString());
   FVector thrown_disc_rotation = FTransform(character_rotation).TransformVector(disc_rotation);
- 
+
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_rotation.ToString());
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
   float thrown_disc_roll  = thrown_disc_rotation.X;
   float thrown_disc_pitch = thrown_disc_rotation.Y;
   new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
