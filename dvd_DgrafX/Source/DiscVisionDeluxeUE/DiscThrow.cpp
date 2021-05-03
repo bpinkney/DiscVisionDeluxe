@@ -15,7 +15,6 @@
 
 #include "UI/RangeHUD.h"
  
-ADiscThrow* ADiscThrow::latest_disc_throw = nullptr;
 
   // Sets default values
 ADiscThrow::ADiscThrow()
@@ -37,7 +36,11 @@ void ADiscThrow::BeginPlay()
   
   if (GEngine)
   {
-  latest_disc_throw = this;
+  ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+  if (IsValid(RangeHUD)) 
+  {
+      RangeHUD->SetLatestDiscThrow(this);
+  }
   ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
   ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
   follow_flight_hue = 000.0;

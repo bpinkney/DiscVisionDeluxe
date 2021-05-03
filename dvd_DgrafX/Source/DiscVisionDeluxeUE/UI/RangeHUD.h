@@ -25,6 +25,12 @@ class DISCVISIONDELUXEUE_API ARangeHUD : public AHUD
 public:
 	ARangeHUD();
 
+	ADiscThrow* latest_disc_throw;
+
+	void SetLatestDiscThrow(ADiscThrow* latest);
+
+	void GetLatestDiscThrow(ADiscThrow* latest);
+
 	virtual void DrawHUD() override;
 
 	virtual void BeginPlay() override;
