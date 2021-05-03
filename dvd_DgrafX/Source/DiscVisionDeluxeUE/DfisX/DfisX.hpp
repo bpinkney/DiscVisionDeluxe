@@ -252,8 +252,7 @@ namespace DfisX
     const DiscIndex disc_index, // from dvd_DvisEst
     const Eigen::Vector3d thrown_disc_position,
     const Eigen::Vector3d thrown_disc_velocity, 
-    const double thrown_disc_roll, 
-    const double thrown_disc_pitch, 
+    const Eigen::Vector3d thrown_disc_orientation, 
     const double thrown_disc_radians_per_second, 
     const double thrown_disc_wobble);
 

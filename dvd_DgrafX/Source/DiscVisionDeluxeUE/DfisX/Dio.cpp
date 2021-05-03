@@ -111,8 +111,8 @@ void parse_cl (int argc, char *argv[])
 
     const float dt = (1.0/100.0); // run at 100Hz for test
 
-    DfisX::new_throw(&throw_container, disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
-    DfisX::simulate_throw(&throw_container, dt);
+    //DfisX::new_throw(&throw_container, disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,thrown_disc_radians_per_second,thrown_disc_wobble);
+    //DfisX::simulate_throw(&throw_container, dt);
 
     std::cout << "Successfully passed a command line throw \n";
   }

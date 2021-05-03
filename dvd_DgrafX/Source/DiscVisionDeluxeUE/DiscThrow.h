@@ -105,8 +105,7 @@ public:
     const int disc_index,
     const FVector thrown_disc_position,
     const FVector v3d_thrown_disc_velocity, 
-    const float thrown_disc_roll, 
-    const float thrown_disc_pitch, 
+    const FVector thrown_disc_orientation, 
     const float thrown_disc_radians_per_second, 
     const float thrown_disc_wobble);
 

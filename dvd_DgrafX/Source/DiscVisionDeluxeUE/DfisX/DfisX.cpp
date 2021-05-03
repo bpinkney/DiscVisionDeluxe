@@ -192,8 +192,7 @@ namespace DfisX
     const DiscIndex disc_index,
     const Eigen::Vector3d thrown_disc_position,
     const Eigen::Vector3d thrown_disc_velocity, 
-    const double thrown_disc_roll, 
-    const double thrown_disc_pitch, 
+    const Eigen::Vector3d thrown_disc_orientation, 
     const double thrown_disc_radians_per_second, 
     const double thrown_disc_wobble)
   /*
@@ -227,11 +226,7 @@ namespace DfisX
 
     //convert world frame roll/pitch into and orientation vector
 
-    const double x_component = sin (-thrown_disc_pitch) * cos (thrown_disc_roll);
-    const double y_component = sin (thrown_disc_roll)   * cos (thrown_disc_pitch);
-    const double z_component = cos (thrown_disc_pitch)  * cos (thrown_disc_roll);
 
-    const Eigen::Vector3d thrown_disc_orientation = {x_component,y_component,z_component};
     const double thrown_disc_rotation = 0;
 
     //create the starting d state

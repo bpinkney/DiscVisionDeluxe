@@ -9,6 +9,7 @@
 #include "dvd_maths.hpp"
 #include "FlightLog.h"
 #include "PhysXIncludes.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // include for debug stuff
 #include "Daero.hpp"
@@ -262,27 +263,35 @@ void ADiscThrow::new_captured_throw(
 
   
 
-  FRotator character_rotation = ptr_disc_character->GetActorRotation();
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, character_rotation.ToString());
+  //FRotator character_rotation = ptr_disc_character->GetActorRotation();
+  FRotator character_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
   
   FVector character_location = ptr_disc_character->GetActorLocation();
-  FVector disc_rotation = FVector(captured_world_roll,captured_world_pitch,0); ///this is a vector just for the transform function
+  FRotator disc_rotation = FRotator(captured_world_pitch*57.3,character_rotation.Yaw,captured_world_roll*57.3); ///this is a vector just for the transform function
   FVector forward_offset = FVector(100.0,0.0,0.0); ///temporarily offset forward so we dont collide with the invisible mesh
 
   FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
   
-  FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
-  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
-  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Rotation!"));
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, disc_rotation.ToString());
-  FVector thrown_disc_rotation = FTransform(character_rotation).TransformVector(disc_rotation);
 
+
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Velocity!"));
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
+  FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
+/*
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Rotation!"));
+  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, disc_rotation.ToString());
+  FRotator thrown_disc_rotation = FTransform(character_rotation.Quaternion()).TransformRotation(disc_rotation.Quaternion());
   GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_rotation.ToString());
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
-  float thrown_disc_roll  = thrown_disc_rotation.X;
-  float thrown_disc_pitch = thrown_disc_rotation.Y;
-  new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_roll,thrown_disc_pitch,captured_spin_speed,captured_wobble);
+  */
+  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, TEXT("Das Rotation!"));
+  FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0,0,1));
+  //thrown_disc_orientation.X = -thrown_disc_orientation.X
+  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, disc_rotation.ToString());
+  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, thrown_disc_orientation.ToString());
+
+  new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_orientation,captured_spin_speed,captured_wobble);
 }
 
 
@@ -293,8 +302,7 @@ void ADiscThrow::new_throw_world_frame(
   const int disc_index,
   const FVector thrown_disc_position,
   const FVector thrown_disc_velocity, 
-  const float thrown_disc_roll, 
-  const float thrown_disc_pitch, 
+  const FVector thrown_disc_orientation, 
   const float thrown_disc_radians_per_second, 
   const float thrown_disc_wobble)
 {
@@ -303,7 +311,7 @@ void ADiscThrow::new_throw_world_frame(
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100.0,thrown_disc_position.Y/100.0,thrown_disc_position.Z/100.0);
   Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
-
+  Eigen::Vector3d v3d_thrown_disc_orientation = Eigen::Vector3d(thrown_disc_orientation.X,thrown_disc_orientation.Y,thrown_disc_orientation.Z);
   
   // get current wind state (we'll need to update this periodically later as the disc changes environments)
   GenerateDiscEnv(&(throw_container.disc_environment));
@@ -313,8 +321,7 @@ void ADiscThrow::new_throw_world_frame(
     static_cast<DiscIndex>(disc_index),
     v3d_thrown_disc_position,
     v3d_thrown_disc_velocity,
-    thrown_disc_roll,
-    thrown_disc_pitch,
+    v3d_thrown_disc_orientation,
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
 
