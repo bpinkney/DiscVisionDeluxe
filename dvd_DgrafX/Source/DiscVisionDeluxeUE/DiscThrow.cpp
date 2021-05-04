@@ -195,7 +195,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     FVector disc_rotation_side_vector = FVector (disc_state.forces_state.disc_x_unit_vector[0],disc_state.forces_state.disc_x_unit_vector[1],disc_state.forces_state.disc_x_unit_vector[2]);
     
     float roll_angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(disc_rotation_side_vector, FVector(0,0,1))));
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll_angle-90)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll_angle-90)));
 
     
     FRotator disc_rotation = disc_rotation_forward_vector.Rotation();
@@ -310,7 +310,7 @@ void ADiscThrow::new_throw_world_frame(
   const float thrown_disc_radians_per_second, 
   const float thrown_disc_wobble)
 {
-  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("is happening"));
+  
   spawn_disc_and_follow_flight();
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100.0,thrown_disc_position.Y/100.0,thrown_disc_position.Z/100.0);

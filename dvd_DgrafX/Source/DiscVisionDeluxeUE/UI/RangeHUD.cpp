@@ -21,8 +21,7 @@ void ARangeHUD::GetLatestDiscThrow(ADiscThrow* latest)
 void ARangeHUD::DrawHUD()
 {
 	Super::DrawHUD();
-	
-	DrawJoyLine (FVector2D(0,0),FVector2D(50,50),FLinearColor(0, 0, 0, 1),5.0);
+
 }
 
 // Check existence of HUD Class, if present, set HUD class to Widget, add to viewport.
@@ -74,7 +73,7 @@ void ARangeHUD::Tick(float DeltaSeconds)
 	if (IsValid(this->latest_disc_throw))
 	{
 
-		ARangeHUD::PopulateHUD();
+		RangeUserWidget->PopulateHUD(this->latest_disc_throw);
 		MapWidget->draw_line_from_disc_throw_ptr(this->latest_disc_throw);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
 	}
@@ -84,7 +83,7 @@ void ARangeHUD::PopulateHUD()
 {
 	if (RangeUserWidget)
 	{
-		RangeUserWidget->PopulateHUD();
+		
 	}
 }
 
