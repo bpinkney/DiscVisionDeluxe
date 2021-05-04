@@ -191,9 +191,17 @@ void ADiscThrow::Tick(const float DeltaTime)
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(spin_pos_body[2])));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(spin_pos_world_Z)));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    FVector disc_rotation_forward_vector = FVector (disc_state.forces_state.disc_y_unit_vector[0],disc_state.forces_state.disc_y_unit_vector[1],disc_state.forces_state.disc_y_unit_vector[2]);
+    FVector disc_rotation_side_vector = FVector (disc_state.forces_state.disc_x_unit_vector[0],disc_state.forces_state.disc_x_unit_vector[1],disc_state.forces_state.disc_x_unit_vector[2]);
+    
+    float roll_angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(disc_rotation_side_vector, FVector(0,0,1))));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll_angle-90)));
 
+    
+    FRotator disc_rotation = disc_rotation_forward_vector.Rotation();
+    disc_rotation.Roll = roll_angle-90;
     // args seem to be -ve roll, yaw, pitch
-    FRotator disc_rotation = {eul_zyx_deg[1], (float)0.0, eul_zyx_deg[2]};//{pitch,roll,yaw};//{(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
+    //FRotator disc_rotation = {eul_zyx_deg[1], (float)0.0, eul_zyx_deg[2]};//{pitch,roll,yaw};//{(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
 
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
 
@@ -259,37 +267,33 @@ void ADiscThrow::new_captured_throw(
   const float captured_spin_speed, 
   const float captured_wobble)
 {
-  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("New Disc Throw made with captured data!"));
-
+  // Screen space > world space
+  //
+  //This function transforms throw data from a location/direciton relative to the 
+  //current player(and hopefully player camera) position and rotation and transforms 
+  //it into world space within the engine
   
 
-  //FRotator character_rotation = ptr_disc_character->GetActorRotation();
+  /////////////////Rotation
+  //
   FRotator character_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-  
-  FVector character_location = ptr_disc_character->GetActorLocation();
   FRotator disc_rotation = FRotator(captured_world_pitch*57.3,character_rotation.Yaw,captured_world_roll*57.3); ///this is a vector just for the transform function
-  FVector forward_offset = FVector(100.0,0.0,0.0); ///temporarily offset forward so we dont collide with the invisible mesh
+  FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0,0,1));
 
-  FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position+forward_offset);
+
+  ///////////////////Position
+  //
+  FVector character_location = ptr_disc_character->GetActorLocation();
+  FVector thrown_disc_position = character_location + FTransform(character_rotation).TransformVector(captured_position);
   
 
-
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Velocity!"));
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
+  //////////////////Velocity
+  //
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Velocity!"));
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, captured_velocity.ToString());
   FVector thrown_disc_velocity = FTransform(character_rotation).TransformVector(captured_velocity);
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
-/*
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Das Rotation!"));
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, disc_rotation.ToString());
-  FRotator thrown_disc_rotation = FTransform(character_rotation.Quaternion()).TransformRotation(disc_rotation.Quaternion());
-  GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_rotation.ToString());
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, thrown_disc_velocity.ToString());
-  */
-  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, TEXT("Das Rotation!"));
-  FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0,0,1));
-  //thrown_disc_orientation.X = -thrown_disc_orientation.X
-  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, disc_rotation.ToString());
-  GEngine->AddOnScreenDebugMessage(-1, 45.0f, FColor::Red, thrown_disc_orientation.ToString());
+
 
   new_throw_world_frame(captured_disc_index,thrown_disc_position,thrown_disc_velocity,thrown_disc_orientation,captured_spin_speed,captured_wobble);
 }
@@ -402,7 +406,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 {
   is_throw_simulating = true;
   
-  //DestroyDiscs();
+
     // Get the camera transform.
     FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
     FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();

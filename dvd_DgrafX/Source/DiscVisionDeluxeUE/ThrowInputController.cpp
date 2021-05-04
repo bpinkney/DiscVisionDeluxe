@@ -105,7 +105,7 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
           
 
             disc_throw->new_captured_throw(static_cast<int>(new_disc_init_state->discmold),
-            FVector(0,0,0),FVector(30,0,10),1.57,0,0,0);
+            FVector(0,0,0),FVector(30,10,5),-0.2,0.1,0,0);
 
 /*
           disc_throw->new_captured_throw(
