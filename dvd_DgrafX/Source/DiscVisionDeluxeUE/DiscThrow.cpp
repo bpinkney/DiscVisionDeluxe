@@ -212,7 +212,6 @@ void ADiscThrow::Tick(const float DeltaTime)
       GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(-eul_zyx_deg[1])));
       GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[0])));*/
           
-    }
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString(" "))); 
 
     
@@ -575,7 +574,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 5778;
+  const int changevar = 4509;
 
   if
   (
@@ -588,7 +587,7 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    ptr_disc_projectile->kill_control();    
+    //ptr_disc_projectile->kill_control();    
   }
 
   // try overriding with the sim time? (NOPE, fun and bouncy tho)
@@ -633,16 +632,33 @@ void ADiscThrow::on_collision(
   Rwd = Rwd.transpose();
 
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
-  // Reverse Z direction?
-  //world_ang_vel_radps[2] *= -1;
 
   Eigen::Vector3d world_ang_vel_radps_rpy = {world_ang_vel_radps[0], world_ang_vel_radps[1], world_ang_vel_radps[2]};
 
   Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps_rpy;
 
+  // reversed due to swapped Z axis in Unreal
+  //local_ang_vel_radps[0] *= -1;
+  //local_ang_vel_radps[1] *= -1;
   local_ang_vel_radps[2] *= -1;
 
   throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
+
+  log_string(FString("Collision DF ang vel"));
+  FVector df_ang_vel = FVector(throw_container.collision_input.ang_vel_radps[0], throw_container.collision_input.ang_vel_radps[1], throw_container.collision_input.ang_vel_radps[2]);
+  log_string(df_ang_vel.ToString());
+  log_string(FString("Collision WF ang vel"));
+  FVector wf_ang_vel = FVector(world_ang_vel_radps_rpy[0], world_ang_vel_radps_rpy[1], world_ang_vel_radps_rpy[2]);
+  log_string(wf_ang_vel.ToString());
+  log_string(FString("Collision UDF ang vel"));
+  FVector udf_ang_vel = FVector(ang_vel[0], ang_vel[1], ang_vel[2]);
+  log_string(udf_ang_vel.ToString());
+
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(world_ang_vel_radps_rpy).c_str()));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[0])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[1])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[2])));
 
   // 1. derive torque from the ang vel DELTA:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
