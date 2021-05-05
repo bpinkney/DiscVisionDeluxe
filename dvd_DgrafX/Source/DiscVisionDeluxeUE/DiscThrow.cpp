@@ -123,25 +123,25 @@ void ADiscThrow::Tick(const float DeltaTime)
     // (They have no concept of our locally defined 'velocity vector' frame)
     // Note this is column major, so it is really the transpose of what you see here.
     Eigen::Matrix3d Rdw; 
-    Rdw << disc_state.disc_orient_y_vect[0], disc_state.disc_orient_x_vect[0], disc_state.disc_orient_z_vect[0],
-           disc_state.disc_orient_y_vect[1], disc_state.disc_orient_x_vect[1], disc_state.disc_orient_z_vect[1],
-           disc_state.disc_orient_y_vect[2], disc_state.disc_orient_x_vect[2], disc_state.disc_orient_z_vect[2];
+    Rdw << disc_state.disc_orient_x_vect[0], disc_state.disc_orient_y_vect[0], disc_state.disc_orient_z_vect[0],
+           disc_state.disc_orient_x_vect[1], disc_state.disc_orient_y_vect[1], disc_state.disc_orient_z_vect[1],
+           disc_state.disc_orient_x_vect[2], disc_state.disc_orient_y_vect[2], disc_state.disc_orient_z_vect[2];
 
     // convert to quaternion
     // define as a simple float, row-major matrix so we can use R2eul
     // Since unreal defines the LOCAL Z with the wrong sign, we flip the 'disc_orient_z_vect' normal here
     float MAT3X3(Rdw_float) = 
     {
-      disc_state.disc_orient_y_vect[0], disc_state.disc_orient_y_vect[1], disc_state.disc_orient_y_vect[2],
       disc_state.disc_orient_x_vect[0], disc_state.disc_orient_x_vect[1], disc_state.disc_orient_x_vect[2],
-                    disc_state.disc_orient_z_vect[0],               disc_state.disc_orient_z_vect[1],               disc_state.disc_orient_z_vect[2]
+      disc_state.disc_orient_y_vect[0], disc_state.disc_orient_y_vect[1], disc_state.disc_orient_y_vect[2],
+      disc_state.disc_orient_z_vect[0], disc_state.disc_orient_z_vect[1], disc_state.disc_orient_z_vect[2]
     };
 
     float MAT3X3(Rwd_float) = 
     {
-      disc_state.disc_orient_y_vect[0], disc_state.disc_orient_x_vect[0],                disc_state.disc_orient_z_vect[0],
-      disc_state.disc_orient_y_vect[1], disc_state.disc_orient_x_vect[1],                disc_state.disc_orient_z_vect[1],
-      disc_state.disc_orient_y_vect[2], disc_state.disc_orient_x_vect[2],                disc_state.disc_orient_z_vect[2]
+      disc_state.disc_orient_x_vect[0], disc_state.disc_orient_y_vect[0], disc_state.disc_orient_z_vect[0],
+      disc_state.disc_orient_x_vect[1], disc_state.disc_orient_y_vect[1], disc_state.disc_orient_z_vect[1],
+      disc_state.disc_orient_x_vect[2], disc_state.disc_orient_y_vect[2], disc_state.disc_orient_z_vect[2]
     };
 
     float VEC3(eulers_zyx);
