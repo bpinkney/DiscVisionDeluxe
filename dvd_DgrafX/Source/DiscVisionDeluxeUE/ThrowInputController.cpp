@@ -18,19 +18,19 @@ ADiscThrow *sv_latest_discthrow;
 // Sets default values
 AThrowInputController::AThrowInputController()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+   // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+  PrimaryActorTick.bCanEverTick = true;
 
 }
 
 // Called when the game starts or when spawned
 void AThrowInputController::BeginPlay()
 {
-	Super::BeginPlay();
+  Super::BeginPlay();
 
-	if(DVISEST_INTERFACE_ENABLED)
-		DvisEstInterface_StartProcess();
-	
+  if(DVISEST_INTERFACE_ENABLED)
+    DvisEstInterface_StartProcess();
+  
 }
 
 // gets called when Unreal ends play on this actor pre exit
@@ -47,9 +47,9 @@ void AThrowInputController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 // Called every frame
 void AThrowInputController::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+  Super::Tick(DeltaTime);
 
-	// dvd_DvisEst Interface
+  // dvd_DvisEst Interface
   if(DVISEST_INTERFACE_ENABLED)
   {
 
@@ -74,9 +74,9 @@ void AThrowInputController::Tick(float DeltaTime)
 
 void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_init_state)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Perform Captured throw!."));
+  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Perform Captured throw!."));
 
-	UWorld* World = GetWorld();
+  UWorld* World = GetWorld();
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = GetOwner();
     SpawnParams.Instigator = GetInstigator();
@@ -101,28 +101,34 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
           // Maybe you can fix this one up Mike? for now I just have random -1s scattered
 
           // perform a new throw!
-	 //DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
+   //DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
           
+    const bool use_mikes_test_throw = true;
 
-            disc_throw->new_captured_throw(static_cast<int>(new_disc_init_state->discmold),
-            FVector(0,0,0),FVector(30,10,5),-0.2,0.1,0,0);
+    // Mike's test throw
+    if(use_mikes_test_throw)
+    {
+      disc_throw->new_captured_throw(static_cast<int>(new_disc_init_state->discmold),
+      FVector(0,0,0),FVector(10.0,0.0,0.0),0.0,0.6,0.0,0);
+    }
+    else
+    {
+      disc_throw->new_captured_throw(
+        static_cast<int>(new_disc_init_state->discmold),   //disc_mold_enum goes here, static cast it to int though because it is passing through uproperties first. it will get cast back when it hits dfisx
+        FVector(
+          100 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here
+          100 * new_disc_init_state->lin_pos_xyz[1], // negative for some reason? no idea what the world frame is here
+          100 * new_disc_init_state->lin_pos_xyz[2]), // just zero this until the UI is sorted
+        FVector(
+          1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
+          1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
+               new_disc_init_state->lin_vel_xyz[2]),
+        1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
+        1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
+               new_disc_init_state->ang_vel_hps[2],
+               new_disc_init_state->wobble);
+    }
 
-/*
-          disc_throw->new_captured_throw(
-            static_cast<int>(new_disc_init_state->discmold),   //disc_mold_enum goes here, static cast it to int though because it is passing through uproperties first. it will get cast back when it hits dfisx
-            FVector(
-              100 * new_disc_init_state->lin_pos_xyz[0], // negative for some reason? no idea what the world frame is here
-              100 * new_disc_init_state->lin_pos_xyz[1], // negative for some reason? no idea what the world frame is here
-              100 * new_disc_init_state->lin_pos_xyz[2]), // just zero this until the UI is sorted
-            FVector(
-              1 * new_disc_init_state->lin_vel_xyz[0], // negative for some reason? no idea what the world frame is here
-              1 * new_disc_init_state->lin_vel_xyz[1], // negative for some reason? no idea what the world frame is here
-                   new_disc_init_state->lin_vel_xyz[2]),
-            1 *   new_disc_init_state->ang_pos_hps[0], // negative for some reason? no idea what the world frame is here
-            1 *   new_disc_init_state->ang_pos_hps[1], // negative for some reason? no idea what the world frame is here
-                   new_disc_init_state->ang_vel_hps[2],
-                   new_disc_init_state->wobble);
-*/
 }
 
 
@@ -131,7 +137,7 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
 // This portable block should be able to be moved to any high-level Unreal Object later
 void AThrowInputController::DvisEstInterface_StartProcess()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("VisEst Process Start"));
+  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("VisEst Process Start"));
   if (!DvisEstInterfaceThread && FPlatformProcess::SupportsMultithreading())
   {
     // Run the thread indefinitely

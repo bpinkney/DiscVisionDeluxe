@@ -55,9 +55,14 @@ namespace DfisX
         throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
         throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
-        throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
-        throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
-        throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+        throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
+        throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
+        throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
+
+        //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -2, 2);
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_impulses_Nm[2];
 
         throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
         throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
@@ -70,9 +75,9 @@ namespace DfisX
         //throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
         //throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
-        //throw_container->current_disc_state.disc_orientation[0]  = throw_container->collision_input.disc_rotation[0];
-        //throw_container->current_disc_state.disc_orientation[1]  = throw_container->collision_input.disc_rotation[1];
-        //throw_container->current_disc_state.disc_orientation[2]  = throw_container->collision_input.disc_rotation[2];
+        //throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
+        //throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
+        //throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
 
         // Better idea since it prevents propagation from JUST collisions, however, harder to sync timing wise
         throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
@@ -232,7 +237,7 @@ namespace DfisX
     //create the starting d state
     throw_container->current_disc_state.disc_location = thrown_disc_position;
     throw_container->current_disc_state.disc_velocity = thrown_disc_velocity;
-    throw_container->current_disc_state.disc_orientation = thrown_disc_orientation;
+    throw_container->current_disc_state.disc_orient_z_vect = thrown_disc_orientation;
     throw_container->current_disc_state.disc_rotation = thrown_disc_rotation;
     throw_container->current_disc_state.sim_state = SIM_STATE_STARTED;  
     throw_container->current_disc_state.forces_state = {};
@@ -414,7 +419,7 @@ namespace DfisX
 
       Eigen::Vector3d new_thrown_disc_orientation = {new_x_component, new_y_component, new_z_component};
 
-      throw_container->current_disc_state.disc_orientation = new_thrown_disc_orientation;
+      throw_container->current_disc_state.disc_orient_z_vect = new_thrown_disc_orientation;
     }
 
     throw_container->disc_object = disc_object_array[disc_mold];
