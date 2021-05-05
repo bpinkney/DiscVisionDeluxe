@@ -17,10 +17,10 @@
 #include "UI/RangeHUD.h"
 
 
-/////decent values 500,50,25
+/////decent values 500,100,35
 #define end_throw_camera_velocity_cutoff 500.0
-#define kill_control_velocity_cutoff     50.0
-#define end_throw_velocity_cutoff        25.0
+#define kill_control_velocity_cutoff     100.0
+#define end_throw_velocity_cutoff        35.0
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
