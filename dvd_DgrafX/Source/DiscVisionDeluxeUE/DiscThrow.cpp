@@ -574,7 +574,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 4509;
+  const int changevar = 7462;
 
   if
   (
