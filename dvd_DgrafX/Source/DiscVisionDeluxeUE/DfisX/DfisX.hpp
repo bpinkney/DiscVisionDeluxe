@@ -7,7 +7,7 @@
 #define d_statistics    throw_container->disc_statistics
 #define d_velocity      throw_container->current_disc_state.disc_velocity
 #define d_location      throw_container->current_disc_state.disc_location
-#define d_orientation   throw_container->current_disc_state.disc_orientation
+#define d_orientation   throw_container->current_disc_state.disc_orient_z_vect
 #define d_state         throw_container->current_disc_state
 #define d_array         throw_container->disc_state_array
 #define p_state         throw_container->previous_disc_state
@@ -101,8 +101,6 @@ namespace DfisX
 
     /////////////aero holders
 
-    Eigen::Vector3d disc_x_unit_vector;
-    Eigen::Vector3d disc_y_unit_vector;
     Eigen::Vector3d disc_lift_unit_vector;
     Eigen::Vector3d disc_velocity_unit_vector;
     Eigen::Vector3d lift_force_vector;
@@ -153,7 +151,9 @@ namespace DfisX
     Eigen::Vector3d disc_location;      //in meters
     Eigen::Vector3d disc_velocity;      //in meters per second
     Eigen::Vector3d disc_acceleration;  //in meters per second squared (this is just here for logging for now)
-    Eigen::Vector3d disc_orientation;   //orientation vector is the normal of the plane inscribed by the disc
+    Eigen::Vector3d disc_orient_z_vect; // projected from the top of the disc normal                  (orthogonal to disc_orient_x_vect and disc_orient_y_vect)
+    Eigen::Vector3d disc_orient_x_vect; // projected along the disc plane in the direction of the airspeed vector (orthogonal to disc_orient_z_vect and disc_orient_y_vect)
+    Eigen::Vector3d disc_orient_y_vect; // projected along the disc plane to the right of disc_orient_x_vect (orthogonal to disc_orient_z_vect and disc_orient_x_vect)
     double disc_pitching_vel;           //radians_per_second (just for pitching moment), for now we'll try to track this despite the frame changing slightly every time[k]
     double disc_pitching_accel;         //radians_per_second squared (just for pitching moment), for now we'll try to track this despite the frame changing slightly every time[k]
     double disc_rolling_vel;            //radians_per_second (just for rolling moment), for now we'll try to track this despite the frame changing slightly every time[k]

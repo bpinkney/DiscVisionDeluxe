@@ -35,7 +35,7 @@ namespace DfisX
     {
         Wp = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_x) / (Iz * d_state.disc_rotation_vel);
         // compute resulting angular torque from applied pitching moment vel
-        const double Wp_d  = (Wp - d_state.disc_rolling_vel) / MAX(dt, CLOSE_TO_ZERO);
+        const double Wp_d  = (Wp - d_state.disc_pitching_vel) / MAX(dt, CLOSE_TO_ZERO);
         d_forces.gyro_torque_y = Wp_d * Ix;
     }    
 
@@ -45,7 +45,7 @@ namespace DfisX
     // Mike: what do we need this for? is this actually the roll change??
     d_statistics.disc_cumulative_roll += RAD_TO_DEG(Wp) * dt;
 
-    //always do this after affecting disc_orientation
-    make_unit_vector(d_state.disc_orientation);
+    //always do this after affecting disc_orient_z_vect
+    make_unit_vector(d_state.disc_orient_z_vect);
   }
 }

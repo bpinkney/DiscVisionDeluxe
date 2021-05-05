@@ -395,7 +395,7 @@ static void rotation_between_vecs_to_mat3(float m[3][3], const float v1[3], cons
     angle_sin = normalize_v3(axis);
     angle_cos = dot_v3v3(v1, v2);
 
-    if (angle_sin > FLT_EPSILON) {
+    if (angle_sin > CLOSE_TO_ZERO) {
 axis_calc:
         axis_angle_normalized_to_mat3_ex(m, axis, angle_sin, angle_cos);
     }
