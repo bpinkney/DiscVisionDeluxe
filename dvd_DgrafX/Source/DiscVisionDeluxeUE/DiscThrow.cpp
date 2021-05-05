@@ -359,11 +359,6 @@ void ADiscThrow::new_throw_world_frame(
 
 /////////        Initial release Stats          /////////////////////////////
 
-<<<<<<< HEAD
-    //these 3 arent for hud 
-=======
-  	//these arent for hud display
->>>>>>> origin/master
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
     initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orient_z_vect[0],throw_container.current_disc_state.disc_orient_z_vect[1],throw_container.current_disc_state.disc_orient_z_vect[2]);
@@ -578,7 +573,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 2444;
+  const int changevar = 1760;
 
   if
   (
