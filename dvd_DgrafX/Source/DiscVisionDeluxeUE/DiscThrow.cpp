@@ -16,6 +16,11 @@
 
 #include "UI/RangeHUD.h"
 
+
+/////decent values 500,50,25
+#define end_throw_camera_velocity_cutoff 500.0
+#define kill_control_velocity_cutoff     50.0
+#define end_throw_velocity_cutoff        25.0
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
@@ -254,8 +259,18 @@ void ADiscThrow::Tick(const float DeltaTime)
     ptr_flight_log->log_position(DeltaTime);
     
 
-    //end ff stuff
-    //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Stimulating!"));
+    /////////////velocity cutoff event state checks/////////////////////////////////
+    //
+/*
+TODO: nest these once good values are determined
+*/
+    GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
+    GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
+    
+    if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)                             end_throw_simulation();
+    if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
+    if (disc_velocity.Size() < end_throw_camera_velocity_cutoff) ptr_disc_projectile->end_of_throw_camera();
+
   }
 }
 
