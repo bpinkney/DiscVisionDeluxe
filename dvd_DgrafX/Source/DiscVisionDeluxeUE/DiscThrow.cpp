@@ -15,7 +15,6 @@
 #include "Daero.hpp"
 
 #include "UI/RangeHUD.h"
- 
 
   // Sets default values
 ADiscThrow::ADiscThrow()
@@ -146,7 +145,7 @@ void ADiscThrow::Tick(const float DeltaTime)
 
     float VEC3(eulers_zyx);
     //Rxyz2eulxyz(Rdw_float, eulers_xyz);
-    Rzyx2eulxyz(Rdw_float, eulers_zyx);
+    Rzyx2eulxyz(Rwd_float, eulers_zyx);
 
     // take negative rotations (except for Z?)
     float eul_zyx_deg[3] = {RAD_TO_DEG(eulers_zyx[0]), RAD_TO_DEG(eulers_zyx[1]), RAD_TO_DEG(eulers_zyx[2])};
@@ -191,18 +190,32 @@ void ADiscThrow::Tick(const float DeltaTime)
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(spin_pos_body[2])));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(spin_pos_world_Z)));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-    FVector disc_rotation_forward_vector = FVector (disc_state.disc_orient_x_vect[0],disc_state.disc_orient_x_vect[1],disc_state.disc_orient_x_vect[2]);
-    FVector disc_rotation_side_vector = FVector (disc_state.disc_orient_y_vect[0],disc_state.disc_orient_y_vect[1],disc_state.disc_orient_y_vect[2]);
-    
-    float roll_angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(disc_rotation_side_vector, FVector(0,0,1))));
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll_angle-90)));
+
+    // This is another way to compute these eulers, keep this code here for easy checking of errors!
+    //FVector disc_rotation_forward_vector = FVector (disc_state.disc_orient_x_vect[0],disc_state.disc_orient_x_vect[1],disc_state.disc_orient_x_vect[2]);
+    //FVector disc_rotation_side_vector = FVector (disc_state.disc_orient_y_vect[0],disc_state.disc_orient_y_vect[1],disc_state.disc_orient_y_vect[2]);    
+    //float roll_angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(disc_rotation_side_vector, FVector(0,0,1))));
+    //FRotator disc_rotation = disc_rotation_forward_vector.Rotation();
+    //disc_rotation.Roll = roll_angle-90;
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(disc_rotation.Roll)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(disc_rotation.Pitch)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(disc_rotation.Yaw)));*/
+
+    FRotator disc_rotation = {0,0,0};
+
+    // Roll and pitch are negative due to the swapped Z axis!
+    disc_rotation.Roll  = -eul_zyx_deg[2];
+    disc_rotation.Pitch = -eul_zyx_deg[1];
+    disc_rotation.Yaw   = eul_zyx_deg[0]; 
+
+/*      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(-eul_zyx_deg[2])));
+      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(-eul_zyx_deg[1])));
+      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[0])));*/
+          
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString(" "))); 
 
     
-    FRotator disc_rotation = disc_rotation_forward_vector.Rotation();
-    disc_rotation.Roll = roll_angle-90;
-    // args seem to be -ve roll, yaw, pitch
-    //FRotator disc_rotation = {eul_zyx_deg[1], (float)0.0, eul_zyx_deg[2]};//{pitch,roll,yaw};//{(float)-eul_xyz_deg[0], (float)0.0, (float)eul_xyz_deg[1]};//{pitch,roll,yaw};
-
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
 
     FVector orientationtestoutput = FVector (ii,jj,kk);
@@ -277,8 +290,8 @@ void ADiscThrow::new_captured_throw(
   /////////////////Rotation
   //
   FRotator character_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-  FRotator disc_rotation = FRotator(RAD_TO_DEG(captured_world_pitch), RAD_TO_DEG(character_rotation.Yaw,captured_world_roll)); ///this is a vector just for the transform function
-  FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0,0,1));
+  FRotator disc_rotation = FRotator(RAD_TO_DEG(captured_world_pitch), character_rotation.Yaw, RAD_TO_DEG(captured_world_roll)); ///this is a vector just for the transform function
+  FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0.0, 0.0, 1.0));
 
 
   ///////////////////Position
@@ -492,7 +505,7 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
   	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
-  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel/6.28*60;
+  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel / (M_PI*2.0) * 60.0;
     
 
     //find the distance from the intial velocity vector 
@@ -559,7 +572,10 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_friction,
   const TArray<float> hit_restitution)       
 
-  {
+{
+
+  // change this unused variable randomly using sed to force unreal to rebuild
+  const int changevar = 5778;
 
   if
   (
