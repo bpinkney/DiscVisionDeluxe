@@ -347,7 +347,7 @@ void ADiscThrow::new_throw_world_frame(
 
 /////////        Initial release Stats          /////////////////////////////
 
-  	//these 3 arent for hud 
+  	//these arent for hud display
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
     initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orientation[0],throw_container.current_disc_state.disc_orientation[1],throw_container.current_disc_state.disc_orientation[2]);
@@ -356,7 +356,7 @@ void ADiscThrow::new_throw_world_frame(
     initial_release_stats.initial_direction_vector.Normalize();
     initial_release_stats.initial_location_vector.Normalize();
     initial_release_stats.initial_orientation_vector.Normalize();
-    //end these 3 arent for hud 
+    //end these arent for hud display
 
     //initial_speed
   	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
