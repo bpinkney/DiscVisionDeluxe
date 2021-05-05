@@ -29,7 +29,7 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void PopulateHUD();
+	void PopulateHUD(ADiscThrow* ptr_disc_throw);
 
 	void UpdateHUD();
 

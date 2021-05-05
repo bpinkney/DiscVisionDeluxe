@@ -16,17 +16,14 @@ void URangeUserWidget::NativeConstruct()
 }
 
 // Takes in params from new Throw, populates the HUD. Intended for initial population.
-void URangeUserWidget::PopulateHUD()
+void URangeUserWidget::PopulateHUD(ADiscThrow* ptr_disc_throw)
 {
 	ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	if (IsValid(RangeHUD)) 
 	{
-		ADiscThrow* latest = nullptr;
-		RangeHUD->GetLatestDiscThrow(latest);
-		if (IsValid(latest))
-		{
-			release_stats = latest->get_initial_release_stats();
-			cumulative_stats = latest->get_flight_cumulative_stats();
+
+			release_stats = ptr_disc_throw->get_initial_release_stats();
+			cumulative_stats = ptr_disc_throw->get_flight_cumulative_stats();
 
 
 
@@ -45,7 +42,7 @@ void URangeUserWidget::PopulateHUD()
 			releasenoseangle->SetText(FText::FromString(FString::SanitizeFloat(round(release_stats->initial_nose_up), 2)));
 			releaseloft->SetText(FText::FromString(FString::SanitizeFloat(round(release_stats->initial_loft), 2)));
 			releasedirection->SetText(FText::FromString(FString::SanitizeFloat(release_stats->initial_direction, 2)));
-		}
+		
 
 	}
 }

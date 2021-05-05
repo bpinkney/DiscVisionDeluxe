@@ -322,7 +322,7 @@ void ADiscThrow::new_throw_world_frame(
   const float thrown_disc_radians_per_second, 
   const float thrown_disc_wobble)
 {
-  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("is happening"));
+  
   spawn_disc_and_follow_flight();
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100.0,thrown_disc_position.Y/100.0,thrown_disc_position.Z/100.0);
@@ -359,7 +359,11 @@ void ADiscThrow::new_throw_world_frame(
 
 /////////        Initial release Stats          /////////////////////////////
 
+<<<<<<< HEAD
     //these 3 arent for hud 
+=======
+  	//these arent for hud display
+>>>>>>> origin/master
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
     initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orient_z_vect[0],throw_container.current_disc_state.disc_orient_z_vect[1],throw_container.current_disc_state.disc_orient_z_vect[2]);
@@ -368,7 +372,7 @@ void ADiscThrow::new_throw_world_frame(
     initial_release_stats.initial_direction_vector.Normalize();
     initial_release_stats.initial_location_vector.Normalize();
     initial_release_stats.initial_orientation_vector.Normalize();
-    //end these 3 arent for hud 
+    //end these arent for hud display
 
     //initial_speed
     initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
