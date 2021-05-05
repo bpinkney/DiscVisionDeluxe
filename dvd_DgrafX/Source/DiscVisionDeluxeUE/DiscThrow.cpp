@@ -359,11 +359,11 @@ void ADiscThrow::new_throw_world_frame(
 
 /////////        Initial release Stats          /////////////////////////////
 
-  	//these 3 arent for hud 
+    //these 3 arent for hud 
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
     initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orient_z_vect[0],throw_container.current_disc_state.disc_orient_z_vect[1],throw_container.current_disc_state.disc_orient_z_vect[2]);
-	  initial_release_stats.initial_polarity = copysignf(1.0, throw_container.current_disc_state.disc_rotation_vel);
+    initial_release_stats.initial_polarity = copysignf(1.0, throw_container.current_disc_state.disc_rotation_vel);
 
     initial_release_stats.initial_direction_vector.Normalize();
     initial_release_stats.initial_location_vector.Normalize();
@@ -371,24 +371,24 @@ void ADiscThrow::new_throw_world_frame(
     //end these 3 arent for hud 
 
     //initial_speed
-  	initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
+    initial_release_stats.initial_speed = throw_container.current_disc_state.disc_velocity.norm();
 
     //inital_spin_rate
     initial_release_stats.initial_spin_rate = throw_container.current_disc_state.disc_rotation_vel / (M_PI * 2.0) * 60.0;
 
-  	//initial_spin_percent
-  	float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
-  	initial_release_stats.initial_spin_percent = throw_container.current_disc_state.disc_rotation_vel / theoretical_max_spin_speed * 100.0;
+    //initial_spin_percent
+    float theoretical_max_spin_speed = initial_release_stats.initial_speed / throw_container.disc_object.radius;
+    initial_release_stats.initial_spin_percent = throw_container.current_disc_state.disc_rotation_vel / theoretical_max_spin_speed * 100.0;
 
-  	//initial_direction
-  	initial_release_stats.initial_direction = 0;
+    //initial_direction
+    initial_release_stats.initial_direction = 0;
 
-  	//initial_loft
-  	float vertical_speed   = throw_container.current_disc_state.disc_velocity [2];
-	  float horizontal_speed = sqrt (throw_container.current_disc_state.disc_velocity [0] * throw_container.current_disc_state.disc_velocity [0] +throw_container.current_disc_state.disc_velocity [1] * throw_container.current_disc_state.disc_velocity [1]);
-  	initial_release_stats.initial_loft = RAD_TO_DEG(atan(vertical_speed/horizontal_speed));
+    //initial_loft
+    float vertical_speed   = throw_container.current_disc_state.disc_velocity [2];
+    float horizontal_speed = sqrt (throw_container.current_disc_state.disc_velocity [0] * throw_container.current_disc_state.disc_velocity [0] +throw_container.current_disc_state.disc_velocity [1] * throw_container.current_disc_state.disc_velocity [1]);
+    initial_release_stats.initial_loft = RAD_TO_DEG(atan(vertical_speed/horizontal_speed));
 
-  	//initial_hyzer
+    //initial_hyzer
     //directions as unit vectors
     initial_release_stats.initial_disc_right_vector = initial_release_stats.initial_direction_vector ^ FVector (0,0,1);
     FVector velocity_up_vector = initial_release_stats.initial_disc_right_vector ^ initial_release_stats.initial_direction_vector;
@@ -397,19 +397,19 @@ void ADiscThrow::new_throw_world_frame(
     initial_release_stats.initial_disc_right_vector = (initial_release_stats.initial_orientation_vector | initial_release_stats.initial_disc_right_vector) * initial_release_stats.initial_disc_right_vector;
     velocity_up_vector = (initial_release_stats.initial_orientation_vector | velocity_up_vector) * velocity_up_vector;
 
-  	initial_release_stats.initial_hyzer = RAD_TO_DEG(atan2(initial_release_stats.initial_disc_right_vector.Size() , velocity_up_vector.Size()));
+    initial_release_stats.initial_hyzer = RAD_TO_DEG(atan2(initial_release_stats.initial_disc_right_vector.Size() , velocity_up_vector.Size()));
     /*
      GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(initial_release_stats.initial_orientation_vector[1])));
  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(disc_right_vector.Size())));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(velocity_up_vector.Size())));
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(initial_release_stats.initial_hyzer)));
 */
-  	//initial_nose_up
-  	initial_release_stats.initial_nose_up = RAD_TO_DEG(throw_container.current_disc_state.forces_state.aoar);
+    //initial_nose_up
+    initial_release_stats.initial_nose_up = RAD_TO_DEG(throw_container.current_disc_state.forces_state.aoar);
 
-  	//initial_wobble
-  	initial_release_stats.initial_wobble = 0;
-  	
+    //initial_wobble
+    initial_release_stats.initial_wobble = 0;
+    
 /////////////     end Initial release Stats            ////////////////////////////////////
 }
 
@@ -450,9 +450,9 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
-	float set_hue = 0.00;
-	enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
-	bool set_rainbow = true;
+  float set_hue = 0.00;
+  enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
+  bool set_rainbow = true;
 
     ptr_follow_flight->init (set_hue,set_shape,set_rainbow);
     ////end Follow flight spawn and init
@@ -502,18 +502,18 @@ void ADiscThrow::generate_flight_cumulative_stats()
     }
     
     
-	flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
-  	flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
-  	flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel / (M_PI*2.0) * 60.0;
+  flight_cumulative_stats.current_distance   = (throw_container.disc_state_array[0].disc_location   -   throw_container.current_disc_state.disc_location).norm();
+    flight_cumulative_stats.current_speed      = throw_container.current_disc_state.disc_velocity.norm();
+    flight_cumulative_stats.current_spin       = throw_container.current_disc_state.disc_rotation_vel / (M_PI*2.0) * 60.0;
     
 
     //find the distance from the intial velocity vector 
-  	FVector n = initial_release_stats.initial_direction_vector;
-  	n.Normalize();
-  	FVector a = initial_release_stats.initial_location_vector;
-  	FVector p = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
-  	FVector a_p = a - p;
-  	FVector tf_vector = a_p - (FVector::DotProduct(a_p,n))*n;
+    FVector n = initial_release_stats.initial_direction_vector;
+    n.Normalize();
+    FVector a = initial_release_stats.initial_location_vector;
+    FVector p = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
+    FVector a_p = a - p;
+    FVector tf_vector = a_p - (FVector::DotProduct(a_p,n))*n;
 
     //find the polarity
     FVector fade_vector = initial_release_stats.initial_disc_right_vector * initial_release_stats.initial_polarity;
@@ -525,9 +525,9 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 
 
-  	
+    
 
-  	flight_cumulative_stats.current_wobble     = 0; ///will add later
+    flight_cumulative_stats.current_wobble     = 0; ///will add later
 
 
 
@@ -574,7 +574,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 7462;
+  const int changevar = 2444;
 
   if
   (
@@ -654,11 +654,11 @@ void ADiscThrow::on_collision(
   FVector udf_ang_vel = FVector(ang_vel[0], ang_vel[1], ang_vel[2]);
   log_string(udf_ang_vel.ToString());
 
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
+/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(world_ang_vel_radps_rpy).c_str()));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[0])));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[2])));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(ang_vel[2])));*/
 
   // 1. derive torque from the ang vel DELTA:
   const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
