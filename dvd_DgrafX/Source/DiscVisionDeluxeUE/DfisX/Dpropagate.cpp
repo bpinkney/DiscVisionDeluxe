@@ -32,8 +32,8 @@ namespace DfisX
     d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0];
     d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1];
     // use inertia here to compute the resulting rotation accel (only about 'rolling' axis for now)
-    d_state.disc_rolling_accel  = d_forces.net_torque_y / Ix;
-    d_state.disc_pitching_accel = d_forces.net_torque_x / Iy;
+    d_state.disc_rolling_accel  = d_forces.net_torque_x / Ix; // roll about X axis (roll to the right positive relative to airspeed vector)
+    d_state.disc_pitching_accel = d_forces.net_torque_y / Iy; // pitch about Y axis (nose up positive realtive to airspeed vect)
 
     //// Spin/Rotation moment
     d_forces.net_torque_z = d_forces.aero_torque_z + d_forces.collision_torque_xyz[2];
@@ -53,13 +53,12 @@ namespace DfisX
 
     //// Pitching axis propagation
     // using disc unit vectors to set rotational change only for the rolling axis
-    d_forces.gyro_orientation_delta = -d_forces.disc_x_unit_vector * tan(d_state.disc_rolling_vel  * dt + d_state.disc_rolling_accel  * dt2);
-    //d_forces.gyro_orientation_delta_pitch =  d_forces.disc_y_unit_vector * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2);
+    d_forces.gyro_orientation_delta = -d_state.disc_orient_y_vect * tan(d_state.disc_pitching_vel  * dt + d_state.disc_pitching_accel  * dt2);
     // propagate the normal vector using the last rolling vel and accel
     // ADD ON PITCH NOW TOO!
-    d_state.disc_orientation += d_forces.gyro_orientation_delta + (d_forces.disc_y_unit_vector * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2));
+    d_state.disc_orient_z_vect += d_forces.gyro_orientation_delta + (d_state.disc_orient_x_vect * tan(d_state.disc_rolling_vel * dt + d_state.disc_rolling_accel * dt2));
     // re-normalize unit vector
-    d_state.disc_orientation /= d_state.disc_orientation.norm();
+    d_state.disc_orient_z_vect /= d_state.disc_orient_z_vect.norm();
     // update rolling vel for next timestep
     // remember that this is slightly wrong, wince the frame will change by time[k+1], but probably not enough to matter for now
     d_state.disc_rolling_vel  += d_state.disc_rolling_accel   * dt;

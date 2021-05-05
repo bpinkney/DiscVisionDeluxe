@@ -66,9 +66,9 @@ void ADiscThrow::Tick(const float DeltaTime)
     float zz = disc_state.disc_location[2]*100;
     FVector disc_position = {xx,yy,zz};
 
-    float ii = disc_state.disc_orientation[0];
-    float jj = disc_state.disc_orientation[1];
-    float kk = disc_state.disc_orientation[2];
+    float ii = disc_state.disc_orient_z_vect[0];
+    float jj = disc_state.disc_orient_z_vect[1];
+    float kk = disc_state.disc_orient_z_vect[2];
 
     float pitch = RAD_TO_DEG(-atan2(ii,kk));
     float yaw   = RAD_TO_DEG( atan2(jj,kk));
@@ -123,25 +123,25 @@ void ADiscThrow::Tick(const float DeltaTime)
     // (They have no concept of our locally defined 'velocity vector' frame)
     // Note this is column major, so it is really the transpose of what you see here.
     Eigen::Matrix3d Rdw; 
-    Rdw << disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0], disc_state.disc_orientation[0],
-           disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1], disc_state.disc_orientation[1],
-           disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2], disc_state.disc_orientation[2];
+    Rdw << disc_state.disc_orient_y_vect[0], disc_state.disc_orient_x_vect[0], disc_state.disc_orient_z_vect[0],
+           disc_state.disc_orient_y_vect[1], disc_state.disc_orient_x_vect[1], disc_state.disc_orient_z_vect[1],
+           disc_state.disc_orient_y_vect[2], disc_state.disc_orient_x_vect[2], disc_state.disc_orient_z_vect[2];
 
     // convert to quaternion
     // define as a simple float, row-major matrix so we can use R2eul
-    // Since unreal defines the LOCAL Z with the wrong sign, we flip the 'disc_orientation' normal here
+    // Since unreal defines the LOCAL Z with the wrong sign, we flip the 'disc_orient_z_vect' normal here
     float MAT3X3(Rdw_float) = 
     {
-      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_x_unit_vector[2],
-      disc_state.forces_state.disc_y_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[2],
-                    disc_state.disc_orientation[0],               disc_state.disc_orientation[1],               disc_state.disc_orientation[2]
+      disc_state.disc_orient_y_vect[0], disc_state.disc_orient_y_vect[1], disc_state.disc_orient_y_vect[2],
+      disc_state.disc_orient_x_vect[0], disc_state.disc_orient_x_vect[1], disc_state.disc_orient_x_vect[2],
+                    disc_state.disc_orient_z_vect[0],               disc_state.disc_orient_z_vect[1],               disc_state.disc_orient_z_vect[2]
     };
 
     float MAT3X3(Rwd_float) = 
     {
-      disc_state.forces_state.disc_x_unit_vector[0], disc_state.forces_state.disc_y_unit_vector[0],                disc_state.disc_orientation[0],
-      disc_state.forces_state.disc_x_unit_vector[1], disc_state.forces_state.disc_y_unit_vector[1],                disc_state.disc_orientation[1],
-      disc_state.forces_state.disc_x_unit_vector[2], disc_state.forces_state.disc_y_unit_vector[2],                disc_state.disc_orientation[2]
+      disc_state.disc_orient_y_vect[0], disc_state.disc_orient_x_vect[0],                disc_state.disc_orient_z_vect[0],
+      disc_state.disc_orient_y_vect[1], disc_state.disc_orient_x_vect[1],                disc_state.disc_orient_z_vect[1],
+      disc_state.disc_orient_y_vect[2], disc_state.disc_orient_x_vect[2],                disc_state.disc_orient_z_vect[2]
     };
 
     float VEC3(eulers_zyx);
@@ -191,8 +191,8 @@ void ADiscThrow::Tick(const float DeltaTime)
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(spin_pos_body[2])));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(spin_pos_world_Z)));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-    FVector disc_rotation_forward_vector = FVector (disc_state.forces_state.disc_y_unit_vector[0],disc_state.forces_state.disc_y_unit_vector[1],disc_state.forces_state.disc_y_unit_vector[2]);
-    FVector disc_rotation_side_vector = FVector (disc_state.forces_state.disc_x_unit_vector[0],disc_state.forces_state.disc_x_unit_vector[1],disc_state.forces_state.disc_x_unit_vector[2]);
+    FVector disc_rotation_forward_vector = FVector (disc_state.disc_orient_x_vect[0],disc_state.disc_orient_x_vect[1],disc_state.disc_orient_x_vect[2]);
+    FVector disc_rotation_side_vector = FVector (disc_state.disc_orient_y_vect[0],disc_state.disc_orient_y_vect[1],disc_state.disc_orient_y_vect[2]);
     
     float roll_angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(disc_rotation_side_vector, FVector(0,0,1))));
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(roll_angle-90)));
@@ -277,7 +277,7 @@ void ADiscThrow::new_captured_throw(
   /////////////////Rotation
   //
   FRotator character_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-  FRotator disc_rotation = FRotator(captured_world_pitch*57.3,character_rotation.Yaw,captured_world_roll*57.3); ///this is a vector just for the transform function
+  FRotator disc_rotation = FRotator(RAD_TO_DEG(captured_world_pitch), RAD_TO_DEG(character_rotation.Yaw,captured_world_roll)); ///this is a vector just for the transform function
   FVector thrown_disc_orientation = disc_rotation.RotateVector(FVector(0,0,1));
 
 
@@ -350,7 +350,7 @@ void ADiscThrow::new_throw_world_frame(
   	//these 3 arent for hud 
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
-    initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orientation[0],throw_container.current_disc_state.disc_orientation[1],throw_container.current_disc_state.disc_orientation[2]);
+    initial_release_stats.initial_orientation_vector = FVector (throw_container.current_disc_state.disc_orient_z_vect[0],throw_container.current_disc_state.disc_orient_z_vect[1],throw_container.current_disc_state.disc_orient_z_vect[2]);
 	  initial_release_stats.initial_polarity = copysignf(1.0, throw_container.current_disc_state.disc_rotation_vel);
 
     initial_release_stats.initial_direction_vector.Normalize();
@@ -560,17 +560,6 @@ void ADiscThrow::on_collision(
   const TArray<float> hit_restitution)       
 
   {
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,FString::SanitizeFloat(hit_friction[0]));
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,ang_vel_delta.ToString());
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" Ang vel delta disc frame:"));
-//ptr_disc_projectile->kill_control_with_delay();
-
-  // if we fall below 10 rad/s (~100rpm) or 2 m/s?, relinquish control to Unreal completely
-  /*if(
-    abs(throw_container.current_disc_state.disc_rotation_vel) < 10
-    ||
-    throw_container.current_disc_state.disc_velocity.norm() < 2.0
-  )*/
 
   if
   (
@@ -620,9 +609,9 @@ void ADiscThrow::on_collision(
 
   // Note this is column major, so it is really the transpose of what you see here.
   Eigen::Matrix3d Rwd; 
-  Rwd << throw_container.current_disc_state.forces_state.disc_x_unit_vector[0], throw_container.current_disc_state.forces_state.disc_y_unit_vector[0], throw_container.current_disc_state.disc_orientation[0],
-         throw_container.current_disc_state.forces_state.disc_x_unit_vector[1], throw_container.current_disc_state.forces_state.disc_y_unit_vector[1], throw_container.current_disc_state.disc_orientation[1],
-         throw_container.current_disc_state.forces_state.disc_x_unit_vector[2], throw_container.current_disc_state.forces_state.disc_y_unit_vector[2], throw_container.current_disc_state.disc_orientation[2];
+  Rwd << throw_container.current_disc_state.disc_orient_x_vect[0], throw_container.current_disc_state.disc_orient_y_vect[0], throw_container.current_disc_state.disc_orient_z_vect[0],
+         throw_container.current_disc_state.disc_orient_x_vect[1], throw_container.current_disc_state.disc_orient_y_vect[1], throw_container.current_disc_state.disc_orient_z_vect[1],
+         throw_container.current_disc_state.disc_orient_x_vect[2], throw_container.current_disc_state.disc_orient_y_vect[2], throw_container.current_disc_state.disc_orient_z_vect[2];
 
   // per the note above, we need to transpose this
   Rwd = Rwd.transpose();
@@ -644,16 +633,10 @@ void ADiscThrow::on_collision(
   const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
   const double Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
 
-  // Get current ang vel in local disc airspeed vel frame
+  // Get current ang vel in local disc airspeed vel frame RPY -> rotation rates about disc plane XYZ
   Eigen::Vector3d last_local_ang_vel_radps = {throw_container.current_disc_state.disc_rolling_vel, throw_container.current_disc_state.disc_pitching_vel, throw_container.current_disc_state.disc_rotation_vel};
 
   Eigen::Vector3d local_ang_accel_radps2 = Rwd * world_ang_acc;
-    //(throw_container.collision_input.ang_vel_radps - last_local_ang_vel_radps) / throw_container.collision_input.delta_time_s;
-
-  // There are some off results with the angular vels right now, can we hackily limit the ang accels to work around this?
-  //const double max_ang_accel = 5.0 / Ix;
-  //BOUND_VARIABLE(local_ang_accel_radps2[0], -max_ang_accel, max_ang_accel);
-  //BOUND_VARIABLE(local_ang_accel_radps2[1], -max_ang_accel, max_ang_accel);
 
   Eigen::Vector3d local_ang_torque_Nm;
   local_ang_torque_Nm[0] = local_ang_accel_radps2[0] * Ix;
@@ -735,25 +718,6 @@ void ADiscThrow::on_collision(
     throw_container.collision_input.ang_vel_radps *= -1;
   }*/
 
-  // we can compute the angular rates from the change in the velocity and disc normal vectors if necessary
-  // since there seems to be something wrong with the Pitch and Roll generated by physX, let's do this
-  // Repeast axis determination from Daero
-  Eigen::Vector3d disc_air_velocity_vector = throw_container.collision_input.lin_vel_mps - throw_container.disc_environment.wind_vector_xyz - throw_container.current_disc_state.forces_state.gust_vector_xyz;
-
-  Eigen::Vector3d disc_velocity_unit_vector = disc_air_velocity_vector / disc_air_velocity_vector.norm();
-
-  Eigen::Vector3d disc_x_unit_vector = disc_velocity_unit_vector.cross(throw_container.collision_input.disc_rotation);
-  disc_x_unit_vector /= disc_x_unit_vector.norm();
-  Eigen::Vector3d disc_y_unit_vector = disc_x_unit_vector.cross(throw_container.collision_input.disc_rotation);
-  disc_y_unit_vector /= disc_y_unit_vector.norm();
-
-  // Now that we have the new disc x and y unit vectors, compute the angle between the new and old
-  const double angle_between_x_units = angle_between_vectors(throw_container.current_disc_state.forces_state.disc_x_unit_vector, disc_x_unit_vector);
-  const double angle_between_y_units = angle_between_vectors(throw_container.current_disc_state.forces_state.disc_y_unit_vector, disc_y_unit_vector);
-  const double ang_rate_about_y = angle_between_x_units / dt;
-  const double ang_rate_about_x = angle_between_y_units / dt;
-  // NVM, this makes BIG numbers.... why? must be that dt is wrong...
-
   // compute linear force from fixed mass of 170g and linear vel change for comparison
   Eigen::Vector3d lin_force_from_vel_delta;
   lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
@@ -785,25 +749,10 @@ void ADiscThrow::on_collision(
   ss2 << EigenVect3dToString(curret_disc_ang_vel);
   log_string(FString(ss2.str().c_str()));
 
-  /*GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,   );
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(ang_accel_from_impulses_radps2).c_str()));*/
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[0])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[1])));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(world_ang_vel[2])));*/
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Blue,(FString::SanitizeFloat(angle_between_y_units)));
-
-/*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("  "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
-  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
-
   
   // We could choose to reject on_collision impulses here if we think they are buggy Unreal (pun intended) garbage
   // To do this, look at the linear distance travelled, and the kinetci energy and momentum, 
   // and use that to determine the max force we allow
-
-
   
   Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
   float distance_travelled = delta_distance.norm();
@@ -825,7 +774,7 @@ void ADiscThrow::on_collision(
   }
   
 
-  // check for mas roll and pitch vels
+  // check for TOO BIG roll and pitch vels
  /* float rp_vel_limit = 50.0;// rad/s
   if(abs(throw_container.collision_input.ang_vel_radps[0]) > rp_vel_limit || abs(throw_container.collision_input.ang_vel_radps[1]) > rp_vel_limit)
   {

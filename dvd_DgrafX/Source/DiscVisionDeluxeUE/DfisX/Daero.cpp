@@ -183,10 +183,10 @@ namespace DfisX
     #lift_unit: unit vector 90 degrees from vel_unit in line with discs 'up' vector
     
     #disc_normal_unit:  unit vector of disc which points 'up' relative to the disc
-    #disc_unit_y:  unit vector of velocity vector projected onto discs planes (angle between this and vel_unit is angle of attack)
-    #disc_unit_x:  unit vector of disc which points perpendicular to direction of travel but lays on the discs plane
+    #disc_unit_x:  unit vector of airspeed velocity vector projected onto discs planes (angle between this and vel_unit is angle of attack)
+    #disc_unit_y:  unit vector of disc which points perpendicular to direction of travel but lays on the discs plane out to the right
     
-    #rotation direction goes from disc_unit_x to disc_unit_y
+    #rotation direction follows the right hand rule
     """
     */
 
@@ -219,18 +219,18 @@ namespace DfisX
     //division by zero protection......maybe not necessary
     if (!d_orientation.isApprox(d_forces.disc_velocity_unit_vector))
     {
-      d_forces.disc_x_unit_vector = d_forces.disc_velocity_unit_vector.cross(d_orientation);
-      make_unit_vector (d_forces.disc_x_unit_vector);
-      d_forces.disc_y_unit_vector = d_forces.disc_x_unit_vector.cross(d_orientation);
-      make_unit_vector (d_forces.disc_y_unit_vector);
+      d_state.disc_orient_y_vect = d_forces.disc_velocity_unit_vector.cross(d_orientation);
+      make_unit_vector (d_state.disc_orient_y_vect);
+      d_state.disc_orient_x_vect = d_state.disc_orient_y_vect.cross(d_orientation);
+      make_unit_vector (d_state.disc_orient_x_vect);
 
-      d_forces.disc_lift_unit_vector = d_forces.disc_x_unit_vector.cross (d_forces.disc_velocity_unit_vector);
+      d_forces.disc_lift_unit_vector = d_state.disc_orient_y_vect.cross (d_forces.disc_velocity_unit_vector);
     }
     ///divide by zero case (disc is travelling perdicularily through the air)
     else
     {
-      d_forces.disc_x_unit_vector =    Eigen::Vector3d    (0,0,0);
-      d_forces.disc_y_unit_vector =    Eigen::Vector3d    (0,0,0);
+      d_state.disc_orient_x_vect     = Eigen::Vector3d    (0,0,0);
+      d_state.disc_orient_y_vect     = Eigen::Vector3d    (0,0,0);
       d_forces.disc_lift_unit_vector = Eigen::Vector3d    (0,0,0);
     //if (basic_console_logging) std::cout << "This would produce an error if there was no divide by zero protection in Daero unit vector creation process!!!!!!!!!!!!!!!!!";
     }
@@ -728,20 +728,20 @@ namespace DfisX
       // see dvd_DfisX_drag_of_rotating_disc_pitching.m
       const double xy_rot_form_drag_limit = 0.13412;
       d_forces.rot_drag_torque_x_Nm = 
-        -signum(d_state.disc_pitching_vel) *
-        2.0 * xy_rot_form_drag_limit *
-        Cd_PLATE *
-        r5 *
-        throw_container->disc_environment.air_density *
-        (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
-
-      d_forces.rot_drag_torque_y_Nm = 
         -signum(d_state.disc_rolling_vel) *
         2.0 * xy_rot_form_drag_limit *
         Cd_PLATE *
         r5 *
         throw_container->disc_environment.air_density *
         (d_state.disc_rolling_vel*d_state.disc_rolling_vel);
+
+      d_forces.rot_drag_torque_y_Nm = 
+        -signum(d_state.disc_pitching_vel) *
+        2.0 * xy_rot_form_drag_limit *
+        Cd_PLATE *
+        r5 *
+        throw_container->disc_environment.air_density *
+        (d_state.disc_pitching_vel*d_state.disc_pitching_vel);
 
       //------------------------------------------------------------------------------------------------------------------
 
@@ -758,7 +758,7 @@ namespace DfisX
       // to compute the effective angle between the airspeed vector and the disc normal
       // then, we can use this angle to attenuate the magnitude of the airspeed vector to produce 
       // the magnitude of airflow in the disc plane only
-      const float ang_disc_normal_to_airspeed = angle_between_vectors(disc_air_velocity_vector, d_state.disc_orientation);
+      const float ang_disc_normal_to_airspeed = angle_between_vectors(disc_air_velocity_vector, d_state.disc_orient_z_vect);
       const float airspeed_vel_mag_disc_plane = sin(ang_disc_normal_to_airspeed) * d_forces.velocity_magnitude;
       const float Re_rot = (std::fabs(d_state.disc_rotation_vel) * r2) / MAX(airspeed_vel_mag_disc_plane, CLOSE_TO_ZERO);
 
