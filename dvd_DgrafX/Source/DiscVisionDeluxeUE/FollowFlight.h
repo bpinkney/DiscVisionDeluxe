@@ -13,7 +13,13 @@
 	{
  	 Ribbon     		UMETA(DisplayName = "Ribbon"),
  	 Ribbon_Wide      	UMETA(DisplayName = "Wide Ribbon"),
- 	 Spiral	   			UMETA(DisplayName = "Spiral"),
+ 	 Art_Diamonds	   	UMETA(DisplayName = "Art Diamonds"),
+ 	 Tube     		    UMETA(DisplayName = "Tube"),
+ 	 Wide_Tube     		UMETA(DisplayName = "Wide Tube"),
+ 	 Tie_Fighter      	UMETA(DisplayName = "Tie Fighter"),
+ 	 Trapezoid			UMETA(DisplayName = "Trapezoid"),
+ 	 Wrong_Way			UMETA(DisplayName = "Wrong Way"),
+ 	 Zig_Zag			UMETA(DisplayName = "Zig Zag"),
  	 Bandsaw			UMETA(DisplayName = "Bandsaw")
 	};	
 
@@ -49,7 +55,7 @@ public:
 
 //immediately changes colour of ff to set_colour    0..360
 	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")
-	void init (float set_hue,enum_ff_display_shape set_shape, bool set_rainbow);
+	void init (float set_disc_hue,FColor set_player_colour,enum_ff_display_shape set_shape, bool set_rainbow);
 
 //transitions ff to desired_colour
 	UFUNCTION(BlueprintImplementableEvent, Category = "FollowFlight")

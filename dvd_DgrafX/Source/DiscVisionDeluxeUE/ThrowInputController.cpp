@@ -103,13 +103,13 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
           // perform a new throw!
    //DfisX::Disc_Mold_Enum new_disc_enum = static_cast<DfisX::Disc_Mold_Enum>(new_disc_init_state->discmold);
           
-    const bool use_mikes_test_throw = true;
+    const bool use_mikes_test_throw = false;
 
     // Mike's test throw
     if(use_mikes_test_throw)
     {
       disc_throw->new_captured_throw(static_cast<int>(new_disc_init_state->discmold),
-      FVector(0,0,0),FVector(10.0,0.0,0.0),0,0.6,30,0);
+      FVector(0,0,0),FVector(20.0,0.0,1.0),0,0.1,30,0);
     }
     else
     {

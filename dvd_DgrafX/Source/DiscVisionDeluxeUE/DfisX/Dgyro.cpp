@@ -43,6 +43,7 @@ namespace DfisX
     //d_forces.gyro_torque_x = d_forces.lift_induced_pitching_moment;
 
     // Mike: what do we need this for? is this actually the roll change??
+    //
     d_statistics.disc_cumulative_roll += RAD_TO_DEG(Wp) * dt;
 
     //always do this after affecting disc_orient_z_vect

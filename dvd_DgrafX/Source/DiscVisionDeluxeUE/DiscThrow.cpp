@@ -459,20 +459,22 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
 
 
-////Follow flight spawn and init
+/////////////////Follow flight spawn and init////////////////////////////////
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
-  float set_hue = 0.00;
-  enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
-  bool set_rainbow = true;
 
-    ptr_follow_flight->init (set_hue,set_shape,set_rainbow);
-    ////end Follow flight spawn and init
+  //float set_disc_hue = 0.00;
+  FColor set_player_colour = FColor::Black;
+  //enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
+  //bool set_rainbow = true;
+  float set_disc_hue = (float)FMath::RandRange(1,360);
+  bool set_rainbow = 0 == FMath::RandRange(0,3); 
+  enum_ff_display_shape set_shape = (enum_ff_display_shape)FMath::RandRange(0,9);
 
-
-  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,(FString::SanitizeFloat(thrown_disc_position.Z)));
+  ptr_follow_flight->init (set_disc_hue,set_player_colour,set_shape,set_rainbow);
+//////////////////end Follow flight spawn and init////////////////////////////////////
   
 }
 
