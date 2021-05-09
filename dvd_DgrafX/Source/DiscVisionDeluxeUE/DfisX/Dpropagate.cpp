@@ -46,19 +46,76 @@ namespace DfisX
     ////// Propagate linear states, starting with the lowest order/derivative, 
     // so that propagation occurs using the PREVIOUS [k-1] higher order states
     d_state.disc_location += d_state.disc_velocity      * dt + d_state.disc_acceleration * dt2;
-    d_state.disc_velocity += d_state.disc_acceleration  * dt;    
+    d_state.disc_velocity += d_state.disc_acceleration  * dt;
 
     ////// Propagate angular states, starting with the lowest order/derivative,
     // so that propagation occurs using the PREVIOUS [k-1] higher order states
 
     //// Pitching axis propagation
     // using disc unit vectors to set rotational change only for the rolling axis
-    d_forces.gyro_orientation_delta = -d_state.disc_orient_y_vect * tan(d_state.disc_pitching_vel  * dt + d_state.disc_pitching_accel  * dt2);
+    // unit vector X and Z are changed by a change to pitch (about Y)
+    // unit vector Y and Z are changed by a change to roll (about X)
+    // Deprecated method, keep this here for reference for now
+   /* d_forces.gyro_orientation_delta = 
+          (d_state.disc_orient_x_vect * tan(d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2)) +
+         -(d_state.disc_orient_y_vect * tan(d_state.disc_rolling_vel  * dt + d_state.disc_rolling_accel  * dt2));
+    //d_forces.gyro_orientation_delta = -d_state.disc_orient_y_vect * tan(d_state.disc_pitching_vel  * dt + d_state.disc_pitching_accel  * dt2);
     // propagate the normal vector using the last rolling vel and accel
     // ADD ON PITCH NOW TOO!
-    d_state.disc_orient_z_vect += d_forces.gyro_orientation_delta + (d_state.disc_orient_x_vect * tan(d_state.disc_rolling_vel * dt + d_state.disc_rolling_accel * dt2));
+    d_state.disc_orient_z_vect += d_forces.gyro_orientation_delta;*/
     // re-normalize unit vector
+    //d_state.disc_orient_z_vect /= d_state.disc_orient_z_vect.norm();
+
+    // Determine the change to the Z unit vector due to the roll and pitch changes (rotate in that order!)
+    // Should we be updating the X and Y unit vectors here as well?? They are not orthonormal after this if not
+    const float roll_propagation_rad  = d_state.disc_rolling_vel  * dt + d_state.disc_rolling_accel  * dt2;
+    const float pitch_propagation_rad = d_state.disc_pitching_vel * dt + d_state.disc_pitching_accel * dt2;
+
+    // compute the change in rotation we need to apply to the Z unit vector by using a rotation matrix
+    // Note this is column major, so it is really the transpose of what you see here.
+    Eigen::Matrix3d Rx; 
+    Rx <<   1, 0, 0,
+            0, cos(roll_propagation_rad), -sin(roll_propagation_rad),
+            0, sin(roll_propagation_rad),  cos(roll_propagation_rad);
+    // per the note above, we need to transpose this to get column major (which makes the most sense with how this is written out! bah Eigen!)
+     Rx = Rx.transpose();
+        // Note this is column major, so it is really the transpose of what you see here.
+    Eigen::Matrix3d Ry; 
+    Ry <<   cos(pitch_propagation_rad), 0, sin(pitch_propagation_rad),
+            0, 1, 0,
+            -sin(pitch_propagation_rad), 0, cos(pitch_propagation_rad);
+    // per the note above, we need to transpose this to get column major (which makes the most sense with how this is written out! bah Eigen!)
+    Ry = Ry.transpose();
+
+    // formulate the rotation matrix to bring this back to the world frame next
+    // Rememnber this is column-major (ok, so I just wrote this one backward)
+    Eigen::Matrix3d Rdw; 
+    Rdw << d_state.disc_orient_x_vect[0], d_state.disc_orient_y_vect[0], d_state.disc_orient_z_vect[0],
+           d_state.disc_orient_x_vect[1], d_state.disc_orient_y_vect[1], d_state.disc_orient_z_vect[1],
+           d_state.disc_orient_x_vect[2], d_state.disc_orient_y_vect[2], d_state.disc_orient_z_vect[2];
+
+    // it is perhaps simpler to just compute the z unit vector change for the two axes?
+    // this almost works around the roll -> pitch sequential rotation losses?
+    Eigen::Vector3d base_z = {0,0,1};
+
+    Eigen::Vector3d z_unit_delta = {0,0,0};
+    z_unit_delta += (Rx * base_z - base_z);
+    z_unit_delta += (Ry * base_z - base_z);
+
+    z_unit_delta = Rdw * z_unit_delta;
+    // Update the vector
+    d_state.disc_orient_z_vect += z_unit_delta;
+
+    // Now let's re-compute the unit X and Y vectors (like we do in Daero) to ensure that they are still
+    // orthonormal to the disx Z normal
+    // re-normalize just in case
     d_state.disc_orient_z_vect /= d_state.disc_orient_z_vect.norm();
+    d_state.disc_orient_y_vect = d_forces.disc_velocity_unit_vector.cross(d_state.disc_orient_z_vect);
+    d_state.disc_orient_y_vect /= d_state.disc_orient_y_vect.norm();
+    d_state.disc_orient_x_vect = d_state.disc_orient_y_vect.cross(d_state.disc_orient_z_vect);
+    d_state.disc_orient_x_vect /= d_state.disc_orient_x_vect.norm();
+
+
     // update rolling vel for next timestep
     // remember that this is slightly wrong, wince the frame will change by time[k+1], but probably not enough to matter for now
     d_state.disc_rolling_vel  += d_state.disc_rolling_accel   * dt;

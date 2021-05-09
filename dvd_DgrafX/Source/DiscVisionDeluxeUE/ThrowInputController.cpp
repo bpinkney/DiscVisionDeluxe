@@ -109,7 +109,8 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
     if(use_mikes_test_throw)
     {
       disc_throw->new_captured_throw(static_cast<int>(new_disc_init_state->discmold),
-      FVector(0,0,0),FVector(10.0,0.0,0.0),0.0,0.6,0.0,0);
+        FVector(0,0,0),FVector(80.0/3.6,0.0,0.0),0.2,0,-80.0,0);
+      //FVector(0,0,0),FVector(120.0/3.6,0.0,0.0),1.1,0.2,-80.0,0);
     }
     else
     {
