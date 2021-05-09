@@ -590,7 +590,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 1760;
+  const int changevar = 6712;
 
   if
   (
@@ -606,15 +606,17 @@ void ADiscThrow::on_collision(
     //ptr_disc_projectile->kill_control();    
   }
 
-  // try overriding with the sim time? (NOPE, fun and bouncy tho)
+  // NOTE: Mike says this dt is incorrect, and we actually need to use the one
+  // passed into the DfisX step. That means everything here which uses dt (and is useful) should migrate to 'consume_Dcollision'!
   const float dt = delta_time;
 
   // set throw controller collision input states
   throw_container.collision_input.consumed_input = 255; // mark as invalid first for thread safety?
 
-  throw_container.collision_input.delta_time_s = dt;
+  throw_container.collision_input.delta_time_s = delta_time;
 
   Eigen::Vector3d world_ang_vel_radps;
+  Eigen::Vector3d world_ang_vel_delta_radps;
   Eigen::Vector3d world_lin_acc;
   Eigen::Vector3d world_ang_acc;
 
@@ -624,6 +626,7 @@ void ADiscThrow::on_collision(
     throw_container.collision_input.lin_pos_m[i]                  = disc_position[i]*0.01; //cm to m, world frame
     throw_container.collision_input.lin_vel_mps[i]                = lin_vel[i]*0.01;       //cm to m, world frame
     world_ang_vel_radps[i]                                        = world_ang_vel[i];      // about the XYZ unreal world frame (we think)
+    world_ang_vel_delta_radps[i]                                  = world_ang_vel_delta[i];      // about the XYZ unreal world frame (we think)
     throw_container.collision_input.disc_rotation[i]              = disc_rotation[i];
 
     // Try to re-derive the linear force from the vel delta for comparison and validation
@@ -650,15 +653,19 @@ void ADiscThrow::on_collision(
   // Now we should be able to rotate the XYZ angular rates into the disc frame:
 
   Eigen::Vector3d world_ang_vel_radps_rpy = {world_ang_vel_radps[0], world_ang_vel_radps[1], world_ang_vel_radps[2]};
+  Eigen::Vector3d world_ang_vel_delta_radps_rpy = {world_ang_vel_delta_radps[0], world_ang_vel_delta_radps[1], world_ang_vel_delta_radps[2]};
 
   Eigen::Vector3d local_ang_vel_radps = Rwd * world_ang_vel_radps_rpy;
+  Eigen::Vector3d local_ang_vel_delta_radps = Rwd * world_ang_vel_delta_radps_rpy;
 
   // reversed due to swapped Z axis in Unreal
   //local_ang_vel_radps[0] *= -1;
   //local_ang_vel_radps[1] *= -1;
-  local_ang_vel_radps[2] *= -1;
+  local_ang_vel_radps[2]       *= -1;
+  local_ang_vel_delta_radps[2] *= -1;
 
   throw_container.collision_input.ang_vel_radps = local_ang_vel_radps;
+  throw_container.collision_input.ang_vel_delta_radps = local_ang_vel_delta_radps;
 
   log_string(FString("Collision DF ang vel"));
   FVector df_ang_vel = FVector(throw_container.collision_input.ang_vel_radps[0], throw_container.collision_input.ang_vel_radps[1], throw_container.collision_input.ang_vel_radps[2]);
