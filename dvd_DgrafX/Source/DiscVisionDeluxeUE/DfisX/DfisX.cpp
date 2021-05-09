@@ -422,7 +422,7 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
       // If you can get all these flying OK, you've got a decent tuning!
 
-      disc_mold = find_disc_mold_index_by_name("Wraith");
+      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
       gyromode =  !gyromode;
 
       if(0)
