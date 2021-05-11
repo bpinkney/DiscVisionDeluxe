@@ -11,6 +11,14 @@
 // always last include
 #include "DiscCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class enum_character_state: uint8
+{
+ 	PAUSED    		    UMETA(DisplayName = "Paused"),
+ 	READY_TO_THROW      UMETA(DisplayName = "Ready to throw!"),
+ 	SIMULATING	   	    UMETA(DisplayName = "Simulating...")
+};	
+
 UCLASS()
 class DISCVISIONDELUXEUE_API ADiscCharacter : public ACharacter
 {
@@ -23,6 +31,11 @@ public:
 	int teepad_locations_iterator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Editor Set Pieces")
 	TArray<FTransform> teepad_locations;
+
+	enum_character_state FSM_character_state;
+	enum_character_state FSM_held_state;
+	FString context_string;
+	FString location_name_string;
 
 
 protected:
@@ -97,4 +110,36 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Throw Input")
 		TSubclassOf<class AThrowInputController> ThrowInputControllerBP;
+
+
+
+
+///////////////////////////State Machine Stuff//////////////////////////////
+
+
+////state machine functions
+	UFUNCTION(BlueprintCallable, Category="FSM getter setters")
+	 FString get_state_display_string();
+
+///state machine transitions
+	UFUNCTION(BlueprintCallable, Category="FSM transitions")
+	  void disc_was_thrown();
+	UFUNCTION(BlueprintCallable, Category="FSM transitions")
+	  void throw_was_finished();
+
+	UFUNCTION(BlueprintCallable, Category="FSM transitions")
+	  void character_was_paused();
+	UFUNCTION(BlueprintCallable, Category="FSM transitions")
+	  void pause_was_finished();
+
+///state machine getters
+	UFUNCTION(BlueprintCallable, Category="FSM getter setters")
+	  bool get_is_ready_to_throw();
+
+	UFUNCTION(BlueprintCallable, Category="FSM getter setters")
+	  bool get_is_throw_simulating();
+
+	UFUNCTION(BlueprintCallable, Category="FSM getter setters")
+	  bool get_is_paused();
+
 };
