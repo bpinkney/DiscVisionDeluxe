@@ -54,12 +54,12 @@ void ADiscThrow::BeginPlay()
 }
 
 // Called every frame
-void ADiscThrow::Tick(const float DT_not_physics_dt)
+void ADiscThrow::Tick(const float DeltaTime)
 {
-  Super::Tick(DT_not_physics_dt);
-  const float DeltaTime = FMath::Clamp (DT_not_physics_dt,0.00833333333f,0.03333333333f);//30fps - 120fps as per physics minmax
+  Super::Tick(DeltaTime);
 
-  if (is_throw_simulating)
+
+  if (is_throw_simulating&&DeltaTime>0.00001)
   {
     // actually step DfisX
     DfisX::step_simulation(&throw_container, DeltaTime);

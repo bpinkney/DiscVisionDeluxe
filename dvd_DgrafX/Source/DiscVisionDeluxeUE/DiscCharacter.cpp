@@ -227,12 +227,18 @@ void ADiscCharacter::throw_was_finished()
   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());}}
 
 void ADiscCharacter::character_was_paused()
-  {if (!get_is_paused()) FSM_held_state = FSM_character_state;
-   FSM_character_state = enum_character_state::PAUSED;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());}
+{
+  if (!get_is_paused()) FSM_held_state = FSM_character_state;
+    FSM_character_state = enum_character_state::PAUSED;
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());
+    UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0);
+}
 void ADiscCharacter::pause_was_finished()
-  {FSM_character_state = FSM_held_state;
-  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());}
+  {
+  	FSM_character_state = FSM_held_state;
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());
+    UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
+}
 //fsm getters
 bool ADiscCharacter::get_is_ready_to_throw(){return FSM_character_state==enum_character_state::READY_TO_THROW;}
 bool ADiscCharacter::get_is_throw_simulating(){return FSM_character_state==enum_character_state::SIMULATING;}
