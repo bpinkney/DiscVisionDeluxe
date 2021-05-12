@@ -44,4 +44,7 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
     	TSubclassOf<class ADiscThrow> DiscThrowBP;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pointers)
+    class ADiscCharacter* ptr_disc_character;
 };

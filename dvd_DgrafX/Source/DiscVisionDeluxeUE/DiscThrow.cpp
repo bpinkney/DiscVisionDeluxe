@@ -21,6 +21,8 @@
 #define end_throw_camera_velocity_cutoff 500.0
 #define kill_control_velocity_cutoff     100.0
 #define end_throw_velocity_cutoff        35.0
+
+#define desired_dfisx_dt                 0.01
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
@@ -57,10 +59,27 @@ void ADiscThrow::BeginPlay()
 void ADiscThrow::Tick(const float DeltaTime)
 {
   Super::Tick(DeltaTime);
-  if (is_throw_simulating)
+
+//pause checker as we use global time dilation for pausing
+  if (is_throw_simulating&&DeltaTime>0.00001)
   {
-    // actually step DfisX
-    DfisX::step_simulation(&throw_container, DeltaTime);
+
+
+//////////////////////////Dfisx substepping//////////////////////////
+    if (DeltaTime>desired_dfisx_dt)
+    {
+      int needed_substeps = ceil(DeltaTime/desired_dfisx_dt);
+      double substep_dt = DeltaTime / needed_substeps;
+      for (int substep = 0; substep < needed_substeps; substep++) {
+        DfisX::step_simulation(&throw_container, substep_dt);
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,FString::FromInt(substep)+FString::FromInt(needed_substeps));
+      }
+    }
+    else DfisX::step_simulation(&throw_container, DeltaTime);
+/////////////////////////end Dfisx substepping//////////////////////
+
+
+    
     generate_flight_cumulative_stats();
     
     //converting dfisx disc state into unreal usable forms
@@ -266,8 +285,9 @@ TODO: nest these once good values are determined
 */
     //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
     //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
-    
-    if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)                             end_throw_simulation();
+    //landscape fall through safety check
+    if (zz<0) end_throw_simulation();    
+    if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)       end_throw_simulation();
     if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
     if (disc_velocity.Size() < end_throw_camera_velocity_cutoff) ptr_disc_projectile->end_of_throw_camera();
 
@@ -359,7 +379,7 @@ void ADiscThrow::new_throw_world_frame(
 
 
 
-////////////////////////print disc name
+////////////////////////print disc name/////////////
   std::stringstream ss;
   ss << "Threw a ";
   ss << throw_container.disc_object.manufacturer << " ";
@@ -367,12 +387,12 @@ void ADiscThrow::new_throw_world_frame(
 
   FString output_text(ss.str().c_str());
   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, output_text); 
-////////////////////////end print disc name
+////////////////////////end print disc name/////////
 
 
 
 
-/////////        Initial release Stats          /////////////////////////////
+////////////////////////////        Initial release Stats          /////////////////////////////////////////////////////////
 
     initial_release_stats.initial_direction_vector = FVector (throw_container.current_disc_state.disc_velocity[0],throw_container.current_disc_state.disc_velocity[1],throw_container.current_disc_state.disc_velocity[2]);
     initial_release_stats.initial_location_vector = FVector (throw_container.current_disc_state.disc_location[0],throw_container.current_disc_state.disc_location[1],throw_container.current_disc_state.disc_location[2]);
@@ -424,7 +444,7 @@ void ADiscThrow::new_throw_world_frame(
     //initial_wobble
     initial_release_stats.initial_wobble = 0;
     
-/////////////     end Initial release Stats            ////////////////////////////////////
+////////////////////////////////     end Initial release Stats            //////////////////////////////////////////////
 }
 
 
@@ -443,6 +463,8 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     SpawnParams.Instigator = ptr_disc_character;
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
+
+    AddTickPrerequisiteActor(ptr_disc_projectile);
     
     const bool turn_off_collision   = false;
     const bool turn_off_follow_cam  = false;
@@ -462,7 +484,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 /////////////////Follow flight spawn and init////////////////////////////////
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    ptr_flight_log =    World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_flight_log    = World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
     ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
 
   //float set_disc_hue = 0.00;
@@ -482,6 +504,8 @@ void ADiscThrow::end_throw_simulation ()
 {
   is_throw_simulating = false;
   ptr_follow_flight->unselect();
+  ptr_disc_character->throw_was_finished();
+  ptr_disc_projectile->DisableComponentsSimulatePhysics();
 }
 
 ADiscThrow::Initial_Release_Stats* ADiscThrow::get_initial_release_stats()

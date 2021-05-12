@@ -27,7 +27,7 @@ AThrowInputController::AThrowInputController()
 void AThrowInputController::BeginPlay()
 {
   Super::BeginPlay();
-
+  ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
   if(DVISEST_INTERFACE_ENABLED)
     DvisEstInterface_StartProcess();
   
@@ -57,13 +57,9 @@ void AThrowInputController::Tick(float DeltaTime)
     {
       disc_init_state_t new_disc_init_state;
       dvisEstInterface->GetDiscInitState(&new_disc_init_state);
-
+      if (ptr_disc_character->get_is_ready_to_throw()){
       PerformCapturedThrow(&new_disc_init_state);
     }
-    ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-    if (RangeHUD)
-    {
-        //RangeHUD->PopulateHUD(sv_latest_discthrow);
     }
     DvisEstInterface_PrintStuff();
   }
@@ -82,6 +78,7 @@ void AThrowInputController::PerformCapturedThrow(disc_init_state_t * new_disc_in
     SpawnParams.Instigator = GetInstigator();
 
     ADiscThrow* disc_throw = World->SpawnActor<ADiscThrow>(DiscThrowBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+    ptr_disc_character->disc_was_thrown();
     sv_latest_discthrow = disc_throw;
     // add new disc_throw to queue
     //const bool queue_empty_before = DiscThrowQueue.IsEmpty();

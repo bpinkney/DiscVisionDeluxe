@@ -102,6 +102,7 @@ void ARangeHUD::main_menu_open_btn()
 			if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
+			ptr_disc_character->character_was_paused();
 		}
 }
 
@@ -113,6 +114,7 @@ void ARangeHUD::main_menu_cancel_btn()
 				if (MainMenuWidget)
 		{
 			MainMenuWidget->RemoveFromViewport();
+			ptr_disc_character->pause_was_finished();
 		}
 }
 
@@ -133,7 +135,13 @@ void ARangeHUD::main_menu_prev_btn()
 void ARangeHUD::main_menu_choose_location_btn()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud engage btn"));
+	ptr_disc_character->pause_was_finished();
 	ptr_disc_character->main_menu_choose_location_btn();
+		if (MainMenuWidget)
+	{
+			MainMenuWidget->RemoveFromViewport();
+	}
+
 
 }
 
