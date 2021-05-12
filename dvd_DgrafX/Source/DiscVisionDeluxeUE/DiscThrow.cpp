@@ -217,7 +217,7 @@ void ADiscThrow::Tick(const float DeltaTime)
       GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(-eul_zyx_deg[1])));
       GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(eul_zyx_deg[0])));*/
           
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString(" "))); 
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString(" "))); 
 
     
     //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
@@ -264,8 +264,8 @@ void ADiscThrow::Tick(const float DeltaTime)
 /*
 TODO: nest these once good values are determined
 */
-    GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
-    GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
+    //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
+    //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
     
     if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)                             end_throw_simulation();
     if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
@@ -590,7 +590,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 6712;
+  const int changevar = 8771;
 
   if
   (
@@ -704,7 +704,7 @@ void ADiscThrow::on_collision(
 
   // due to horrible mid-hit propagation and sub-stepping in unreal, we can't trust the hit_location magnitude
   // we are receiving. Attenuate the signal so the disc doesn't freak out (HACK)
-  const double moment_arm_scale = 0.5;
+  const double moment_arm_scale = 0.1;
 
   int k = 0;
   // reset torque sum
@@ -810,20 +810,32 @@ void ADiscThrow::on_collision(
   // and use that to determine the max force we allow
   
   Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
-  float distance_travelled = delta_distance.norm();
-  float kinetic_energy = 
-    (throw_container.collision_input.lin_vel_mps.norm()*throw_container.collision_input.lin_vel_mps.norm()) * 
+  //float distance_travelled = delta_distance.norm();
+
+  // 3 axis kinetic energy
+  //cwiseProduct for multiplication and cwiseQuotient to divide vectors element-wise
+  Eigen::Vector3d kinetic_energy = 
+    (throw_container.collision_input.lin_vel_mps.cwiseProduct(throw_container.collision_input.lin_vel_mps)) * 
     throw_container.disc_object.mass * 0.5;
 
-  float max_force_momentum_N = kinetic_energy / distance_travelled;
+  Eigen::Vector3d kinetic_momentum_N = 
+  {
+    kinetic_energy[0] / MAX(delta_distance[0], CLOSE_TO_ZERO),
+    kinetic_energy[1] / MAX(delta_distance[1], CLOSE_TO_ZERO),
+    kinetic_energy[2] / MAX(delta_distance[2], CLOSE_TO_ZERO)
+  };
+  // add gravity
+  Eigen::Vector3d grav_vector_N = {0, 0, GRAV * throw_container.disc_object.mass};
+  kinetic_momentum_N += grav_vector_N;
+
   
   bool skip_input = false;
   // check that we exceed the max force expected
-  if(throw_container.collision_input.lin_force_from_impulses_N.norm() > (max_force_momentum_N + abs(GRAV) * throw_container.disc_object.mass))
+  if(throw_container.collision_input.lin_force_from_impulses_N.norm() > kinetic_momentum_N.norm())
   {
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
     //skip_input = true;
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(max_force_momentum_N)));
+    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(kinetic_momentum_N.norm())));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   }
