@@ -11,6 +11,16 @@
 #include "DiscProjectile.generated.h"
 
 
+////required in disc projectile and disc throw
+UENUM(BlueprintType)
+enum class enum_disc_form: uint8
+  {
+   PUTTER             UMETA(DisplayName = "Putter"),
+   MIDRANGE           UMETA(DisplayName = "Midrange"),
+   FAIRWAY            UMETA(DisplayName = "Fairway Driver"),
+   DRIVER             UMETA(DisplayName = "Distance Driver"),
+   FRISBEE            UMETA(DisplayName = "Fribee")
+  };  
 
 UCLASS()
 class DISCVISIONDELUXEUE_API ADiscProjectile : public AActor
@@ -45,6 +55,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void set_dither_location();
+
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void set_disc_mesh(enum_disc_form disc_static_mesh);
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)

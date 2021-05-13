@@ -358,7 +358,7 @@ void ADiscThrow::new_throw_world_frame(
   const float thrown_disc_wobble)
 {
   
-  spawn_disc_and_follow_flight();
+  
 
   Eigen::Vector3d v3d_thrown_disc_position = Eigen::Vector3d(thrown_disc_position.X/100.0,thrown_disc_position.Y/100.0,thrown_disc_position.Z/100.0);
   Eigen::Vector3d v3d_thrown_disc_velocity = Eigen::Vector3d(thrown_disc_velocity.X,thrown_disc_velocity.Y,thrown_disc_velocity.Z);
@@ -376,7 +376,7 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
 
-
+  spawn_disc_and_follow_flight();
 
 
 ////////////////////////print disc name/////////////
@@ -463,24 +463,34 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     SpawnParams.Instigator = ptr_disc_character;
 
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-
     AddTickPrerequisiteActor(ptr_disc_projectile);
+  
+
+    enum_disc_form disc_static_mesh = enum_disc_form::FRISBEE;   
+    //mfd = mold_form_description for brevity
+    FString mfd = throw_container.disc_object.disc_type;      
     
+    if (mfd == "Putter" ||mfd == "Beaded Putter" ||mfd == "Putt & Approach")
+    disc_static_mesh = enum_disc_form::PUTTER;
+
+    if (mfd == "Midrange Driver" || mfd == "Midrange")
+    disc_static_mesh = enum_disc_form::MIDRANGE; 
+
+    if (mfd == "Fairway Driver",mfd == "Fairway",mfd == "Control Driver",mfd == "Turn Driver")
+    disc_static_mesh = enum_disc_form::FAIRWAY; 
+
+    if (mfd == "Distance Driver",mfd == "Power Driver",mfd == "Driver")
+    disc_static_mesh = enum_disc_form::DRIVER; 
+
+    ptr_disc_projectile->set_disc_mesh(disc_static_mesh);
+
+
+
     const bool turn_off_collision   = false;
     const bool turn_off_follow_cam  = false;
-
-    if(turn_off_collision)
-    {
-      ptr_disc_projectile->SetActorEnableCollision(false);
-    }
-
-    if(!turn_off_follow_cam)
-    {
-      ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
-    }
-
-
-
+    if(turn_off_collision) ptr_disc_projectile->SetActorEnableCollision(false);
+    if(!turn_off_follow_cam) ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
+  
 /////////////////Follow flight spawn and init////////////////////////////////
     SpawnParams.Owner = ptr_disc_projectile;
     ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
