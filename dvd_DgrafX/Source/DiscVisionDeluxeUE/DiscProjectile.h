@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void end_of_throw_camera();
 
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void set_dither_location();
+
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;

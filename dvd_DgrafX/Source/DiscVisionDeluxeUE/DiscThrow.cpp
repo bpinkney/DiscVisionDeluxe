@@ -59,7 +59,7 @@ void ADiscThrow::BeginPlay()
 void ADiscThrow::Tick(const float DeltaTime)
 {
   Super::Tick(DeltaTime);
-
+  ptr_disc_projectile->set_dither_location();
 //pause checker as we use global time dilation for pausing
   if (is_throw_simulating&&DeltaTime>0.00001)
   {
