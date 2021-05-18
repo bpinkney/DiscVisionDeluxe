@@ -34,17 +34,17 @@ namespace DfisX
   {
     const bool filter_for_deceleration = false;
 
+    throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
+    throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 
+    throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0.0;
+
+    throw_container->current_disc_state.forces_state.collision_force[0] = 
+    throw_container->current_disc_state.forces_state.collision_force[1] = 
+    throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
+
     const float collision_apply_frames = 1;
-    if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > 0)
+    if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
     {
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 
-      throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0.0;
-
-      throw_container->current_disc_state.forces_state.collision_force[0] = 
-      throw_container->current_disc_state.forces_state.collision_force[1] = 
-      throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
-
       const bool overwrite_states_ignore_forces_torques = true;
       if(overwrite_states_ignore_forces_torques)
       {
@@ -56,8 +56,8 @@ namespace DfisX
         throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
 
         // corect dt for impulse based torques (it was pre-divided with the incorrect one during the collision stuff)
-        throw_container->collision_input.ang_torque_from_impulses_Nm *= throw_container->collision_input.delta_time_s;
-        throw_container->collision_input.ang_torque_from_impulses_Nm /= dt;
+        //throw_container->collision_input.ang_torque_from_impulses_Nm *= throw_container->collision_input.delta_time_s;
+        //throw_container->collision_input.ang_torque_from_impulses_Nm /= dt;
 
         // Borrow the 'paddle boat' angular form drag model from Daero to evaluate our incoming 'delta ang vel'
         // Since Unreal doesn't know how to propagate things correctly, we are using their 'idea' of how much our ang vel should change
@@ -67,8 +67,8 @@ namespace DfisX
         // Use DfisX local dt for this derivative since it is the only one we can trust (see Mike for details)
         // TODO: It would be nice to compute these in the torque space, but we don't actually know what
         // Unreal is doing wrt inertias, so subtracting things in the angular space is likely best for now
-        const float roll_X_collision_ang_accel  = throw_container->collision_input.ang_vel_delta_radps[0] / dt;
-        const float pitch_Y_collision_ang_accel = throw_container->collision_input.ang_vel_delta_radps[1] / dt;
+        const float roll_X_collision_ang_accel  = throw_container->collision_input.ang_vel_delta_radps[0] / throw_container->collision_input.delta_time_s;
+        const float pitch_Y_collision_ang_accel = throw_container->collision_input.ang_vel_delta_radps[1] / throw_container->collision_input.delta_time_s;
         //const float yaw_Z_collision_ang_torque   = throw_container->collision_input.ang_vel_delta_radps[2] / dt;
 
         const double Ix = 1.0/4.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
@@ -107,8 +107,8 @@ namespace DfisX
 
        
         // get the applied accel from the reaction torque
-        const float roll_reaction_accel  = roll_reaction_dtorque_from_Unreal_propagated_ang_vel  * dt / Ix;
-        const float pitch_reaction_accel = pitch_reaction_dtorque_from_Unreal_propagated_ang_vel * dt / Iy;
+        const float roll_reaction_accel  = roll_reaction_dtorque_from_Unreal_propagated_ang_vel  * throw_container->collision_input.delta_time_s / Ix;
+        const float pitch_reaction_accel = pitch_reaction_dtorque_from_Unreal_propagated_ang_vel * throw_container->collision_input.delta_time_s / Iy;
 
         // If the resistance torque is more than the collision applied, don't bother
         float roll_accel_corrected  = 0.0;
@@ -122,6 +122,32 @@ namespace DfisX
         //{
           pitch_accel_corrected = pitch_Y_collision_ang_accel - pitch_reaction_accel;
         //}
+
+        ////////// also dupe precession for now (we'll make non duped functions later!)
+        if(abs(throw_container->current_disc_state.disc_rotation_vel) > 0.1)
+        {
+          const float new_pitch_moment = (pitch_accel_corrected * Iy);
+          const float new_roll_moment =  (roll_accel_corrected * Ix);        
+
+          float Wp = -(new_roll_moment)  / (Iz * throw_container->current_disc_state.disc_rotation_vel);
+          float Wq =  (new_pitch_moment) / (Iz * throw_container->current_disc_state.disc_rotation_vel);
+          // compute resulting angular torque from applied pitching moment vel
+          float Wq_d  = (Wq - throw_container->current_disc_state.disc_rolling_vel)  / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
+          float Wp_d  = (Wp - throw_container->current_disc_state.disc_pitching_vel) / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
+          float gyro_torque_y = Wp_d * Iy;
+          float gyro_torque_x = Wq_d * Ix;
+
+          roll_accel_corrected  += gyro_torque_x;
+          pitch_accel_corrected += gyro_torque_y;
+        }
+        ////////// end duped precession
+
+        float roll_collision_torque_Nm  = roll_accel_corrected  * Ix;
+        float pitch_collision_torque_Nm = pitch_accel_corrected * Ix;
+
+        // apply torques directly!
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = roll_collision_torque_Nm;
+        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_collision_torque_Nm;
         
         // finally, we bound the acceleration in case it is nonsense as a precaution
         
@@ -133,8 +159,8 @@ namespace DfisX
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_accel_corrected * Iy;
 
         // compute new ang vels, and overwrite, leave it up to Dpropagate to update the orientations
-        //throw_container->current_disc_state.disc_rolling_vel  += roll_accel_corrected  * dt;
-        //throw_container->current_disc_state.disc_pitching_vel += pitch_accel_corrected * dt;
+        //throw_container->current_disc_state.disc_rolling_vel  += roll_accel_corrected  * throw_container->collision_input.delta_time_s;
+        //throw_container->current_disc_state.disc_pitching_vel += pitch_accel_corrected * throw_container->collision_input.delta_time_s;
 
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = roll_accel_corrected  * Ix;
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_accel_corrected * Iy;

@@ -36,8 +36,8 @@ namespace DfisX
     d_forces.gyro_torque_x = 0.0;
     if(abs(d_state.disc_rotation_vel) > 0.1)
     {
-        const float new_pitch_moment = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1]);
-        const float new_roll_moment =  (0.0                                   + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0]);        
+        const float new_pitch_moment = (d_forces.lift_induced_pitching_moment + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1]); // we are already applying the precession in the collicion handler, but this is the resulting collsion torque, hmm
+        const float new_roll_moment =  (0.0                                   + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0]);
 
         Wp = -(new_roll_moment)  / (Iz * d_state.disc_rotation_vel);
         Wq =  (new_pitch_moment) / (Iz * d_state.disc_rotation_vel);
