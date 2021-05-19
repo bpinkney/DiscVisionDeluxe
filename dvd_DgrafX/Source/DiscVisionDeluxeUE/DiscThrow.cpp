@@ -465,25 +465,48 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
     AddTickPrerequisiteActor(ptr_disc_projectile);
   
-
+////////////Static Mesh setting for disc projectile/////////////
     enum_disc_form disc_static_mesh = enum_disc_form::FRISBEE;   
     //mfd = mold_form_description for brevity
     FString mfd = throw_container.disc_object.disc_type;      
-    
-    if (mfd == "Putter" ||mfd == "Beaded Putter" ||mfd == "Putt & Approach")
-    disc_static_mesh = enum_disc_form::PUTTER;
 
-    if (mfd == "Midrange Driver" || mfd == "Midrange")
-    disc_static_mesh = enum_disc_form::MIDRANGE; 
+    if (mfd == "Putter" ||mfd == "Beaded Putter" ||mfd == "Putt & Approach"){
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Putter detected!"));
+    disc_static_mesh = enum_disc_form::PUTTER;}
 
-    if (mfd == "Fairway Driver",mfd == "Fairway",mfd == "Control Driver",mfd == "Turn Driver")
-    disc_static_mesh = enum_disc_form::FAIRWAY; 
+    if (mfd == "Midrange Driver" || mfd == "Midrange"){
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Mid detected!"));
+    disc_static_mesh = enum_disc_form::MIDRANGE;} 
 
-    if (mfd == "Distance Driver",mfd == "Power Driver",mfd == "Driver")
-    disc_static_mesh = enum_disc_form::DRIVER; 
+    if (mfd == "Fairway Driver"||mfd == "Fairway"||mfd == "Control Driver"||mfd == "Turn Driver"){
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Fairway detected!"));
+    disc_static_mesh = enum_disc_form::FAIRWAY;} 
+
+    if (mfd == "Distance Driver"||mfd == "Power Driver"||mfd == "Driver"){
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
+    disc_static_mesh = enum_disc_form::DRIVER;} 
 
     ptr_disc_projectile->set_disc_mesh(disc_static_mesh);
+/////////end Static Mesh setting for disc projectile/////////////////
 
+////////////base colouring setting for disc projectile//////////////
+
+
+////////end base colouring setting for disc projectile/////////////
+
+////////////texture setting for disc projectile////////////////////
+    //examples
+    //ptr_disc_projectile->set_disc_texture(FString ("https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"));
+    //ptr_disc_projectile->set_disc_texture(FString ("C:/Users/Crom/Pictures/cat.png"));
+   
+    FString filepath_to_disc_texture = FPaths::ProjectContentDir();
+    filepath_to_disc_texture += FString("/Raw_Disc_Textures/By_Mold/");
+    filepath_to_disc_texture += FString(throw_container.disc_object.mold_name);
+    filepath_to_disc_texture += FString(".png");
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, filepath_to_disc_texture);
+
+    ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
+////////end texture setting for disc projectile////////////////////
 
 
     const bool turn_off_collision   = false;

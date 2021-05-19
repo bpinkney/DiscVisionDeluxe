@@ -59,6 +59,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
 	void set_disc_mesh(enum_disc_form disc_static_mesh);
 
+	UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
+	void set_disc_texture(const FString & path_to_texture_file);
+
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
