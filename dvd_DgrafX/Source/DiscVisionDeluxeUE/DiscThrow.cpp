@@ -300,7 +300,7 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 {
   // use default for now
   disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0); // m/s
-  disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;//ZERO_DEAD_DIDDLY;
+  disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;
   disc_environment->air_density = ISA_RHO;
 }
 
@@ -647,7 +647,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 8771;
+  const int changevar = 353;
 
   if
   (
