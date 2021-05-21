@@ -238,8 +238,6 @@ void ADiscThrow::Tick(const float DeltaTime)
           
     //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString(" "))); 
 
-    
-    //ptr_disc_projectile->SetDiscPosRot(disc_position,disc_rotation,disc_velocity,disc_spin_rate);
 
     FVector orientationtestoutput = FVector (ii,jj,kk);
     ///log_string(ang_velocity.ToString());

@@ -37,7 +37,7 @@ ADiscCharacter::ADiscCharacter()
 void ADiscCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1);
 	////Finite state machine for character
 	FSM_character_state = enum_character_state::READY_TO_THROW;
 	//used to hold current state when pausing
