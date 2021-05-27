@@ -32,7 +32,7 @@ ADiscThrow::ADiscThrow()
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
   memset(&initial_release_stats, 0, sizeof(Initial_Release_Stats));
   memset(&flight_cumulative_stats, 0, sizeof(Flight_Cumulative_Stats));
-
+  memset(&throw_parameters, 0, sizeof(Throw_Parameters));
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +51,10 @@ void ADiscThrow::BeginPlay()
   ptr_disc_character = static_cast<ADiscCharacter*>(this->GetOwner());
   ptr_camera_manager = ptr_disc_character->ptr_camera_manager;
   follow_flight_hue = 000.0;
+
+  throw_parameters.set_disc_hue = (float)FMath::RandRange(1,360);
+  throw_parameters.set_rainbow = 0 == FMath::RandRange(0,3); 
+  throw_parameters.set_shape = (enum_ff_display_shape)FMath::RandRange(0,9);
   }
 
 }
@@ -500,7 +504,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     FString filepath_to_disc_texture = FPaths::ProjectContentDir();
     filepath_to_disc_texture += FString("/Raw_Disc_Textures/By_Mold/");
     filepath_to_disc_texture += FString(throw_container.disc_object.mold_name);
-    filepath_to_disc_texture += FString(".tha");
+    filepath_to_disc_texture += FString(".tga");
     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, filepath_to_disc_texture);
 
     //ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
@@ -522,11 +526,8 @@ void ADiscThrow::spawn_disc_and_follow_flight()
   FColor set_player_colour = FColor::Black;
   //enum_ff_display_shape set_shape = enum_ff_display_shape::Bandsaw;//Spiral;
   //bool set_rainbow = true;
-  float set_disc_hue = (float)FMath::RandRange(1,360);
-  bool set_rainbow = 0 == FMath::RandRange(0,3); 
-  enum_ff_display_shape set_shape = (enum_ff_display_shape)FMath::RandRange(0,9);
 
-  ptr_follow_flight->init (set_disc_hue,set_player_colour,set_shape,set_rainbow);
+  ptr_follow_flight->init (throw_parameters.set_disc_hue,set_player_colour,throw_parameters.set_shape,throw_parameters.set_rainbow);
 //////////////////end Follow flight spawn and init////////////////////////////////////
   
 }
@@ -911,6 +912,8 @@ void ADiscThrow::on_collision(
   }
   
 }
+
+float ADiscThrow::get_disc_hue() {return throw_parameters.set_disc_hue;}
 
 
 

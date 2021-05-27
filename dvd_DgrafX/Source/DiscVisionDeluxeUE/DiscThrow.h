@@ -50,7 +50,15 @@ public:
   	float current_turnfade; 
   	float current_wobble;
   };
+
   DfisX::Throw_Container throw_container;
+
+  struct Throw_Parameters
+  {
+  float set_disc_hue;
+  bool set_rainbow;
+  enum_ff_display_shape set_shape;
+  };
   
   UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="Disc Throwing")
   void log_string(const FString& stringlog);
@@ -75,16 +83,20 @@ public:
 
   Initial_Release_Stats initial_release_stats;
   Flight_Cumulative_Stats flight_cumulative_stats;
-  
-   Initial_Release_Stats* get_initial_release_stats();
-   Flight_Cumulative_Stats* get_flight_cumulative_stats();
-   void generate_flight_cumulative_stats();
+  Throw_Parameters throw_parameters;
+  Initial_Release_Stats* get_initial_release_stats();
+  Flight_Cumulative_Stats* get_flight_cumulative_stats();
+  void generate_flight_cumulative_stats();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+//Probably doesnt get used
   UFUNCTION(BlueprintImplementableEvent, Category="World Action Item")
   void DestroyDiscs();
+
+  UFUNCTION(BlueprintCallable, Category="Getters")
+  float get_disc_hue();
 
   void GenerateDiscEnv(DfisX::Disc_Env * disc_environment);
 
@@ -138,6 +150,13 @@ public:
   UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
   TSubclassOf<class ADiscProjectile> ProjectileClass;
 
+
+//Test1
+/* 
+   TEst 2
+*/
+// looks like only the latest comment type
+// gets used
   UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
   TSubclassOf<class AFollowFlight> FollowFlightBP;
 
