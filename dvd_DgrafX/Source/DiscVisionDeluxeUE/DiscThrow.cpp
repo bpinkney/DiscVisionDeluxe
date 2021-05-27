@@ -507,7 +507,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     filepath_to_disc_texture += FString(".tga");
     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, filepath_to_disc_texture);
 
-    //ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
+    ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
 ////////end texture setting for disc projectile////////////////////
 
 
