@@ -504,8 +504,9 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     FString filepath_to_disc_texture = FPaths::ProjectContentDir();
     filepath_to_disc_texture += FString("Raw_Disc_Textures/By_Mold/");
     filepath_to_disc_texture += FString(throw_container.disc_object.mold_name);
-    filepath_to_disc_texture += FString(".tga");
+    filepath_to_disc_texture += FString(".png");
     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, filepath_to_disc_texture);
+    filepath_to_disc_texture = FString("C:/DiscVisionDeluxe/dvd_DgrafX/Content/Raw_Disc_Textures/By_Mold/Buzzz.png");
 
     ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
 ////////end texture setting for disc projectile////////////////////
