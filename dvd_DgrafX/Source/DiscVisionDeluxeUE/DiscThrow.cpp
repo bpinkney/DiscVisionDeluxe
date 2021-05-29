@@ -288,10 +288,11 @@ TODO: nest these once good values are determined
     //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
     //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
     //landscape fall through safety check
-    if (zz<0) end_throw_simulation();    
-    if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)       end_throw_simulation();
-    if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
-    if (disc_velocity.Size() < end_throw_camera_velocity_cutoff) ptr_disc_projectile->end_of_throw_camera();
+    if (zz<0) end_throw_simulation();
+    // disable these duplicate calls
+    //if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)       end_throw_simulation();
+    //if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
+    //if (disc_velocity.Size() < end_throw_camera_velocity_cutoff) ptr_disc_projectile->end_of_throw_camera();
 
   }
 }
@@ -647,7 +648,23 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 353;
+  const int changevar = 5826;
+
+
+  // x5 thresholds for camera pan
+  if
+  (
+    DISABLE_COMPLEX_DISC_COLLISION
+    ||
+    (
+      throw_container.current_disc_state.disc_velocity.norm() < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS * 5.0
+      ||
+      abs(throw_container.current_disc_state.disc_rotation_vel) < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS * 5.0
+    )
+  )
+  {
+    ptr_disc_projectile->end_of_throw_camera();    
+  }  
 
   if
   (
@@ -660,7 +677,22 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    //ptr_disc_projectile->kill_control();    
+    ptr_disc_projectile->kill_control();    
+  }
+
+  // half thresholds for ending sim altogether
+  if
+  (
+    DISABLE_COMPLEX_DISC_COLLISION
+    ||
+    (
+      throw_container.current_disc_state.disc_velocity.norm() < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS * 0.5
+      &&
+      abs(throw_container.current_disc_state.disc_rotation_vel) < DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS * 0.5
+    )
+  )
+  {
+    end_throw_simulation();
   }
 
   // NOTE: Mike says this dt is incorrect, and we actually need to use the one
