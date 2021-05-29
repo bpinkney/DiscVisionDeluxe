@@ -1036,6 +1036,12 @@ int main(int argc, char** argv )
                     sprintf(output_cmd, "%s,", 
                       "hyzer:-0.26173,pitch:0.10885,posx:0.424,posy:0.093,posz:2.078,velx:19.621,vely:4.785,velz:2.194,spin_d:-71.48774,wobble:0.200,discmold:4");
                     break;
+                  case 555:
+                  // Flick ROLLER!
+                    sprintf(output_cmd, "%s,", 
+                      "hyzer:-1.2,pitch:0.0,posx:0.0,posy:0.0,posz:2.0,velx:18.0,vely:0.0,velz:1.0,spin_d:90.0,wobble:0.0,discmold:1");
+                    variety_throw++;
+                    break;
                   case 666:
                   // Basic Fast Throw, 10 degrees up, with discmold1
                     sprintf(output_cmd, "%s,", 
@@ -1057,7 +1063,7 @@ int main(int argc, char** argv )
                       case 1:
                         // Flick ROLLER!
                         sprintf(output_cmd, "%s,", 
-                          "hyzer:-1.5,pitch:0.0,posx:0.0,posy:0.0,posz:2.0,velx:18.0,vely:0.0,velz:1.0,spin_d:90.0,wobble:0.0,discmold:1");
+                          "hyzer:-1.2,pitch:0.0,posx:0.0,posy:0.0,posz:2.0,velx:18.0,vely:0.0,velz:1.0,spin_d:90.0,wobble:0.0,discmold:1");
                         variety_throw++;
                         break;
                       case 2:

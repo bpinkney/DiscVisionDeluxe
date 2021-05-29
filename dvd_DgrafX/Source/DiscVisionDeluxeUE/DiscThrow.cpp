@@ -648,7 +648,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 5826;
+  const int changevar = 9769;
 
 
   // x5 thresholds for camera pan
