@@ -67,9 +67,14 @@ namespace DfisX
         // Use DfisX local dt for this derivative since it is the only one we can trust (see Mike for details)
         // TODO: It would be nice to compute these in the torque space, but we don't actually know what
         // Unreal is doing wrt inertias, so subtracting things in the angular space is likely best for now
-        const float roll_X_collision_ang_accel  = throw_container->collision_input.ang_vel_delta_radps[0] / throw_container->collision_input.delta_time_s;
-        const float pitch_Y_collision_ang_accel = throw_container->collision_input.ang_vel_delta_radps[1] / throw_container->collision_input.delta_time_s;
+        float roll_X_collision_ang_accel  = throw_container->collision_input.ang_vel_delta_radps[0] / throw_container->collision_input.delta_time_s;
+        float pitch_Y_collision_ang_accel = throw_container->collision_input.ang_vel_delta_radps[1] / throw_container->collision_input.delta_time_s;
         //const float yaw_Z_collision_ang_torque   = throw_container->collision_input.ang_vel_delta_radps[2] / dt;
+
+        // Should we bound the incoming ang accel?
+        const float max_accel_rollpitch = 50.0; // rad/s^2
+        //BOUND_VARIABLE(roll_X_collision_ang_accel,  -max_accel_rollpitch, max_accel_rollpitch);
+        //BOUND_VARIABLE(pitch_Y_collision_ang_accel, -max_accel_rollpitch, max_accel_rollpitch);
 
         const double Ix = 1.0/4.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
         const double Iy = 1.0/4.0 * throw_container->disc_object.mass * (throw_container->disc_object.radius*throw_container->disc_object.radius);
@@ -88,7 +93,7 @@ namespace DfisX
         const float xy_rot_form_drag_limit = 0.13412;
         const float Cd_plate = 1.17;
 
-        // We'll compute the derivative of torque here based on the proposed ang vel delta from unreal
+        // We'll compute the delta torque here based on the proposed ang vel delta from unreal
         const float roll_reaction_dtorque_from_Unreal_propagated_ang_vel = 
           -signum(throw_container->collision_input.ang_vel_delta_radps[0]) *
           2.0 * xy_rot_form_drag_limit *
@@ -107,51 +112,140 @@ namespace DfisX
 
        
         // get the applied accel from the reaction torque
-        const float roll_reaction_accel  = roll_reaction_dtorque_from_Unreal_propagated_ang_vel  * throw_container->collision_input.delta_time_s / Ix;
-        const float pitch_reaction_accel = pitch_reaction_dtorque_from_Unreal_propagated_ang_vel * throw_container->collision_input.delta_time_s / Iy;
+        // should this be x^3/3 * dt?
+        const float roll_reaction_accel  = roll_reaction_dtorque_from_Unreal_propagated_ang_vel / Ix;
+        const float pitch_reaction_accel = pitch_reaction_dtorque_from_Unreal_propagated_ang_vel / Iy;
 
         // If the resistance torque is more than the collision applied, don't bother
         float roll_accel_corrected  = 0.0;
         //if(fabs(roll_reaction_accel) < fabs(roll_X_collision_ang_accel))
         //{
-          roll_accel_corrected = roll_X_collision_ang_accel - roll_reaction_accel;
+          roll_accel_corrected = roll_X_collision_ang_accel + roll_reaction_accel;
         //}
 
         float pitch_accel_corrected = 0.0;
         //if(fabs(pitch_reaction_accel) < fabs(pitch_Y_collision_ang_accel))
         //{
-          pitch_accel_corrected = pitch_Y_collision_ang_accel - pitch_reaction_accel;
+          pitch_accel_corrected = pitch_Y_collision_ang_accel + pitch_reaction_accel;
         //}
 
         ////////// also dupe precession for now (we'll make non duped functions later!)
-        if(abs(throw_container->current_disc_state.disc_rotation_vel) > 0.1)
+        //if(abs(throw_container->current_disc_state.disc_rotation_vel) > 0.1)
+        
+        // make this threshold triple DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS
+        // with the assumption that it should stop precessing before control transitions to unreal
+        if(abs(throw_container->collision_input.ang_vel_radps[2]) > 3.0)
         {
           const float new_pitch_moment = (pitch_accel_corrected * Iy);
           const float new_roll_moment =  (roll_accel_corrected * Ix);        
 
-          float Wp = -(new_roll_moment)  / (Iz * throw_container->current_disc_state.disc_rotation_vel);
-          float Wq =  (new_pitch_moment) / (Iz * throw_container->current_disc_state.disc_rotation_vel);
+          //float Wp = -(new_roll_moment)  / (Iz * throw_container->current_disc_state.disc_rotation_vel);
+         // float Wq =  (new_pitch_moment) / (Iz * throw_container->current_disc_state.disc_rotation_vel);
+
+          float Wp = -(new_roll_moment)  / (Iz * throw_container->collision_input.ang_vel_radps[2]);
+          float Wq =  (new_pitch_moment) / (Iz * throw_container->collision_input.ang_vel_radps[2]);
           // compute resulting angular torque from applied pitching moment vel
-          float Wq_d  = (Wq - throw_container->current_disc_state.disc_rolling_vel)  / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
-          float Wp_d  = (Wp - throw_container->current_disc_state.disc_pitching_vel) / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
+          //float Wq_d  = (Wq - throw_container->current_disc_state.disc_rolling_vel)  / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
+          //float Wp_d  = (Wp - throw_container->current_disc_state.disc_pitching_vel) / MAX(throw_container->collision_input.delta_time_s, CLOSE_TO_ZERO);
+          float Wq_d = 0.0;
+          float Wp_d = 0.0;
+          if(throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
+          {
+            Wq_d = (Wq - throw_container->collision_input.ang_vel_radps[0])  / throw_container->collision_input.delta_time_s;
+            Wp_d = (Wp - throw_container->collision_input.ang_vel_radps[1])  / throw_container->collision_input.delta_time_s;
+          }
+          
           float gyro_torque_y = Wp_d * Iy;
           float gyro_torque_x = Wq_d * Ix;
 
-          roll_accel_corrected  += gyro_torque_x;
-          pitch_accel_corrected += gyro_torque_y;
+          roll_accel_corrected  += (gyro_torque_x / Ix);
+          pitch_accel_corrected += (gyro_torque_y / Iy);
         }
         ////////// end duped precession
 
-        float roll_collision_torque_Nm  = roll_accel_corrected  * Ix;
-        float pitch_collision_torque_Nm = pitch_accel_corrected * Ix;
+        const float roll_collision_torque_Nm  = roll_accel_corrected  * Ix;
+        const float pitch_collision_torque_Nm = pitch_accel_corrected * Ix;
 
         // apply torques directly!
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = roll_collision_torque_Nm;
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_collision_torque_Nm;
-        
+
+        // compute delta vel instead and tack it on!
+        const float roll_vel_delta  = roll_accel_corrected  * throw_container->collision_input.delta_time_s;
+        const float pitch_vel_delta = pitch_accel_corrected * throw_container->collision_input.delta_time_s;
+
+        // Only the reaction torque and gyro precession from the unreal input torque
+        // can add this to the ang vel from unreal theoretically to get a better approximation
+        const float roll_vel_delta_minus_unreal  = (roll_accel_corrected  - roll_X_collision_ang_accel)  * throw_container->collision_input.delta_time_s;
+        const float pitch_vel_delta_minus_unreal = (pitch_accel_corrected - pitch_Y_collision_ang_accel) * throw_container->collision_input.delta_time_s;
+
+        //throw_container->current_disc_state.disc_rolling_vel  += roll_vel_delta;
+        //throw_container->current_disc_state.disc_pitching_vel += pitch_vel_delta;
+
+        // Update disc normal to the nonsense that unreal gives us
+        // We'll tack on the propagation from precession and paddle aero effects below?
+        throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
+        throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
+        throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
+
+        // Copied from Dpropagate
+        // only for the vel component applied during the collision (we don't want to dupe the normal propagation)
+        // Determine the change to the Z unit vector due to the roll and pitch changes (rotate in that order!)
+        // Should we be updating the X and Y unit vectors here as well?? They are not orthonormal after this if not
+        const float roll_propagation_rad  = 
+          roll_vel_delta  * throw_container->collision_input.delta_time_s;
+        const float pitch_propagation_rad = 
+          pitch_vel_delta * throw_container->collision_input.delta_time_s;
+
+        // compute the change in rotation we need to apply to the Z unit vector by using a rotation matrix
+        // Note this is column major, so it is really the transpose of what you see here.
+        Eigen::Matrix3d Rx; 
+        Rx <<   1, 0, 0,
+                0, cos(roll_propagation_rad), -sin(roll_propagation_rad),
+                0, sin(roll_propagation_rad),  cos(roll_propagation_rad);
+        // per the note above, we need to transpose this to get column major (which makes the most sense with how this is written out! bah Eigen!)
+         Rx = Rx.transpose();
+            // Note this is column major, so it is really the transpose of what you see here.
+        Eigen::Matrix3d Ry; 
+        Ry <<   cos(pitch_propagation_rad), 0, sin(pitch_propagation_rad),
+                0, 1, 0,
+                -sin(pitch_propagation_rad), 0, cos(pitch_propagation_rad);
+        // per the note above, we need to transpose this to get column major (which makes the most sense with how this is written out! bah Eigen!)
+        Ry = Ry.transpose();
+
+        // formulate the rotation matrix to bring this back to the world frame next
+        // Rememnber this is column-major (ok, so I just wrote this one backward)
+        Eigen::Matrix3d Rdw; 
+        Rdw << throw_container->current_disc_state.disc_orient_x_vect[0], throw_container->current_disc_state.disc_orient_y_vect[0], throw_container->current_disc_state.disc_orient_z_vect[0],
+               throw_container->current_disc_state.disc_orient_x_vect[1], throw_container->current_disc_state.disc_orient_y_vect[1], throw_container->current_disc_state.disc_orient_z_vect[1],
+               throw_container->current_disc_state.disc_orient_x_vect[2], throw_container->current_disc_state.disc_orient_y_vect[2], throw_container->current_disc_state.disc_orient_z_vect[2];
+
+        // it is perhaps simpler to just compute the z unit vector change for the two axes?
+        // this almost works around the roll -> pitch sequential rotation losses?
+        Eigen::Vector3d base_z = {0,0,1};
+
+        Eigen::Vector3d z_unit_delta = {0,0,0};
+        z_unit_delta += (Rx * base_z - base_z);
+        z_unit_delta += (Ry * base_z - base_z);
+
+        z_unit_delta = Rdw * z_unit_delta;
+        // Update the vector
+        // doing an update here seems to cause a lot of clipping.... so I guess we can leave it up to the sim dt propagation in Dpropagate
+        // and simply update the ang velocities here? hmm
+/*        throw_container->current_disc_state.disc_orient_z_vect += z_unit_delta;
+
+        // Now let's re-compute the unit X and Y vectors (like we do in Daero) to ensure that they are still
+        // orthonormal to the disx Z normal
+        // re-normalize just in case
+        d_state.disc_orient_z_vect /= d_state.disc_orient_z_vect.norm();
+        d_state.disc_orient_y_vect = d_forces.disc_velocity_unit_vector.cross(d_state.disc_orient_z_vect);
+        d_state.disc_orient_y_vect /= d_state.disc_orient_y_vect.norm();
+        d_state.disc_orient_x_vect = d_state.disc_orient_y_vect.cross(d_state.disc_orient_z_vect);
+        d_state.disc_orient_x_vect /= d_state.disc_orient_x_vect.norm();*/
+          
         // finally, we bound the acceleration in case it is nonsense as a precaution
         
-        const float max_accel_rollpitch = 50.0; // rad/s^2
+        //const float max_accel_rollpitch = 50.0; // rad/s^2
         //BOUND_VARIABLE(roll_accel_corrected,  -max_accel_rollpitch, max_accel_rollpitch);
         //BOUND_VARIABLE(pitch_accel_corrected, -max_accel_rollpitch, max_accel_rollpitch);
 
@@ -174,18 +268,13 @@ namespace DfisX
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_impulses_Nm[2];
 
 
-
-        //throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
-        //throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
-        //throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
-
         //BOUND_VARIABLE(throw_container->collision_input.ang_vel_radps[0], -2, 2);
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
 
-        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
-        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
+        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0] + roll_vel_delta_minus_unreal;
+        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1] + pitch_vel_delta_minus_unreal;
         throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
 
       }
@@ -448,7 +537,7 @@ namespace DfisX
       // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
       // If you can get all these flying OK, you've got a decent tuning!
 
-      //disc_mold = find_disc_mold_index_by_name("Roadrunner");
+      //disc_mold = find_disc_mold_index_by_name("Firebird");
       gyromode =  !gyromode;
 
       if(0)
