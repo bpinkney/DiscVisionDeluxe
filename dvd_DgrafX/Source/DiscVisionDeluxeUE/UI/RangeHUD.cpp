@@ -145,6 +145,12 @@ void ARangeHUD::main_menu_choose_location_btn()
 
 }
 
+	
+void ARangeHUD::set_minimap_target(int teepad_number)
+{
+	MapWidget->set_minimap_target(teepad_number);
+}
+
 double ARangeHUD::GetGenThrow1Input()
 {
 	return DebugWidget->GetGenThrow1Input();

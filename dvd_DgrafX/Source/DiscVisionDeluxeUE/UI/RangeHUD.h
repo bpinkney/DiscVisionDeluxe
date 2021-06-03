@@ -58,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Buttons")
 	void main_menu_choose_location_btn();
 
+	UFUNCTION(BlueprintCallable, Category="Passthrough")
+	void set_minimap_target(int teepad_number);
+
 	UFUNCTION()
 	double GetGenThrow1Input();
 	UFUNCTION()

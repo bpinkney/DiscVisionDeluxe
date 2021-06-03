@@ -33,4 +33,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Functions")
 	void draw_line_from_disc_throw_ptr(ADiscThrow* ptr_disc_throw);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Functions")
+	void set_minimap_target(int teepad_number);
+
 };

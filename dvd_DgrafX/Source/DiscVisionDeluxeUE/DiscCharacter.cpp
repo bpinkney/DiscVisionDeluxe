@@ -8,12 +8,13 @@
 #include "DiscProjectile.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "ThrowInputController.h"
+#include "UI/RangeHUD.h"
 
 // DfisX stuff
 #include "dvd_maths.hpp"
 #include "DfisX\DfisX.hpp"
-#include "ThrowInputController.h"
+
 
 
 #define one_throw_at_a_time true
@@ -27,9 +28,6 @@ ADiscCharacter::ADiscCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	teepad_locations_iterator = 0;
-
-
-
 }
 
 // Called when the game starts or when spawned
@@ -61,12 +59,7 @@ void ADiscCharacter::BeginPlay()
   ptr_throw_input_controller = GetWorld()->SpawnActor<AThrowInputController>(ThrowInputControllerBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
 
 
-	if (GEngine)
-	{
-		// Put up a debug message for five seconds. The -1 "Key" value (first argument) indicates that we will never need to update or refresh this message.
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using DiscCharacter."));
-	}
-	
+
 }
 
 
@@ -74,8 +67,7 @@ void ADiscCharacter::BeginPlay()
 // Called every frame
 void ADiscCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-	
+	Super::Tick(DeltaTime);	
   //RunTimingLoops();
 }
 
@@ -84,8 +76,8 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &ADiscCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ADiscCharacter::MoveRight);	
+	//PlayerInputComponent->BindAxis("MoveForward", this, &ADiscCharacter::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &ADiscCharacter::MoveRight);	
 
 	//Set up "action" bindings.
 	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
@@ -130,21 +122,24 @@ void ADiscCharacter::main_menu_choose_location_btn()
     ETeleportType::None);
     ptr_camera_manager->focus_on_player();
 
+    ARangeHUD * rangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+    rangeHUD->set_minimap_target(teepad_locations_iterator);
+
 
 }
 
 void ADiscCharacter::MoveForward(float Value)
 {
 	// Find out which way is "forward" and record that the player wants to move that way.
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, Value);
+	//FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	//AddMovementInput(Direction, Value);
 }
 
 void ADiscCharacter::MoveRight(float Value)
 {
   // Find out which way is "right" and record that the player wants to move that way.
-  FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-  AddMovementInput(Direction, Value);
+  //FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+  //AddMovementInput(Direction, Value);
 }
 
 
@@ -164,22 +159,15 @@ void ADiscCharacter::Quit()
     UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
   
 }
+
+
     void ADiscCharacter::Action1()
 {
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 1");
-SetActorLocationAndRotation(FVector(-381,-1300,3091),FRotator(0,-90,0), false, 0, ETeleportType::None);
-APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-PC->SetControlRotation(FRotator(0,-90,0));
-
-
 }
     void ADiscCharacter::Action2()
 {
 GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, "Action 2");
-SetActorLocationAndRotation(FVector(-360,-70,3091),FRotator(0,0,0), false, 0, ETeleportType::None);
-APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-PC->AController::SetControlRotation(FRotator(0,0,0));
-
 }
     void ADiscCharacter::Action3()
 {
