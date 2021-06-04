@@ -13,14 +13,8 @@
 
 // include for debug stuff
 #include "Daero.hpp"
-
 #include "UI/RangeHUD.h"
 
-
-/////decent values 500,100,35
-#define end_throw_camera_velocity_cutoff 500.0
-#define kill_control_velocity_cutoff     100.0
-#define end_throw_velocity_cutoff        35.0
 
 #define desired_dfisx_dt                 0.01
   // Sets default values
@@ -474,22 +468,24 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     FString mfd = throw_container.disc_object.disc_type;      
 
     if (mfd == "Putter" ||mfd == "Beaded Putter" ||mfd == "Putt & Approach"){
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Putter detected!"));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Putter detected!"));
     disc_static_mesh = enum_disc_form::PUTTER;}
 
     if (mfd == "Midrange Driver" || mfd == "Midrange"){
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Mid detected!"));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Mid detected!"));
     disc_static_mesh = enum_disc_form::MIDRANGE;} 
 
     if (mfd == "Fairway Driver"||mfd == "Fairway"||mfd == "Control Driver"||mfd == "Turn Driver"){
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Fairway detected!"));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Fairway detected!"));
     disc_static_mesh = enum_disc_form::FAIRWAY;} 
 
     if (mfd == "Distance Driver"||mfd == "Power Driver"||mfd == "Driver"){
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
     disc_static_mesh = enum_disc_form::DRIVER;} 
 
-    ptr_disc_projectile->set_disc_mesh(disc_static_mesh);
+
+    float disc_mass = throw_container.disc_object.mass;
+    ptr_disc_projectile->set_disc_mesh_and_mass(disc_static_mesh,disc_mass);
 /////////end Static Mesh setting for disc projectile/////////////////
 
 ////////////base colouring setting for disc projectile//////////////
@@ -506,7 +502,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     filepath_to_disc_texture += FString("Raw_Disc_Textures/By_Mold/");
     filepath_to_disc_texture += FString(throw_container.disc_object.mold_name);
     filepath_to_disc_texture += FString(".png");
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, filepath_to_disc_texture);
+    GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, filepath_to_disc_texture);
     //filepath_to_disc_texture = FString("C:/DiscVisionDeluxe/dvd_DgrafX/Content/Raw_Disc_Textures/By_Mold/Buzzz.png");
 
     ptr_disc_projectile->set_disc_texture(filepath_to_disc_texture);
@@ -536,21 +532,18 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
 void ADiscThrow::end_throw_simulation ()
 {
+  if (is_throw_simulating)
+  {
   is_throw_simulating = false;
   ptr_follow_flight->unselect();
   ptr_disc_character->throw_was_finished();
   ptr_disc_projectile->DisableComponentsSimulatePhysics();
+  GEngine->AddOnScreenDebugMessage(204, 5.0f, FColor::Blue, FString("4    End of throw calculations success"));
+  }
 }
 
-ADiscThrow::Initial_Release_Stats* ADiscThrow::get_initial_release_stats()
-  {
-    return &initial_release_stats;
-  }
-
-ADiscThrow::Flight_Cumulative_Stats* ADiscThrow::get_flight_cumulative_stats()
-  {
-    return &flight_cumulative_stats;
-  }
+ADiscThrow::Initial_Release_Stats*   ADiscThrow::get_initial_release_stats()  {return &initial_release_stats;}
+ADiscThrow::Flight_Cumulative_Stats* ADiscThrow::get_flight_cumulative_stats(){return &flight_cumulative_stats;}
 
 void ADiscThrow::generate_flight_cumulative_stats()
 {
@@ -611,8 +604,8 @@ void ADiscThrow::generate_flight_cumulative_stats()
 #define DISABLE_COMPLEX_DISC_COLLISION (false)
 // disables aero and DfisX if both of these conditions are met
 // disable for now
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (0.3)
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (1.0)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (0.5)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (2.0)
 
 double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 
 {
@@ -650,8 +643,14 @@ void ADiscThrow::on_collision(
   // change this unused variable randomly using sed to force unreal to rebuild
   const int changevar = 9769;
 
-
+  //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
+  FString display_speed_threshold = FString("Speed threshold: ") + FString::SanitizeFloat(DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS) + FString("   Speed actual: ") + FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity.norm()) ;
+  FString display_spin_threshold = FString("Spin threshold: ") + FString::SanitizeFloat(DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS) + FString("   Spin actual: ") + FString::SanitizeFloat(abs(throw_container.current_disc_state.disc_rotation_vel)) ;
+
+  GEngine->AddOnScreenDebugMessage(210, 15.0f, FColor::Orange,display_speed_threshold );
+  GEngine->AddOnScreenDebugMessage(211, 15.0f, FColor::Orange,display_spin_threshold );
+
   if
   (
     DISABLE_COMPLEX_DISC_COLLISION
@@ -663,7 +662,8 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    ptr_disc_projectile->end_of_throw_camera();    
+    ptr_disc_projectile->end_of_throw_camera();
+    GEngine->AddOnScreenDebugMessage(201, 5.0f, FColor::Blue, FString("1/2  End of throw camera"));    
   }  
 
   if
@@ -677,7 +677,8 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    ptr_disc_projectile->kill_control();    
+    ptr_disc_projectile->kill_control();
+    GEngine->AddOnScreenDebugMessage(202, 5.0f, FColor::Blue, FString("1/2  End DfisX"));    
   }
 
   // half thresholds for ending sim altogether
@@ -692,7 +693,9 @@ void ADiscThrow::on_collision(
     )
   )
   {
-    end_throw_simulation();
+    // should be paired with a success
+    GEngine->AddOnScreenDebugMessage(203, 5.0f, FColor::Blue, FString("3    End of throw calculations called"));
+    end_throw_simulation(); 
   }
 
   // NOTE: Mike says this dt is incorrect, and we actually need to use the one

@@ -35,6 +35,7 @@ public:
 	enum_character_state FSM_character_state;
 	enum_character_state FSM_held_state;
 	FString context_string;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FString location_name_string;
 
 

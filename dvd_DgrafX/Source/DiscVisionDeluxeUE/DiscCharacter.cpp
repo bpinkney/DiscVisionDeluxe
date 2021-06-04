@@ -69,6 +69,8 @@ void ADiscCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
   //RunTimingLoops();
+	
+	GEngine->AddOnScreenDebugMessage(100, 15.0f, FColor::White, get_state_display_string());
 }
 
 // Called to bind functionality to input
@@ -207,24 +209,18 @@ FString ADiscCharacter::get_state_display_string()
 }
 
 //fsm transitions
-void ADiscCharacter::disc_was_thrown()
-  {if (one_throw_at_a_time) {FSM_character_state = enum_character_state::SIMULATING;
-  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());}}
-void ADiscCharacter::throw_was_finished()
-  {if (one_throw_at_a_time) {FSM_character_state = enum_character_state::READY_TO_THROW;
-  GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());}}
+void ADiscCharacter::disc_was_thrown()    {if (one_throw_at_a_time) FSM_character_state = enum_character_state::SIMULATING;}
+void ADiscCharacter::throw_was_finished() {if (one_throw_at_a_time) FSM_character_state = enum_character_state::READY_TO_THROW;}
 
 void ADiscCharacter::character_was_paused()
 {
   if (!get_is_paused()) FSM_held_state = FSM_character_state;
     FSM_character_state = enum_character_state::PAUSED;
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());
     UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0);
 }
 void ADiscCharacter::pause_was_finished()
-  {
+ {
   	FSM_character_state = FSM_held_state;
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,get_state_display_string());
     UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
 }
 //fsm getters
