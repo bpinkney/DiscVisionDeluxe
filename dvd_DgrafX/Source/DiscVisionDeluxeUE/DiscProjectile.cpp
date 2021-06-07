@@ -34,7 +34,6 @@ void ADiscProjectile::BeginPlay()
 
 }
 
-
 // Called every frame
 void ADiscProjectile::Tick(float DeltaTime)
 {
