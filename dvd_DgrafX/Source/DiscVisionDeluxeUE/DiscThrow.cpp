@@ -20,8 +20,6 @@
   // Sets default values
 ADiscThrow::ADiscThrow()
 {
-   
-
   PrimaryActorTick.bCanEverTick = true;
   memset(&throw_container, 0, sizeof(DfisX::Throw_Container));
   memset(&initial_release_stats, 0, sizeof(Initial_Release_Stats));
@@ -50,18 +48,17 @@ void ADiscThrow::BeginPlay()
   throw_parameters.set_rainbow = 0 == FMath::RandRange(0,3); 
   throw_parameters.set_shape = (enum_ff_display_shape)FMath::RandRange(0,9);
   }
-
 }
 
 // Called every frame
 void ADiscThrow::Tick(const float DeltaTime)
 {
-  Super::Tick(DeltaTime);
-  ptr_disc_projectile->set_dither_location();
+  
+  
 //pause checker as we use global time dilation for pausing
   if (is_throw_simulating&&DeltaTime>0.00001)
   {
-
+    Super::Tick(DeltaTime);
 
 //////////////////////////Dfisx substepping//////////////////////////
     if (DeltaTime>desired_dfisx_dt)
@@ -254,6 +251,7 @@ void ADiscThrow::Tick(const float DeltaTime)
     log_string(orientationtestoutput.ToString());
     log_string(FString(" "));
     ptr_disc_projectile->SetDiscVelRot(disc_velocity, ang_velocity, disc_rotation, -disc_state.disc_rotation);
+    ptr_disc_projectile->set_dither_location();
     //finish converting dfisx disc state into unreal usable forms
 
     // read back to check
@@ -273,20 +271,8 @@ void ADiscThrow::Tick(const float DeltaTime)
     ptr_follow_flight->log_position();
     ptr_flight_log->log_position(DeltaTime);
     
-
-    /////////////velocity cutoff event state checks/////////////////////////////////
-    //
-/*
-TODO: nest these once good values are determined
-*/
-    //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green,FString::SanitizeFloat(disc_velocity.Size()));
-    //GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red,FString::SanitizeFloat(ang_velocity.Size()));
     //landscape fall through safety check
     if (zz<0) end_throw_simulation();
-    // disable these duplicate calls
-    //if ((disc_velocity.Size()+ang_velocity.Size()) < end_throw_velocity_cutoff)       end_throw_simulation();
-    //if (disc_velocity.Size() < kill_control_velocity_cutoff)     ptr_disc_projectile->kill_control();
-    //if (disc_velocity.Size() < end_throw_camera_velocity_cutoff) ptr_disc_projectile->end_of_throw_camera();
 
   }
 }
@@ -299,6 +285,22 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
   disc_environment->wind_vector_xyz = Eigen::Vector3d(0,0,0); // m/s
   disc_environment->gust_factor = DfisX::Gust_Factor::ZERO_DEAD_DIDDLY;
   disc_environment->air_density = ISA_RHO;
+}
+
+
+void ADiscThrow::near_ground_detected(
+  float height_off_ground, 
+  FVector landscape_normal,
+  FString physics_material_name,
+  float density_of_fluidgrass,        //kg/m^3
+  float height_of_fluidgrass)       //m
+
+{
+  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));
+  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, physics_material_name);
+  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
+  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(density_of_fluidgrass));
+  ;
 }
 
 
@@ -373,7 +375,7 @@ void ADiscThrow::new_throw_world_frame(
     thrown_disc_radians_per_second,
     thrown_disc_wobble);
 
-  spawn_disc_and_follow_flight();
+    spawn_disc_and_follow_flight();
 
 
 ////////////////////////print disc name/////////////
@@ -447,20 +449,23 @@ void ADiscThrow::new_throw_world_frame(
 
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
+
+  //////////BP spawn and unreal stuff////////////////////
   is_throw_simulating = true;
   
 
-    // Get the camera transform.
-    FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
-    FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();
+  // Get the camera transform.
+  FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
+  FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();
     
-    UWorld* World = GetWorld();
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.Owner = this;
-    SpawnParams.Instigator = ptr_disc_character;
+  UWorld* World = GetWorld();
+  FActorSpawnParameters SpawnParams;
+  SpawnParams.Owner = this;
+  SpawnParams.Instigator = ptr_disc_character;
 
-    ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
-    AddTickPrerequisiteActor(ptr_disc_projectile);
+  ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
+  AddTickPrerequisiteActor(ptr_disc_projectile);
+  //////////end BP spawn and unreal stuff////////////////////
   
 ////////////Static Mesh setting for disc projectile/////////////
     enum_disc_form disc_static_mesh = enum_disc_form::FRISBEE;   
@@ -489,8 +494,6 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 /////////end Static Mesh setting for disc projectile/////////////////
 
 ////////////base colouring setting for disc projectile//////////////
-
-
 ////////end base colouring setting for disc projectile/////////////
 
 ////////////texture setting for disc projectile////////////////////
@@ -515,10 +518,10 @@ void ADiscThrow::spawn_disc_and_follow_flight()
     if(!turn_off_follow_cam) ptr_camera_manager->focus_on_disc(ptr_disc_projectile);
   
 /////////////////Follow flight spawn and init////////////////////////////////
-    SpawnParams.Owner = ptr_disc_projectile;
-    ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    ptr_flight_log    = World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
-    ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
+  SpawnParams.Owner = ptr_disc_projectile;
+  ptr_follow_flight = World->SpawnActor<AFollowFlight>(FollowFlightBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+  ptr_flight_log    = World->SpawnActor<AFlightLog>(FlightLogBP, FVector(0,0,0), FRotator(0,0,0), SpawnParams);
+  ptr_flight_log->ptr_disc_projectile = ptr_disc_projectile;
 
   //float set_disc_hue = 0.00;
   FColor set_player_colour = FColor::Black;
@@ -537,7 +540,8 @@ void ADiscThrow::end_throw_simulation ()
   is_throw_simulating = false;
   ptr_follow_flight->unselect();
   ptr_disc_character->throw_was_finished();
-  ptr_disc_projectile->DisableComponentsSimulatePhysics();
+  ///this was stopping at the wrong moment, could add delay, will just kill control for now
+  //ptr_disc_projectile->DisableComponentsSimulatePhysics();
   GEngine->AddOnScreenDebugMessage(204, 5.0f, FColor::Blue, FString("4    End of throw calculations success"));
   }
 }
@@ -547,6 +551,9 @@ ADiscThrow::Flight_Cumulative_Stats* ADiscThrow::get_flight_cumulative_stats(){r
 
 void ADiscThrow::generate_flight_cumulative_stats()
 {
+
+
+  //TODO put into own function (to disable for cx builds) or remove when usefulness is over
     ARangeHUD* RangeHUD = Cast<ARangeHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
     if (RangeHUD)
     {
@@ -595,16 +602,12 @@ void ADiscThrow::generate_flight_cumulative_stats()
     
 
     flight_cumulative_stats.current_wobble     = 0; ///will add later
-
-
-
 }
 
 // disables aero and DfisX immediately after a hit
 #define DISABLE_COMPLEX_DISC_COLLISION (false)
 // disables aero and DfisX if both of these conditions are met
-// disable for now
-#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (0.5)
+#define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS (2.0)
 #define DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS (2.0)
 
 double           angle_between_vectors    (Eigen::Vector3d a, Eigen::Vector3d b) 

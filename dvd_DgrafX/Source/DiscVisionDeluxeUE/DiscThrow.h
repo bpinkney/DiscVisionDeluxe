@@ -147,6 +147,9 @@ public:
   UFUNCTION(BlueprintCallable, Category="Disc Throwing")
   void spawn_disc_and_follow_flight();
 
+  UFUNCTION(BlueprintCallable, Category="Disc Throwing")
+  void near_ground_detected(float height_off_ground, FVector landscape_normal,FString physics_material_name,float density_of_fluidgrass,float height_of_fluidgrass);
+
   UPROPERTY(EditDefaultsOnly, Category = "Blueprints")
   TSubclassOf<class ADiscProjectile> ProjectileClass;
 
