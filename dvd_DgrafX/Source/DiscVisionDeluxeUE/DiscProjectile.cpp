@@ -2,7 +2,7 @@
 
 #include "DiscProjectile.h"
 #include <math.h>
-#include "DfisX\DfisX.hpp"
+//#include "DfisX\DfisX.hpp"
 //#include "Components/SphereComponent.h"
 //#include "GameFramework/ProjectileMovementComponent.h"
 
@@ -34,6 +34,39 @@ void ADiscProjectile::BeginPlay()
 
 }
 
+void ADiscProjectile::initialize_custom_disc(const Custom_disc & custom_disc)
+{
+	/*
+	FString 		mold_name		="None";					//for lookup with disc params
+	enum_disc_form 	mold_form		=enum_disc_form::FRISBEE; 	//see above
+	float			disc_mass  		=0.175						//mass in kg
+	float 			disc_wear		=0.0;   					//0..1
+	FColor			base_colour		=FColor::Red;				//main colour of plastic
+	FColor			secondary_colour=FColor::Blue;				//colour of patterning on disc
+	FColor			rim_colour		=FColor::Black;				//colour of rim
+	FString			decal_path		="None.png";				//filepath to decal texture
+	int 			pattern_enum	=1;							//TODO change to pattern enum when implemented
+	FString			player_name     ="";					//the player who created disc
+	FDateTime		date_created; 								//date of creation
+	*/
+	if (custom_disc.player_name=="")   //not form a player bag ; this would be if this disc is initialized from a throw generator or somesuch
+	{
+
+
+
+	} else  // normal case
+	{
+
+	set_disc_mesh_and_mass(custom_disc.mold_form,custom_disc.disc_mass);
+	//set_disc_base_colour 		(base_colour);
+	//set_disc_secondary_colour (secondary_colour);
+	//set_disc_rim_colour  		(rim_colour);
+	set_disc_texture(custom_disc.decal_path);
+	//set_disc_pattern (TODO)
+
+	}
+
+}
 // Called every frame
 void ADiscProjectile::Tick(float DeltaTime)
 {

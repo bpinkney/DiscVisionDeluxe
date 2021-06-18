@@ -289,9 +289,9 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 
 
 void ADiscThrow::near_ground_detected(
-  float height_off_ground, 
-  FVector landscape_normal,
-  FString physics_material_name,
+  float height_off_ground,           //in cm
+  FVector landscape_normal,          
+  FString physics_material_name,     //
   float density_of_fluidgrass,        //kg/m^3
   float height_of_fluidgrass)       //m
 
@@ -452,8 +452,6 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
   //////////BP spawn and unreal stuff////////////////////
   is_throw_simulating = true;
-  
-
   // Get the camera transform.
   FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
   FVector current_location = forward_offset + ptr_disc_character->GetActorLocation();
