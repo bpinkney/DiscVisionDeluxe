@@ -30,6 +30,9 @@ class DISCVISIONDELUXEUE_API ACameraManager : public APlayerCameraManager
 	UFUNCTION(BlueprintImplementableEvent, Category="Camera Management")
 	void focus_on_teepad(int teepad_id);
 
+	UFUNCTION(BlueprintImplementableEvent, Category="Camera Management")
+	void focus_on_bag_maker();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Camera Management")
 	AActor* disc_target;
 	

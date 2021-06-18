@@ -9,6 +9,7 @@
 #include "DebugWidget.h"
 #include "../DiscCharacter.h"
 #include "MainMenuWidget.h"
+#include "BagMakerWidget.h"
 #include "MapUserWidget.h"
 #include "../DiscThrow.h"
 #include "RangeHUD.generated.h"
@@ -57,6 +58,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Buttons")
 	void main_menu_choose_location_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_bag_maker_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void bag_maker_exit_btn();
 
 	UFUNCTION(BlueprintCallable, Category="Passthrough")
 	void set_minimap_target(int teepad_number);
@@ -150,6 +157,9 @@ public:
 	TSubclassOf<UMainMenuWidget> MainMenuClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UBagMakerWidget> BagMakerClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> RangeDebugClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -188,6 +198,7 @@ private:
     UMainMenuWidget* MainMenuWidget;
 	UDebugWidget* DebugWidget;
 	UMapUserWidget* MapWidget;
+	UBagMakerWidget* BagMakerWidget;
 
 
 };

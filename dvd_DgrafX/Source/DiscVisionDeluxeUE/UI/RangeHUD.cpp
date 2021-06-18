@@ -57,6 +57,11 @@ void ARangeHUD::BeginPlay()
 
 	}
 
+		if (BagMakerClass)
+	{
+		BagMakerWidget = CreateWidget<UBagMakerWidget>(GetWorld(), BagMakerClass);
+	}
+
 	if (MapDebugClass)
 	{
 		MapWidget = CreateWidget<UMapUserWidget>(GetWorld(), MapDebugClass);
@@ -141,8 +146,25 @@ void ARangeHUD::main_menu_choose_location_btn()
 	{
 			MainMenuWidget->RemoveFromViewport();
 	}
+}
 
+void ARangeHUD::main_menu_bag_maker_btn()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" bag maker"));
+	ptr_disc_character->main_menu_bag_maker_btn();
+		if (MainMenuWidget)
+	{
+			MainMenuWidget->RemoveFromViewport();
+	}
+	BagMakerWidget->AddToViewport();
+}
 
+void ARangeHUD::bag_maker_exit_btn()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString("exit bag maker"));
+	ptr_disc_character->bag_maker_exit_btn();
+	BagMakerWidget->RemoveFromViewport();
+	MainMenuWidget->AddToViewport();
 }
 
 	

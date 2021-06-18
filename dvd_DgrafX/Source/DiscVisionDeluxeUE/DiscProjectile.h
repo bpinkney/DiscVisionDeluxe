@@ -31,7 +31,6 @@ struct Custom_disc
 	FColor			base_colour		=FColor::Red;				//main colour of plastic
 	FColor			secondary_colour=FColor::Blue;				//colour of patterning on disc
 	FColor			rim_colour		=FColor::Black;				//colour of rim
-	bool			is_rim_colour	=false;				        //
 	FString			decal_path		="None.png";				//filepath to decal texture
 	int 			pattern_enum	=1;							//TODO change to pattern enum when implemented
 	FString			player_name		="";						//the player who created disc

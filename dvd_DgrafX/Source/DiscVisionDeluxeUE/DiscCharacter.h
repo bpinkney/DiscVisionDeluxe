@@ -62,6 +62,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Buttons")
 	void main_menu_choose_location_btn();
 
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void main_menu_bag_maker_btn();
+
+	UFUNCTION(BlueprintCallable, Category="Buttons")
+	void bag_maker_exit_btn();
+
 
 
 	// Handles input for moving forward and backward.

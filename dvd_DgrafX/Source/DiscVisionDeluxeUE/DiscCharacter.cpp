@@ -130,6 +130,19 @@ void ADiscCharacter::main_menu_choose_location_btn()
 
 }
 
+void ADiscCharacter::main_menu_bag_maker_btn()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+	ptr_camera_manager->focus_on_bag_maker ();
+}
+
+void ADiscCharacter::bag_maker_exit_btn()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+	ptr_camera_manager->focus_on_player ();
+}
+
+
 void ADiscCharacter::MoveForward(float Value)
 {
 	// Find out which way is "forward" and record that the player wants to move that way.
