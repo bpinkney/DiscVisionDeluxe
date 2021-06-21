@@ -48,18 +48,28 @@ void ARangeHUD::BeginPlay()
 		if (DebugWidget)
 		{
 			DebugWidget->AddToViewport();
+			DebugWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 
 		if (MainMenuClass)
 	{
 		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuClass);
-
+		if (MainMenuWidget)
+		{
+			MainMenuWidget->AddToViewport();
+			MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 
 		if (BagMakerClass)
 	{
 		BagMakerWidget = CreateWidget<UBagMakerWidget>(GetWorld(), BagMakerClass);
+		if (BagMakerWidget)
+		{
+			BagMakerWidget->AddToViewport();
+			BagMakerWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 
 	if (MapDebugClass)
@@ -106,8 +116,12 @@ void ARangeHUD::main_menu_open_btn()
 	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm open btn"));
 			if (MainMenuWidget)
 		{
-			MainMenuWidget->AddToViewport();
-			ptr_disc_character->character_was_paused();
+			MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+			//UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0);
+			if (IsValid(ptr_disc_character))
+			{
+				ptr_disc_character->character_was_paused();
+			}
 		}
 }
 
@@ -118,7 +132,7 @@ void ARangeHUD::main_menu_cancel_btn()
 	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" mm cancel btn"));
 				if (MainMenuWidget)
 		{
-			MainMenuWidget->RemoveFromViewport();
+			MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 			ptr_disc_character->pause_was_finished();
 		}
 }
@@ -154,17 +168,17 @@ void ARangeHUD::main_menu_bag_maker_btn()
 	ptr_disc_character->main_menu_bag_maker_btn();
 		if (MainMenuWidget)
 	{
-			MainMenuWidget->RemoveFromViewport();
+			MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	BagMakerWidget->AddToViewport();
+	BagMakerWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void ARangeHUD::bag_maker_exit_btn()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString("exit bag maker"));
 	ptr_disc_character->bag_maker_exit_btn();
-	BagMakerWidget->RemoveFromViewport();
-	MainMenuWidget->AddToViewport();
+	BagMakerWidget->SetVisibility(ESlateVisibility::Hidden);
+	MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 	

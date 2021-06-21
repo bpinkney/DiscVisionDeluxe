@@ -228,8 +228,8 @@ void ADiscCharacter::throw_was_finished() {if (one_throw_at_a_time) FSM_characte
 void ADiscCharacter::character_was_paused()
 {
   if (!get_is_paused()) FSM_held_state = FSM_character_state;
-    FSM_character_state = enum_character_state::PAUSED;
-    UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0);
+  FSM_character_state = enum_character_state::PAUSED;
+  UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0);
 }
 void ADiscCharacter::pause_was_finished()
  {
