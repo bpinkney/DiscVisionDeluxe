@@ -30,6 +30,8 @@ public:
 	//float GetExampleProperty() const { return ExampleProperty; };
 		/*Sets the property 'ExampleProperty' to Value, Clamped between 0 and 1*/
 	//void SetExampleProperty(const float Value) { ExampleProperty = FMath::Clamp(Value, 0.0f, 1.0f); };
+
+
 };
 /**
  * 
@@ -44,5 +46,9 @@ class DISCVISIONDELUXEUE_API UBagMakerWidget : public UUserWidget
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)	
 	TArray<FListDisc> list_disc_array;
+
+	UFUNCTION(BlueprintPure, Category = "Default")
+ 	static bool get_file_from_directory (TArray<FString>& Files, FString RootFolderFullPath, FString Ext);
 	
 };
+

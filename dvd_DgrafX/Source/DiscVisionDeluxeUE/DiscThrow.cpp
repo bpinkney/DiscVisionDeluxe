@@ -450,7 +450,7 @@ void ADiscThrow::new_throw_world_frame(
 void ADiscThrow::spawn_disc_and_follow_flight()
 {
 
-  //////////BP spawn and unreal stuff////////////////////
+//////////BP spawn and unreal stuff////////////////////
   is_throw_simulating = true;
   // Get the camera transform.
   FVector forward_offset = FVector (0,0,40);///temp offset to prevent from colliding with invisible character model 
@@ -463,7 +463,7 @@ void ADiscThrow::spawn_disc_and_follow_flight()
 
   ptr_disc_projectile = World->SpawnActor<ADiscProjectile>(ProjectileClass, current_location, FRotator(0,0,0), SpawnParams);
   AddTickPrerequisiteActor(ptr_disc_projectile);
-  //////////end BP spawn and unreal stuff////////////////////
+/////////end BP spawn and unreal stuff////////////////////
   
 ////////////Static Mesh setting for disc projectile/////////////
     enum_disc_form disc_static_mesh = enum_disc_form::FRISBEE;   

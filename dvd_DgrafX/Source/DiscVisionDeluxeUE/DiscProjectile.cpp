@@ -33,8 +33,8 @@ void ADiscProjectile::BeginPlay()
  //kill_control_with_delay();
 
 }
-
-void ADiscProjectile::initialize_custom_disc(const Custom_disc & custom_disc)
+/*
+void ADiscProjectile::initialize_custom_disc(const FCustom_disc & custom_disc)
 {
 	/*
 	FString 		mold_name		="None";					//for lookup with disc params
@@ -48,7 +48,7 @@ void ADiscProjectile::initialize_custom_disc(const Custom_disc & custom_disc)
 	int 			pattern_enum	=1;							//TODO change to pattern enum when implemented
 	FString			player_name     ="";					//the player who created disc
 	FDateTime		date_created; 								//date of creation
-	*/
+	
 	if (custom_disc.player_name=="")   //not form a player bag ; this would be if this disc is initialized from a throw generator or somesuch
 	{
 
@@ -57,16 +57,19 @@ void ADiscProjectile::initialize_custom_disc(const Custom_disc & custom_disc)
 	} else  // normal case
 	{
 
-	set_disc_mesh_and_mass(custom_disc.mold_form,custom_disc.disc_mass);
-	//set_disc_base_colour 		(base_colour);
-	//set_disc_secondary_colour (secondary_colour);
-	//set_disc_rim_colour  		(rim_colour);
-	set_disc_texture(custom_disc.decal_path);
+	set_disc_mesh_and_mass		(custom_disc.mold_form,custom_disc.disc_mass);
+	set_disc_wear				(custom_disc.disc_wear);
+	set_disc_base_colour 		(custom_disc.base_colour);
+	set_disc_secondary_colour 	(custom_disc.secondary_colour);
+	set_disc_rim_colour  		(custom_disc.rim_colour);
+	set_disc_texture			(custom_disc.decal_path);
+	set_disc_pattern			(custom_disc.pattern_enum,custom_disc.pattern_seed);
 	//set_disc_pattern (TODO)
 
 	}
 
 }
+*/
 // Called every frame
 void ADiscProjectile::Tick(float DeltaTime)
 {
