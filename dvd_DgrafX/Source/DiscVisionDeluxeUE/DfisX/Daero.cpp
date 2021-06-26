@@ -780,7 +780,7 @@ namespace DfisX
         0.5 * 
         throw_container->disc_environment.air_density * 
         (d_state.disc_rotation_vel * d_state.disc_rotation_vel) * 
-        r5 * 1.0 *
+        r5 *
         Cm;
 
       //------------------------------------------------------------------------------------------------------------------

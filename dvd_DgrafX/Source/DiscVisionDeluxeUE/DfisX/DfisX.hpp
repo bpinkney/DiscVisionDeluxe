@@ -169,7 +169,8 @@ namespace DfisX
     double disc_rotation_vel;           //radians_per_second (just for spin)
     double disc_rotation_accel;         //radians_per_second squared (just for spin)
     Sim_State sim_state;                //describes the current state of the disc (just for spin)
-    Forces_State forces_state;          //describes the aerodynamic state of a disc in flight including forces,torques,moments, and coefficients  
+    Forces_State forces_state;          //describes the aerodynamic state of a disc in flight including forces,torques,moments, and coefficients
+    double last_dt;
   };
 
 

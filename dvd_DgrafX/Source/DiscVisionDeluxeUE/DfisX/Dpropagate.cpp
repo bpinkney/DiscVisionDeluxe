@@ -9,6 +9,8 @@ namespace DfisX
 {
   void propagate(Throw_Container *throw_container, const float dt)
   {
+    d_state.last_dt = dt;
+
     const float dt2 = dt*dt  / 2.0;
     const float dt3 = dt*dt2 / 3.0;
 

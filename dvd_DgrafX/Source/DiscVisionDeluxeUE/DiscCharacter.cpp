@@ -25,26 +25,26 @@
 // Sets default values
 ADiscCharacter::ADiscCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	teepad_locations_iterator = 0;
+   // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+  PrimaryActorTick.bCanEverTick = true;
+  teepad_locations_iterator = 0;
 }
 
 // Called when the game starts or when spawned
 
 void ADiscCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-	//UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1);
-	////Finite state machine for character
-	FSM_character_state = enum_character_state::READY_TO_THROW;
-	//used to hold current state when pausing
-	FSM_held_state = enum_character_state::READY_TO_THROW;
-	//used to get output text for display
-	context_string = FString(" no context set ");
-	location_name_string = FString(" no location set ");
-	
-	
+  Super::BeginPlay();
+  //UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.3);
+  ////Finite state machine for character
+  FSM_character_state = enum_character_state::READY_TO_THROW;
+  //used to hold current state when pausing
+  FSM_held_state = enum_character_state::READY_TO_THROW;
+  //used to get output text for display
+  context_string = FString(" no context set ");
+  location_name_string = FString(" no location set ");
+  
+  
   
   ///Camera manager init
   FActorSpawnParameters SpawnParams;
@@ -67,22 +67,22 @@ void ADiscCharacter::BeginPlay()
 // Called every frame
 void ADiscCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);	
+  Super::Tick(DeltaTime);  
   //RunTimingLoops();
-	
-	GEngine->AddOnScreenDebugMessage(100, 15.0f, FColor::White, get_state_display_string());
+  
+  GEngine->AddOnScreenDebugMessage(100, 15.0f, FColor::White, get_state_display_string());
 }
 
 // Called to bind functionality to input
 void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+  Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAxis("MoveForward", this, &ADiscCharacter::MoveForward);
-	//PlayerInputComponent->BindAxis("MoveRight", this, &ADiscCharacter::MoveRight);	
+  //PlayerInputComponent->BindAxis("MoveForward", this, &ADiscCharacter::MoveForward);
+  //PlayerInputComponent->BindAxis("MoveRight", this, &ADiscCharacter::MoveRight);  
 
-	//Set up "action" bindings.
-	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
+  //Set up "action" bindings.
+  //PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ADiscCharacter::Fire);
 
     //PlayerInputComponent->BindAxis("PitchCamera", this, &ADiscCharacter::AddControllerPitchInput);
     //PlayerInputComponent->BindAxis("TurnCamera", this, &ADiscCharacter::AddControllerYawInput);
@@ -97,28 +97,28 @@ void ADiscCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ADiscCharacter::main_menu_next_btn()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc next btn"));
-	teepad_locations_iterator ++;
-	if (teepad_locations_iterator > (teepad_locations.Num()-1)) teepad_locations_iterator = 0;
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc next btn"));
+  teepad_locations_iterator ++;
+  if (teepad_locations_iterator > (teepad_locations.Num()-1)) teepad_locations_iterator = 0;
     ptr_camera_manager->focus_on_teepad (teepad_locations_iterator);
 }
 
 void ADiscCharacter::main_menu_prev_btn()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
-	teepad_locations_iterator--;
-	if (teepad_locations_iterator < 0) teepad_locations_iterator =  teepad_locations.Num()-1;
-	ptr_camera_manager->focus_on_teepad (teepad_locations_iterator);
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+  teepad_locations_iterator--;
+  if (teepad_locations_iterator < 0) teepad_locations_iterator =  teepad_locations.Num()-1;
+  ptr_camera_manager->focus_on_teepad (teepad_locations_iterator);
 }
 
 void ADiscCharacter::main_menu_choose_location_btn()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc engage btn"));
+  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc engage btn"));
 
-	FHitResult OutSweepHitResult = FHitResult();
-	GetController()->SetControlRotation(teepad_locations[teepad_locations_iterator].GetRotation().Rotator());
-	SetActorTransform(
-	teepad_locations[teepad_locations_iterator],
+  FHitResult OutSweepHitResult = FHitResult();
+  GetController()->SetControlRotation(teepad_locations[teepad_locations_iterator].GetRotation().Rotator());
+  SetActorTransform(
+  teepad_locations[teepad_locations_iterator],
     false,
     0,
     ETeleportType::None);
@@ -132,22 +132,22 @@ void ADiscCharacter::main_menu_choose_location_btn()
 
 void ADiscCharacter::main_menu_bag_maker_btn()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
-	ptr_camera_manager->focus_on_bag_maker ();
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+  ptr_camera_manager->focus_on_bag_maker ();
 }
 
 void ADiscCharacter::bag_maker_exit_btn()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
-	ptr_camera_manager->focus_on_player ();
+  //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" dc prev btn"));
+  ptr_camera_manager->focus_on_player ();
 }
 
 
 void ADiscCharacter::MoveForward(float Value)
 {
-	// Find out which way is "forward" and record that the player wants to move that way.
-	//FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	//AddMovementInput(Direction, Value);
+  // Find out which way is "forward" and record that the player wants to move that way.
+  //FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+  //AddMovementInput(Direction, Value);
 }
 
 void ADiscCharacter::MoveRight(float Value)
@@ -207,18 +207,18 @@ void ADiscCharacter::Fire()
 FString ADiscCharacter::get_state_display_string()
 {
 
-	if (get_is_paused())
-	{
+  if (get_is_paused())
+  {
     FText statetext = UEnum::GetDisplayValueAsText(FSM_character_state);
     FText heldtext = UEnum::GetDisplayValueAsText(FSM_held_state);
     //FText contexttext = UEnum::GetDisplayValueAsText(FSM_character_state);
-	return (heldtext.ToString()+statetext.ToString()+context_string);
-	} 
-	else
-	{
+  return (heldtext.ToString()+statetext.ToString()+context_string);
+  } 
+  else
+  {
     FText statetext = UEnum::GetDisplayValueAsText(FSM_character_state);
-	return (statetext.ToString()+location_name_string);
-	}
+  return (statetext.ToString()+location_name_string);
+  }
 }
 
 //fsm transitions
@@ -233,7 +233,7 @@ void ADiscCharacter::character_was_paused()
 }
 void ADiscCharacter::pause_was_finished()
  {
-  	FSM_character_state = FSM_held_state;
+    FSM_character_state = FSM_held_state;
     UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
 }
 //fsm getters
