@@ -32,6 +32,150 @@ namespace DfisX
     },
     // 1
     Disc_Model
+    { // AAADiscs Tossed Salad (Champion)
+      /*.mold_name =*/          "Tossed Salad",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 2
+    Disc_Model
+    { // AAADiscs Chuck Norris (Champion)
+      /*.mold_name =*/          "Chuck Norris",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 3
+    Disc_Model
+    { // AAADiscs Throw Yer Back Out (Champion)
+      /*.mold_name =*/          "Throw Yer Back Out",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 4
+    Disc_Model
+    { // AAADiscs Lobotomy (Champion)
+      /*.mold_name =*/          "Lobotomy",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 5
+    Disc_Model
+    { // AAADiscs Sling Fling (Champion)
+      /*.mold_name =*/          "Sling Fling",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 6
+    Disc_Model
+    { // AAADiscs Hurl Chunks (Champion)
+      /*.mold_name =*/          "Hurl Chunks",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 7
+    Disc_Model
+    { // AAADiscs Flip Yer Shit (Champion)
+      /*.mold_name =*/          "Flip Yer Shit",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 8
+    Disc_Model
+    { // AAADiscs Launch Code (Champion)
+      /*.mold_name =*/          "Launch Code",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 9
+    Disc_Model
+    { // AAADiscs Heave Ho (Champion)
+      /*.mold_name =*/          "Heave Ho",
+      /*.manufacturer =*/       "AAADiscs",
+      /*.disc_type =*/          "Driver",
+      /*.stability =*/          "Overstable",
+      /*.rim_camber_shape =*/   "Concave",
+      /*.mass =*/               0.17500,
+      /*.radius =*/             0.10600,
+      /*.rim_width =*/          0.01950,
+      /*.thickness =*/          0.01700,
+      /*.rim_depth =*/          0.01175,
+      /*.rim_camber_height =*/  0.00700,
+      /*.dome_height =*/        0.00300,
+    },
+    // 10
+    Disc_Model
     { // Axiom_Discs Hex (NONE)
       /*.mold_name =*/          "Hex",
       /*.manufacturer =*/       "Axiom_Discs",
@@ -46,12 +190,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00515,
       /*.dome_height =*/        0.00185,
     },
-    // 2
+    // 11
     Disc_Model
     { // Axiom_Discs Rhythm (NONE)
       /*.mold_name =*/          "Rhythm",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -62,12 +206,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00607,
       /*.dome_height =*/        0.00288,
     },
-    // 3
+    // 12
     Disc_Model
     { // Axiom_Discs Delirium (NONE)
       /*.mold_name =*/          "Delirium",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -78,7 +222,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00807,
       /*.dome_height =*/        0.00453,
     },
-    // 4
+    // 13
     Disc_Model
     { // Axiom_Discs Pyro (NONE)
       /*.mold_name =*/          "Pyro",
@@ -94,12 +238,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00571,
       /*.dome_height =*/        0.00184,
     },
-    // 5
+    // 14
     Disc_Model
     { // Axiom_Discs Excite (NONE)
       /*.mold_name =*/          "Excite",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -110,12 +254,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00999,
       /*.dome_height =*/        0.00561,
     },
-    // 6
+    // 15
     Disc_Model
     { // Axiom_Discs Tantrum (NONE)
       /*.mold_name =*/          "Tantrum",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -126,12 +270,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00875,
       /*.dome_height =*/        0.00490,
     },
-    // 7
+    // 16
     Disc_Model
     { // Axiom_Discs Mayhem (NONE)
       /*.mold_name =*/          "Mayhem",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -142,12 +286,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00916,
       /*.dome_height =*/        0.00434,
     },
-    // 8
+    // 17
     Disc_Model
     { // Axiom_Discs Tenacity (NONE)
       /*.mold_name =*/          "Tenacity",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -158,12 +302,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00875,
       /*.dome_height =*/        0.00490,
     },
-    // 9
+    // 18
     Disc_Model
     { // Axiom_Discs Panic (NONE)
       /*.mold_name =*/          "Panic",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -174,12 +318,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00753,
       /*.dome_height =*/        0.00422,
     },
-    // 10
+    // 19
     Disc_Model
     { // Axiom_Discs Defy (NONE)
       /*.mold_name =*/          "Defy",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -190,12 +334,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00628,
       /*.dome_height =*/        0.00352,
     },
-    // 11
+    // 20
     Disc_Model
     { // Axiom_Discs Thrill (NONE)
       /*.mold_name =*/          "Thrill",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -206,12 +350,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00628,
       /*.dome_height =*/        0.00352,
     },
-    // 12
+    // 21
     Disc_Model
     { // Axiom_Discs Vanish (NONE)
       /*.mold_name =*/          "Vanish",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -222,12 +366,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00605,
       /*.dome_height =*/        0.00340,
     },
-    // 13
+    // 22
     Disc_Model
     { // Axiom_Discs Virus (NONE)
       /*.mold_name =*/          "Virus",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -238,12 +382,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00260,
     },
-    // 14
+    // 23
     Disc_Model
     { // Axiom_Discs Wrath (NONE)
       /*.mold_name =*/          "Wrath",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -254,12 +398,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00509,
       /*.dome_height =*/        0.00286,
     },
-    // 15
+    // 24
     Disc_Model
     { // Axiom_Discs Fireball (NONE)
       /*.mold_name =*/          "Fireball",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -270,12 +414,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00519,
       /*.dome_height =*/        0.00291,
     },
-    // 16
+    // 25
     Disc_Model
     { // Axiom_Discs Insanity (NONE)
       /*.mold_name =*/          "Insanity",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -286,7 +430,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00551,
       /*.dome_height =*/        0.00309,
     },
-    // 17
+    // 26
     Disc_Model
     { // Axiom_Discs Proxy (NONE)
       /*.mold_name =*/          "Proxy",
@@ -302,7 +446,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00316,
       /*.dome_height =*/        0.00214,
     },
-    // 18
+    // 27
     Disc_Model
     { // Axiom_Discs Theory (NONE)
       /*.mold_name =*/          "Theory",
@@ -318,12 +462,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00680,
       /*.dome_height =*/        0.00220,
     },
-    // 19
+    // 28
     Disc_Model
     { // Axiom_Discs Clash (NONE)
       /*.mold_name =*/          "Clash",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -334,12 +478,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00468,
       /*.dome_height =*/        0.00262,
     },
-    // 20
+    // 29
     Disc_Model
     { // Axiom_Discs Inspire (NONE)
       /*.mold_name =*/          "Inspire",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -350,12 +494,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00541,
       /*.dome_height =*/        0.00304,
     },
-    // 21
+    // 30
     Disc_Model
     { // Axiom_Discs Crave (NONE)
       /*.mold_name =*/          "Crave",
       /*.manufacturer =*/       "Axiom_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -366,7 +510,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00541,
       /*.dome_height =*/        0.00304,
     },
-    // 22
+    // 31
     Disc_Model
     { // Axiom_Discs Envy (NONE)
       /*.mold_name =*/          "Envy",
@@ -382,7 +526,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00454,
       /*.dome_height =*/        0.00306,
     },
-    // 23
+    // 32
     Disc_Model
     { // Axiom_Discs Alias (NONE)
       /*.mold_name =*/          "Alias",
@@ -398,7 +542,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00431,
       /*.dome_height =*/        0.00139,
     },
-    // 24
+    // 33
     Disc_Model
     { // Daredevil_Discs Polar Bear (Grip Performance)
       /*.mold_name =*/          "Polar Bear",
@@ -414,7 +558,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00350,
     },
-    // 25
+    // 34
     Disc_Model
     { // Daredevil_Discs Pteranodon (NONE)
       /*.mold_name =*/          "Pteranodon",
@@ -430,12 +574,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01085,
       /*.dome_height =*/        0.00325,
     },
-    // 26
+    // 35
     Disc_Model
     { // Daredevil_Discs Gray Jay (NONE)
       /*.mold_name =*/          "Gray Jay",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -446,12 +590,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00495,
       /*.dome_height =*/        0.00335,
     },
-    // 27
+    // 36
     Disc_Model
     { // Daredevil_Discs Albatross (NONE)
       /*.mold_name =*/          "Albatross",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -462,12 +606,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00639,
       /*.dome_height =*/        0.00431,
     },
-    // 28
+    // 37
     Disc_Model
     { // Daredevil_Discs Merlin (NONE)
       /*.mold_name =*/          "Merlin",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -478,7 +622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00704,
       /*.dome_height =*/        0.00476,
     },
-    // 29
+    // 38
     Disc_Model
     { // Daredevil_Discs Bighorn (NONE)
       /*.mold_name =*/          "Bighorn",
@@ -494,7 +638,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00573,
       /*.dome_height =*/        0.00272,
     },
-    // 30
+    // 39
     Disc_Model
     { // Daredevil_Discs Walrus (NONE)
       /*.mold_name =*/          "Walrus",
@@ -510,7 +654,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00721,
       /*.dome_height =*/        0.00204,
     },
-    // 31
+    // 40
     Disc_Model
     { // Daredevil_Discs Great Horned Owl (NONE)
       /*.mold_name =*/          "Great Horned Owl",
@@ -526,12 +670,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00648,
       /*.dome_height =*/        0.00307,
     },
-    // 32
+    // 41
     Disc_Model
     { // Daredevil_Discs Ogopogo (NONE)
       /*.mold_name =*/          "Ogopogo",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -542,12 +686,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00490,
       /*.dome_height =*/        0.00275,
     },
-    // 33
+    // 42
     Disc_Model
     { // Daredevil_Discs Sabertooth (NONE)
       /*.mold_name =*/          "Sabertooth",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -558,12 +702,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00728,
       /*.dome_height =*/        0.00492,
     },
-    // 34
+    // 43
     Disc_Model
     { // Daredevil_Discs Buffalo (NONE)
       /*.mold_name =*/          "Buffalo",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -574,12 +718,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00549,
       /*.dome_height =*/        0.00371,
     },
-    // 35
+    // 44
     Disc_Model
     { // Daredevil_Discs Mammoth (NONE)
       /*.mold_name =*/          "Mammoth",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -590,12 +734,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00714,
       /*.dome_height =*/        0.00401,
     },
-    // 36
+    // 45
     Disc_Model
     { // Daredevil_Discs Bigfoot (NONE)
       /*.mold_name =*/          "Bigfoot",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -606,12 +750,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00692,
       /*.dome_height =*/        0.00388,
     },
-    // 37
+    // 46
     Disc_Model
     { // Daredevil_Discs Yeti (NONE)
       /*.mold_name =*/          "Yeti",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -622,12 +766,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00692,
       /*.dome_height =*/        0.00388,
     },
-    // 38
+    // 47
     Disc_Model
     { // Daredevil_Discs Sasquatch (NONE)
       /*.mold_name =*/          "Sasquatch",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -638,7 +782,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00698,
       /*.dome_height =*/        0.00472,
     },
-    // 39
+    // 48
     Disc_Model
     { // Daredevil_Discs Caribou (NONE)
       /*.mold_name =*/          "Caribou",
@@ -654,7 +798,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01002,
       /*.dome_height =*/        0.00283,
     },
-    // 40
+    // 49
     Disc_Model
     { // Daredevil_Discs Grizzly (NONE)
       /*.mold_name =*/          "Grizzly",
@@ -670,7 +814,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00896,
       /*.dome_height =*/        0.00259,
     },
-    // 41
+    // 50
     Disc_Model
     { // Daredevil_Discs Moose (NONE)
       /*.mold_name =*/          "Moose",
@@ -686,7 +830,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00998,
       /*.dome_height =*/        0.00282,
     },
-    // 42
+    // 51
     Disc_Model
     { // Daredevil_Discs Beaver (NONE)
       /*.mold_name =*/          "Beaver",
@@ -702,12 +846,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00807,
       /*.dome_height =*/        0.00383,
     },
-    // 43
+    // 52
     Disc_Model
     { // Daredevil_Discs Swift Fox (NONE)
       /*.mold_name =*/          "Swift Fox",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -718,12 +862,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00743,
       /*.dome_height =*/        0.00417,
     },
-    // 44
+    // 53
     Disc_Model
     { // Daredevil_Discs Timberwolf (NONE)
       /*.mold_name =*/          "Timberwolf",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -734,12 +878,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00679,
       /*.dome_height =*/        0.00381,
     },
-    // 45
+    // 54
     Disc_Model
     { // Daredevil_Discs Wolverine (NONE)
       /*.mold_name =*/          "Wolverine",
       /*.manufacturer =*/       "Daredevil_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -750,7 +894,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00848,
       /*.dome_height =*/        0.00402,
     },
-    // 46
+    // 55
     Disc_Model
     { // Daredevil_Discs Gamedisc (NONE)
       /*.mold_name =*/          "Gamedisc",
@@ -766,7 +910,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01047,
       /*.dome_height =*/        0.00564,
     },
-    // 47
+    // 56
     Disc_Model
     { // Daredevil_Discs Woodchuck (NONE)
       /*.mold_name =*/          "Woodchuck",
@@ -782,7 +926,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00488,
       /*.dome_height =*/        0.00232,
     },
-    // 48
+    // 57
     Disc_Model
     { // Discmania P3 (C-Line)
       /*.mold_name =*/          "P3",
@@ -798,12 +942,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00556,
       /*.dome_height =*/        0.00264,
     },
-    // 49
+    // 58
     Disc_Model
     { // Discmania DDx (S-Line)
       /*.mold_name =*/          "DDx",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
@@ -814,7 +958,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00350,
       /*.dome_height =*/        0.00300,
     },
-    // 50
+    // 59
     Disc_Model
     { // Discmania Razor Claw Tactic (NONE)
       /*.mold_name =*/          "Razor Claw Tactic",
@@ -830,7 +974,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00245,
     },
-    // 51
+    // 60
     Disc_Model
     { // Discmania Logic (NONE)
       /*.mold_name =*/          "Logic",
@@ -846,7 +990,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00543,
       /*.dome_height =*/        0.00257,
     },
-    // 52
+    // 61
     Disc_Model
     { // Discmania Mutant (NONE)
       /*.mold_name =*/          "Mutant",
@@ -862,12 +1006,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00766,
       /*.dome_height =*/        0.00219,
     },
-    // 53
+    // 62
     Disc_Model
     { // Discmania Splice (NONE)
       /*.mold_name =*/          "Splice",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -878,7 +1022,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00577,
       /*.dome_height =*/        0.00273,
     },
-    // 54
+    // 63
     Disc_Model
     { // Discmania Shogun (NONE)
       /*.mold_name =*/          "Shogun",
@@ -894,12 +1038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00624,
       /*.dome_height =*/        0.00296,
     },
-    // 55
+    // 64
     Disc_Model
     { // Discmania Rockstar (NONE)
       /*.mold_name =*/          "Rockstar",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -910,12 +1054,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00703,
       /*.dome_height =*/        0.00287,
     },
-    // 56
+    // 65
     Disc_Model
     { // Discmania Astronaut (NONE)
       /*.mold_name =*/          "Astronaut",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -926,12 +1070,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00868,
       /*.dome_height =*/        0.00412,
     },
-    // 57
+    // 66
     Disc_Model
     { // Discmania Tilt (NONE)
       /*.mold_name =*/          "Tilt",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -942,12 +1086,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00365,
     },
-    // 58
+    // 67
     Disc_Model
     { // Discmania Majesty (NONE)
       /*.mold_name =*/          "Majesty",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -958,7 +1102,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00689,
       /*.dome_height =*/        0.00466,
     },
-    // 59
+    // 68
     Disc_Model
     { // Discmania Origin (NONE)
       /*.mold_name =*/          "Origin",
@@ -974,12 +1118,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00493,
       /*.dome_height =*/        0.00177,
     },
-    // 60
+    // 69
     Disc_Model
     { // Discmania DD2 (new) (NONE)
       /*.mold_name =*/          "DD2 (new)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -990,12 +1134,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00695,
       /*.dome_height =*/        0.00470,
     },
-    // 61
+    // 70
     Disc_Model
     { // Discmania PD3 (NONE)
       /*.mold_name =*/          "PD3",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -1006,12 +1150,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00573,
       /*.dome_height =*/        0.00387,
     },
-    // 62
+    // 71
     Disc_Model
     { // Discmania Essence (NONE)
       /*.mold_name =*/          "Essence",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -1022,7 +1166,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00677,
       /*.dome_height =*/        0.00458,
     },
-    // 63
+    // 72
     Disc_Model
     { // Discmania Tactic (NONE)
       /*.mold_name =*/          "Tactic",
@@ -1038,7 +1182,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00545,
       /*.dome_height =*/        0.00195,
     },
-    // 64
+    // 73
     Disc_Model
     { // Discmania Sensei (Discmania Active) (NONE)
       /*.mold_name =*/          "Sensei (Discmania Active)",
@@ -1054,7 +1198,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00255,
     },
-    // 65
+    // 74
     Disc_Model
     { // Discmania Link (NONE)
       /*.mold_name =*/          "Link",
@@ -1070,12 +1214,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00326,
       /*.dome_height =*/        0.00154,
     },
-    // 66
+    // 75
     Disc_Model
     { // Discmania Enigma (NONE)
       /*.mold_name =*/          "Enigma",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1086,7 +1230,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00670,
       /*.dome_height =*/        0.00375,
     },
-    // 67
+    // 76
     Disc_Model
     { // Discmania Method (NONE)
       /*.mold_name =*/          "Method",
@@ -1102,12 +1246,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00793,
       /*.dome_height =*/        0.00227,
     },
-    // 68
+    // 77
     Disc_Model
     { // Discmania DD3 (retest) (NONE)
       /*.mold_name =*/          "DD3 (retest)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1118,7 +1262,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00753,
       /*.dome_height =*/        0.00422,
     },
-    // 69
+    // 78
     Disc_Model
     { // Discmania Maestro (Spring Ox) (NONE)
       /*.mold_name =*/          "Maestro (Spring Ox)",
@@ -1134,12 +1278,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00423,
       /*.dome_height =*/        0.00172,
     },
-    // 70
+    // 79
     Disc_Model
     { // Discmania Sun Crow (NONE)
       /*.mold_name =*/          "Sun Crow",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1150,12 +1294,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00711,
       /*.dome_height =*/        0.00399,
     },
-    // 71
+    // 80
     Disc_Model
     { // Discmania Fox Spirit (NONE)
       /*.mold_name =*/          "Fox Spirit",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1166,7 +1310,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00682,
       /*.dome_height =*/        0.00323,
     },
-    // 72
+    // 81
     Disc_Model
     { // Discmania Guardian Lion (NONE)
       /*.mold_name =*/          "Guardian Lion",
@@ -1182,12 +1326,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00417,
       /*.dome_height =*/        0.00198,
     },
-    // 73
+    // 82
     Disc_Model
     { // Discmania Mentor (Sea Serpent) (NONE)
       /*.mold_name =*/          "Mentor (Sea Serpent)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1198,12 +1342,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00682,
       /*.dome_height =*/        0.00323,
     },
-    // 74
+    // 83
     Disc_Model
     { // Discmania Instinct (NONE)
       /*.mold_name =*/          "Instinct",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1214,12 +1358,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00851,
       /*.dome_height =*/        0.00404,
     },
-    // 75
+    // 84
     Disc_Model
     { // Discmania DD3 (Cloud Breaker) (NONE)
       /*.mold_name =*/          "DD3 (Cloud Breaker)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -1230,12 +1374,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00761,
       /*.dome_height =*/        0.00514,
     },
-    // 76
+    // 85
     Disc_Model
     { // Discmania MD5 (NONE)
       /*.mold_name =*/          "MD5",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1246,12 +1390,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00420,
       /*.dome_height =*/        0.00235,
     },
-    // 77
+    // 86
     Disc_Model
     { // Discmania FD2 (NONE)
       /*.mold_name =*/          "FD2",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1262,12 +1406,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00628,
       /*.dome_height =*/        0.00297,
     },
-    // 78
+    // 87
     Disc_Model
     { // Discmania TDx (NONE)
       /*.mold_name =*/          "TDx",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Turn Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1278,12 +1422,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00570,
       /*.dome_height =*/        0.00320,
     },
-    // 79
+    // 88
     Disc_Model
     { // Discmania MD4 (NONE)
       /*.mold_name =*/          "MD4",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -1294,12 +1438,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00447,
       /*.dome_height =*/        0.00128,
     },
-    // 80
+    // 89
     Disc_Model
     { // Discmania CD3 (NONE)
       /*.mold_name =*/          "CD3",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Control Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1310,12 +1454,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00884,
       /*.dome_height =*/        0.00496,
     },
-    // 81
+    // 90
     Disc_Model
     { // Discmania P3x (NONE)
       /*.mold_name =*/          "P3x",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Putt & Approach",
+      /*.disc_type =*/          "Putter",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1326,12 +1470,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00448,
       /*.dome_height =*/        0.00212,
     },
-    // 82
+    // 91
     Disc_Model
     { // Discmania PDx (NONE)
       /*.mold_name =*/          "PDx",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Power Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1342,12 +1486,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00826,
       /*.dome_height =*/        0.00464,
     },
-    // 83
+    // 92
     Disc_Model
     { // Discmania FD3 (NONE)
       /*.mold_name =*/          "FD3",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1358,12 +1502,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00355,
     },
-    // 84
+    // 93
     Disc_Model
     { // Discmania MD (NONE)
       /*.mold_name =*/          "MD",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18090,
@@ -1374,12 +1518,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00885,
       /*.dome_height =*/        0.00250,
     },
-    // 85
+    // 94
     Disc_Model
     { // Discmania P1x (NONE)
       /*.mold_name =*/          "P1x",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Beaded Putter",
+      /*.disc_type =*/          "Putter",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1390,12 +1534,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00427,
       /*.dome_height =*/        0.00203,
     },
-    // 86
+    // 95
     Disc_Model
     { // Discmania CD2 (NONE)
       /*.mold_name =*/          "CD2",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Control Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1406,12 +1550,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00833,
       /*.dome_height =*/        0.00467,
     },
-    // 87
+    // 96
     Disc_Model
     { // Discmania FD2 (NONE)
       /*.mold_name =*/          "FD2",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1422,12 +1566,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00851,
       /*.dome_height =*/        0.00404,
     },
-    // 88
+    // 97
     Disc_Model
     { // Discmania MD3 (NONE)
       /*.mold_name =*/          "MD3",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18090,
@@ -1438,12 +1582,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00787,
       /*.dome_height =*/        0.00223,
     },
-    // 89
+    // 98
     Disc_Model
     { // Discmania TD2 (Fever) (NONE)
       /*.mold_name =*/          "TD2 (Fever)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Turn Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1454,12 +1598,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00637,
       /*.dome_height =*/        0.00358,
     },
-    // 90
+    // 99
     Disc_Model
     { // Discmania FD (Jackal) (NONE)
       /*.mold_name =*/          "FD (Jackal)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1470,12 +1614,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00355,
     },
-    // 91
+    // 100
     Disc_Model
     { // Discmania PD2 (Chaos) (NONE)
       /*.mold_name =*/          "PD2 (Chaos)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Power Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1486,12 +1630,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00868,
       /*.dome_height =*/        0.00487,
     },
-    // 92
+    // 101
     Disc_Model
     { // Discmania DD2 (Frenzy) (NONE)
       /*.mold_name =*/          "DD2 (Frenzy)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1502,12 +1646,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00665,
       /*.dome_height =*/        0.00315,
     },
-    // 93
+    // 102
     Disc_Model
     { // Discmania TD (Rush) (NONE)
       /*.mold_name =*/          "TD (Rush)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Turn Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1518,12 +1662,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00712,
       /*.dome_height =*/        0.00338,
     },
-    // 94
+    // 103
     Disc_Model
     { // Discmania MD2 (Fiend) (NONE)
       /*.mold_name =*/          "MD2 (Fiend)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -1534,12 +1678,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00875,
       /*.dome_height =*/        0.00250,
     },
-    // 95
+    // 104
     Disc_Model
     { // Discmania DD (Hysteria) (NONE)
       /*.mold_name =*/          "DD (Hysteria)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1550,12 +1694,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00637,
       /*.dome_height =*/        0.00358,
     },
-    // 96
+    // 105
     Disc_Model
     { // Discmania PD (Freak) (NONE)
       /*.mold_name =*/          "PD (Freak)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Power Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1566,12 +1710,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00727,
       /*.dome_height =*/        0.00408,
     },
-    // 97
+    // 106
     Disc_Model
     { // Discmania CD (Craze) (NONE)
       /*.mold_name =*/          "CD (Craze)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Control Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1582,12 +1726,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00495,
       /*.dome_height =*/        0.00235,
     },
-    // 98
+    // 107
     Disc_Model
     { // Discmania P1 (Maniac) (NONE)
       /*.mold_name =*/          "P1 (Maniac)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Putt & Approach",
+      /*.disc_type =*/          "Putter",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1598,12 +1742,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00283,
     },
-    // 99
+    // 108
     Disc_Model
     { // Discmania P2 (Psycho) (NONE)
       /*.mold_name =*/          "P2 (Psycho)",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Pro Putter",
+      /*.disc_type =*/          "Putter",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1614,12 +1758,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00634,
       /*.dome_height =*/        0.00301,
     },
-    // 100
+    // 109
     Disc_Model
     { // Discmania MD1 (NONE)
       /*.mold_name =*/          "MD1",
       /*.manufacturer =*/       "Discmania",
-      /*.disc_type =*/          "Midrange Driver",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -1630,12 +1774,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01081,
       /*.dome_height =*/        0.00309,
     },
-    // 101
+    // 110
     Disc_Model
     { // Discraft Anax (NONE)
       /*.mold_name =*/          "Anax",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -1646,7 +1790,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00813,
       /*.dome_height =*/        0.00292,
     },
-    // 102
+    // 111
     Disc_Model
     { // Discraft APX (NONE)
       /*.mold_name =*/          "APX",
@@ -1662,12 +1806,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00785,
       /*.dome_height =*/        0.00530,
     },
-    // 103
+    // 112
     Disc_Model
     { // Discraft Archer (NONE)
       /*.mold_name =*/          "Archer",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17850,
@@ -1678,12 +1822,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00816,
       /*.dome_height =*/        0.00264,
     },
-    // 104
+    // 113
     Disc_Model
     { // Discraft Avenger (Z)
       /*.mold_name =*/          "Avenger",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave ",
       /*.mass =*/               0.17500,
@@ -1694,12 +1838,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00400,
     },
-    // 105
+    // 114
     Disc_Model
     { // Discraft Avenger (NONE)
       /*.mold_name =*/          "Avenger",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -1710,12 +1854,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00797,
       /*.dome_height =*/        0.00378,
     },
-    // 106
+    // 115
     Disc_Model
     { // Discraft Avenger SS (X)
       /*.mold_name =*/          "Avenger SS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -1726,7 +1870,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00475,
       /*.dome_height =*/        0.00500,
     },
-    // 107
+    // 116
     Disc_Model
     { // Discraft Banger (Soft-GT)
       /*.mold_name =*/          "Banger",
@@ -1742,7 +1886,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00150,
     },
-    // 108
+    // 117
     Disc_Model
     { // Discraft Banger-GT (NONE)
       /*.mold_name =*/          "Banger-GT",
@@ -1758,7 +1902,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00465,
       /*.dome_height =*/        0.00220,
     },
-    // 109
+    // 118
     Disc_Model
     { // Discraft Breeze (Ace Race 2003) (NONE)
       /*.mold_name =*/          "Breeze (Ace Race 2003)",
@@ -1774,7 +1918,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00487,
       /*.dome_height =*/        0.00198,
     },
-    // 110
+    // 119
     Disc_Model
     { // Discraft Buzzz (Pro-D)
       /*.mold_name =*/          "Buzzz",
@@ -1790,7 +1934,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00793,
       /*.dome_height =*/        0.00227,
     },
-    // 111
+    // 120
     Disc_Model
     { // Discraft Buzzz Foil (Pro-D)
       /*.mold_name =*/          "Buzzz Foil",
@@ -1806,7 +1950,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00200,
     },
-    // 112
+    // 121
     Disc_Model
     { // Discraft Buzzz OS (NONE)
       /*.mold_name =*/          "Buzzz OS",
@@ -1822,7 +1966,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00610,
       /*.dome_height =*/        0.00175,
     },
-    // 113
+    // 122
     Disc_Model
     { // Discraft Buzzz-GT (NONE)
       /*.mold_name =*/          "Buzzz-GT",
@@ -1838,7 +1982,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00620,
       /*.dome_height =*/        0.00200,
     },
-    // 114
+    // 123
     Disc_Model
     { // Discraft Buzzz-SS (NONE)
       /*.mold_name =*/          "Buzzz-SS",
@@ -1854,7 +1998,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00947,
       /*.dome_height =*/        0.00283,
     },
-    // 115
+    // 124
     Disc_Model
     { // Discraft Challenger (Pro-D)
       /*.mold_name =*/          "Challenger",
@@ -1870,7 +2014,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00225,
     },
-    // 116
+    // 125
     Disc_Model
     { // Discraft Challenger OS (NONE)
       /*.mold_name =*/          "Challenger OS",
@@ -1886,7 +2030,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00280,
     },
-    // 117
+    // 126
     Disc_Model
     { // Discraft Challenger SS (NONE)
       /*.mold_name =*/          "Challenger SS",
@@ -1902,7 +2046,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00280,
     },
-    // 118
+    // 127
     Disc_Model
     { // Discraft Comet (NONE)
       /*.mold_name =*/          "Comet",
@@ -1918,12 +2062,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01088,
       /*.dome_height =*/        0.00307,
     },
-    // 119
+    // 128
     Disc_Model
     { // Discraft Crank (Z)
       /*.mold_name =*/          "Crank",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17400,
@@ -1934,12 +2078,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00300,
     },
-    // 120
+    // 129
     Disc_Model
     { // Discraft Crank SS (NONE)
       /*.mold_name =*/          "Crank SS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1950,12 +2094,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00612,
       /*.dome_height =*/        0.00343,
     },
-    // 121
+    // 130
     Disc_Model
     { // Discraft Cruiser (NONE)
       /*.mold_name =*/          "Cruiser",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -1966,12 +2110,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00293,
     },
-    // 122
+    // 131
     Disc_Model
     { // Discraft Crush (NONE)
       /*.mold_name =*/          "Crush",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -1982,12 +2126,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00718,
       /*.dome_height =*/        0.00402,
     },
-    // 123
+    // 132
     Disc_Model
     { // Discraft Cyclone (NONE)
       /*.mold_name =*/          "Cyclone",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -1998,12 +2142,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00909,
       /*.dome_height =*/        0.00371,
     },
-    // 124
+    // 133
     Disc_Model
     { // Discraft Cyclone 2 (NONE)
       /*.mold_name =*/          "Cyclone 2",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -2014,7 +2158,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00909,
       /*.dome_height =*/        0.00371,
     },
-    // 125
+    // 134
     Disc_Model
     { // Discraft Deuce (NONE)
       /*.mold_name =*/          "Deuce",
@@ -2030,7 +2174,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00918,
       /*.dome_height =*/        0.00262,
     },
-    // 126
+    // 135
     Disc_Model
     { // Discraft Drone (NONE)
       /*.mold_name =*/          "Drone",
@@ -2046,12 +2190,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00888,
       /*.dome_height =*/        0.00287,
     },
-    // 127
+    // 136
     Disc_Model
     { // Discraft Eclipse (NONE)
       /*.mold_name =*/          "Eclipse",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18260,
@@ -2062,7 +2206,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00827,
       /*.dome_height =*/        0.00253,
     },
-    // 128
+    // 137
     Disc_Model
     { // Discraft Fierce (Durable)
       /*.mold_name =*/          "Fierce",
@@ -2078,12 +2222,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00275,
     },
-    // 129
+    // 138
     Disc_Model
     { // Discraft Flash (NONE)
       /*.mold_name =*/          "Flash",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2094,12 +2238,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00673,
       /*.dome_height =*/        0.00377,
     },
-    // 130
+    // 139
     Disc_Model
     { // Discraft Flick (NONE)
       /*.mold_name =*/          "Flick",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2110,7 +2254,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00280,
     },
-    // 131
+    // 140
     Disc_Model
     { // Discraft Focus (Ace Race 2009) (NONE)
       /*.mold_name =*/          "Focus (Ace Race 2009)",
@@ -2126,12 +2270,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00573,
       /*.dome_height =*/        0.00322,
     },
-    // 132
+    // 141
     Disc_Model
     { // Discraft Force (NONE)
       /*.mold_name =*/          "Force",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2142,12 +2286,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00756,
       /*.dome_height =*/        0.00424,
     },
-    // 133
+    // 142
     Disc_Model
     { // Discraft Glide (Ace Race 2004) (NONE)
       /*.mold_name =*/          "Glide (Ace Race 2004)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17850,
@@ -2158,12 +2302,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00960,
       /*.dome_height =*/        0.00310,
     },
-    // 134
+    // 143
     Disc_Model
     { // Discraft Hades (NONE)
       /*.mold_name =*/          "Hades",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -2174,12 +2318,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00403,
     },
-    // 135
+    // 144
     Disc_Model
     { // Discraft Heat (Pro-D)
       /*.mold_name =*/          "Heat",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17200,
@@ -2190,12 +2334,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00400,
       /*.dome_height =*/        0.00550,
     },
-    // 136
+    // 145
     Disc_Model
     { // Discraft Heat (Ace Race 2014) (NONE)
       /*.mold_name =*/          "Heat (Ace Race 2014)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2206,7 +2350,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00967,
       /*.dome_height =*/        0.00543,
     },
-    // 137
+    // 146
     Disc_Model
     { // Discraft Hornet (Ace Race 2010) (NONE)
       /*.mold_name =*/          "Hornet (Ace Race 2010)",
@@ -2222,7 +2366,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00809,
       /*.dome_height =*/        0.00261,
     },
-    // 138
+    // 147
     Disc_Model
     { // Discraft Impact (Ace Race 2007) (NONE)
       /*.mold_name =*/          "Impact (Ace Race 2007)",
@@ -2238,7 +2382,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01020,
       /*.dome_height =*/        0.00305,
     },
-    // 139
+    // 148
     Disc_Model
     { // Discraft Luna (Jawbreaker)
       /*.mold_name =*/          "Luna",
@@ -2254,12 +2398,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00404,
       /*.dome_height =*/        0.00226,
     },
-    // 140
+    // 149
     Disc_Model
     { // Discraft Machete (NONE)
       /*.mold_name =*/          "Machete",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2270,7 +2414,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00634,
       /*.dome_height =*/        0.00356,
     },
-    // 141
+    // 150
     Disc_Model
     { // Discraft Magnet (Jawbreaker)
       /*.mold_name =*/          "Magnet",
@@ -2286,7 +2430,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00400,
     },
-    // 142
+    // 151
     Disc_Model
     { // Discraft Malta (McBeast Proto) (NONE)
       /*.mold_name =*/          "Malta (McBeast Proto)",
@@ -2302,12 +2446,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00568,
       /*.dome_height =*/        0.00232,
     },
-    // 143
+    // 152
     Disc_Model
     { // Discraft Mantis (Ace Race 2013) (NONE)
       /*.mold_name =*/          "Mantis (Ace Race 2013)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2318,12 +2462,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00909,
       /*.dome_height =*/        0.00431,
     },
-    // 144
+    // 153
     Disc_Model
     { // Discraft Marauder (NONE)
       /*.mold_name =*/          "Marauder",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18510,
@@ -2334,7 +2478,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00976,
       /*.dome_height =*/        0.00419,
     },
-    // 145
+    // 154
     Disc_Model
     { // Discraft Meteor (Z)
       /*.mold_name =*/          "Meteor",
@@ -2350,7 +2494,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00350,
     },
-    // 146
+    // 155
     Disc_Model
     { // Discraft Meteor (Ace Race 2006) (NONE)
       /*.mold_name =*/          "Meteor (Ace Race 2006)",
@@ -2366,7 +2510,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00767,
       /*.dome_height =*/        0.00248,
     },
-    // 147
+    // 156
     Disc_Model
     { // Discraft Mini Buzzz (Jawbreaker)
       /*.mold_name =*/          "Mini Buzzz",
@@ -2382,7 +2526,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00050,
     },
-    // 148
+    // 157
     Disc_Model
     { // Discraft MRV (NONE)
       /*.mold_name =*/          "MRV",
@@ -2398,7 +2542,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01048,
       /*.dome_height =*/        0.00427,
     },
-    // 149
+    // 158
     Disc_Model
     { // Discraft MRX (NONE)
       /*.mold_name =*/          "MRX",
@@ -2414,7 +2558,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00941,
       /*.dome_height =*/        0.00384,
     },
-    // 150
+    // 159
     Disc_Model
     { // Discraft Nebula (Ace Race 2008) (NONE)
       /*.mold_name =*/          "Nebula (Ace Race 2008)",
@@ -2430,12 +2574,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00788,
       /*.dome_height =*/        0.00322,
     },
-    // 151
+    // 160
     Disc_Model
     { // Discraft Nuke (NONE)
       /*.mold_name =*/          "Nuke",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2446,12 +2590,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00702,
       /*.dome_height =*/        0.00333,
     },
-    // 152
+    // 161
     Disc_Model
     { // Discraft Nuke OS (NONE)
       /*.mold_name =*/          "Nuke OS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2462,12 +2606,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00668,
       /*.dome_height =*/        0.00317,
     },
-    // 153
+    // 162
     Disc_Model
     { // Discraft Nuke SS (NONE)
       /*.mold_name =*/          "Nuke SS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2478,7 +2622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00628,
       /*.dome_height =*/        0.00297,
     },
-    // 154
+    // 163
     Disc_Model
     { // Discraft Phantom (NONE)
       /*.mold_name =*/          "Phantom",
@@ -2494,7 +2638,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00916,
       /*.dome_height =*/        0.00329,
     },
-    // 155
+    // 164
     Disc_Model
     { // Discraft Phantom Deuce (NONE)
       /*.mold_name =*/          "Phantom Deuce",
@@ -2510,7 +2654,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00918,
       /*.dome_height =*/        0.00262,
     },
-    // 156
+    // 165
     Disc_Model
     { // Discraft Phantom Light (NONE)
       /*.mold_name =*/          "Phantom Light",
@@ -2526,7 +2670,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00732,
       /*.dome_height =*/        0.00263,
     },
-    // 157
+    // 166
     Disc_Model
     { // Discraft Phantom+ (NONE)
       /*.mold_name =*/          "Phantom+",
@@ -2542,12 +2686,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00916,
       /*.dome_height =*/        0.00329,
     },
-    // 158
+    // 167
     Disc_Model
     { // Discraft Predator (NONE)
       /*.mold_name =*/          "Predator",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2558,12 +2702,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00902,
       /*.dome_height =*/        0.00428,
     },
-    // 159
+    // 168
     Disc_Model
     { // Discraft Pulse (NONE)
       /*.mold_name =*/          "Pulse",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2574,12 +2718,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00355,
     },
-    // 160
+    // 169
     Disc_Model
     { // Discraft Punisher (NONE)
       /*.mold_name =*/          "Punisher",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2590,7 +2734,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00599,
       /*.dome_height =*/        0.00336,
     },
-    // 161
+    // 170
     Disc_Model
     { // Discraft Putt'r (NONE)
       /*.mold_name =*/          "Putt'r",
@@ -2606,12 +2750,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00492,
       /*.dome_height =*/        0.00333,
     },
-    // 162
+    // 171
     Disc_Model
     { // Discraft Raptor (NONE)
       /*.mold_name =*/          "Raptor",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -2622,7 +2766,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00962,
       /*.dome_height =*/        0.00393,
     },
-    // 163
+    // 172
     Disc_Model
     { // Discraft Rattler Putter (NONE)
       /*.mold_name =*/          "Rattler Putter",
@@ -2638,12 +2782,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00349,
       /*.dome_height =*/        0.00166,
     },
-    // 164
+    // 173
     Disc_Model
     { // Discraft Reaper (NONE)
       /*.mold_name =*/          "Reaper",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -2654,7 +2798,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00670,
       /*.dome_height =*/        0.00240,
     },
-    // 165
+    // 174
     Disc_Model
     { // Discraft Ringer (NONE)
       /*.mold_name =*/          "Ringer",
@@ -2670,7 +2814,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00266,
       /*.dome_height =*/        0.00179,
     },
-    // 166
+    // 175
     Disc_Model
     { // Discraft Ringer GT (NONE)
       /*.mold_name =*/          "Ringer GT",
@@ -2686,12 +2830,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00279,
       /*.dome_height =*/        0.00156,
     },
-    // 167
+    // 176
     Disc_Model
     { // Discraft Riptide (NONE)
       /*.mold_name =*/          "Riptide",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -2702,7 +2846,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00847,
       /*.dome_height =*/        0.00303,
     },
-    // 168
+    // 177
     Disc_Model
     { // Discraft Roach (Ace Race 2015) (NONE)
       /*.mold_name =*/          "Roach (Ace Race 2015)",
@@ -2718,12 +2862,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00529,
       /*.dome_height =*/        0.00296,
     },
-    // 169
+    // 178
     Disc_Model
     { // Discraft Rogue (NONE)
       /*.mold_name =*/          "Rogue",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2734,12 +2878,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00727,
       /*.dome_height =*/        0.00408,
     },
-    // 170
+    // 179
     Disc_Model
     { // Discraft Shadow (NONE)
       /*.mold_name =*/          "Shadow",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18340,
@@ -2750,7 +2894,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01135,
       /*.dome_height =*/        0.00380,
     },
-    // 171
+    // 180
     Disc_Model
     { // Discraft Sky Pro (NONE)
       /*.mold_name =*/          "Sky Pro",
@@ -2766,7 +2910,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00468,
       /*.dome_height =*/        0.00252,
     },
-    // 172
+    // 181
     Disc_Model
     { // Discraft Sky Streak (NONE)
       /*.mold_name =*/          "Sky Streak",
@@ -2782,7 +2926,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00538,
       /*.dome_height =*/        0.00322,
     },
-    // 173
+    // 182
     Disc_Model
     { // Discraft Sky-Star (NONE)
       /*.mold_name =*/          "Sky-Star",
@@ -2798,7 +2942,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00468,
       /*.dome_height =*/        0.00252,
     },
-    // 174
+    // 183
     Disc_Model
     { // Discraft Sky-Styler (NONE)
       /*.mold_name =*/          "Sky-Styler",
@@ -2814,12 +2958,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01050,
       /*.dome_height =*/        0.00565,
     },
-    // 175
+    // 184
     Disc_Model
     { // Discraft Slipstream-GT (Ace Race 2005) (NONE)
       /*.mold_name =*/          "Slipstream-GT (Ace Race 2005)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -2830,7 +2974,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00792,
       /*.dome_height =*/        0.00323,
     },
-    // 176
+    // 185
     Disc_Model
     { // Discraft SoL (Ace Race 2018) (NONE)
       /*.mold_name =*/          "SoL (Ace Race 2018)",
@@ -2846,12 +2990,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00432,
       /*.dome_height =*/        0.00243,
     },
-    // 177
+    // 186
     Disc_Model
     { // Discraft Spectra (NONE)
       /*.mold_name =*/          "Spectra",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -2862,7 +3006,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00736,
       /*.dome_height =*/        0.00349,
     },
-    // 178
+    // 187
     Disc_Model
     { // Discraft Squall (NONE)
       /*.mold_name =*/          "Squall",
@@ -2878,12 +3022,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00839,
       /*.dome_height =*/        0.00271,
     },
-    // 179
+    // 188
     Disc_Model
     { // Discraft Stalker (NONE)
       /*.mold_name =*/          "Stalker",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17930,
@@ -2894,12 +3038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00731,
       /*.dome_height =*/        0.00219,
     },
-    // 180
+    // 189
     Disc_Model
     { // Discraft Sting (Ace Race 2017) (NONE)
       /*.mold_name =*/          "Sting (Ace Race 2017)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -2910,12 +3054,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00791,
       /*.dome_height =*/        0.00284,
     },
-    // 181
+    // 190
     Disc_Model
     { // Discraft Storm (NONE)
       /*.mold_name =*/          "Storm",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -2926,7 +3070,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00799,
       /*.dome_height =*/        0.00286,
     },
-    // 182
+    // 191
     Disc_Model
     { // Discraft Stratus (NONE)
       /*.mold_name =*/          "Stratus",
@@ -2942,12 +3086,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00791,
       /*.dome_height =*/        0.00284,
     },
-    // 183
+    // 192
     Disc_Model
     { // Discraft Surge (NONE)
       /*.mold_name =*/          "Surge",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2958,12 +3102,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00637,
       /*.dome_height =*/        0.00358,
     },
-    // 184
+    // 193
     Disc_Model
     { // Discraft Surge-SS (NONE)
       /*.mold_name =*/          "Surge-SS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -2974,12 +3118,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00365,
     },
-    // 185
+    // 194
     Disc_Model
     { // Discraft Talon (NONE)
       /*.mold_name =*/          "Talon",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -2990,7 +3134,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00558,
       /*.dome_height =*/        0.00377,
     },
-    // 186
+    // 195
     Disc_Model
     { // Discraft The Hawk (NONE)
       /*.mold_name =*/          "The Hawk",
@@ -3006,12 +3150,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00862,
       /*.dome_height =*/        0.00278,
     },
-    // 187
+    // 196
     Disc_Model
     { // Discraft Thrasher (NONE)
       /*.mold_name =*/          "Thrasher",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3022,7 +3166,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00746,
       /*.dome_height =*/        0.00419,
     },
-    // 188
+    // 197
     Disc_Model
     { // Discraft Torque (NONE)
       /*.mold_name =*/          "Torque",
@@ -3038,12 +3182,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00797,
       /*.dome_height =*/        0.00238,
     },
-    // 189
+    // 198
     Disc_Model
     { // Discraft Tracer (NONE)
       /*.mold_name =*/          "Tracer",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18510,
@@ -3054,12 +3198,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00818,
       /*.dome_height =*/        0.00352,
     },
-    // 190
+    // 199
     Disc_Model
     { // Discraft Tracker (NONE)
       /*.mold_name =*/          "Tracker",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3070,12 +3214,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00712,
       /*.dome_height =*/        0.00338,
     },
-    // 191
+    // 200
     Disc_Model
     { // Discraft Tsunami (NONE)
       /*.mold_name =*/          "Tsunami",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -3086,12 +3230,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00979,
       /*.dome_height =*/        0.00351,
     },
-    // 192
+    // 201
     Disc_Model
     { // Discraft Typhoon (NONE)
       /*.mold_name =*/          "Typhoon",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18180,
@@ -3102,7 +3246,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00993,
       /*.dome_height =*/        0.00287,
     },
-    // 193
+    // 202
     Disc_Model
     { // Discraft Ultra-Star (NONE)
       /*.mold_name =*/          "Ultra-Star",
@@ -3118,12 +3262,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00933,
       /*.dome_height =*/        0.00502,
     },
-    // 194
+    // 203
     Disc_Model
     { // Discraft Undertaker (NONE)
       /*.mold_name =*/          "Undertaker",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3134,12 +3278,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00759,
       /*.dome_height =*/        0.00426,
     },
-    // 195
+    // 204
     Disc_Model
     { // Discraft Venom (NONE)
       /*.mold_name =*/          "Venom",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3150,12 +3294,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00594,
       /*.dome_height =*/        0.00401,
     },
-    // 196
+    // 205
     Disc_Model
     { // Discraft Vortex (NONE)
       /*.mold_name =*/          "Vortex",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -3166,12 +3310,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00836,
       /*.dome_height =*/        0.00239,
     },
-    // 197
+    // 206
     Disc_Model
     { // Discraft Vulture (NONE)
       /*.mold_name =*/          "Vulture",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -3182,7 +3326,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00245,
     },
-    // 198
+    // 207
     Disc_Model
     { // Discraft Wasp (NONE)
       /*.mold_name =*/          "Wasp",
@@ -3198,12 +3342,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00816,
       /*.dome_height =*/        0.00244,
     },
-    // 199
+    // 208
     Disc_Model
     { // Discraft Wildcat (NONE)
       /*.mold_name =*/          "Wildcat",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -3214,7 +3358,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00678,
       /*.dome_height =*/        0.00277,
     },
-    // 200
+    // 209
     Disc_Model
     { // Discraft Windstar (NONE)
       /*.mold_name =*/          "Windstar",
@@ -3230,12 +3374,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00832,
       /*.dome_height =*/        0.00298,
     },
-    // 201
+    // 210
     Disc_Model
     { // Discraft X-Clone (NONE)
       /*.mold_name =*/          "X-Clone",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -3246,12 +3390,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00854,
       /*.dome_height =*/        0.00306,
     },
-    // 202
+    // 211
     Disc_Model
     { // Discraft X2 (NONE)
       /*.mold_name =*/          "X2",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3262,12 +3406,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00713,
       /*.dome_height =*/        0.00482,
     },
-    // 203
+    // 212
     Disc_Model
     { // Discraft XL (NONE)
       /*.mold_name =*/          "XL",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3278,12 +3422,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00932,
       /*.dome_height =*/        0.00523,
     },
-    // 204
+    // 213
     Disc_Model
     { // Discraft Xpress (NONE)
       /*.mold_name =*/          "Xpress",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3294,12 +3438,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00794,
       /*.dome_height =*/        0.00446,
     },
-    // 205
+    // 214
     Disc_Model
     { // Discraft XS (NONE)
       /*.mold_name =*/          "XS",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3310,12 +3454,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00801,
       /*.dome_height =*/        0.00449,
     },
-    // 206
+    // 215
     Disc_Model
     { // Discraft XTRA (NONE)
       /*.mold_name =*/          "XTRA",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3326,12 +3470,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00807,
       /*.dome_height =*/        0.00453,
     },
-    // 207
+    // 216
     Disc_Model
     { // Discraft Xtreme (NONE)
       /*.mold_name =*/          "Xtreme",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3342,12 +3486,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00788,
       /*.dome_height =*/        0.00532,
     },
-    // 208
+    // 217
     Disc_Model
     { // Discraft Z-Nuke (retooled) (NONE)
       /*.mold_name =*/          "Z-Nuke (retooled)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3358,7 +3502,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00663,
       /*.dome_height =*/        0.00372,
     },
-    // 209
+    // 218
     Disc_Model
     { // Discraft Zeppelin (Ace Race 2011) (NONE)
       /*.mold_name =*/          "Zeppelin (Ace Race 2011)",
@@ -3374,12 +3518,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00570,
       /*.dome_height =*/        0.00190,
     },
-    // 210
+    // 219
     Disc_Model
     { // Discraft Zeus (Kong) (NONE)
       /*.mold_name =*/          "Zeus (Kong)",
       /*.manufacturer =*/       "Discraft",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3390,7 +3534,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00660,
       /*.dome_height =*/        0.00370,
     },
-    // 211
+    // 220
     Disc_Model
     { // Discraft Zombee (Ace Race 2012) (NONE)
       /*.mold_name =*/          "Zombee (Ace Race 2012)",
@@ -3406,7 +3550,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01082,
       /*.dome_height =*/        0.00323,
     },
-    // 212
+    // 221
     Disc_Model
     { // Discraft Zone (Jawbreaker)
       /*.mold_name =*/          "Zone",
@@ -3422,7 +3566,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00000,
     },
-    // 213
+    // 222
     Disc_Model
     { // Dynamic_Discs Aviator (NONE)
       /*.mold_name =*/          "Aviator",
@@ -3438,7 +3582,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00913,
       /*.dome_height =*/        0.00492,
     },
-    // 214
+    // 223
     Disc_Model
     { // Dynamic_Discs Bounty (NONE)
       /*.mold_name =*/          "Bounty",
@@ -3454,12 +3598,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00772,
       /*.dome_height =*/        0.00223,
     },
-    // 215
+    // 224
     Disc_Model
     { // Dynamic_Discs Breakout (NONE)
       /*.mold_name =*/          "Breakout",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3470,12 +3614,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00564,
       /*.dome_height =*/        0.00381,
     },
-    // 216
+    // 225
     Disc_Model
     { // Dynamic_Discs Captain (NONE)
       /*.mold_name =*/          "Captain",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3486,12 +3630,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00641,
       /*.dome_height =*/        0.00359,
     },
-    // 217
+    // 226
     Disc_Model
     { // Dynamic_Discs Convict (NONE)
       /*.mold_name =*/          "Convict",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3502,12 +3646,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00478,
       /*.dome_height =*/        0.00227,
     },
-    // 218
+    // 227
     Disc_Model
     { // Dynamic_Discs Criminal (NONE)
       /*.mold_name =*/          "Criminal",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3518,12 +3662,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00624,
       /*.dome_height =*/        0.00296,
     },
-    // 219
+    // 228
     Disc_Model
     { // Dynamic_Discs Defender (NONE)
       /*.mold_name =*/          "Defender",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3534,7 +3678,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00588,
       /*.dome_height =*/        0.00397,
     },
-    // 220
+    // 229
     Disc_Model
     { // Dynamic_Discs Deputy (NONE)
       /*.mold_name =*/          "Deputy",
@@ -3550,7 +3694,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00529,
       /*.dome_height =*/        0.00251,
     },
-    // 221
+    // 230
     Disc_Model
     { // Dynamic_Discs EMAC Judge (NONE)
       /*.mold_name =*/          "EMAC Judge",
@@ -3566,7 +3710,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00533,
       /*.dome_height =*/        0.00252,
     },
-    // 222
+    // 231
     Disc_Model
     { // Dynamic_Discs EMAC Truth (NONE)
       /*.mold_name =*/          "EMAC Truth",
@@ -3582,12 +3726,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00743,
       /*.dome_height =*/        0.00212,
     },
-    // 223
+    // 232
     Disc_Model
     { // Dynamic_Discs Enforcer (NONE)
       /*.mold_name =*/          "Enforcer",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3598,12 +3742,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00807,
       /*.dome_height =*/        0.00453,
     },
-    // 224
+    // 233
     Disc_Model
     { // Dynamic_Discs Escape (NONE)
       /*.mold_name =*/          "Escape",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3614,12 +3758,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00926,
       /*.dome_height =*/        0.00519,
     },
-    // 225
+    // 234
     Disc_Model
     { // Dynamic_Discs Evader (NONE)
       /*.mold_name =*/          "Evader",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3630,7 +3774,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00926,
       /*.dome_height =*/        0.00439,
     },
-    // 226
+    // 235
     Disc_Model
     { // Dynamic_Discs Evidence (NONE)
       /*.mold_name =*/          "Evidence",
@@ -3646,12 +3790,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00758,
       /*.dome_height =*/        0.00217,
     },
-    // 227
+    // 236
     Disc_Model
     { // Dynamic_Discs Felon (NONE)
       /*.mold_name =*/          "Felon",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3662,7 +3806,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00794,
       /*.dome_height =*/        0.00376,
     },
-    // 228
+    // 237
     Disc_Model
     { // Dynamic_Discs Floater (NONE)
       /*.mold_name =*/          "Floater",
@@ -3678,12 +3822,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00955,
       /*.dome_height =*/        0.00514,
     },
-    // 229
+    // 238
     Disc_Model
     { // Dynamic_Discs Freedom (NONE)
       /*.mold_name =*/          "Freedom",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3694,7 +3838,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00716,
       /*.dome_height =*/        0.00339,
     },
-    // 230
+    // 239
     Disc_Model
     { // Dynamic_Discs Fugitive (NONE)
       /*.mold_name =*/          "Fugitive",
@@ -3710,7 +3854,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01029,
       /*.dome_height =*/        0.00291,
     },
-    // 231
+    // 240
     Disc_Model
     { // Dynamic_Discs Gavel (NONE)
       /*.mold_name =*/          "Gavel",
@@ -3726,12 +3870,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00285,
     },
-    // 232
+    // 241
     Disc_Model
     { // Dynamic_Discs Getaway (NONE)
       /*.mold_name =*/          "Getaway",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3742,7 +3886,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00785,
       /*.dome_height =*/        0.00440,
     },
-    // 233
+    // 242
     Disc_Model
     { // Dynamic_Discs Guard (NONE)
       /*.mold_name =*/          "Guard",
@@ -3758,12 +3902,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00179,
       /*.dome_height =*/        0.00121,
     },
-    // 234
+    // 243
     Disc_Model
     { // Dynamic_Discs Jeteye (NONE)
       /*.mold_name =*/          "Jeteye",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -3774,7 +3918,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00552,
       /*.dome_height =*/        0.00158,
     },
-    // 235
+    // 244
     Disc_Model
     { // Dynamic_Discs Judge (NONE)
       /*.mold_name =*/          "Judge",
@@ -3790,7 +3934,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00567,
       /*.dome_height =*/        0.00268,
     },
-    // 236
+    // 245
     Disc_Model
     { // Dynamic_Discs Justice (NONE)
       /*.mold_name =*/          "Justice",
@@ -3806,12 +3950,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00646,
       /*.dome_height =*/        0.00264,
     },
-    // 237
+    // 246
     Disc_Model
     { // Dynamic_Discs Lone Ranger (NONE)
       /*.mold_name =*/          "Lone Ranger",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -3822,7 +3966,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00552,
       /*.dome_height =*/        0.00158,
     },
-    // 238
+    // 247
     Disc_Model
     { // Dynamic_Discs Marshal (NONE)
       /*.mold_name =*/          "Marshal",
@@ -3838,12 +3982,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00448,
       /*.dome_height =*/        0.00212,
     },
-    // 239
+    // 248
     Disc_Model
     { // Dynamic_Discs Maverick (NONE)
       /*.mold_name =*/          "Maverick",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3854,7 +3998,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00746,
       /*.dome_height =*/        0.00354,
     },
-    // 240
+    // 249
     Disc_Model
     { // Dynamic_Discs Patrol (NONE)
       /*.mold_name =*/          "Patrol",
@@ -3870,7 +4014,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00560,
       /*.dome_height =*/        0.00160,
     },
-    // 241
+    // 250
     Disc_Model
     { // Dynamic_Discs Proof (NONE)
       /*.mold_name =*/          "Proof",
@@ -3886,12 +4030,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00537,
       /*.dome_height =*/        0.00173,
     },
-    // 242
+    // 251
     Disc_Model
     { // Dynamic_Discs Puppy (NONE)
       /*.mold_name =*/          "Puppy",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Dog",
+      /*.disc_type =*/          "Catch",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -3902,12 +4046,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00403,
     },
-    // 243
+    // 252
     Disc_Model
     { // Dynamic_Discs Raider (NONE)
       /*.mold_name =*/          "Raider",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3918,12 +4062,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00294,
     },
-    // 244
+    // 253
     Disc_Model
     { // Dynamic_Discs Renegade (NONE)
       /*.mold_name =*/          "Renegade",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3934,12 +4078,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00773,
       /*.dome_height =*/        0.00367,
     },
-    // 245
+    // 254
     Disc_Model
     { // Dynamic_Discs Sergeant (NONE)
       /*.mold_name =*/          "Sergeant",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3950,12 +4094,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00724,
       /*.dome_height =*/        0.00406,
     },
-    // 246
+    // 255
     Disc_Model
     { // Dynamic_Discs Sergeant (retest) (NONE)
       /*.mold_name =*/          "Sergeant (retest)",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -3966,12 +4110,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00631,
       /*.dome_height =*/        0.00299,
     },
-    // 247
+    // 256
     Disc_Model
     { // Dynamic_Discs Sheriff (NONE)
       /*.mold_name =*/          "Sheriff",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -3982,7 +4126,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00637,
       /*.dome_height =*/        0.00358,
     },
-    // 248
+    // 257
     Disc_Model
     { // Dynamic_Discs Slammer (NONE)
       /*.mold_name =*/          "Slammer",
@@ -3998,12 +4142,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00495,
       /*.dome_height =*/        0.00235,
     },
-    // 249
+    // 258
     Disc_Model
     { // Dynamic_Discs Super Puppy (NONE)
       /*.mold_name =*/          "Super Puppy",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Dog",
+      /*.disc_type =*/          "Catch",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -4014,7 +4158,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00403,
     },
-    // 250
+    // 259
     Disc_Model
     { // Dynamic_Discs Suspect (NONE)
       /*.mold_name =*/          "Suspect",
@@ -4030,12 +4174,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00462,
       /*.dome_height =*/        0.00188,
     },
-    // 251
+    // 260
     Disc_Model
     { // Dynamic_Discs Thief (NONE)
       /*.mold_name =*/          "Thief",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4046,12 +4190,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00756,
       /*.dome_height =*/        0.00359,
     },
-    // 252
+    // 261
     Disc_Model
     { // Dynamic_Discs Trespass (NONE)
       /*.mold_name =*/          "Trespass",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4062,7 +4206,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00881,
       /*.dome_height =*/        0.00494,
     },
-    // 253
+    // 262
     Disc_Model
     { // Dynamic_Discs Truth (NONE)
       /*.mold_name =*/          "Truth",
@@ -4078,12 +4222,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00677,
       /*.dome_height =*/        0.00193,
     },
-    // 254
+    // 263
     Disc_Model
     { // Dynamic_Discs Vandal (NONE)
       /*.mold_name =*/          "Vandal",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4094,7 +4238,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00662,
       /*.dome_height =*/        0.00313,
     },
-    // 255
+    // 264
     Disc_Model
     { // Dynamic_Discs Verdict (NONE)
       /*.mold_name =*/          "Verdict",
@@ -4110,7 +4254,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00649,
       /*.dome_height =*/        0.00186,
     },
-    // 256
+    // 265
     Disc_Model
     { // Dynamic_Discs Warden (NONE)
       /*.mold_name =*/          "Warden",
@@ -4126,7 +4270,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00458,
       /*.dome_height =*/        0.00217,
     },
-    // 257
+    // 266
     Disc_Model
     { // Dynamic_Discs Warrant (NONE)
       /*.mold_name =*/          "Warrant",
@@ -4142,12 +4286,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00677,
       /*.dome_height =*/        0.00193,
     },
-    // 258
+    // 267
     Disc_Model
     { // Dynamic_Discs Witness (NONE)
       /*.mold_name =*/          "Witness",
       /*.manufacturer =*/       "Dynamic_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4158,12 +4302,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00740,
       /*.dome_height =*/        0.00415,
     },
-    // 259
+    // 268
     Disc_Model
     { // Infinite_Discs Exodus (I-Blend)
       /*.mold_name =*/          "Exodus",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
@@ -4174,7 +4318,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00800,
     },
-    // 260
+    // 269
     Disc_Model
     { // Infinite_Discs Alpaca (NONE)
       /*.mold_name =*/          "Alpaca",
@@ -4190,12 +4334,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00464,
       /*.dome_height =*/        0.00261,
     },
-    // 261
+    // 270
     Disc_Model
     { // Infinite_Discs Maya (NONE)
       /*.mold_name =*/          "Maya",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4206,7 +4350,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00628,
       /*.dome_height =*/        0.00352,
     },
-    // 262
+    // 271
     Disc_Model
     { // Infinite_Discs Inca (NONE)
       /*.mold_name =*/          "Inca",
@@ -4222,7 +4366,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00914,
       /*.dome_height =*/        0.00261,
     },
-    // 263
+    // 272
     Disc_Model
     { // Infinite_Discs Ruin (NONE)
       /*.mold_name =*/          "Ruin",
@@ -4238,12 +4382,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00635,
       /*.dome_height =*/        0.00180,
     },
-    // 264
+    // 273
     Disc_Model
     { // Infinite_Discs Aztec (NONE)
       /*.mold_name =*/          "Aztec",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4254,12 +4398,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00570,
       /*.dome_height =*/        0.00270,
     },
-    // 265
+    // 274
     Disc_Model
     { // Infinite_Discs Centurion (NONE)
       /*.mold_name =*/          "Centurion",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4270,7 +4414,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00679,
       /*.dome_height =*/        0.00381,
     },
-    // 266
+    // 275
     Disc_Model
     { // Infinite_Discs Cohort (NONE)
       /*.mold_name =*/          "Cohort",
@@ -4286,7 +4430,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00404,
       /*.dome_height =*/        0.00226,
     },
-    // 267
+    // 276
     Disc_Model
     { // Infinite_Discs Scarab (NONE)
       /*.mold_name =*/          "Scarab",
@@ -4302,12 +4446,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00577,
       /*.dome_height =*/        0.00273,
     },
-    // 268
+    // 277
     Disc_Model
     { // Infinite_Discs Scepter (NONE)
       /*.mold_name =*/          "Scepter",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4318,12 +4462,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00567,
       /*.dome_height =*/        0.00268,
     },
-    // 269
+    // 278
     Disc_Model
     { // Infinite_Discs Emperor (NONE)
       /*.mold_name =*/          "Emperor",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4334,7 +4478,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00730,
       /*.dome_height =*/        0.00410,
     },
-    // 270
+    // 279
     Disc_Model
     { // Infinite_Discs Ra (NONE)
       /*.mold_name =*/          "Ra",
@@ -4350,7 +4494,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00618,
       /*.dome_height =*/        0.00177,
     },
-    // 271
+    // 280
     Disc_Model
     { // Infinite_Discs Anubis (NONE)
       /*.mold_name =*/          "Anubis",
@@ -4366,12 +4510,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00858,
       /*.dome_height =*/        0.00242,
     },
-    // 272
+    // 281
     Disc_Model
     { // Infinite_Discs Slab (NONE)
       /*.mold_name =*/          "Slab",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4382,12 +4526,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00692,
       /*.dome_height =*/        0.00328,
     },
-    // 273
+    // 282
     Disc_Model
     { // Infinite_Discs Sphinx (NONE)
       /*.mold_name =*/          "Sphinx",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4398,7 +4542,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00631,
       /*.dome_height =*/        0.00354,
     },
-    // 274
+    // 283
     Disc_Model
     { // Infinite_Discs Tomb (NONE)
       /*.mold_name =*/          "Tomb",
@@ -4414,7 +4558,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00206,
       /*.dome_height =*/        0.00084,
     },
-    // 275
+    // 284
     Disc_Model
     { // Infinite_Discs Myth (NONE)
       /*.mold_name =*/          "Myth",
@@ -4430,7 +4574,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00492,
       /*.dome_height =*/        0.00233,
     },
-    // 276
+    // 285
     Disc_Model
     { // Infinite_Discs Chariot (NONE)
       /*.mold_name =*/          "Chariot",
@@ -4446,12 +4590,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00522,
       /*.dome_height =*/        0.00148,
     },
-    // 277
+    // 286
     Disc_Model
     { // Infinite_Discs Pharaoh (NONE)
       /*.mold_name =*/          "Pharaoh",
       /*.manufacturer =*/       "Infinite_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4462,7 +4606,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00532,
       /*.dome_height =*/        0.00298,
     },
-    // 278
+    // 287
     Disc_Model
     { // Innova Ace (NONE)
       /*.mold_name =*/          "Ace",
@@ -4478,7 +4622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00670,
       /*.dome_height =*/        0.00375,
     },
-    // 279
+    // 288
     Disc_Model
     { // Innova Aero (DX)
       /*.mold_name =*/          "Aero",
@@ -4494,7 +4638,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00275,
     },
-    // 280
+    // 289
     Disc_Model
     { // Innova Animal (NONE)
       /*.mold_name =*/          "Animal",
@@ -4510,12 +4654,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00556,
       /*.dome_height =*/        0.00264,
     },
-    // 281
+    // 290
     Disc_Model
     { // Innova Ape (B-Champion)
       /*.mold_name =*/          "Ape",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16000,
@@ -4526,7 +4670,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00475,
       /*.dome_height =*/        0.00400,
     },
-    // 282
+    // 291
     Disc_Model
     { // Innova Apple (NONE)
       /*.mold_name =*/          "Apple",
@@ -4542,12 +4686,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00868,
       /*.dome_height =*/        0.00467,
     },
-    // 283
+    // 292
     Disc_Model
     { // Innova Archangel (NONE)
       /*.mold_name =*/          "Archangel",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4558,12 +4702,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00350,
     },
-    // 284
+    // 293
     Disc_Model
     { // Innova Archon (NONE)
       /*.mold_name =*/          "Archon",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4574,7 +4718,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00727,
       /*.dome_height =*/        0.00408,
     },
-    // 285
+    // 294
     Disc_Model
     { // Innova Atlas (NONE)
       /*.mold_name =*/          "Atlas",
@@ -4590,7 +4734,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00604,
       /*.dome_height =*/        0.00171,
     },
-    // 286
+    // 295
     Disc_Model
     { // Innova Avatar (NONE)
       /*.mold_name =*/          "Avatar",
@@ -4606,7 +4750,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00587,
       /*.dome_height =*/        0.00168,
     },
-    // 287
+    // 296
     Disc_Model
     { // Innova Aviar (NONE)
       /*.mold_name =*/          "Aviar",
@@ -4622,7 +4766,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00285,
     },
-    // 288
+    // 297
     Disc_Model
     { // Innova Aviar 3 (NONE)
       /*.mold_name =*/          "Aviar 3",
@@ -4638,7 +4782,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00533,
       /*.dome_height =*/        0.00252,
     },
-    // 289
+    // 298
     Disc_Model
     { // Innova Aviar Putter (NONE)
       /*.mold_name =*/          "Aviar Putter",
@@ -4654,7 +4798,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00285,
     },
-    // 290
+    // 299
     Disc_Model
     { // Innova Aviar XD (NONE)
       /*.mold_name =*/          "Aviar XD",
@@ -4670,7 +4814,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00712,
       /*.dome_height =*/        0.00338,
     },
-    // 291
+    // 300
     Disc_Model
     { // Innova Aviar XD (retooled) (NONE)
       /*.mold_name =*/          "Aviar XD (retooled)",
@@ -4686,7 +4830,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00777,
       /*.dome_height =*/        0.00368,
     },
-    // 292
+    // 301
     Disc_Model
     { // Innova AviarX3 (NONE)
       /*.mold_name =*/          "AviarX3",
@@ -4702,12 +4846,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00487,
       /*.dome_height =*/        0.00198,
     },
-    // 293
+    // 302
     Disc_Model
     { // Innova Banshee (NONE)
       /*.mold_name =*/          "Banshee",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4718,7 +4862,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00294,
     },
-    // 294
+    // 303
     Disc_Model
     { // Innova Barracuda (NONE)
       /*.mold_name =*/          "Barracuda",
@@ -4734,12 +4878,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00678,
       /*.dome_height =*/        0.00407,
     },
-    // 295
+    // 304
     Disc_Model
     { // Innova Beast (Star)
       /*.mold_name =*/          "Beast",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
@@ -4750,7 +4894,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00400,
     },
-    // 296
+    // 305
     Disc_Model
     { // Innova Big Kahuna (NONE)
       /*.mold_name =*/          "Big Kahuna",
@@ -4766,7 +4910,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00929,
       /*.dome_height =*/        0.00500,
     },
-    // 297
+    // 306
     Disc_Model
     { // Innova Birdie (NONE)
       /*.mold_name =*/          "Birdie",
@@ -4782,7 +4926,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00215,
       /*.dome_height =*/        0.00120,
     },
-    // 298
+    // 307
     Disc_Model
     { // Innova Birdie (retooled) (NONE)
       /*.mold_name =*/          "Birdie (retooled)",
@@ -4798,12 +4942,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00295,
       /*.dome_height =*/        0.00140,
     },
-    // 299
+    // 308
     Disc_Model
     { // Innova Boss (Champion)
       /*.mold_name =*/          "Boss",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -4814,10 +4958,10 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00200,
     },
-    // 300
+    // 309
     Disc_Model
-    { // Innova Bulldog (NONE)
-      /*.mold_name =*/          "Bulldog",
+    { // Innova BullCatch (NONE)
+      /*.mold_name =*/          "BullCatch",
       /*.manufacturer =*/       "Innova",
       /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
@@ -4830,7 +4974,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00705,
       /*.dome_height =*/        0.00395,
     },
-    // 301
+    // 310
     Disc_Model
     { // Innova Bullfrog (NONE)
       /*.mold_name =*/          "Bullfrog",
@@ -4846,7 +4990,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00285,
       /*.dome_height =*/        0.00160,
     },
-    // 302
+    // 311
     Disc_Model
     { // Innova Caiman (NONE)
       /*.mold_name =*/          "Caiman",
@@ -4862,7 +5006,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00237,
       /*.dome_height =*/        0.00133,
     },
-    // 303
+    // 312
     Disc_Model
     { // Innova CE Aero (NONE)
       /*.mold_name =*/          "CE Aero",
@@ -4878,7 +5022,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01091,
       /*.dome_height =*/        0.00334,
     },
-    // 304
+    // 313
     Disc_Model
     { // Innova CE Aviar (NONE)
       /*.mold_name =*/          "CE Aviar",
@@ -4894,12 +5038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00629,
       /*.dome_height =*/        0.00256,
     },
-    // 305
+    // 314
     Disc_Model
     { // Innova CE Eagle (NONE)
       /*.mold_name =*/          "CE Eagle",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4910,12 +5054,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00325,
     },
-    // 306
+    // 315
     Disc_Model
     { // Innova CE FireBird (NONE)
       /*.mold_name =*/          "CE FireBird",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4926,12 +5070,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00587,
       /*.dome_height =*/        0.00278,
     },
-    // 307
+    // 316
     Disc_Model
     { // Innova CE Leopard (NONE)
       /*.mold_name =*/          "CE Leopard",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -4942,7 +5086,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00365,
     },
-    // 308
+    // 317
     Disc_Model
     { // Innova CE Spider (NONE)
       /*.mold_name =*/          "CE Spider",
@@ -4958,12 +5102,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00543,
       /*.dome_height =*/        0.00257,
     },
-    // 309
+    // 318
     Disc_Model
     { // Innova CE TeeBird (NONE)
       /*.mold_name =*/          "CE TeeBird",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4974,12 +5118,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00294,
     },
-    // 310
+    // 319
     Disc_Model
     { // Innova CE Valkyrie (NONE)
       /*.mold_name =*/          "CE Valkyrie",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -4990,12 +5134,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00283,
     },
-    // 311
+    // 320
     Disc_Model
     { // Innova Cheetah (NONE)
       /*.mold_name =*/          "Cheetah",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5006,12 +5150,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00855,
       /*.dome_height =*/        0.00480,
     },
-    // 312
+    // 321
     Disc_Model
     { // Innova Cheetah (retooled) (NONE)
       /*.mold_name =*/          "Cheetah (retooled)",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5022,7 +5166,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00906,
       /*.dome_height =*/        0.00429,
     },
-    // 313
+    // 322
     Disc_Model
     { // Innova Classic Ace (NONE)
       /*.mold_name =*/          "Classic Ace",
@@ -5038,7 +5182,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00807,
       /*.dome_height =*/        0.00383,
     },
-    // 314
+    // 323
     Disc_Model
     { // Innova Classic Roc (NONE)
       /*.mold_name =*/          "Classic Roc",
@@ -5054,7 +5198,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00777,
       /*.dome_height =*/        0.00368,
     },
-    // 315
+    // 324
     Disc_Model
     { // Innova Cobra (NONE)
       /*.mold_name =*/          "Cobra",
@@ -5070,7 +5214,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01007,
       /*.dome_height =*/        0.00288,
     },
-    // 316
+    // 325
     Disc_Model
     { // Innova Cobra Classic (NONE)
       /*.mold_name =*/          "Cobra Classic",
@@ -5086,12 +5230,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01085,
       /*.dome_height =*/        0.00310,
     },
-    // 317
+    // 326
     Disc_Model
     { // Innova Colossus (G-Star)
       /*.mold_name =*/          "Colossus",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16000,
@@ -5102,7 +5246,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00325,
     },
-    // 318
+    // 327
     Disc_Model
     { // Innova Colt (NONE)
       /*.mold_name =*/          "Colt",
@@ -5118,7 +5262,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00410,
       /*.dome_height =*/        0.00195,
     },
-    // 319
+    // 328
     Disc_Model
     { // Innova Commander (NONE)
       /*.mold_name =*/          "Commander",
@@ -5134,7 +5278,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01060,
       /*.dome_height =*/        0.00300,
     },
-    // 320
+    // 329
     Disc_Model
     { // Innova Condor (NONE)
       /*.mold_name =*/          "Condor",
@@ -5150,12 +5294,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00790,
       /*.dome_height =*/        0.00425,
     },
-    // 321
+    // 330
     Disc_Model
     { // Innova Corvette (NONE)
       /*.mold_name =*/          "Corvette",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5166,7 +5310,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00810,
       /*.dome_height =*/        0.00455,
     },
-    // 322
+    // 331
     Disc_Model
     { // Innova Coupe (NONE)
       /*.mold_name =*/          "Coupe",
@@ -5182,12 +5326,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00678,
       /*.dome_height =*/        0.00322,
     },
-    // 323
+    // 332
     Disc_Model
     { // Innova Coyote (Star)
       /*.mold_name =*/          "Coyote",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Convex",
       /*.mass =*/               0.16500,
@@ -5198,12 +5342,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00250,
     },
-    // 324
+    // 333
     Disc_Model
     { // Innova CRO (NONE)
       /*.mold_name =*/          "CRO",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5214,12 +5358,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00699,
       /*.dome_height =*/        0.00331,
     },
-    // 325
+    // 334
     Disc_Model
     { // Innova Croc (NONE)
       /*.mold_name =*/          "Croc",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5230,12 +5374,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00561,
       /*.dome_height =*/        0.00314,
     },
-    // 326
+    // 335
     Disc_Model
     { // Innova Daedalus (NONE)
       /*.mold_name =*/          "Daedalus",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5246,7 +5390,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00350,
     },
-    // 327
+    // 336
     Disc_Model
     { // Innova Dart (NONE)
       /*.mold_name =*/          "Dart",
@@ -5262,12 +5406,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00977,
       /*.dome_height =*/        0.00463,
     },
-    // 328
+    // 337
     Disc_Model
     { // Innova Destroyer (DX)
       /*.mold_name =*/          "Destroyer",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -5278,12 +5422,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00375,
       /*.dome_height =*/        0.00500,
     },
-    // 329
+    // 338
     Disc_Model
     { // Innova Dolphin (NONE)
       /*.mold_name =*/          "Dolphin",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -5294,12 +5438,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00935,
       /*.dome_height =*/        0.00335,
     },
-    // 330
+    // 339
     Disc_Model
     { // Innova Dominator (NONE)
       /*.mold_name =*/          "Dominator",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5310,12 +5454,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00541,
       /*.dome_height =*/        0.00304,
     },
-    // 331
+    // 340
     Disc_Model
     { // Innova Dragon (NONE)
       /*.mold_name =*/          "Dragon",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -5326,12 +5470,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00752,
       /*.dome_height =*/        0.00508,
     },
-    // 332
+    // 341
     Disc_Model
     { // Innova Eagle (DX)
       /*.mold_name =*/          "Eagle",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.15000,
@@ -5342,12 +5486,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00600,
     },
-    // 333
+    // 342
     Disc_Model
     { // Innova Eagle (new) (NONE)
       /*.mold_name =*/          "Eagle (new)",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5358,12 +5502,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00325,
     },
-    // 334
+    // 343
     Disc_Model
     { // Innova Eagle (old) (NONE)
       /*.mold_name =*/          "Eagle (old)",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -5374,12 +5518,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01264,
       /*.dome_height =*/        0.00361,
     },
-    // 335
+    // 344
     Disc_Model
     { // Innova Firebird (Champion)
       /*.mold_name =*/          "Firebird",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
@@ -5390,12 +5534,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00300,
     },
-    // 336
+    // 345
     Disc_Model
     { // Innova Firebird L (FL) (NONE)
       /*.mold_name =*/          "Firebird L (FL)",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5406,7 +5550,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00714,
       /*.dome_height =*/        0.00401,
     },
-    // 337
+    // 346
     Disc_Model
     { // Innova Firefly (NONE)
       /*.mold_name =*/          "Firefly",
@@ -5422,12 +5566,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00436,
       /*.dome_height =*/        0.00244,
     },
-    // 338
+    // 347
     Disc_Model
     { // Innova Firestorm (NONE)
       /*.mold_name =*/          "Firestorm",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5438,7 +5582,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00609,
       /*.dome_height =*/        0.00341,
     },
-    // 339
+    // 348
     Disc_Model
     { // Innova Foxbat (Star)
       /*.mold_name =*/          "Foxbat",
@@ -5454,7 +5598,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00825,
       /*.dome_height =*/        0.00450,
     },
-    // 340
+    // 349
     Disc_Model
     { // Innova Gargoyle (NONE)
       /*.mold_name =*/          "Gargoyle",
@@ -5470,7 +5614,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00767,
       /*.dome_height =*/        0.00363,
     },
-    // 341
+    // 350
     Disc_Model
     { // Innova Gator (NONE)
       /*.mold_name =*/          "Gator",
@@ -5486,7 +5630,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00617,
       /*.dome_height =*/        0.00293,
     },
-    // 342
+    // 351
     Disc_Model
     { // Innova Gator3 (NONE)
       /*.mold_name =*/          "Gator3",
@@ -5502,12 +5646,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00260,
     },
-    // 343
+    // 352
     Disc_Model
     { // Innova Gazelle (NONE)
       /*.mold_name =*/          "Gazelle",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5518,7 +5662,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00838,
       /*.dome_height =*/        0.00397,
     },
-    // 344
+    // 353
     Disc_Model
     { // Innova Goblin (NONE)
       /*.mold_name =*/          "Goblin",
@@ -5534,7 +5678,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00892,
       /*.dome_height =*/        0.00423,
     },
-    // 345
+    // 354
     Disc_Model
     { // Innova Gopher (NONE)
       /*.mold_name =*/          "Gopher",
@@ -5550,7 +5694,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00331,
       /*.dome_height =*/        0.00484,
     },
-    // 346
+    // 355
     Disc_Model
     { // Innova Gremlin (NONE)
       /*.mold_name =*/          "Gremlin",
@@ -5566,7 +5710,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00607,
       /*.dome_height =*/        0.00288,
     },
-    // 347
+    // 356
     Disc_Model
     { // Innova Griffin (NONE)
       /*.mold_name =*/          "Griffin",
@@ -5582,12 +5726,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00906,
       /*.dome_height =*/        0.00429,
     },
-    // 348
+    // 357
     Disc_Model
     { // Innova Groove (NONE)
       /*.mold_name =*/          "Groove",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5598,7 +5742,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00730,
       /*.dome_height =*/        0.00410,
     },
-    // 349
+    // 358
     Disc_Model
     { // Innova Hammer (NONE)
       /*.mold_name =*/          "Hammer",
@@ -5614,7 +5758,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01062,
       /*.dome_height =*/        0.00303,
     },
-    // 350
+    // 359
     Disc_Model
     { // Innova Hawg (NONE)
       /*.mold_name =*/          "Hawg",
@@ -5630,12 +5774,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00387,
       /*.dome_height =*/        0.00183,
     },
-    // 351
+    // 360
     Disc_Model
     { // Innova Hero Disc Type 235 (NONE)
       /*.mold_name =*/          "Hero Disc Type 235",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Dog",
+      /*.disc_type =*/          "Catch",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.19670,
@@ -5646,7 +5790,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00874,
       /*.dome_height =*/        0.00471,
     },
-    // 352
+    // 361
     Disc_Model
     { // Innova Hydra (NONE)
       /*.mold_name =*/          "Hydra",
@@ -5662,7 +5806,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00708,
       /*.dome_height =*/        0.00397,
     },
-    // 353
+    // 362
     Disc_Model
     { // Innova Invader (NONE)
       /*.mold_name =*/          "Invader",
@@ -5678,12 +5822,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00370,
       /*.dome_height =*/        0.00175,
     },
-    // 354
+    // 363
     Disc_Model
     { // Innova Invictus (NONE)
       /*.mold_name =*/          "Invictus",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5694,7 +5838,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00624,
       /*.dome_height =*/        0.00296,
     },
-    // 355
+    // 364
     Disc_Model
     { // Innova Jaguar (NONE)
       /*.mold_name =*/          "Jaguar",
@@ -5710,12 +5854,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00637,
       /*.dome_height =*/        0.00343,
     },
-    // 356
+    // 365
     Disc_Model
     { // Innova Katana (Star)
       /*.mold_name =*/          "Katana",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -5726,7 +5870,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00400,
       /*.dome_height =*/        0.00350,
     },
-    // 357
+    // 366
     Disc_Model
     { // Innova Kite (NONE)
       /*.mold_name =*/          "Kite",
@@ -5742,12 +5886,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00797,
       /*.dome_height =*/        0.00378,
     },
-    // 358
+    // 367
     Disc_Model
     { // Innova Krait (Champion)
       /*.mold_name =*/          "Krait",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17000,
@@ -5758,12 +5902,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00450,
     },
-    // 359
+    // 368
     Disc_Model
     { // Innova Leopard (NONE)
       /*.mold_name =*/          "Leopard",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5774,12 +5918,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00689,
       /*.dome_height =*/        0.00326,
     },
-    // 360
+    // 369
     Disc_Model
     { // Innova Leopard 3 (G-Star)
       /*.mold_name =*/          "Leopard 3",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
@@ -5790,7 +5934,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00250,
     },
-    // 361
+    // 370
     Disc_Model
     { // Innova Lion (NONE)
       /*.mold_name =*/          "Lion",
@@ -5806,7 +5950,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00470,
       /*.dome_height =*/        0.00135,
     },
-    // 362
+    // 371
     Disc_Model
     { // Innova Lycan (NONE)
       /*.mold_name =*/          "Lycan",
@@ -5822,7 +5966,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00861,
       /*.dome_height =*/        0.00244,
     },
-    // 363
+    // 372
     Disc_Model
     { // Innova Lynx (NONE)
       /*.mold_name =*/          "Lynx",
@@ -5838,7 +5982,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01030,
       /*.dome_height =*/        0.00555,
     },
-    // 364
+    // 373
     Disc_Model
     { // Innova Makani (NONE)
       /*.mold_name =*/          "Makani",
@@ -5854,7 +5998,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00676,
       /*.dome_height =*/        0.00364,
     },
-    // 365
+    // 374
     Disc_Model
     { // Innova Mako (NONE)
       /*.mold_name =*/          "Mako",
@@ -5870,7 +6014,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00813,
       /*.dome_height =*/        0.00232,
     },
-    // 366
+    // 375
     Disc_Model
     { // Innova Mako 3 (Champion)
       /*.mold_name =*/          "Mako 3",
@@ -5886,12 +6030,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00075,
     },
-    // 367
+    // 376
     Disc_Model
     { // Innova Mamba (NONE)
       /*.mold_name =*/          "Mamba",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5902,7 +6046,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00737,
       /*.dome_height =*/        0.00413,
     },
-    // 368
+    // 377
     Disc_Model
     { // Innova Manta (NONE)
       /*.mold_name =*/          "Manta",
@@ -5918,12 +6062,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00900,
       /*.dome_height =*/        0.00255,
     },
-    // 369
+    // 378
     Disc_Model
     { // Innova Max (NONE)
       /*.mold_name =*/          "Max",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -5934,7 +6078,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00828,
       /*.dome_height =*/        0.00392,
     },
-    // 370
+    // 379
     Disc_Model
     { // Innova Mirage (NONE)
       /*.mold_name =*/          "Mirage",
@@ -5950,12 +6094,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00607,
       /*.dome_height =*/        0.00288,
     },
-    // 371
+    // 380
     Disc_Model
     { // Innova Monarch (NONE)
       /*.mold_name =*/          "Monarch",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -5966,12 +6110,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00631,
       /*.dome_height =*/        0.00354,
     },
-    // 372
+    // 381
     Disc_Model
     { // Innova Monster (Champion)
       /*.mold_name =*/          "Monster",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -5982,12 +6126,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00575,
       /*.dome_height =*/        0.00275,
     },
-    // 373
+    // 382
     Disc_Model
     { // Innova Moray (NONE)
       /*.mold_name =*/          "Moray",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17930,
@@ -5998,12 +6142,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00831,
       /*.dome_height =*/        0.00249,
     },
-    // 374
+    // 383
     Disc_Model
     { // Innova Mystere (NONE)
       /*.mold_name =*/          "Mystere",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6014,7 +6158,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00349,
     },
-    // 375
+    // 384
     Disc_Model
     { // Innova Nova (NONE)
       /*.mold_name =*/          "Nova",
@@ -6030,12 +6174,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01080,
       /*.dome_height =*/        0.00440,
     },
-    // 376
+    // 385
     Disc_Model
     { // Innova Orc (DX)
       /*.mold_name =*/          "Orc",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16700,
@@ -6046,12 +6190,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00700,
     },
-    // 377
+    // 386
     Disc_Model
     { // Innova ORC (NONE)
       /*.mold_name =*/          "ORC",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6062,7 +6206,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00923,
       /*.dome_height =*/        0.00437,
     },
-    // 378
+    // 387
     Disc_Model
     { // Innova Panther (NONE)
       /*.mold_name =*/          "Panther",
@@ -6078,12 +6222,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00828,
       /*.dome_height =*/        0.00392,
     },
-    // 379
+    // 388
     Disc_Model
     { // Innova Pegasus (NONE)
       /*.mold_name =*/          "Pegasus",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6094,12 +6238,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00682,
       /*.dome_height =*/        0.00383,
     },
-    // 380
+    // 389
     Disc_Model
     { // Innova Phenix (NONE)
       /*.mold_name =*/          "Phenix",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.19090,
@@ -6110,7 +6254,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00614,
       /*.dome_height =*/        0.01216,
     },
-    // 381
+    // 390
     Disc_Model
     { // Innova Pig (NONE)
       /*.mold_name =*/          "Pig",
@@ -6126,7 +6270,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00645,
       /*.dome_height =*/        0.00305,
     },
-    // 382
+    // 391
     Disc_Model
     { // Innova Piranha (NONE)
       /*.mold_name =*/          "Piranha",
@@ -6142,7 +6286,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00319,
       /*.dome_height =*/        0.00151,
     },
-    // 383
+    // 392
     Disc_Model
     { // Innova Pole Cat (NONE)
       /*.mold_name =*/          "Pole Cat",
@@ -6158,7 +6302,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00451,
       /*.dome_height =*/        0.00184,
     },
-    // 384
+    // 393
     Disc_Model
     { // Innova Pulsar (NONE)
       /*.mold_name =*/          "Pulsar",
@@ -6174,7 +6318,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00929,
       /*.dome_height =*/        0.00500,
     },
-    // 385
+    // 394
     Disc_Model
     { // Innova Puma (NONE)
       /*.mold_name =*/          "Puma",
@@ -6190,7 +6334,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00573,
       /*.dome_height =*/        0.00272,
     },
-    // 386
+    // 395
     Disc_Model
     { // Innova Python (NONE)
       /*.mold_name =*/          "Python",
@@ -6206,12 +6350,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00836,
       /*.dome_height =*/        0.00239,
     },
-    // 387
+    // 396
     Disc_Model
     { // Innova Ram (NONE)
       /*.mold_name =*/          "Ram",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -6222,7 +6366,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01050,
       /*.dome_height =*/        0.00300,
     },
-    // 388
+    // 397
     Disc_Model
     { // Innova Rat (NONE)
       /*.mold_name =*/          "Rat",
@@ -6238,12 +6382,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00249,
       /*.dome_height =*/        0.00118,
     },
-    // 389
+    // 398
     Disc_Model
     { // Innova Raven (NONE)
       /*.mold_name =*/          "Raven",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -6254,7 +6398,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01023,
       /*.dome_height =*/        0.00292,
     },
-    // 390
+    // 399
     Disc_Model
     { // Innova Rhyno (NONE)
       /*.mold_name =*/          "Rhyno",
@@ -6270,7 +6414,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00519,
       /*.dome_height =*/        0.00246,
     },
-    // 391
+    // 400
     Disc_Model
     { // Innova Rhyno X (NONE)
       /*.mold_name =*/          "Rhyno X",
@@ -6286,12 +6430,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00495,
       /*.dome_height =*/        0.00235,
     },
-    // 392
+    // 401
     Disc_Model
     { // Innova Roadrunner (NONE)
       /*.mold_name =*/          "Roadrunner",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6302,12 +6446,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00525,
       /*.dome_height =*/        0.00295,
     },
-    // 393
+    // 402
     Disc_Model
     { // Innova Roc (DX)
       /*.mold_name =*/          "Roc",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.15500,
@@ -6318,7 +6462,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00300,
     },
-    // 394
+    // 403
     Disc_Model
     { // Innova Roc 3 (NONE)
       /*.mold_name =*/          "Roc 3",
@@ -6334,7 +6478,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00889,
       /*.dome_height =*/        0.00251,
     },
-    // 395
+    // 404
     Disc_Model
     { // Innova RocX3 (NONE)
       /*.mold_name =*/          "RocX3",
@@ -6350,12 +6494,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00783,
       /*.dome_height =*/        0.00222,
     },
-    // 396
+    // 405
     Disc_Model
     { // Innova Savant (NONE)
       /*.mold_name =*/          "Savant",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6366,7 +6510,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00557,
       /*.dome_height =*/        0.00313,
     },
-    // 397
+    // 406
     Disc_Model
     { // Innova Scorpion (NONE)
       /*.mold_name =*/          "Scorpion",
@@ -6382,12 +6526,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00944,
       /*.dome_height =*/        0.00566,
     },
-    // 398
+    // 407
     Disc_Model
     { // Innova Shark (DX)
       /*.mold_name =*/          "Shark",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.14600,
@@ -6398,7 +6542,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00675,
       /*.dome_height =*/        0.00325,
     },
-    // 399
+    // 408
     Disc_Model
     { // Innova Shark (NONE)
       /*.mold_name =*/          "Shark",
@@ -6414,7 +6558,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01019,
       /*.dome_height =*/        0.00291,
     },
-    // 400
+    // 409
     Disc_Model
     { // Innova Shark 3 (NONE)
       /*.mold_name =*/          "Shark 3",
@@ -6430,12 +6574,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00943,
       /*.dome_height =*/        0.00267,
     },
-    // 401
+    // 410
     Disc_Model
     { // Innova Shryke (Star)
       /*.mold_name =*/          "Shryke",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17100,
@@ -6446,12 +6590,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00425,
       /*.dome_height =*/        0.00525,
     },
-    // 402
+    // 411
     Disc_Model
     { // Innova Sidewinder (DX)
       /*.mold_name =*/          "Sidewinder",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17300,
@@ -6462,12 +6606,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00400,
     },
-    // 403
+    // 412
     Disc_Model
     { // Innova Skeeter (DX)
       /*.mold_name =*/          "Skeeter",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "MidRange",
+      /*.disc_type =*/          "Midrange",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17100,
@@ -6478,7 +6622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00575,
       /*.dome_height =*/        0.00800,
     },
-    // 404
+    // 413
     Disc_Model
     { // Innova Sonic (NONE)
       /*.mold_name =*/          "Sonic",
@@ -6494,7 +6638,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00508,
       /*.dome_height =*/        0.00152,
     },
-    // 405
+    // 414
     Disc_Model
     { // Innova Spider (NONE)
       /*.mold_name =*/          "Spider",
@@ -6510,7 +6654,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00543,
       /*.dome_height =*/        0.00257,
     },
-    // 406
+    // 415
     Disc_Model
     { // Innova Starfire (DX)
       /*.mold_name =*/          "Starfire",
@@ -6526,7 +6670,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00275,
     },
-    // 407
+    // 416
     Disc_Model
     { // Innova Starfire L (SL) (NONE)
       /*.mold_name =*/          "Starfire L (SL)",
@@ -6542,7 +6686,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00718,
       /*.dome_height =*/        0.00402,
     },
-    // 408
+    // 417
     Disc_Model
     { // Innova Stingray (NONE)
       /*.mold_name =*/          "Stingray",
@@ -6558,7 +6702,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00805,
       /*.dome_height =*/        0.00230,
     },
-    // 409
+    // 418
     Disc_Model
     { // Innova Stud (NONE)
       /*.mold_name =*/          "Stud",
@@ -6574,7 +6718,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00346,
       /*.dome_height =*/        0.00164,
     },
-    // 410
+    // 419
     Disc_Model
     { // Innova Super Nova (NONE)
       /*.mold_name =*/          "Super Nova",
@@ -6590,12 +6734,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00683,
       /*.dome_height =*/        0.00367,
     },
-    // 411
+    // 420
     Disc_Model
     { // Innova Tee-Rex (NONE)
       /*.mold_name =*/          "Tee-Rex",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6606,12 +6750,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00705,
       /*.dome_height =*/        0.00395,
     },
-    // 412
+    // 421
     Disc_Model
     { // Innova TeeBird (Star)
       /*.mold_name =*/          "TeeBird",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17500,
@@ -6622,12 +6766,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00294,
     },
-    // 413
+    // 422
     Disc_Model
     { // Innova TeeBird L (TL) (NONE)
       /*.mold_name =*/          "TeeBird L (TL)",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6638,12 +6782,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00602,
       /*.dome_height =*/        0.00338,
     },
-    // 414
+    // 423
     Disc_Model
     { // Innova TeeBird 3 (Champion)
       /*.mold_name =*/          "TeeBird 3",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
@@ -6654,12 +6798,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00400,
     },
-    // 415
+    // 424
     Disc_Model
     { // Innova TeeDevil (NONE)
       /*.mold_name =*/          "TeeDevil",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6670,12 +6814,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00699,
       /*.dome_height =*/        0.00331,
     },
-    // 416
+    // 425
     Disc_Model
     { // Innova Tern (NONE)
       /*.mold_name =*/          "Tern",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6686,12 +6830,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00724,
       /*.dome_height =*/        0.00406,
     },
-    // 417
+    // 426
     Disc_Model
     { // Innova Thunderbird (DX)
       /*.mold_name =*/          "Thunderbird",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16700,
@@ -6702,12 +6846,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00525,
     },
-    // 418
+    // 427
     Disc_Model
     { // Innova TL 3 (NONE)
       /*.mold_name =*/          "TL 3",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6718,7 +6862,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00706,
       /*.dome_height =*/        0.00334,
     },
-    // 419
+    // 428
     Disc_Model
     { // Innova Tomb (Star)
       /*.mold_name =*/          "Tomb",
@@ -6734,7 +6878,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00100,
     },
-    // 420
+    // 429
     Disc_Model
     { // Innova Toro (NONE)
       /*.mold_name =*/          "Toro",
@@ -6750,12 +6894,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00227,
       /*.dome_height =*/        0.00108,
     },
-    // 421
+    // 430
     Disc_Model
     { // Innova Valkyrie (DX)
       /*.mold_name =*/          "Valkyrie",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -6766,12 +6910,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00550,
       /*.dome_height =*/        0.00275,
     },
-    // 422
+    // 431
     Disc_Model
     { // Innova Viking (NONE)
       /*.mold_name =*/          "Viking",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6782,12 +6926,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00533,
       /*.dome_height =*/        0.00252,
     },
-    // 423
+    // 432
     Disc_Model
     { // Innova Viper (NONE)
       /*.mold_name =*/          "Viper",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18010,
@@ -6798,7 +6942,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01100,
       /*.dome_height =*/        0.00315,
     },
-    // 424
+    // 433
     Disc_Model
     { // Innova VRoc (NONE)
       /*.mold_name =*/          "VRoc",
@@ -6814,12 +6958,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00889,
       /*.dome_height =*/        0.00251,
     },
-    // 425
+    // 434
     Disc_Model
     { // Innova Vulcan (NONE)
       /*.mold_name =*/          "Vulcan",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6830,12 +6974,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00580,
       /*.dome_height =*/        0.00275,
     },
-    // 426
+    // 435
     Disc_Model
     { // Innova Wahoo (NONE)
       /*.mold_name =*/          "Wahoo",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -6846,7 +6990,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00797,
       /*.dome_height =*/        0.00538,
     },
-    // 427
+    // 436
     Disc_Model
     { // Innova Warhog (NONE)
       /*.mold_name =*/          "Warhog",
@@ -6862,7 +7006,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00736,
       /*.dome_height =*/        0.00349,
     },
-    // 428
+    // 437
     Disc_Model
     { // Innova Wedge (NONE)
       /*.mold_name =*/          "Wedge",
@@ -6878,7 +7022,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00512,
       /*.dome_height =*/        0.00243,
     },
-    // 429
+    // 438
     Disc_Model
     { // Innova Whale (NONE)
       /*.mold_name =*/          "Whale",
@@ -6894,12 +7038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00317,
       /*.dome_height =*/        0.00178,
     },
-    // 430
+    // 439
     Disc_Model
     { // Innova Whippet (NONE)
       /*.mold_name =*/          "Whippet",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -6910,7 +7054,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00936,
       /*.dome_height =*/        0.00444,
     },
-    // 431
+    // 440
     Disc_Model
     { // Innova Wolf (NONE)
       /*.mold_name =*/          "Wolf",
@@ -6926,7 +7070,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00776,
       /*.dome_height =*/        0.00219,
     },
-    // 432
+    // 441
     Disc_Model
     { // Innova Wombat (NONE)
       /*.mold_name =*/          "Wombat",
@@ -6942,7 +7086,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01150,
       /*.dome_height =*/        0.00325,
     },
-    // 433
+    // 442
     Disc_Model
     { // Innova Wombat3 (NONE)
       /*.mold_name =*/          "Wombat3",
@@ -6958,12 +7102,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01091,
       /*.dome_height =*/        0.00309,
     },
-    // 434
+    // 443
     Disc_Model
     { // Innova Wraith (Star)
       /*.mold_name =*/          "Wraith",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16700,
@@ -6974,12 +7118,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00600,
     },
-    // 435
+    // 444
     Disc_Model
     { // Innova XCaliber (NONE)
       /*.mold_name =*/          "XCaliber",
       /*.manufacturer =*/       "Innova",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -6990,7 +7134,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00647,
       /*.dome_height =*/        0.00363,
     },
-    // 436
+    // 445
     Disc_Model
     { // Innova XT V-Aviar (NONE)
       /*.mold_name =*/          "XT V-Aviar",
@@ -7006,7 +7150,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00567,
       /*.dome_height =*/        0.00318,
     },
-    // 437
+    // 446
     Disc_Model
     { // Innova Zephyr (NONE)
       /*.mold_name =*/          "Zephyr",
@@ -7022,7 +7166,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00676,
       /*.dome_height =*/        0.00364,
     },
-    // 438
+    // 447
     Disc_Model
     { // Kastaplast Svea (NONE)
       /*.mold_name =*/          "Svea",
@@ -7038,12 +7182,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00985,
       /*.dome_height =*/        0.00285,
     },
-    // 439
+    // 448
     Disc_Model
     { // Kastaplast Lots (NONE)
       /*.mold_name =*/          "Lots",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7054,7 +7198,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00583,
       /*.dome_height =*/        0.00327,
     },
-    // 440
+    // 449
     Disc_Model
     { // Kastaplast Göte (NONE)
       /*.mold_name =*/          "Göte",
@@ -7070,12 +7214,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00973,
       /*.dome_height =*/        0.00282,
     },
-    // 441
+    // 450
     Disc_Model
     { // Kastaplast Stål (NONE)
       /*.mold_name =*/          "Stål",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7086,12 +7230,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00762,
       /*.dome_height =*/        0.00428,
     },
-    // 442
+    // 451
     Disc_Model
     { // Kastaplast Falk (NONE)
       /*.mold_name =*/          "Falk",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7102,12 +7246,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00766,
       /*.dome_height =*/        0.00429,
     },
-    // 443
+    // 452
     Disc_Model
     { // Kastaplast Grym X (NONE)
       /*.mold_name =*/          "Grym X",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7118,7 +7262,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00733,
       /*.dome_height =*/        0.00347,
     },
-    // 444
+    // 453
     Disc_Model
     { // Kastaplast Reko (NONE)
       /*.mold_name =*/          "Reko",
@@ -7134,12 +7278,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00390,
       /*.dome_height =*/        0.00185,
     },
-    // 445
+    // 454
     Disc_Model
     { // Kastaplast Grym (NONE)
       /*.mold_name =*/          "Grym",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7150,7 +7294,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00458,
     },
-    // 446
+    // 455
     Disc_Model
     { // Kastaplast Berg (NONE)
       /*.mold_name =*/          "Berg",
@@ -7166,7 +7310,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00167,
       /*.dome_height =*/        0.00093,
     },
-    // 447
+    // 456
     Disc_Model
     { // Kastaplast Kaxe Z (NONE)
       /*.mold_name =*/          "Kaxe Z",
@@ -7182,7 +7326,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00782,
       /*.dome_height =*/        0.00438,
     },
-    // 448
+    // 457
     Disc_Model
     { // Kastaplast Kaxe (NONE)
       /*.mold_name =*/          "Kaxe",
@@ -7198,12 +7342,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00728,
       /*.dome_height =*/        0.00492,
     },
-    // 449
+    // 458
     Disc_Model
     { // Kastaplast Rask (new) (NONE)
       /*.mold_name =*/          "Rask (new)",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7214,12 +7358,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00726,
       /*.dome_height =*/        0.00344,
     },
-    // 450
+    // 459
     Disc_Model
     { // Kastaplast Rask (old) (NONE)
       /*.mold_name =*/          "Rask (old)",
       /*.manufacturer =*/       "Kastaplast",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7230,7 +7374,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00686,
       /*.dome_height =*/        0.00384,
     },
-    // 451
+    // 460
     Disc_Model
     { // Latitude_64 Anchor (NONE)
       /*.mold_name =*/          "Anchor",
@@ -7246,12 +7390,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00727,
       /*.dome_height =*/        0.00208,
     },
-    // 452
+    // 461
     Disc_Model
     { // Latitude_64 Ballista (NONE)
       /*.mold_name =*/          "Ballista",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7262,12 +7406,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00756,
       /*.dome_height =*/        0.00424,
     },
-    // 453
+    // 462
     Disc_Model
     { // Latitude_64 Ballista Pro (NONE)
       /*.mold_name =*/          "Ballista Pro",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7278,7 +7422,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00790,
       /*.dome_height =*/        0.00375,
     },
-    // 454
+    // 463
     Disc_Model
     { // Latitude_64 Beetle (NONE)
       /*.mold_name =*/          "Beetle",
@@ -7294,12 +7438,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00322,
       /*.dome_height =*/        0.00093,
     },
-    // 455
+    // 464
     Disc_Model
     { // Latitude_64 Bite (NONE)
       /*.mold_name =*/          "Bite",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Dog",
+      /*.disc_type =*/          "Catch",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.18760,
@@ -7310,12 +7454,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00403,
       /*.dome_height =*/        0.00292,
     },
-    // 456
+    // 465
     Disc_Model
     { // Latitude_64 Blitz (Gold)
       /*.mold_name =*/          "Blitz",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17600,
@@ -7326,12 +7470,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00700,
       /*.dome_height =*/        0.00350,
     },
-    // 457
+    // 466
     Disc_Model
     { // Latitude_64 Bolt (NONE)
       /*.mold_name =*/          "Bolt",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7342,12 +7486,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00734,
       /*.dome_height =*/        0.00411,
     },
-    // 458
+    // 467
     Disc_Model
     { // Latitude_64 Bryce (NONE)
       /*.mold_name =*/          "Bryce",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7358,7 +7502,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00770,
       /*.dome_height =*/        0.00365,
     },
-    // 459
+    // 468
     Disc_Model
     { // Latitude_64 Caltrop (NONE)
       /*.mold_name =*/          "Caltrop",
@@ -7374,7 +7518,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00370,
       /*.dome_height =*/        0.00250,
     },
-    // 460
+    // 469
     Disc_Model
     { // Latitude_64 Catch (NONE)
       /*.mold_name =*/          "Catch",
@@ -7390,7 +7534,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00780,
       /*.dome_height =*/        0.00420,
     },
-    // 461
+    // 470
     Disc_Model
     { // Latitude_64 Claymore (NONE)
       /*.mold_name =*/          "Claymore",
@@ -7406,7 +7550,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00233,
     },
-    // 462
+    // 471
     Disc_Model
     { // Latitude_64 Compass (NONE)
       /*.mold_name =*/          "Compass",
@@ -7422,7 +7566,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01112,
       /*.dome_height =*/        0.00333,
     },
-    // 463
+    // 472
     Disc_Model
     { // Latitude_64 Core (NONE)
       /*.mold_name =*/          "Core",
@@ -7438,12 +7582,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00809,
       /*.dome_height =*/        0.00231,
     },
-    // 464
+    // 473
     Disc_Model
     { // Latitude_64 Culverin (NONE)
       /*.mold_name =*/          "Culverin",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7454,12 +7598,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00933,
       /*.dome_height =*/        0.00442,
     },
-    // 465
+    // 474
     Disc_Model
     { // Latitude_64 Cutlass (NONE)
       /*.mold_name =*/          "Cutlass",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7470,7 +7614,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00721,
       /*.dome_height =*/        0.00404,
     },
-    // 466
+    // 475
     Disc_Model
     { // Latitude_64 Dagger (NONE)
       /*.mold_name =*/          "Dagger",
@@ -7486,12 +7630,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00381,
       /*.dome_height =*/        0.00214,
     },
-    // 467
+    // 476
     Disc_Model
     { // Latitude_64 Diamond (NONE)
       /*.mold_name =*/          "Diamond",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7502,12 +7646,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00513,
       /*.dome_height =*/        0.00287,
     },
-    // 468
+    // 477
     Disc_Model
     { // Latitude_64 Explorer (NONE)
       /*.mold_name =*/          "Explorer",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7518,7 +7662,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00709,
       /*.dome_height =*/        0.00336,
     },
-    // 469
+    // 478
     Disc_Model
     { // Latitude_64 Faith (Royal Prototype) (NONE)
       /*.mold_name =*/          "Faith (Royal Prototype)",
@@ -7534,12 +7678,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00325,
     },
-    // 470
+    // 479
     Disc_Model
     { // Latitude_64 Falchion (NONE)
       /*.mold_name =*/          "Falchion",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7550,12 +7694,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00583,
       /*.dome_height =*/        0.00327,
     },
-    // 471
+    // 480
     Disc_Model
     { // Latitude_64 Flow (NONE)
       /*.mold_name =*/          "Flow",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7566,7 +7710,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00798,
       /*.dome_height =*/        0.00447,
     },
-    // 472
+    // 481
     Disc_Model
     { // Latitude_64 Fuji (NONE)
       /*.mold_name =*/          "Fuji",
@@ -7582,12 +7726,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00735,
       /*.dome_height =*/        0.00210,
     },
-    // 473
+    // 482
     Disc_Model
     { // Latitude_64 Fury (NONE)
       /*.mold_name =*/          "Fury",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7598,7 +7742,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00723,
       /*.dome_height =*/        0.00342,
     },
-    // 474
+    // 483
     Disc_Model
     { // Latitude_64 Fuse (NONE)
       /*.mold_name =*/          "Fuse",
@@ -7614,7 +7758,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00969,
       /*.dome_height =*/        0.00281,
     },
-    // 475
+    // 484
     Disc_Model
     { // Latitude_64 Gauntlet (NONE)
       /*.mold_name =*/          "Gauntlet",
@@ -7630,12 +7774,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00587,
       /*.dome_height =*/        0.00278,
     },
-    // 476
+    // 485
     Disc_Model
     { // Latitude_64 Gladiator (NONE)
       /*.mold_name =*/          "Gladiator",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7646,7 +7790,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00724,
       /*.dome_height =*/        0.00406,
     },
-    // 477
+    // 486
     Disc_Model
     { // Latitude_64 Gobi (NONE)
       /*.mold_name =*/          "Gobi",
@@ -7662,12 +7806,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00233,
     },
-    // 478
+    // 487
     Disc_Model
     { // Latitude_64 Grace (Royal Prototype) (NONE)
       /*.mold_name =*/          "Grace (Royal Prototype)",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7678,12 +7822,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00634,
       /*.dome_height =*/        0.00356,
     },
-    // 479
+    // 488
     Disc_Model
     { // Latitude_64 Halo (NONE)
       /*.mold_name =*/          "Halo",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7694,12 +7838,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00594,
       /*.dome_height =*/        0.00281,
     },
-    // 480
+    // 489
     Disc_Model
     { // Latitude_64 Havoc (Opto)
       /*.mold_name =*/          "Havoc",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Flat",
       /*.mass =*/               0.17500,
@@ -7710,12 +7854,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00575,
       /*.dome_height =*/        0.00450,
     },
-    // 481
+    // 490
     Disc_Model
     { // Latitude_64 Havoc (NONE)
       /*.mold_name =*/          "Havoc",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7726,12 +7870,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00730,
       /*.dome_height =*/        0.00410,
     },
-    // 482
+    // 491
     Disc_Model
     { // Latitude_64 Jade (NONE)
       /*.mold_name =*/          "Jade",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -7742,7 +7886,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00716,
       /*.dome_height =*/        0.00484,
     },
-    // 483
+    // 492
     Disc_Model
     { // Latitude_64 Keystone (NONE)
       /*.mold_name =*/          "Keystone",
@@ -7758,12 +7902,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00256,
       /*.dome_height =*/        0.00144,
     },
-    // 484
+    // 493
     Disc_Model
     { // Latitude_64 Knight (NONE)
       /*.mold_name =*/          "Knight",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7774,7 +7918,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00663,
       /*.dome_height =*/        0.00372,
     },
-    // 485
+    // 494
     Disc_Model
     { // Latitude_64 Macana (NONE)
       /*.mold_name =*/          "Macana",
@@ -7790,7 +7934,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00397,
       /*.dome_height =*/        0.00223,
     },
-    // 486
+    // 495
     Disc_Model
     { // Latitude_64 Mace (NONE)
       /*.mold_name =*/          "Mace",
@@ -7806,12 +7950,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01033,
       /*.dome_height =*/        0.00292,
     },
-    // 487
+    // 496
     Disc_Model
     { // Latitude_64 Maul (NONE)
       /*.mold_name =*/          "Maul",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -7822,7 +7966,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00986,
       /*.dome_height =*/        0.00354,
     },
-    // 488
+    // 497
     Disc_Model
     { // Latitude_64 Medius (NONE)
       /*.mold_name =*/          "Medius",
@@ -7838,7 +7982,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01172,
       /*.dome_height =*/        0.00378,
     },
-    // 489
+    // 498
     Disc_Model
     { // Latitude_64 Mercy (NONE)
       /*.mold_name =*/          "Mercy",
@@ -7854,12 +7998,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00590,
       /*.dome_height =*/        0.00280,
     },
-    // 490
+    // 499
     Disc_Model
     { // Latitude_64 Mirus (NONE)
       /*.mold_name =*/          "Mirus",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -7870,12 +8014,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01107,
       /*.dome_height =*/        0.00748,
     },
-    // 491
+    // 500
     Disc_Model
     { // Latitude_64 Missilen (NONE)
       /*.mold_name =*/          "Missilen",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -7886,12 +8030,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00839,
       /*.dome_height =*/        0.00301,
     },
-    // 492
+    // 501
     Disc_Model
     { // Latitude_64 Musket (NONE)
       /*.mold_name =*/          "Musket",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -7902,7 +8046,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00835,
       /*.dome_height =*/        0.00395,
     },
-    // 493
+    // 502
     Disc_Model
     { // Latitude_64 Pain (NONE)
       /*.mold_name =*/          "Pain",
@@ -7918,7 +8062,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00922,
       /*.dome_height =*/        0.00263,
     },
-    // 494
+    // 503
     Disc_Model
     { // Latitude_64 Pearl (NONE)
       /*.mold_name =*/          "Pearl",
@@ -7934,12 +8078,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00627,
       /*.dome_height =*/        0.00188,
     },
-    // 495
+    // 504
     Disc_Model
     { // Latitude_64 Pioneer (Opto)
       /*.mold_name =*/          "Pioneer",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17300,
@@ -7950,12 +8094,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00800,
       /*.dome_height =*/        0.00250,
     },
-    // 496
+    // 505
     Disc_Model
     { // Latitude_64 Primitus (NONE)
       /*.mold_name =*/          "Primitus",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -7966,7 +8110,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01051,
       /*.dome_height =*/        0.00709,
     },
-    // 497
+    // 506
     Disc_Model
     { // Latitude_64 Pure (NONE)
       /*.mold_name =*/          "Pure",
@@ -7982,12 +8126,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00567,
       /*.dome_height =*/        0.00268,
     },
-    // 498
+    // 507
     Disc_Model
     { // Latitude_64 Raketen (NONE)
       /*.mold_name =*/          "Raketen",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -7998,12 +8142,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00420,
     },
-    // 499
+    // 508
     Disc_Model
     { // Latitude_64 Recoil (NONE)
       /*.mold_name =*/          "Recoil",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8014,12 +8158,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00868,
       /*.dome_height =*/        0.00412,
     },
-    // 500
+    // 509
     Disc_Model
     { // Latitude_64 Riot (NONE)
       /*.mold_name =*/          "Riot",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8030,12 +8174,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00882,
       /*.dome_height =*/        0.00418,
     },
-    // 501
+    // 510
     Disc_Model
     { // Latitude_64 Rive (Royal Prototype) (NONE)
       /*.mold_name =*/          "Rive (Royal Prototype)",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8046,12 +8190,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00769,
       /*.dome_height =*/        0.00431,
     },
-    // 502
+    // 511
     Disc_Model
     { // Latitude_64 River (NONE)
       /*.mold_name =*/          "River",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17850,
@@ -8062,12 +8206,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00975,
       /*.dome_height =*/        0.00315,
     },
-    // 503
+    // 512
     Disc_Model
     { // Latitude_64 River Pro (NONE)
       /*.mold_name =*/          "River Pro",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -8078,7 +8222,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00824,
       /*.dome_height =*/        0.00296,
     },
-    // 504
+    // 513
     Disc_Model
     { // Latitude_64 Ruby (NONE)
       /*.mold_name =*/          "Ruby",
@@ -8094,12 +8238,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00393,
       /*.dome_height =*/        0.00127,
     },
-    // 505
+    // 514
     Disc_Model
     { // Latitude_64 Saint (NONE)
       /*.mold_name =*/          "Saint",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8110,12 +8254,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00892,
       /*.dome_height =*/        0.00423,
     },
-    // 506
+    // 515
     Disc_Model
     { // Latitude_64 Saint Pro (NONE)
       /*.mold_name =*/          "Saint Pro",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8126,12 +8270,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00909,
       /*.dome_height =*/        0.00431,
     },
-    // 507
+    // 516
     Disc_Model
     { // Latitude_64 Sapphire (NONE)
       /*.mold_name =*/          "Sapphire",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -8142,7 +8286,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00663,
       /*.dome_height =*/        0.00447,
     },
-    // 508
+    // 517
     Disc_Model
     { // Latitude_64 Sarek (NONE)
       /*.mold_name =*/          "Sarek",
@@ -8158,12 +8302,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00665,
       /*.dome_height =*/        0.00315,
     },
-    // 509
+    // 518
     Disc_Model
     { // Latitude_64 Scythe (NONE)
       /*.mold_name =*/          "Scythe",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8174,7 +8318,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00589,
       /*.dome_height =*/        0.00331,
     },
-    // 510
+    // 519
     Disc_Model
     { // Latitude_64 Sinus AP (NONE)
       /*.mold_name =*/          "Sinus AP",
@@ -8190,7 +8334,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00285,
     },
-    // 511
+    // 520
     Disc_Model
     { // Latitude_64 Sinus SP (NONE)
       /*.mold_name =*/          "Sinus SP",
@@ -8206,12 +8350,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00285,
     },
-    // 512
+    // 521
     Disc_Model
     { // Latitude_64 Spark (NONE)
       /*.mold_name =*/          "Spark",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8222,7 +8366,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00556,
       /*.dome_height =*/        0.00264,
     },
-    // 513
+    // 522
     Disc_Model
     { // Latitude_64 Spike (NONE)
       /*.mold_name =*/          "Spike",
@@ -8238,7 +8382,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00458,
       /*.dome_height =*/        0.00217,
     },
-    // 514
+    // 523
     Disc_Model
     { // Latitude_64 SPZ 1 (Putter, Zombie) (NONE)
       /*.mold_name =*/          "SPZ 1 (Putter, Zombie)",
@@ -8254,7 +8398,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00621,
       /*.dome_height =*/        0.00294,
     },
-    // 515
+    // 524
     Disc_Model
     { // Latitude_64 SPZ 2 (Midrange, Pirate) (NONE)
       /*.mold_name =*/          "SPZ 2 (Midrange, Pirate)",
@@ -8270,12 +8414,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00809,
       /*.dome_height =*/        0.00231,
     },
-    // 516
+    // 525
     Disc_Model
     { // Latitude_64 SPZ 3 (Driver, Superhero) (NONE)
       /*.mold_name =*/          "SPZ 3 (Driver, Superhero)",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8286,12 +8430,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00753,
       /*.dome_height =*/        0.00422,
     },
-    // 517
+    // 526
     Disc_Model
     { // Latitude_64 Stiletto (NONE)
       /*.mold_name =*/          "Stiletto",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -8302,12 +8446,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00827,
       /*.dome_height =*/        0.00338,
     },
-    // 518
+    // 527
     Disc_Model
     { // Latitude_64 Striker (NONE)
       /*.mold_name =*/          "Striker",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -8318,12 +8462,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00751,
       /*.dome_height =*/        0.00269,
     },
-    // 519
+    // 528
     Disc_Model
     { // Latitude_64 Trident (NONE)
       /*.mold_name =*/          "Trident",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -8334,7 +8478,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00490,
       /*.dome_height =*/        0.00175,
     },
-    // 520
+    // 529
     Disc_Model
     { // Latitude_64 Trust (Royal Prototype) (NONE)
       /*.mold_name =*/          "Trust (Royal Prototype)",
@@ -8350,12 +8494,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00797,
       /*.dome_height =*/        0.00228,
     },
-    // 521
+    // 530
     Disc_Model
     { // Latitude_64 Villain (NONE)
       /*.mold_name =*/          "Villain",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8366,12 +8510,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00730,
       /*.dome_height =*/        0.00410,
     },
-    // 522
+    // 531
     Disc_Model
     { // Latitude_64 Vision (NONE)
       /*.mold_name =*/          "Vision",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8382,12 +8526,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00794,
       /*.dome_height =*/        0.00446,
     },
-    // 523
+    // 532
     Disc_Model
     { // Latitude_64 XXX (Opto)
       /*.mold_name =*/          "XXX",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "Overstable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.16800,
@@ -8398,12 +8542,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00850,
       /*.dome_height =*/        0.00300,
     },
-    // 524
+    // 533
     Disc_Model
     { // Latitude_64 Zion (NONE)
       /*.mold_name =*/          "Zion",
       /*.manufacturer =*/       "Latitude_64",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8414,7 +8558,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00773,
       /*.dome_height =*/        0.00367,
     },
-    // 525
+    // 534
     Disc_Model
     { // Loft Hydrogen (Alpha-Solid)
       /*.mold_name =*/          "Hydrogen",
@@ -8430,12 +8574,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00870,
       /*.dome_height =*/        0.00100,
     },
-    // 526
+    // 535
     Disc_Model
     { // MVP Amp (NONE)
       /*.mold_name =*/          "Amp",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -8446,7 +8590,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00704,
       /*.dome_height =*/        0.00476,
     },
-    // 527
+    // 536
     Disc_Model
     { // MVP Anode (NONE)
       /*.mold_name =*/          "Anode",
@@ -8462,7 +8606,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00609,
       /*.dome_height =*/        0.00411,
     },
-    // 528
+    // 537
     Disc_Model
     { // MVP Atom (NONE)
       /*.mold_name =*/          "Atom",
@@ -8478,7 +8622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00439,
       /*.dome_height =*/        0.00246,
     },
-    // 529
+    // 538
     Disc_Model
     { // MVP Axis (NONE)
       /*.mold_name =*/          "Axis",
@@ -8494,12 +8638,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00955,
       /*.dome_height =*/        0.00270,
     },
-    // 530
+    // 539
     Disc_Model
     { // MVP Beam (NONE)
       /*.mold_name =*/          "Beam",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8510,12 +8654,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00767,
       /*.dome_height =*/        0.00363,
     },
-    // 531
+    // 540
     Disc_Model
     { // MVP Catalyst (NONE)
       /*.mold_name =*/          "Catalyst",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8526,12 +8670,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00833,
       /*.dome_height =*/        0.00467,
     },
-    // 532
+    // 541
     Disc_Model
     { // MVP Cypher (NONE)
       /*.mold_name =*/          "Cypher",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8542,7 +8686,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00597,
       /*.dome_height =*/        0.00283,
     },
-    // 533
+    // 542
     Disc_Model
     { // MVP Deflector (NONE)
       /*.mold_name =*/          "Deflector",
@@ -8558,12 +8702,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00907,
       /*.dome_height =*/        0.00293,
     },
-    // 534
+    // 543
     Disc_Model
     { // MVP Dimension (NONE)
       /*.mold_name =*/          "Dimension",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -8574,12 +8718,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00743,
       /*.dome_height =*/        0.00502,
     },
-    // 535
+    // 544
     Disc_Model
     { // MVP Energy (NONE)
       /*.mold_name =*/          "Energy",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8590,7 +8734,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01012,
       /*.dome_height =*/        0.00568,
     },
-    // 536
+    // 545
     Disc_Model
     { // MVP Entropy (NONE)
       /*.mold_name =*/          "Entropy",
@@ -8606,12 +8750,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00926,
       /*.dome_height =*/        0.00439,
     },
-    // 537
+    // 546
     Disc_Model
     { // MVP Impulse (NONE)
       /*.mold_name =*/          "Impulse",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -8622,12 +8766,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00492,
       /*.dome_height =*/        0.00333,
     },
-    // 538
+    // 547
     Disc_Model
     { // MVP Inertia (NONE)
       /*.mold_name =*/          "Inertia",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8638,7 +8782,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00548,
       /*.dome_height =*/        0.00307,
     },
-    // 539
+    // 548
     Disc_Model
     { // MVP Ion (NONE)
       /*.mold_name =*/          "Ion",
@@ -8654,12 +8798,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00388,
       /*.dome_height =*/        0.00262,
     },
-    // 540
+    // 549
     Disc_Model
     { // MVP Limit (NONE)
       /*.mold_name =*/          "Limit",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8670,7 +8814,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00804,
       /*.dome_height =*/        0.00451,
     },
-    // 541
+    // 550
     Disc_Model
     { // MVP Matrix (NONE)
       /*.mold_name =*/          "Matrix",
@@ -8686,12 +8830,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00506,
       /*.dome_height =*/        0.00164,
     },
-    // 542
+    // 551
     Disc_Model
     { // MVP Motion (NONE)
       /*.mold_name =*/          "Motion",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -8702,12 +8846,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00475,
       /*.dome_height =*/        0.00320,
     },
-    // 543
+    // 552
     Disc_Model
     { // MVP Nitro (NONE)
       /*.mold_name =*/          "Nitro",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -8718,7 +8862,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00926,
       /*.dome_height =*/        0.00439,
     },
-    // 544
+    // 553
     Disc_Model
     { // MVP Nomad (NONE)
       /*.mold_name =*/          "Nomad",
@@ -8734,12 +8878,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00665,
       /*.dome_height =*/        0.00315,
     },
-    // 545
+    // 554
     Disc_Model
     { // MVP Octane (NONE)
       /*.mold_name =*/          "Octane",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8750,7 +8894,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00740,
       /*.dome_height =*/        0.00415,
     },
-    // 546
+    // 555
     Disc_Model
     { // MVP Ohm (NONE)
       /*.mold_name =*/          "Ohm",
@@ -8766,12 +8910,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00502,
       /*.dome_height =*/        0.00238,
     },
-    // 547
+    // 556
     Disc_Model
     { // MVP Orbital (NONE)
       /*.mold_name =*/          "Orbital",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8782,7 +8926,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00532,
       /*.dome_height =*/        0.00298,
     },
-    // 548
+    // 557
     Disc_Model
     { // MVP Particle (NONE)
       /*.mold_name =*/          "Particle",
@@ -8798,12 +8942,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00497,
       /*.dome_height =*/        0.00278,
     },
-    // 549
+    // 558
     Disc_Model
     { // MVP Phase (NONE)
       /*.mold_name =*/          "Phase",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8814,12 +8958,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00519,
       /*.dome_height =*/        0.00291,
     },
-    // 550
+    // 559
     Disc_Model
     { // MVP Photon (NONE)
       /*.mold_name =*/          "Photon",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8830,7 +8974,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00554,
       /*.dome_height =*/        0.00311,
     },
-    // 551
+    // 560
     Disc_Model
     { // MVP Reactor (NONE)
       /*.mold_name =*/          "Reactor",
@@ -8846,12 +8990,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00596,
       /*.dome_height =*/        0.00214,
     },
-    // 552
+    // 561
     Disc_Model
     { // MVP Relativity (NONE)
       /*.mold_name =*/          "Relativity",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8862,12 +9006,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00868,
       /*.dome_height =*/        0.00487,
     },
-    // 553
+    // 562
     Disc_Model
     { // MVP Relay (NONE)
       /*.mold_name =*/          "Relay",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8878,12 +9022,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00503,
       /*.dome_height =*/        0.00282,
     },
-    // 554
+    // 563
     Disc_Model
     { // MVP Resistor (NONE)
       /*.mold_name =*/          "Resistor",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8894,12 +9038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00554,
       /*.dome_height =*/        0.00311,
     },
-    // 555
+    // 564
     Disc_Model
     { // MVP Servo (NONE)
       /*.mold_name =*/          "Servo",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8910,12 +9054,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00487,
       /*.dome_height =*/        0.00273,
     },
-    // 556
+    // 565
     Disc_Model
     { // MVP Shock (NONE)
       /*.mold_name =*/          "Shock",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8926,12 +9070,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00644,
       /*.dome_height =*/        0.00361,
     },
-    // 557
+    // 566
     Disc_Model
     { // MVP Signal (NONE)
       /*.mold_name =*/          "Signal",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8942,7 +9086,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00506,
       /*.dome_height =*/        0.00284,
     },
-    // 558
+    // 567
     Disc_Model
     { // MVP Spin (NONE)
       /*.mold_name =*/          "Spin",
@@ -8958,12 +9102,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00409,
       /*.dome_height =*/        0.00276,
     },
-    // 559
+    // 568
     Disc_Model
     { // MVP Switch (NONE)
       /*.mold_name =*/          "Switch",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -8974,7 +9118,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00280,
     },
-    // 560
+    // 569
     Disc_Model
     { // MVP Tangent (NONE)
       /*.mold_name =*/          "Tangent",
@@ -8990,12 +9134,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00764,
       /*.dome_height =*/        0.00246,
     },
-    // 561
+    // 570
     Disc_Model
     { // MVP Teleport (NONE)
       /*.mold_name =*/          "Teleport",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9006,7 +9150,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00862,
       /*.dome_height =*/        0.00483,
     },
-    // 562
+    // 571
     Disc_Model
     { // MVP Tensor (NONE)
       /*.mold_name =*/          "Tensor",
@@ -9022,12 +9166,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00805,
       /*.dome_height =*/        0.00260,
     },
-    // 563
+    // 572
     Disc_Model
     { // MVP Tesla (NONE)
       /*.mold_name =*/          "Tesla",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9038,7 +9182,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00519,
       /*.dome_height =*/        0.00351,
     },
-    // 564
+    // 573
     Disc_Model
     { // MVP Vector (NONE)
       /*.mold_name =*/          "Vector",
@@ -9054,7 +9198,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01065,
       /*.dome_height =*/        0.00305,
     },
-    // 565
+    // 574
     Disc_Model
     { // MVP Vertex (NONE)
       /*.mold_name =*/          "Vertex",
@@ -9070,12 +9214,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00729,
       /*.dome_height =*/        0.00236,
     },
-    // 566
+    // 575
     Disc_Model
     { // MVP Volt (NONE)
       /*.mold_name =*/          "Volt",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9086,12 +9230,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00663,
       /*.dome_height =*/        0.00372,
     },
-    // 567
+    // 576
     Disc_Model
     { // MVP Wave (Mixed Premium)
       /*.mold_name =*/          "Wave",
       /*.manufacturer =*/       "MVP",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Understable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17500,
@@ -9102,12 +9246,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00500,
       /*.dome_height =*/        0.00400,
     },
-    // 568
+    // 577
     Disc_Model
     { // Prodigy_Discs D4 (400G)
       /*.mold_name =*/          "D4",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "Stable",
       /*.rim_camber_shape =*/   "Concave",
       /*.mass =*/               0.17000,
@@ -9118,12 +9262,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00425,
       /*.dome_height =*/        0.00475,
     },
-    // 569
+    // 578
     Disc_Model
     { // Prodigy_Discs D Model US++ (NONE)
       /*.mold_name =*/          "D Model US++",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9134,12 +9278,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00698,
       /*.dome_height =*/        0.00472,
     },
-    // 570
+    // 579
     Disc_Model
     { // Prodigy_Discs D Model US+ (NONE)
       /*.mold_name =*/          "D Model US+",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9150,12 +9294,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00761,
       /*.dome_height =*/        0.00514,
     },
-    // 571
+    // 580
     Disc_Model
     { // Prodigy_Discs F Model US (NONE)
       /*.mold_name =*/          "F Model US",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9166,12 +9310,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00611,
       /*.dome_height =*/        0.00249,
     },
-    // 572
+    // 581
     Disc_Model
     { // Prodigy_Discs F Model OS (NONE)
       /*.mold_name =*/          "F Model OS",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9182,12 +9326,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00582,
       /*.dome_height =*/        0.00238,
     },
-    // 573
+    // 582
     Disc_Model
     { // Prodigy_Discs F Model OS+ (NONE)
       /*.mold_name =*/          "F Model OS+",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -9198,7 +9342,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00689,
       /*.dome_height =*/        0.00326,
     },
-    // 574
+    // 583
     Disc_Model
     { // Prodigy_Discs P Model US (NONE)
       /*.mold_name =*/          "P Model US",
@@ -9214,7 +9358,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00515,
       /*.dome_height =*/        0.00210,
     },
-    // 575
+    // 584
     Disc_Model
     { // Prodigy_Discs M Model US (NONE)
       /*.mold_name =*/          "M Model US",
@@ -9230,12 +9374,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00655,
       /*.dome_height =*/        0.00185,
     },
-    // 576
+    // 585
     Disc_Model
     { // Prodigy_Discs D Model #3 (NONE)
       /*.mold_name =*/          "D Model #3",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9246,12 +9390,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00642,
       /*.dome_height =*/        0.00433,
     },
-    // 577
+    // 586
     Disc_Model
     { // Prodigy_Discs D Model #5 (NONE)
       /*.mold_name =*/          "D Model #5",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9262,12 +9406,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00618,
       /*.dome_height =*/        0.00417,
     },
-    // 578
+    // 587
     Disc_Model
     { // Prodigy_Discs D Model OS (NONE)
       /*.mold_name =*/          "D Model OS",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9278,7 +9422,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00585,
       /*.dome_height =*/        0.00395,
     },
-    // 579
+    // 588
     Disc_Model
     { // Prodigy_Discs M Model S (NONE)
       /*.mold_name =*/          "M Model S",
@@ -9294,12 +9438,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00820,
       /*.dome_height =*/        0.00235,
     },
-    // 580
+    // 589
     Disc_Model
     { // Prodigy_Discs D Model US (NONE)
       /*.mold_name =*/          "D Model US",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9310,12 +9454,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00618,
       /*.dome_height =*/        0.00417,
     },
-    // 581
+    // 590
     Disc_Model
     { // Prodigy_Discs FX-2 (NONE)
       /*.mold_name =*/          "FX-2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9326,7 +9470,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00650,
       /*.dome_height =*/        0.00365,
     },
-    // 582
+    // 591
     Disc_Model
     { // Prodigy_Discs MX-3 (NONE)
       /*.mold_name =*/          "MX-3",
@@ -9342,12 +9486,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00968,
       /*.dome_height =*/        0.00277,
     },
-    // 583
+    // 592
     Disc_Model
     { // Prodigy_Discs D6 Max (NONE)
       /*.mold_name =*/          "D6 Max",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9358,12 +9502,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00746,
       /*.dome_height =*/        0.00419,
     },
-    // 584
+    // 593
     Disc_Model
     { // Prodigy_Discs D1 Max (NONE)
       /*.mold_name =*/          "D1 Max",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9374,12 +9518,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00636,
       /*.dome_height =*/        0.00429,
     },
-    // 585
+    // 594
     Disc_Model
     { // Prodigy_Discs D2 Max (NONE)
       /*.mold_name =*/          "D2 Max",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9390,12 +9534,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00826,
       /*.dome_height =*/        0.00464,
     },
-    // 586
+    // 595
     Disc_Model
     { // Prodigy_Discs D3 Max (NONE)
       /*.mold_name =*/          "D3 Max",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9406,12 +9550,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00766,
       /*.dome_height =*/        0.00429,
     },
-    // 587
+    // 596
     Disc_Model
     { // Prodigy_Discs D4 Max (NONE)
       /*.mold_name =*/          "D4 Max",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9422,12 +9566,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00773,
       /*.dome_height =*/        0.00522,
     },
-    // 588
+    // 597
     Disc_Model
     { // Prodigy_Discs D6 V2 (NONE)
       /*.mold_name =*/          "D6 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9438,12 +9582,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00755,
       /*.dome_height =*/        0.00510,
     },
-    // 589
+    // 598
     Disc_Model
     { // Prodigy_Discs D1 V2 (NONE)
       /*.mold_name =*/          "D1 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9454,12 +9598,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00875,
       /*.dome_height =*/        0.00490,
     },
-    // 590
+    // 599
     Disc_Model
-    { // Prodigy_Discs D Model Distance Driver S (NONE)
-      /*.mold_name =*/          "D Model Distance Driver S",
+    { // Prodigy_Discs D Model Driver S (NONE)
+      /*.mold_name =*/          "D Model Driver S",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9470,12 +9614,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00577,
       /*.dome_height =*/        0.00323,
     },
-    // 591
+    // 600
     Disc_Model
-    { // Prodigy_Discs F Model Fairway Driver S (NONE)
-      /*.mold_name =*/          "F Model Fairway Driver S",
+    { // Prodigy_Discs F Model Fairway S (NONE)
+      /*.mold_name =*/          "F Model Fairway S",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9486,7 +9630,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00565,
       /*.dome_height =*/        0.00230,
     },
-    // 592
+    // 601
     Disc_Model
     { // Prodigy_Discs M Model Mid Range OS (NONE)
       /*.mold_name =*/          "M Model Mid Range OS",
@@ -9502,12 +9646,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00774,
       /*.dome_height =*/        0.00221,
     },
-    // 593
+    // 602
     Disc_Model
     { // Prodigy_Discs D2 V2 (NONE)
       /*.mold_name =*/          "D2 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9518,7 +9662,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00826,
       /*.dome_height =*/        0.00464,
     },
-    // 594
+    // 603
     Disc_Model
     { // Prodigy_Discs P Model Putter OS (NONE)
       /*.mold_name =*/          "P Model Putter OS",
@@ -9534,12 +9678,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00657,
       /*.dome_height =*/        0.00368,
     },
-    // 595
+    // 604
     Disc_Model
     { // Prodigy_Discs D3 V2 (NONE)
       /*.mold_name =*/          "D3 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9550,12 +9694,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00773,
       /*.dome_height =*/        0.00522,
     },
-    // 596
+    // 605
     Disc_Model
     { // Prodigy_Discs H2 V2 (NONE)
       /*.mold_name =*/          "H2 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -9566,12 +9710,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00766,
       /*.dome_height =*/        0.00274,
     },
-    // 597
+    // 606
     Disc_Model
     { // Prodigy_Discs H4 (NONE)
       /*.mold_name =*/          "H4",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9582,12 +9726,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00653,
       /*.dome_height =*/        0.00267,
     },
-    // 598
+    // 607
     Disc_Model
     { // Prodigy_Discs H5 (NONE)
       /*.mold_name =*/          "H5",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9598,12 +9742,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00675,
       /*.dome_height =*/        0.00275,
     },
-    // 599
+    // 608
     Disc_Model
     { // Prodigy_Discs H1 (NONE)
       /*.mold_name =*/          "H1",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -9614,12 +9758,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00766,
       /*.dome_height =*/        0.00274,
     },
-    // 600
+    // 609
     Disc_Model
     { // Prodigy_Discs H3 V2 (NONE)
       /*.mold_name =*/          "H3 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9630,12 +9774,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00842,
       /*.dome_height =*/        0.00343,
     },
-    // 601
+    // 610
     Disc_Model
     { // Prodigy_Discs X3 (NONE)
       /*.mold_name =*/          "X3",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9646,12 +9790,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00698,
       /*.dome_height =*/        0.00392,
     },
-    // 602
+    // 611
     Disc_Model
     { // Prodigy_Discs X6 (NONE)
       /*.mold_name =*/          "X6",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9662,12 +9806,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00458,
     },
-    // 603
+    // 612
     Disc_Model
     { // Prodigy_Discs X4 (NONE)
       /*.mold_name =*/          "X4",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -9678,12 +9822,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00787,
       /*.dome_height =*/        0.00373,
     },
-    // 604
+    // 613
     Disc_Model
     { // Prodigy_Discs X2 (NONE)
       /*.mold_name =*/          "X2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9694,12 +9838,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00820,
       /*.dome_height =*/        0.00460,
     },
-    // 605
+    // 614
     Disc_Model
     { // Prodigy_Discs X5 (NONE)
       /*.mold_name =*/          "X5",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9710,12 +9854,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00855,
       /*.dome_height =*/        0.00480,
     },
-    // 606
+    // 615
     Disc_Model
     { // Prodigy_Discs D6 (NONE)
       /*.mold_name =*/          "D6",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9726,7 +9870,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00636,
       /*.dome_height =*/        0.00429,
     },
-    // 607
+    // 616
     Disc_Model
     { // Prodigy_Discs A4 (NONE)
       /*.mold_name =*/          "A4",
@@ -9742,7 +9886,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00457,
       /*.dome_height =*/        0.00308,
     },
-    // 608
+    // 617
     Disc_Model
     { // Prodigy_Discs A2 (NONE)
       /*.mold_name =*/          "A2",
@@ -9758,7 +9902,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00695,
       /*.dome_height =*/        0.00470,
     },
-    // 609
+    // 618
     Disc_Model
     { // Prodigy_Discs A3 (NONE)
       /*.mold_name =*/          "A3",
@@ -9774,7 +9918,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00594,
       /*.dome_height =*/        0.00401,
     },
-    // 610
+    // 619
     Disc_Model
     { // Prodigy_Discs A1 (NONE)
       /*.mold_name =*/          "A1",
@@ -9790,7 +9934,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00695,
       /*.dome_height =*/        0.00470,
     },
-    // 611
+    // 620
     Disc_Model
     { // Prodigy_Discs New M1 (NONE)
       /*.mold_name =*/          "New M1",
@@ -9806,12 +9950,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00912,
       /*.dome_height =*/        0.00258,
     },
-    // 612
+    // 621
     Disc_Model
     { // Prodigy_Discs H3 (NONE)
       /*.mold_name =*/          "H3",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9822,12 +9966,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00717,
       /*.dome_height =*/        0.00293,
     },
-    // 613
+    // 622
     Disc_Model
     { // Prodigy_Discs H2 (NONE)
       /*.mold_name =*/          "H2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9838,12 +9982,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00771,
       /*.dome_height =*/        0.00314,
     },
-    // 614
+    // 623
     Disc_Model
     { // Prodigy_Discs H4 (NONE)
       /*.mold_name =*/          "H4",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9854,12 +9998,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00280,
     },
-    // 615
+    // 624
     Disc_Model
     { // Prodigy_Discs H1 (NONE)
       /*.mold_name =*/          "H1",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9870,12 +10014,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00827,
       /*.dome_height =*/        0.00338,
     },
-    // 616
+    // 625
     Disc_Model
     { // Prodigy_Discs X1 (NONE)
       /*.mold_name =*/          "X1",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -9886,7 +10030,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00567,
       /*.dome_height =*/        0.00383,
     },
-    // 617
+    // 626
     Disc_Model
     { // Prodigy_Discs PA3 (NONE)
       /*.mold_name =*/          "PA3",
@@ -9902,7 +10046,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00406,
       /*.dome_height =*/        0.00274,
     },
-    // 618
+    // 627
     Disc_Model
     { // Prodigy_Discs M5 (NONE)
       /*.mold_name =*/          "M5",
@@ -9918,12 +10062,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00988,
       /*.dome_height =*/        0.00282,
     },
-    // 619
+    // 628
     Disc_Model
     { // Prodigy_Discs F5 (NONE)
       /*.mold_name =*/          "F5",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9934,12 +10078,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00842,
       /*.dome_height =*/        0.00343,
     },
-    // 620
+    // 629
     Disc_Model
     { // Prodigy_Discs D5 V2 (NONE)
       /*.mold_name =*/          "D5 V2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -9950,12 +10094,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00750,
       /*.dome_height =*/        0.00355,
     },
-    // 621
+    // 630
     Disc_Model
     { // Prodigy_Discs D5 (NONE)
       /*.mold_name =*/          "D5",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -9966,12 +10110,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00644,
       /*.dome_height =*/        0.00361,
     },
-    // 622
+    // 631
     Disc_Model
     { // Prodigy_Discs F1 (NONE)
       /*.mold_name =*/          "F1",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9982,12 +10126,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00678,
       /*.dome_height =*/        0.00277,
     },
-    // 623
+    // 632
     Disc_Model
     { // Prodigy_Discs F2 (NONE)
       /*.mold_name =*/          "F2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -9998,12 +10142,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00600,
       /*.dome_height =*/        0.00245,
     },
-    // 624
+    // 633
     Disc_Model
     { // Prodigy_Discs F3 (NONE)
       /*.mold_name =*/          "F3",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -10014,12 +10158,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00618,
       /*.dome_height =*/        0.00252,
     },
-    // 625
+    // 634
     Disc_Model
     { // Prodigy_Discs F7 (NONE)
       /*.mold_name =*/          "F7",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -10030,7 +10174,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00540,
       /*.dome_height =*/        0.00220,
     },
-    // 626
+    // 635
     Disc_Model
     { // Prodigy_Discs M1 (NONE)
       /*.mold_name =*/          "M1",
@@ -10046,7 +10190,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00945,
       /*.dome_height =*/        0.00270,
     },
-    // 627
+    // 636
     Disc_Model
     { // Prodigy_Discs M2 (NONE)
       /*.mold_name =*/          "M2",
@@ -10062,7 +10206,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00918,
       /*.dome_height =*/        0.00262,
     },
-    // 628
+    // 637
     Disc_Model
     { // Prodigy_Discs M3 (NONE)
       /*.mold_name =*/          "M3",
@@ -10078,7 +10222,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00805,
       /*.dome_height =*/        0.00230,
     },
-    // 629
+    // 638
     Disc_Model
     { // Prodigy_Discs M4 (NONE)
       /*.mold_name =*/          "M4",
@@ -10094,7 +10238,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00747,
       /*.dome_height =*/        0.00213,
     },
-    // 630
+    // 639
     Disc_Model
     { // Prodigy_Discs PA1 (NONE)
       /*.mold_name =*/          "PA1",
@@ -10110,7 +10254,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00448,
       /*.dome_height =*/        0.00302,
     },
-    // 631
+    // 640
     Disc_Model
     { // Prodigy_Discs PA2 (NONE)
       /*.mold_name =*/          "PA2",
@@ -10126,7 +10270,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00609,
       /*.dome_height =*/        0.00341,
     },
-    // 632
+    // 641
     Disc_Model
     { // Prodigy_Discs PA4 (NONE)
       /*.mold_name =*/          "PA4",
@@ -10142,12 +10286,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00307,
       /*.dome_height =*/        0.00208,
     },
-    // 633
+    // 642
     Disc_Model
     { // Prodigy_Discs D1 (NONE)
       /*.mold_name =*/          "D1",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10158,12 +10302,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00815,
       /*.dome_height =*/        0.00550,
     },
-    // 634
+    // 643
     Disc_Model
     { // Prodigy_Discs D2 (NONE)
       /*.mold_name =*/          "D2",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10174,12 +10318,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00770,
       /*.dome_height =*/        0.00520,
     },
-    // 635
+    // 644
     Disc_Model
     { // Prodigy_Discs D3 (NONE)
       /*.mold_name =*/          "D3",
       /*.manufacturer =*/       "Prodigy_Discs",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10190,7 +10334,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00654,
       /*.dome_height =*/        0.00441,
     },
-    // 636
+    // 645
     Disc_Model
     { // Vibram Launch (NONE)
       /*.mold_name =*/          "Launch",
@@ -10206,7 +10350,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00791,
       /*.dome_height =*/        0.00284,
     },
-    // 637
+    // 646
     Disc_Model
     { // Vibram Crag (NONE)
       /*.mold_name =*/          "Crag",
@@ -10222,12 +10366,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01005,
       /*.dome_height =*/        0.00360,
     },
-    // 638
+    // 647
     Disc_Model
     { // Vibram Vamp (NONE)
       /*.mold_name =*/          "Vamp",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10238,12 +10382,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00719,
       /*.dome_height =*/        0.00486,
     },
-    // 639
+    // 648
     Disc_Model
     { // Vibram Onyx (NONE)
       /*.mold_name =*/          "Onyx",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10254,12 +10398,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00707,
       /*.dome_height =*/        0.00478,
     },
-    // 640
+    // 649
     Disc_Model
     { // Vibram Notch (NONE)
       /*.mold_name =*/          "Notch",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10270,12 +10414,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00755,
       /*.dome_height =*/        0.00510,
     },
-    // 641
+    // 650
     Disc_Model
     { // Vibram Arch (NONE)
       /*.mold_name =*/          "Arch",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10286,12 +10430,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00728,
       /*.dome_height =*/        0.00492,
     },
-    // 642
+    // 651
     Disc_Model
     { // Vibram Valley (NONE)
       /*.mold_name =*/          "Valley",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10302,12 +10446,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00761,
       /*.dome_height =*/        0.00514,
     },
-    // 643
+    // 652
     Disc_Model
     { // Vibram Solace (NONE)
       /*.mold_name =*/          "Solace",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10318,12 +10462,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00743,
       /*.dome_height =*/        0.00417,
     },
-    // 644
+    // 653
     Disc_Model
     { // Vibram Four20 (NONE)
       /*.mold_name =*/          "Four20",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10334,12 +10478,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00704,
       /*.dome_height =*/        0.00476,
     },
-    // 645
+    // 654
     Disc_Model
     { // Vibram O-Lace (NONE)
       /*.mold_name =*/          "O-Lace",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10350,12 +10494,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00704,
       /*.dome_height =*/        0.00476,
     },
-    // 646
+    // 655
     Disc_Model
     { // Vibram unLace (NONE)
       /*.mold_name =*/          "unLace",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10366,12 +10510,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00849,
       /*.dome_height =*/        0.00476,
     },
-    // 647
+    // 656
     Disc_Model
     { // Vibram Lace (NONE)
       /*.mold_name =*/          "Lace",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10382,7 +10526,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00734,
       /*.dome_height =*/        0.00496,
     },
-    // 648
+    // 657
     Disc_Model
     { // Vibram Obex (NONE)
       /*.mold_name =*/          "Obex",
@@ -10398,7 +10542,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00968,
       /*.dome_height =*/        0.00312,
     },
-    // 649
+    // 658
     Disc_Model
     { // Vibram Sole (NONE)
       /*.mold_name =*/          "Sole",
@@ -10414,12 +10558,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00763,
       /*.dome_height =*/        0.00362,
     },
-    // 650
+    // 659
     Disc_Model
     { // Vibram Trak (NONE)
       /*.mold_name =*/          "Trak",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10430,7 +10574,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00618,
       /*.dome_height =*/        0.00417,
     },
-    // 651
+    // 660
     Disc_Model
     { // Vibram Ibex (NONE)
       /*.mold_name =*/          "Ibex",
@@ -10446,12 +10590,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01115,
       /*.dome_height =*/        0.00360,
     },
-    // 652
+    // 661
     Disc_Model
     { // Vibram Trek (NONE)
       /*.mold_name =*/          "Trek",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17430,
@@ -10462,12 +10606,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00707,
       /*.dome_height =*/        0.00478,
     },
-    // 653
+    // 662
     Disc_Model
     { // Vibram Ascent (NONE)
       /*.mold_name =*/          "Ascent",
       /*.manufacturer =*/       "Vibram",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10478,7 +10622,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00641,
       /*.dome_height =*/        0.00359,
     },
-    // 654
+    // 663
     Disc_Model
     { // Vibram Ridge (NONE)
       /*.mold_name =*/          "Ridge",
@@ -10494,7 +10638,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00497,
       /*.dome_height =*/        0.00278,
     },
-    // 655
+    // 664
     Disc_Model
     { // Vibram Summit (NONE)
       /*.mold_name =*/          "Summit",
@@ -10510,7 +10654,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00432,
       /*.dome_height =*/        0.00243,
     },
-    // 656
+    // 665
     Disc_Model
     { // Vibram V.P. (NONE)
       /*.mold_name =*/          "V.P.",
@@ -10526,12 +10670,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00426,
       /*.dome_height =*/        0.00239,
     },
-    // 657
+    // 666
     Disc_Model
     { // Westside Ahti (NONE)
       /*.mold_name =*/          "Ahti",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10542,7 +10686,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00763,
       /*.dome_height =*/        0.00362,
     },
-    // 658
+    // 667
     Disc_Model
     { // Westside Anvil (NONE)
       /*.mold_name =*/          "Anvil",
@@ -10558,7 +10702,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00685,
       /*.dome_height =*/        0.00280,
     },
-    // 659
+    // 668
     Disc_Model
     { // Westside Bard (NONE)
       /*.mold_name =*/          "Bard",
@@ -10574,12 +10718,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00817,
       /*.dome_height =*/        0.00233,
     },
-    // 660
+    // 669
     Disc_Model
     { // Westside Boatman (NONE)
       /*.mold_name =*/          "Boatman",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -10590,12 +10734,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00964,
       /*.dome_height =*/        0.00346,
     },
-    // 661
+    // 670
     Disc_Model
     { // Westside Boatman VIP Air (NONE)
       /*.mold_name =*/          "Boatman VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -10606,12 +10750,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00964,
       /*.dome_height =*/        0.00346,
     },
-    // 662
+    // 671
     Disc_Model
     { // Westside Catapult (NONE)
       /*.mold_name =*/          "Catapult",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10622,7 +10766,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00679,
       /*.dome_height =*/        0.00381,
     },
-    // 663
+    // 672
     Disc_Model
     { // Westside Crown (NONE)
       /*.mold_name =*/          "Crown",
@@ -10638,12 +10782,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00624,
       /*.dome_height =*/        0.00296,
     },
-    // 664
+    // 673
     Disc_Model
     { // Westside Destiny (NONE)
       /*.mold_name =*/          "Destiny",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10654,12 +10798,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00699,
       /*.dome_height =*/        0.00331,
     },
-    // 665
+    // 674
     Disc_Model
     { // Westside Fortress (NONE)
       /*.mold_name =*/          "Fortress",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10670,7 +10814,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00638,
       /*.dome_height =*/        0.00302,
     },
-    // 666
+    // 675
     Disc_Model
     { // Westside Gatekeeper (NONE)
       /*.mold_name =*/          "Gatekeeper",
@@ -10686,12 +10830,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00758,
       /*.dome_height =*/        0.00217,
     },
-    // 667
+    // 676
     Disc_Model
     { // Westside Giant (NONE)
       /*.mold_name =*/          "Giant",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10702,12 +10846,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00714,
       /*.dome_height =*/        0.00401,
     },
-    // 668
+    // 677
     Disc_Model
     { // Westside Giant VIP Air (NONE)
       /*.mold_name =*/          "Giant VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10718,7 +10862,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00714,
       /*.dome_height =*/        0.00401,
     },
-    // 669
+    // 678
     Disc_Model
     { // Westside Harp (NONE)
       /*.mold_name =*/          "Harp",
@@ -10734,12 +10878,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00204,
       /*.dome_height =*/        0.00096,
     },
-    // 670
+    // 679
     Disc_Model
     { // Westside Hatchet (NONE)
       /*.mold_name =*/          "Hatchet",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -10750,12 +10894,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01037,
       /*.dome_height =*/        0.00423,
     },
-    // 671
+    // 680
     Disc_Model
     { // Westside King (NONE)
       /*.mold_name =*/          "King",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10766,12 +10910,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00842,
       /*.dome_height =*/        0.00473,
     },
-    // 672
+    // 681
     Disc_Model
     { // Westside King VIP Air (NONE)
       /*.mold_name =*/          "King VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10782,12 +10926,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00824,
       /*.dome_height =*/        0.00391,
     },
-    // 673
+    // 682
     Disc_Model
     { // Westside Longbowman (NONE)
       /*.mold_name =*/          "Longbowman",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -10798,7 +10942,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00625,
       /*.dome_height =*/        0.00255,
     },
-    // 674
+    // 683
     Disc_Model
     { // Westside Maiden (NONE)
       /*.mold_name =*/          "Maiden",
@@ -10814,12 +10958,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00438,
       /*.dome_height =*/        0.00207,
     },
-    // 675
+    // 684
     Disc_Model
     { // Westside Northman (NONE)
       /*.mold_name =*/          "Northman",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17850,
@@ -10830,12 +10974,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00858,
       /*.dome_height =*/        0.00277,
     },
-    // 676
+    // 685
     Disc_Model
     { // Westside Northman VIP Air (NONE)
       /*.mold_name =*/          "Northman VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17760,
@@ -10846,7 +10990,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01056,
       /*.dome_height =*/        0.00379,
     },
-    // 677
+    // 686
     Disc_Model
     { // Westside Pine (NONE)
       /*.mold_name =*/          "Pine",
@@ -10862,12 +11006,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00859,
       /*.dome_height =*/        0.00246,
     },
-    // 678
+    // 687
     Disc_Model
     { // Westside Queen (NONE)
       /*.mold_name =*/          "Queen",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10878,12 +11022,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00617,
       /*.dome_height =*/        0.00293,
     },
-    // 679
+    // 688
     Disc_Model
     { // Westside Sampo (NONE)
       /*.mold_name =*/          "Sampo",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10894,12 +11038,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00818,
       /*.dome_height =*/        0.00387,
     },
-    // 680
+    // 689
     Disc_Model
     { // Westside Seer (NONE)
       /*.mold_name =*/          "Seer",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10910,7 +11054,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00645,
       /*.dome_height =*/        0.00305,
     },
-    // 681
+    // 690
     Disc_Model
     { // Westside Shield (NONE)
       /*.mold_name =*/          "Shield",
@@ -10926,7 +11070,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00743,
       /*.dome_height =*/        0.00417,
     },
-    // 682
+    // 691
     Disc_Model
     { // Westside Sling (NONE)
       /*.mold_name =*/          "Sling",
@@ -10942,12 +11086,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00764,
       /*.dome_height =*/        0.00216,
     },
-    // 683
+    // 692
     Disc_Model
     { // Westside Sorcerer (NONE)
       /*.mold_name =*/          "Sorcerer",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10958,12 +11102,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00648,
       /*.dome_height =*/        0.00307,
     },
-    // 684
+    // 693
     Disc_Model
     { // Westside Stag (NONE)
       /*.mold_name =*/          "Stag",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -10974,12 +11118,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00824,
       /*.dome_height =*/        0.00391,
     },
-    // 685
+    // 694
     Disc_Model
     { // Westside Stag VIP Air (NONE)
       /*.mold_name =*/          "Stag VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -10990,7 +11134,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00778,
       /*.dome_height =*/        0.00437,
     },
-    // 686
+    // 695
     Disc_Model
     { // Westside Swan (NONE)
       /*.mold_name =*/          "Swan",
@@ -11006,7 +11150,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00503,
       /*.dome_height =*/        0.00282,
     },
-    // 687
+    // 696
     Disc_Model
     { // Westside Swan Reborn (NONE)
       /*.mold_name =*/          "Swan Reborn",
@@ -11022,12 +11166,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00545,
       /*.dome_height =*/        0.00305,
     },
-    // 688
+    // 697
     Disc_Model
     { // Westside Sword (NONE)
       /*.mold_name =*/          "Sword",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -11038,12 +11182,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00831,
       /*.dome_height =*/        0.00394,
     },
-    // 689
+    // 698
     Disc_Model
     { // Westside Sword VIP Air (NONE)
       /*.mold_name =*/          "Sword VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -11054,12 +11198,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00721,
       /*.dome_height =*/        0.00404,
     },
-    // 690
+    // 699
     Disc_Model
     { // Westside The Adder (NONE)
       /*.mold_name =*/          "The Adder",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
@@ -11070,7 +11214,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00899,
       /*.dome_height =*/        0.00426,
     },
-    // 691
+    // 700
     Disc_Model
     { // Westside Tursas (NONE)
       /*.mold_name =*/          "Tursas",
@@ -11086,7 +11230,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00661,
       /*.dome_height =*/        0.00189,
     },
-    // 692
+    // 701
     Disc_Model
     { // Westside Tursas VIP Air (NONE)
       /*.mold_name =*/          "Tursas VIP Air",
@@ -11102,12 +11246,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00654,
       /*.dome_height =*/        0.00196,
     },
-    // 693
+    // 702
     Disc_Model
     { // Westside Underworld (NONE)
       /*.mold_name =*/          "Underworld",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -11118,12 +11262,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00849,
       /*.dome_height =*/        0.00346,
     },
-    // 694
+    // 703
     Disc_Model
     { // Westside Underworld VIP Air (NONE)
       /*.mold_name =*/          "Underworld VIP Air",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Fairway Driver",
+      /*.disc_type =*/          "Fairway",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17680,
@@ -11134,12 +11278,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00707,
       /*.dome_height =*/        0.00288,
     },
-    // 695
+    // 704
     Disc_Model
     { // Westside War Horse (NONE)
       /*.mold_name =*/          "War Horse",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17510,
@@ -11150,7 +11294,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00666,
       /*.dome_height =*/        0.00374,
     },
-    // 696
+    // 705
     Disc_Model
     { // Westside Warship (NONE)
       /*.mold_name =*/          "Warship",
@@ -11166,7 +11310,7 @@ namespace DfisX
       /*.rim_camber_height =*/  0.01151,
       /*.dome_height =*/        0.00329,
     },
-    // 697
+    // 706
     Disc_Model
     { // Westside Warship VIP Air (NONE)
       /*.mold_name =*/          "Warship VIP Air",
@@ -11182,12 +11326,12 @@ namespace DfisX
       /*.rim_camber_height =*/  0.00995,
       /*.dome_height =*/        0.00285,
     },
-    // 698
+    // 707
     Disc_Model
     { // Westside World (NONE)
       /*.mold_name =*/          "World",
       /*.manufacturer =*/       "Westside",
-      /*.disc_type =*/          "Distance Driver",
+      /*.disc_type =*/          "Driver",
       /*.stability =*/          "NONE",
       /*.rim_camber_shape =*/   "NONE",
       /*.mass =*/               0.17600,
