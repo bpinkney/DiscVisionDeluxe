@@ -72,6 +72,12 @@ namespace DfisX
     uint8_t consumed_input; // Flag to mark whether or not this force has been consumed by the state propagator
   };
 
+  struct Friction_Input
+  {
+    Eigen::Vector3d lin_force_XYZ;                  // world frame friction force from fluid model
+    Eigen::Vector3d ang_torque_XYZ;                 // disc body frame
+  };
+
   // Forces State
   //Aerodynamic simulation step variables
   //  used to calculate the forces/accelerations on a disc in flight
@@ -230,6 +236,7 @@ namespace DfisX
     Disc_Statistics disc_statistics;            // used to track stats of a flight
     Disc_Env disc_environment;                  // environmental states and parameters
     Collision_Input collision_input;            // Incoming forces/torques from the Unreal engine collisions
+    Friction_Input  friction_input;             // Incoming extra friction as a fucntion of ground proximity model and material reported by Unreal
     std::vector <Disc_State> disc_state_array;  // array of disc states: used to hold the flight data of a simulated throw
     Disc_Debug debug;
   };

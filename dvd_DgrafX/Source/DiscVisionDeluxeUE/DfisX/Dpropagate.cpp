@@ -22,21 +22,21 @@ namespace DfisX
     //// Compute linear acceleration so we can use that as the integrator for the lower order states
     // Note: collision_force is zero for the moment
     // Add gravity here as well
-    d_forces.net_force = d_forces.aero_force + d_forces.collision_force + Eigen::Vector3d(0, 0, (-GRAV * d_object.mass));
+    d_forces.net_force = d_forces.aero_force + d_forces.collision_force + Eigen::Vector3d(0, 0, (-GRAV * d_object.mass)) + throw_container->friction_input.lin_force_XYZ;
     d_state.disc_acceleration = d_forces.net_force / d_object.mass;
 
     ////// Compute the angular acceleration (just spin and rolling moment for now) so we can use that as the integrator for the lower order states
     //// Pitching moment
     // tack on change to Roll from the gyroscopic precession only
     // we'll need to update this when collisions get added!
-    d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0];
-    d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1];
+    d_forces.net_torque_x = d_forces.gyro_torque_x + d_forces.aero_torque_x + d_forces.collision_torque_xyz[0] + throw_container->friction_input.ang_torque_XYZ[0];
+    d_forces.net_torque_y = d_forces.gyro_torque_y + d_forces.aero_torque_y + d_forces.collision_torque_xyz[1] + throw_container->friction_input.ang_torque_XYZ[1];
     // use inertia here to compute the resulting rotation accel (only about 'rolling' axis for now)
     d_state.disc_rolling_accel  = d_forces.net_torque_x / Ix; // roll about X axis (roll to the right positive relative to airspeed vector)
     d_state.disc_pitching_accel = d_forces.net_torque_y / Iy; // pitch about Y axis (nose up positive realtive to airspeed vect)
 
     //// Spin/Rotation moment
-    d_forces.net_torque_z = d_forces.aero_torque_z + d_forces.collision_torque_xyz[2];
+    d_forces.net_torque_z = d_forces.aero_torque_z + d_forces.collision_torque_xyz[2] + throw_container->friction_input.ang_torque_XYZ[2];
     // use inertia here to compute the resulting rotation accel (only about 'spin' axis for now)
     d_state.disc_rotation_accel = d_forces.net_torque_z / Iz;
 

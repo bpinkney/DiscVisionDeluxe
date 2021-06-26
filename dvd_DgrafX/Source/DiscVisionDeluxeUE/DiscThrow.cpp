@@ -296,11 +296,79 @@ void ADiscThrow::near_ground_detected(
   float height_of_fluidgrass)       //m
 
 {
-  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));
   GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, physics_material_name);
-  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
-  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(density_of_fluidgrass));
-  ;
+  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));  
+  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
+  GEngine->AddOnScreenDebugMessage(213, 5.0f, FColor::Red, FString::SanitizeFloat(density_of_fluidgrass));
+
+  // We'll make a basic disc shape approximation for the friction model (a thin cylinder in a fluid)
+
+  // the coeff of friction (represented here as a fluid density) will decay from
+  // fluidgrass_at_ground_deadband to height_of_fluidgrass linearly to make things simple
+  // -> The presumption being that short or tall grass becomes more dense near the ground, 
+  //    and that the 'near ground' equivalent fluid density is approximately 'density_of_fluidgrass'
+
+  // OVERRIDE
+  //const float height_of_fluidgrass2 = 2.0;
+
+  const float fluidgrass_at_ground_deadband = 0.1; //m
+  const float height_above_ground_m = height_off_ground * 0.01;
+
+  // get height above the ground minus deadband, over the fluidgrass height
+  const float deadband_fluidgrass_height = MAX(CLOSE_TO_ZERO, height_of_fluidgrass  - fluidgrass_at_ground_deadband);
+  const float deadband_disc_height       = MAX(0.0,           height_above_ground_m - fluidgrass_at_ground_deadband);
+
+  // factor to multiply fluid density by, assuming a linear relationship from zero down to density_of_fluidgrass at and below the deadband
+  const float height_above_ground_factor = 
+    MIN(1.0, MAX(0.0, (deadband_fluidgrass_height - deadband_disc_height)) / deadband_fluidgrass_height);
+
+  const float attenuated_density = height_above_ground_factor * density_of_fluidgrass * 0.3;// kg/m^3 // the density is way too high for now, apply atten mult
+
+  GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Orange, FString::SanitizeFloat(attenuated_density));
+
+  // brutally simple friction model just to get our feet wet, fixed area and Cd
+  const float lin_vel_squared = throw_container.current_disc_state.disc_velocity.norm() * throw_container.current_disc_state.disc_velocity.norm();
+  Eigen::Vector3d lin_vel_unit_vector = throw_container.current_disc_state.disc_velocity / throw_container.current_disc_state.disc_velocity.norm();
+
+  const float area = throw_container.disc_object.thickness * throw_container.disc_object.radius; // just take half the rect area for now
+  const float fluidgrass_drag_force_mag = 0.5 * attenuated_density * area * 1.1 * lin_vel_squared; // assume Cd_EDGE is 1.1 for now
+
+  // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
+  // where omega is the angular vel in m/s
+  // and 'r' is the radius in m
+  // Just assume a fixed Cm here
+  const float r5 = 
+    (
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius
+    );
+
+    const float ang_torque_Z =
+      -signum(throw_container.current_disc_state.disc_rotation_vel) *
+      0.5 * 
+      attenuated_density * 
+      (throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.disc_rotation_vel) * 
+      r5 * 1.0 *
+      0.05; // Cm = 0.05
+
+  if(height_above_ground_m <= height_of_fluidgrass)
+  {
+    // populate friction
+    throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag;
+
+    throw_container.friction_input.ang_torque_XYZ *= 0;
+    throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z;
+  }
+  // no friction to apply
+  else
+  {
+    throw_container.friction_input.lin_force_XYZ  *= 0;
+    throw_container.friction_input.ang_torque_XYZ *= 0;
+  }
+  
 }
 
 
@@ -642,15 +710,15 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 9769;
+  const int changevar = 3703;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
   FString display_speed_threshold = FString("Speed threshold: ") + FString::SanitizeFloat(DISABLE_COMPLEX_DISC_COLLISION_MIN_SPEED_MPS) + FString("   Speed actual: ") + FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity.norm()) ;
   FString display_spin_threshold = FString("Spin threshold: ") + FString::SanitizeFloat(DISABLE_COMPLEX_DISC_COLLISION_MIN_SPIN_RADPS) + FString("   Spin actual: ") + FString::SanitizeFloat(abs(throw_container.current_disc_state.disc_rotation_vel)) ;
 
-  GEngine->AddOnScreenDebugMessage(210, 15.0f, FColor::Orange,display_speed_threshold );
-  GEngine->AddOnScreenDebugMessage(211, 15.0f, FColor::Orange,display_spin_threshold );
+  //GEngine->AddOnScreenDebugMessage(210, 15.0f, FColor::Orange,display_speed_threshold );
+  //GEngine->AddOnScreenDebugMessage(211, 15.0f, FColor::Orange,display_spin_threshold );
 
   if
   (
