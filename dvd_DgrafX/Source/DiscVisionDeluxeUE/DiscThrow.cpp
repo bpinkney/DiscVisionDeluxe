@@ -406,6 +406,28 @@ void ADiscThrow::near_ground_detected(
     // don't bother to slow the spin if we are up on edge (for now)
   const float apply_rotation_Z_drag = sin(abs(angle_ground_plane_to_disc_normal)) < sin(M_PI/8.0) ? 1.0 : 0.0;
 
+  // not sure what to do here, we could just resist motion using the paddle-boat style of fluid resistance?
+  const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+  const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+
+  // copied from Daero
+  const double xy_rot_form_drag_limit = 0.13412;
+  float rot_drag_torque_x_Nm = 
+      -signum(throw_container.current_disc_state.disc_rolling_vel) *
+      2.0 * xy_rot_form_drag_limit *
+      Cd *
+      r5 *
+      attenuated_density *
+      (throw_container.current_disc_state.disc_rolling_vel*throw_container.current_disc_state.disc_rolling_vel);
+
+  float rot_drag_torque_y_Nm = 
+      -signum(throw_container.current_disc_state.disc_pitching_vel) *
+      2.0 * xy_rot_form_drag_limit *
+      Cd *
+      r5 *
+      attenuated_density *
+      (throw_container.current_disc_state.disc_pitching_vel*throw_container.current_disc_state.disc_pitching_vel);
+
   // one more thing: let's apply a change to the linear acceleration on the disc from the spin and contact with the ground
   // for now, we assume the moment arm is always just the disc radius
   // and we only apply when the angle between the disc normal and the ground is greater than pi/16
@@ -498,6 +520,9 @@ void ADiscThrow::near_ground_detected(
     throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag + disc_spin_propel_force_N;
 
     throw_container.friction_input.ang_torque_XYZ *= 0;
+
+    throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
+    throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
     throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
   }
   // no friction to apply
@@ -841,7 +866,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 2818;
+  const int changevar = 4631;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
@@ -906,6 +931,9 @@ void ADiscThrow::on_collision(
   throw_container.collision_input.consumed_input = 255; // mark as invalid first for thread safety?
 
   throw_container.collision_input.delta_time_s = delta_time;
+
+  GEngine->AddOnScreenDebugMessage(203, 5.0f, FColor::Purple, FString::SanitizeFloat(round(throw_container.collision_input.delta_time_s / desired_dfisx_dt)));
+  
 
   Eigen::Vector3d world_ang_vel_radps;
   Eigen::Vector3d world_ang_vel_delta_radps;
