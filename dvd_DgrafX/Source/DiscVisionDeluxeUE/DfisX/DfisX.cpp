@@ -42,18 +42,32 @@ namespace DfisX
     throw_container->current_disc_state.forces_state.collision_force[1] = 
     throw_container->current_disc_state.forces_state.collision_force[2] = 0.0;
 
-    const float collision_apply_frames = 1;
+    // we need to do some funky stuff here to ensure that the precession continues throughout subsequent
+    // DfisX frames
+    // So we'll use the 'dt' from the collision vs. the 'dt' for DfisX to compute how many DfisX loops
+    // we need to apply that precession for
+    // We DON'T want to override the states every time, so we add an exeption for "consumed_input == 0"
+    int DfisX_frames_to_continue_collision = (int)round(throw_container->collision_input.delta_time_s / MAX(dt, CLOSE_TO_ZERO));
+    // arbitrary
+    BOUND_VARIABLE(DfisX_frames_to_continue_collision, 0, 10);
+
+    const float collision_apply_frames = DfisX_frames_to_continue_collision;
     if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
     {
       const bool overwrite_states_ignore_forces_torques = true;
       if(overwrite_states_ignore_forces_torques)
       {
 
+        const bool first_frame = throw_container->collision_input.consumed_input == 0;
+
         // Do we need to override positions? Even if we take the 'overwrite' states approach, I'm not too sure
         // Seems like the positions don't even get sent to unreal for the moment, and we just assume a constant velocity each dt
         // TODO: look into whether this assumption is hurting us later!
-        throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
-        throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+        if(first_frame)
+        {
+          throw_container->current_disc_state.disc_location = throw_container->collision_input.lin_pos_m;
+          throw_container->current_disc_state.disc_velocity = throw_container->collision_input.lin_vel_mps;
+        }
 
         // corect dt for impulse based torques (it was pre-divided with the incorrect one during the collision stuff)
         //throw_container->collision_input.ang_torque_from_impulses_Nm *= throw_container->collision_input.delta_time_s;
@@ -137,7 +151,7 @@ namespace DfisX
         if(abs(throw_container->collision_input.ang_vel_radps[2]) > 3.0)
         {
           const float new_pitch_moment = (pitch_accel_corrected * Iy);
-          const float new_roll_moment =  (roll_accel_corrected * Ix);        
+          const float new_roll_moment =  (roll_accel_corrected * Ix);
 
           //float Wp = -(new_roll_moment)  / (Iz * throw_container->current_disc_state.disc_rotation_vel);
          // float Wq =  (new_pitch_moment) / (Iz * throw_container->current_disc_state.disc_rotation_vel);
@@ -167,8 +181,11 @@ namespace DfisX
         const float pitch_collision_torque_Nm = pitch_accel_corrected * Ix;
 
         // apply torques directly!
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = roll_collision_torque_Nm;
-        //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_collision_torque_Nm;
+        /*if(!first_frame)
+        {
+          throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = roll_collision_torque_Nm;
+          throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = pitch_collision_torque_Nm;
+        }*/
 
         // compute delta vel instead and tack it on!
         const float roll_vel_delta  = roll_accel_corrected  * throw_container->collision_input.delta_time_s;
@@ -184,9 +201,12 @@ namespace DfisX
 
         // Update disc normal to the nonsense that unreal gives us
         // We'll tack on the propagation from precession and paddle aero effects below?
-        throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
-        throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
-        throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
+        if(first_frame)
+        {
+          throw_container->current_disc_state.disc_orient_z_vect[0]  = throw_container->collision_input.disc_rotation[0];
+          throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
+          throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
+        }
 
         // Copied from Dpropagate
         // only for the vel component applied during the collision (we don't want to dupe the normal propagation)
@@ -228,6 +248,7 @@ namespace DfisX
         z_unit_delta += (Rx * base_z - base_z);
         z_unit_delta += (Ry * base_z - base_z);
 
+        // NOT USING THIS YET!
         z_unit_delta = Rdw * z_unit_delta;
         // Update the vector
         // doing an update here seems to cause a lot of clipping.... so I guess we can leave it up to the sim dt propagation in Dpropagate
@@ -273,10 +294,16 @@ namespace DfisX
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
         //throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
 
-        throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0] + roll_vel_delta_minus_unreal;
-        throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1] + pitch_vel_delta_minus_unreal;
-        throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        if(first_frame)
+        {
+          throw_container->current_disc_state.disc_rolling_vel  = throw_container->collision_input.ang_vel_radps[0];
+          throw_container->current_disc_state.disc_pitching_vel = throw_container->collision_input.ang_vel_radps[1];
+          throw_container->current_disc_state.disc_rotation_vel = throw_container->collision_input.ang_vel_radps[2];
+        }
 
+        throw_container->current_disc_state.disc_rolling_vel  += roll_vel_delta_minus_unreal;
+        throw_container->current_disc_state.disc_pitching_vel += pitch_vel_delta_minus_unreal;
+        //throw_container->current_disc_state.disc_rotation_vel;
       }
       else
       {
