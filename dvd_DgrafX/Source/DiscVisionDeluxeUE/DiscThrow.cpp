@@ -866,7 +866,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 4631;
+  const int changevar = 7352;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
