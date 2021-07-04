@@ -131,14 +131,16 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Bag Maker")
 	void initialize_custom_disc(const FCustom_disc & custom_disc);
 
+
 	// local save/load functions (hopefully multiple threads won't make this fight itself...)
+	FString custom_disc_get_save_path(void);
 	void custom_disc_save(FCustom_disc * custom_disc);
 	// generate name string from struct components
 	FString custom_disc_generate_name_string(FCustom_disc * custom_disc);
 	// load by name string match, true if matching disc was found
 	bool custom_disc_load(FString custom_disc_name, FCustom_disc * custom_disc);
 	//void custom_disc_load_all(TArray<FCustom_disc> custom_disc_array);
-	void custom_disc_load_disc_names(TArray<FString> custom_disc_names);
+	void custom_disc_load_disc_names(TArray<FString> * custom_disc_names);
 	// quick test function
 	void custom_disc_test_save_and_load(void);
 

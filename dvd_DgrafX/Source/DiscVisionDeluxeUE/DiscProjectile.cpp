@@ -2,12 +2,26 @@
 
 #include "DiscProjectile.h"
 #include <math.h>
+
+// needed for custom_disc IO
+// load files
 #include <fstream>      // std::ofstream
 #include <string>       // std::string
 #include <iostream>     // std::cout
 #include <sstream>      // std::ostringstrea
-#include <filesystem>
-namespace fs = std::experimental::filesystem;
+
+#include "HAL/FileManagerGeneric.h"
+
+// find list of files:
+/*#define WIN32_LEAN_AND_MEAN
+#include "Windows/WindowsSystemIncludes.h"
+#include <windows.h>
+#include <tchar.h>
+#include <stdio.h>*/
+// end custom_disc IO
+
+//#include <filesystem>
+//namespace fs = std::experimental::filesystem;
 //#include "DfisX\DfisX.hpp"
 //#include "Components/SphereComponent.h"
 //#include "GameFramework/ProjectileMovementComponent.h"
@@ -88,6 +102,12 @@ void ADiscProjectile::Tick(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Orange, FString::Printf(TEXT("Disc Location is: %s"), *disc_position.ToString()));
 }
 
+FString ADiscProjectile::custom_disc_get_save_path(void)
+{
+	std::string path = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())) + "/custom_disc_saves/";
+	return FString(path.c_str());
+}
+
 // local save/load functions (hopefully multiple threads won't make this fight itself...)
 void ADiscProjectile::custom_disc_save(FCustom_disc * custom_disc)
 {
@@ -97,34 +117,20 @@ void ADiscProjectile::custom_disc_save(FCustom_disc * custom_disc)
 
 	std::ofstream custom_disc_save_file;
 	// make sure to overwrite the previous contents
-	std::string save_filename = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())) + "/custom_disc_saves/" + custom_disc_name_std + ".csv";
+	std::string save_filename = std::string(TCHAR_TO_UTF8(*ADiscProjectile::custom_disc_get_save_path())) + custom_disc_name_std + ".csv";
 
 	custom_disc_save_file.open(save_filename, std::ofstream::trunc);
 
 
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("SAVE DISC!"));
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, custom_disc_name);
-	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,  FString(save_filename.c_str()));
-
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("SAVE DISC!"));
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, custom_disc_name);
+	//GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,  FString(save_filename.c_str()));
 
 	// seems like Unreal structs don't write binary correctly..... sigh
 	// just do it as a csv then
-/*	FString 		mold_name		="None";					//for lookup with disc params
-	enum_disc_form 	mold_form		=enum_disc_form::FRISBEE; 	//see above
-	float			disc_mass  		=0.175;						//mass in kg
-	float 			disc_wear		=0.0;   					//0..1
-	FLinearColor	base_colour		=FLinearColor::Red;			//main colour of plastic
-	FLinearColor	secondary_colour=FLinearColor::Blue;		//colour of patterning on disc
-	FLinearColor	rim_colour		=FLinearColor::Black;		//colour of rim
-	FString			decal_path		="None.png";				//filepath to decal texture
-	enum_pattern_type pattern_enum = enum_pattern_type::SPIRAL;	//TODO change to pattern enum when implemented
-	int 			pattern_seed	=0;							//
-	FString			player_name		="";						//the player who created disc
-	FDateTime		date_created; */
-									//date of creation
 	std::string delimiter = ";";
 
-
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->player_name))) << delimiter;
 	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->mold_name))) << delimiter;
 	custom_disc_save_file << (int)custom_disc->mold_form << delimiter;
 	custom_disc_save_file << custom_disc->disc_mass << delimiter;
@@ -181,41 +187,133 @@ FString ADiscProjectile::custom_disc_generate_name_string(FCustom_disc * custom_
 // load by name string match, true if matching disc was found
 bool ADiscProjectile::custom_disc_load(FString custom_disc_name, FCustom_disc * custom_disc)
 {
-/*	string str;                      // This will store your tokens
-	std::string custom_disc_name_std = std::string(TCHAR_TO_UTF8(*custom_disc_name));
-	std::string load_filename = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())) + "/custom_disc_saves/" + custom_disc_name_std + ".csv";
-	ifstream load_file(load_filename);
+	/*	FString 		mold_name		="None";					//for lookup with disc params
+	enum_disc_form 	mold_form		=enum_disc_form::FRISBEE; 	//see above
+	float			disc_mass  		=0.175;						//mass in kg
+	float 			disc_wear		=0.0;   					//0..1
+	FLinearColor	base_colour		=FLinearColor::Red;			//main colour of plastic
+	FLinearColor	secondary_colour=FLinearColor::Blue;		//colour of patterning on disc
+	FLinearColor	rim_colour		=FLinearColor::Black;		//colour of rim
+	FString			decal_path		="None.png";				//filepath to decal texture
+	enum_pattern_type pattern_enum = enum_pattern_type::SPIRAL;	//TODO change to pattern enum when implemented
+	int 			pattern_seed	=0;							//
+	FString			player_name		="";						//the player who created disc
+	FDateTime		date_created; */
+/*	std::string delimiter = ";";
 
-	std::string delimiter = ";";
+
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->mold_name))) << delimiter;
+	custom_disc_save_file << (int)custom_disc->mold_form << delimiter;
+	custom_disc_save_file << custom_disc->disc_mass << delimiter;
+	custom_disc_save_file << custom_disc->disc_wear << delimiter;
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->base_colour.ToString()))) << delimiter;
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->secondary_colour.ToString()))) << delimiter;
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->rim_colour.ToString()))) << delimiter;
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->decal_path))) << delimiter;
+	custom_disc_save_file << (int)custom_disc->pattern_enum << delimiter;
+	custom_disc_save_file << custom_disc->pattern_seed << delimiter;
+	custom_disc_save_file << std::string(TCHAR_TO_UTF8(*(custom_disc->date_created.ToString()))) << delimiter;*/
+
+	std::string token;                      // This will store your tokens
+	std::string custom_disc_name_std = std::string(TCHAR_TO_UTF8(*custom_disc_name));
+	std::string load_filename = std::string(TCHAR_TO_UTF8(*ADiscProjectile::custom_disc_get_save_path())) + custom_disc_name_std;
+	std::ifstream load_file(load_filename.c_str());
+
+	char delimiter = ';';
 	int line_num = 0;
-	while(getline(load_file, str, delimiter)   // You can have a different delimiter
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black, FString(load_filename.c_str()));
+
+	const uint8_t line_total = 12;
+
+	while(std::getline(load_file, token, delimiter))
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black, FString(token.c_str()));
 		switch(line_num)
 		{
 			case 0:
-				custom_disc->player_name = FString(str.c_str());
+				custom_disc->player_name 		= FString(token.c_str());
 				break;
+			case 1:
+				custom_disc->mold_name 			= FString(token.c_str());
+				break;
+			case 2:
+				custom_disc->mold_form 			= static_cast<enum_disc_form>(std::stoi(token.c_str()));
+				break;
+			case 3:
+				custom_disc->disc_mass 			= std::stof(token.c_str());
+				break;
+			case 4:
+				custom_disc->disc_wear 			= std::stof(token.c_str());
+				break;
+			case 5:
+			{
+				FLinearColor colour;
+				colour.InitFromString(FString(token.c_str()));
+				custom_disc->base_colour 		= colour;
+				break;
+			}
+			case 6:
+			{
+				FLinearColor colour;
+				colour.InitFromString(FString(token.c_str()));
+				custom_disc->secondary_colour 	= colour;
+				break;
+			}
+			case 7:
+			{
+				FLinearColor colour;
+				colour.InitFromString(FString(token.c_str()));
+				custom_disc->rim_colour 		= colour;
+				break;
+			}
+			case 8:
+				custom_disc->decal_path 		= FString(token.c_str());
+				break;
+			case 9:
+				custom_disc->pattern_enum 		= static_cast<enum_pattern_type>(std::stoi(token.c_str()));
+				break;
+			case 10:
+				custom_disc->pattern_seed 		= std::stof(token.c_str());
+				break;
+			case 11:
+			{
+				FDateTime date_created;
+				FDateTime::Parse(FString(token.c_str()), date_created);
+				custom_disc->date_created 		= date_created;
+				break;
+			}
 		}
 
 	    line_num++;
-	}*/
-	//FLinearColor::InitFromString
+	}
 
-	return false;
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black, FString("Found Lines:"));
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Black, FString::FromInt(line_num));
+	return (line_num == line_total);
 }
 
 //void custom_disc_load_all(TArray<FCustom_disc> custom_disc_array);
-void ADiscProjectile::custom_disc_load_disc_names(TArray<FString> custom_disc_names)
+void ADiscProjectile::custom_disc_load_disc_names(TArray<FString> * custom_disc_names)
 {
-/*	std::string load_path = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())) + "/custom_disc_saves/";
-    std::string ext = ".csv";
-    for (auto &p : fs::directory_iterator(load_path))
-    {
-        if (p.path().extension() == ext)
-        {
-            custom_disc_names.Add(FString(p.path().stem().string().c_str()));
-        }
-    }*/
+	std::string load_path = std::string(TCHAR_TO_UTF8(*ADiscProjectile::custom_disc_get_save_path()));
+
+	FFileManagerGeneric FileMgr;
+	FileMgr.SetSandboxEnabled(true);// don't ask why, I don't know :P
+	FString extension("*.csv"); // May be "" (empty string) to search all files
+	FString search_path(FPaths::Combine(FString(load_path.c_str()), *extension));
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, search_path);
+
+	FileMgr.FindFiles(*custom_disc_names, *search_path, 
+                                  true,  // to list files
+                                  false); // to skip directories
+
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red, FString("Found Files:"));
+	for (auto f : *custom_disc_names)
+	{
+		FString filename(f);
+		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red, filename);
+	}
 }
 
 void ADiscProjectile::custom_disc_test_save_and_load(void)
@@ -243,11 +341,29 @@ void ADiscProjectile::custom_disc_test_save_and_load(void)
 
 	// get list of saved discs
 	TArray<FString> custom_disc_names;
-	custom_disc_load_disc_names(custom_disc_names);
+	custom_disc_load_disc_names(&custom_disc_names);
 
 	// load disc by name [0]
-	//FCustom_disc custom_disc_loaded;
-	//custom_disc_load(custom_disc_names[0], &custom_disc_loaded);
+	GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString("Found Files:"));
+	for (auto f : custom_disc_names)
+	{
+		FString filename(f);
+		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, filename);
+	}
+	if(custom_disc_names.Num() > 0 && custom_disc_names.IsValidIndex(0))
+	{
+
+		FCustom_disc custom_disc_loaded;
+		bool load_worked = custom_disc_load(custom_disc_names[0], &custom_disc_loaded);
+
+		// Now change the name and re-save to make sure we loaded correctly
+		if(load_worked)
+		{
+			custom_disc_loaded.player_name = "Sir Jangles the Third";
+			// save again to file
+			ADiscProjectile::custom_disc_save(&custom_disc_loaded);
+		}
+	}
 }
 
 
