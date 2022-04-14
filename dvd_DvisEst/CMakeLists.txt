@@ -87,7 +87,9 @@ endif (WIN32)
 #Linux includes
 if (UNIX)
   # remember that Spinnaker only needs this include!
-  target_include_directories(dvd_DvisEst PRIVATE "/usr/include/spinnaker/")  
+  target_include_directories(dvd_DvisEst PRIVATE "/usr/include/spinnaker/") 
+  # new location
+  target_include_directories(dvd_DvisEst PRIVATE "/opt/spinnaker/include/") 
 endif (UNIX)
 
 # add project local include files
@@ -125,5 +127,6 @@ if (WIN32)
 target_link_libraries( dvd_DvisEst ${SPINNAKER_LIB} )
 endif (WIN32)
 if (UNIX)
-target_link_libraries( dvd_DvisEst Spinnaker )
+#target_link_libraries( dvd_DvisEst Spinnaker )
+target_link_libraries( dvd_DvisEst "/opt/spinnaker/lib/libSpinnaker.so" )
 endif (UNIX)
