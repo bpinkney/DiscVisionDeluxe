@@ -50,7 +50,7 @@ Also gravity.
 // Pitching moment arms as a percentage of total diameter
 #define PITCHING_MOMENT_FORM_DRAG_PLATE_OFFSET (0.0)//(0.05) // % of diameter toward the front of the disc for plate drag force centre
 #define PITCHING_MOMENT_CAVITY_LIFT_OFFSET     (0.042) // % of diameter toward the back of the disc for cavity lift force centre
-#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.10) // % of diameter toward the front of the disc for camber lift force centre
+#define PITCHING_MOMENT_CAMBER_LIFT_OFFSET     (0.15) // % of diameter toward the front of the disc for camber lift force centre
 // disable the lower rim camber model for now (re-evaluate later)
 // % of edge height which slopes down as the lower rim camber
 // TODO: this number should change for discs with a concave lower rim camber

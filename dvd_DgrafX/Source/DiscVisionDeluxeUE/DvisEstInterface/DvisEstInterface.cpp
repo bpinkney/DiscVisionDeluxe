@@ -18,6 +18,8 @@
 #include <sstream>
 #include <algorithm>
 
+#define DVISEST_INTERFACE_USE_EXTERNAL_PROCESS (true)
+
 DvisEstInterface::DvisEstInterface(const bool generated_throws)
 {
   use_generated_throws = generated_throws;
@@ -109,7 +111,7 @@ void DvisEstInterface::ParseDvisEstLine(std::string result)
   }
 }
 
-FString dvd_DvisEst_bin_path = "../../Binaries/dvd_DvisEst/2020-12-21/";
+FString dvd_DvisEst_bin_path = "../../Binaries/dvd_DvisEst/2022-08-19/";
 
 void DvisEstInterface::RunDvisEst() 
 {
@@ -122,63 +124,81 @@ void DvisEstInterface::RunDvisEst()
 
   FString dVisEst_args("");
 
-  std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
+  if(!DVISEST_INTERFACE_USE_EXTERNAL_PROCESS)
+  {
+    std::ofstream batFileKill(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor_kill.bat");
 
-  batFileKill << "taskkill /F /IM dvd_DvisEst.exe" << std::endl;
+    batFileKill << "taskkill /F /IM dvd_DvisEst.exe" << std::endl;
 
-  // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
-  // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
-  //batFileKill << "@Echo off & SetLocal EnableDelayedExpansion" << std::endl;
-  //batFileKill << "set \"PID=\"" << std::endl;
-  //batFileKill << "for /f \"tokens=2\" %%A in ('tasklist ^| findstr /i \"dvd_DvisEst.exe\" 2^>NUL') do @Set \"PID=!PID!,%%A\"" << std::endl;
-  //batFileKill << "if defined PID Echo dvd_DvisEst.exe has PID(s) %PID:~1%" << std::endl;
-  // this line is the reason this needs to be 2 commands, 
-  // since suppressing the STUPID "Terminate batch job (Y/N)?"" prompt is almost impossible
-  //batFileKill << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "windows-kill.exe" + "\"" + " -SIGINT %PID:~1%" << std::endl;
-  batFileKill.close();
+    // Windows is shite, and unreal FInteractiveProcess is shite, so we need to kill old dvd_DvisEst processes....
+    // TEMPORARY! Killing process by name is not the way to handle this EVEN IN THE NEAR FUTURE
+    //batFileKill << "@Echo off & SetLocal EnableDelayedExpansion" << std::endl;
+    //batFileKill << "set \"PID=\"" << std::endl;
+    //batFileKill << "for /f \"tokens=2\" %%A in ('tasklist ^| findstr /i \"dvd_DvisEst.exe\" 2^>NUL') do @Set \"PID=!PID!,%%A\"" << std::endl;
+    //batFileKill << "if defined PID Echo dvd_DvisEst.exe has PID(s) %PID:~1%" << std::endl;
+    // this line is the reason this needs to be 2 commands, 
+    // since suppressing the STUPID "Terminate batch job (Y/N)?"" prompt is almost impossible
+    //batFileKill << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "windows-kill.exe" + "\"" + " -SIGINT %PID:~1%" << std::endl;
+    batFileKill.close();
 
-  // Run the kil thing separately since multi-line bat files are buggy and weird
-  FInteractiveProcess* CmdProcessKill;
-  FString dVisEst_bin_cmd_kill(
-    dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
+    // Run the kil thing separately since multi-line bat files are buggy and weird
+    FInteractiveProcess* CmdProcessKill;
+    FString dVisEst_bin_cmd_kill(
+      dVisEst_bin_path + "dvd_DvisEst_abstractor_kill.bat"
+      );
+
+    CmdProcessKill = new FInteractiveProcess(
+      dVisEst_bin_cmd_kill,
+      dVisEst_args,
+      true,
+      false
+      );
+
+    CmdProcessKill->OnOutput().BindLambda(
+      [=](const FString& outputMessage)
+      {
+        FString outputString(outputMessage);
+        std::string result = std::string(TCHAR_TO_UTF8(*outputString));
+
+        // getting test output is handy
+        test_string += "KB->" + result + "\n";
+      }
     );
 
-  CmdProcessKill = new FInteractiveProcess(
-    dVisEst_bin_cmd_kill,
-    dVisEst_args,
-    true,
-    false
-    );
-
-  CmdProcessKill->OnOutput().BindLambda(
-    [=](const FString& outputMessage)
-    {
-      FString outputString(outputMessage);
-      std::string result = std::string(TCHAR_TO_UTF8(*outputString));
-
-      // getting test output is handy
-      test_string += "KB->" + result + "\n";
-    }
-  );
-
-  CmdProcessKill->Launch();
+    CmdProcessKill->Launch();
+  }
 
   // Now we can do the real call using the .bat file so we don't have to RX STDERR
   // real command
   std::ofstream batFile(std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) + "dvd_DvisEst_abstractor.bat");
-  // ping until the process is dead
-  batFile << ":loop" << std::endl;
-  batFile << "ping -n 2 127.0.0.1 >nul" << std::endl; // delay for 1 second
-  batFile << "tasklist /FI \"IMAGENAME eq dvd_DvisEst.exe\" 2>NUL | find /I /N \"dvd_DvisEst.exe\">NUL" << std::endl;
-  batFile << "if \"%ERRORLEVEL%\"==\"0\" goto loop" << std::endl;
-  if(use_generated_throws)
+
+  // If using DVISEST_INTERFACE_USE_EXTERNAL_PROCESS==true
+  // Make sure you are running this in a separate terminal:
+  // dvd_DvisEst.exe -cr > %TEMP%\dvd_stdout.txt 2> %TEMP%\dvd_stderr.txt
+  if(DVISEST_INTERFACE_USE_EXTERNAL_PROCESS)
   {
-    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10000 -can=777 -nc 2> nul";
+    // reset the file first, since tail -f grabs old text sometimes
+    //batFile << "echo 'ready:0,' > %TEMP%\\dvd_stdout.txt" << std::endl;
+
+    batFile << "tail --follow=name %TEMP%\\dvd_stdout.txt" << std::endl;
   }
   else
   {
-    batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -ch 2> nul";
+    // ping until the process is dead
+    batFile << ":loop" << std::endl;
+    batFile << "ping -n 2 127.0.0.1 >nul" << std::endl; // delay for 1 second
+    batFile << "tasklist /FI \"IMAGENAME eq dvd_DvisEst.exe\" 2>NUL | find /I /N \"dvd_DvisEst.exe\">NUL" << std::endl;
+    batFile << "if \"%ERRORLEVEL%\"==\"0\" goto loop" << std::endl;
+    if(use_generated_throws)
+    {
+      batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr -rm=10000 -can=777 -nc 2> nul";
+    }
+    else
+    {
+      batFile << "\"" + std::string(TCHAR_TO_UTF8(*dVisEst_bin_path)) << "dvd_DvisEst.exe\" -cr 2> \"C:\\Users\\picard\\dvd_out2.txt\"";
+    }
   }
+
   batFile.close();
 
   FInteractiveProcess* CmdProcess;
@@ -234,7 +254,7 @@ FString DvisEstInterface::GetTestString()
     std::endl;
 
   // getting test output is handy
-  //ss << test_string;
+  ss << test_string;
 
   FString new_string(ss.str().c_str());
   return new_string;
@@ -295,19 +315,24 @@ uint32 DvisEstInterface::Run()
       test_string += "Init Complete!\n";
     }
 
-    if(!init_complete)
+    // don't bother with resets if we are just tailing another process
+    if(!DVISEST_INTERFACE_USE_EXTERNAL_PROCESS)
     {
-      test_string += "Loop DvisEst 1s thread timer! [" + std::to_string(now_time) + "/" + std::to_string(init_time_reset_limit_s) + "]\n";
-
-      if(now_time >= start_time + init_time_reset_limit_s)
+      if(!init_complete)
       {
-        // queue up dvd_DvisEst.exe to restart since it has not init'd after init_time_reset_limit_s
-        // this will include a pre-kill of the old process
-        rerun_dvisest = true;
-        test_string += "Forced to re-run dvd_DvisEst.exe due to unclean camera shutdown!\n";
+        test_string += "Loop DvisEst 1s thread timer! [" + std::to_string(now_time) + "/" + std::to_string(init_time_reset_limit_s) + "]\n";
+
+        if(now_time >= start_time + init_time_reset_limit_s)
+        {
+          // queue up dvd_DvisEst.exe to restart since it has not init'd after init_time_reset_limit_s
+          // this will include a pre-kill of the old process
+          rerun_dvisest = true;
+          test_string += "Forced to re-run dvd_DvisEst.exe due to unclean camera shutdown!?\n";
+        }
+        now_time += 1;
       }
-      now_time += 1;
     }
+
 
     FPlatformProcess::Sleep(1.0);    
   }
