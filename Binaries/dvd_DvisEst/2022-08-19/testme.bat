@@ -1,0 +1,1 @@
+dvd_DvisEst.exe -fi="test_throw_2\\images" -gp="test_throw_2\\00000003_2020-06-05_08-51-05_ground_plane.yaml" -cc="test_throw_2\\19508898.yaml" -gt
