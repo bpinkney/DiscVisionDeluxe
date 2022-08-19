@@ -18,7 +18,7 @@
 #include <sstream>
 #include <algorithm>
 
-#define DVISEST_INTERFACE_USE_EXTERNAL_PROCESS (true)
+#define DVISEST_INTERFACE_USE_EXTERNAL_PROCESS (false)
 
 DvisEstInterface::DvisEstInterface(const bool generated_throws)
 {
