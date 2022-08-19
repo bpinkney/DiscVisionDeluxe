@@ -28,7 +28,7 @@
 #define KF_EST_STAGE_ACTIVE       (3)
 #define KF_EST_STAGE_COMPLETE     (4)
 
-#define KF_EST_MAX_MEAS_FRAMES (500)
+#define KF_EST_MAX_MEAS_FRAMES (50)//(500)
 
 extern std::atomic<bool> gv_force_continuous_mode;
 extern std::atomic<bool> gv_force_complete_threads;

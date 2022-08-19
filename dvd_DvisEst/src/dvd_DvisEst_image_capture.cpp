@@ -867,6 +867,17 @@ int dvd_DvisEst_image_capture_thread()
         }
       }
 
+      // if we are ready to throw, give a status update to that effect every 3s, just in case we are tailing an existing socket process
+      if(ready_to_throw && dvd_DvisEst_get_estimate_stage() < KF_EST_STAGE_MEAS_COLLECT)
+      {
+        static uint64_t last_ready_time_ms = 0;
+        if(NS_TO_MS(uptime_get_ns()) > last_ready_time_ms + 3000)
+        {
+          //print status update
+          cout << "ready:1," << endl;
+        }
+      }
+
       if(ready_to_throw && dvd_DvisEst_get_estimate_stage() > KF_EST_STAGE_MEAS_COLLECT)
       {
         ready_to_throw = false;
