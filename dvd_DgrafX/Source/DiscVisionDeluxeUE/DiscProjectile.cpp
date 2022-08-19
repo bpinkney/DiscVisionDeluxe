@@ -50,7 +50,7 @@ void ADiscProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	custom_disc_test_save_and_load();
+	//custom_disc_test_save_and_load();
 
  //kill_control_with_delay();
 

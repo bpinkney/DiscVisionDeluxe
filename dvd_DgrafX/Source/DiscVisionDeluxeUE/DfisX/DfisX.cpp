@@ -533,11 +533,13 @@ namespace DfisX
         break;
     }    
 
+    disc_mold = find_disc_mold_index_by_name("Destroyer");
+
     static uint32_t disc2throw = 1;
     if(1)
     {
       // generate a random disc mold index from all possible sets
-      if(1)
+      if(0)
       {
         const float index = (float)rand() / (float)RAND_MAX;
         disc_mold = floor(index * disc_object_array.size());
@@ -562,10 +564,10 @@ namespace DfisX
       // - straight midrange or putter with not much camber (e.g. Mako3) 
       // - understable or stable driver with camber and a thick rim (e.g. destroyer)
       // - stable fairway driver with a thick lower rim camber (e.g. TeeBird or Wraith)
-      // If you can get all these flying OK, you've got a decent tuning!
+      // If you can get all these flying OK, you've got a decent tuning! NOTE
 
-      //disc_mold = find_disc_mold_index_by_name("Firebird");
-      gyromode =  !gyromode;
+      disc_mold = find_disc_mold_index_by_name("Firebird");
+      //gyromode =  !gyromode;
 
       if(0)
       {
@@ -573,18 +575,18 @@ namespace DfisX
         {
           case 1:
             disc_mold = find_disc_mold_index_by_name("Roadrunner");
-            //disc2throw = 2;
+            disc2throw = 2;
             break;
           case 2:
             disc_mold = find_disc_mold_index_by_name("Northman");
-            //disc2throw = 1;// just do the first 2
+            disc2throw = 3;// just do the first 2
             break;
           case 3:
-            disc_mold = find_disc_mold_index_by_name("Shryke");
-            //disc2throw = 4;
+            disc_mold = find_disc_mold_index_by_name("Destroyer");
+            disc2throw = 4;
             break;
           case 4:
-            disc_mold = find_disc_mold_index_by_name("Swan");
+            disc_mold = find_disc_mold_index_by_name("TeeBird");
             disc2throw = 5;
             break;
           case 5:
@@ -617,9 +619,9 @@ namespace DfisX
         default:
         case 0:
           // regular flat throw
-          throw_container->current_disc_state.disc_velocity = {60.0/3.6, 0, 0};
-          throw_container->current_disc_state.disc_rotation_vel = 70.0;
-          hps = {DEG_TO_RAD(-90.0), DEG_TO_RAD(0.0), DEG_TO_RAD(0)};
+          throw_container->current_disc_state.disc_velocity = {80.0/3.6, 0, 0};
+          throw_container->current_disc_state.disc_rotation_vel = -70.0;
+          hps = {DEG_TO_RAD(0.0), DEG_TO_RAD(0.0), DEG_TO_RAD(0)};
           //throw_set = 1;
           break;
         case 1: 
