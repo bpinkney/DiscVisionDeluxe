@@ -52,7 +52,9 @@ namespace DfisX
     BOUND_VARIABLE(DfisX_frames_to_continue_collision, 0, 10);
 
     const float collision_apply_frames = DfisX_frames_to_continue_collision;
-    if(throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
+
+    // DISABLE COLLISIONS FOR NOW!
+    if(false && throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
     {
       const bool overwrite_states_ignore_forces_torques = true;
       if(overwrite_states_ignore_forces_torques)

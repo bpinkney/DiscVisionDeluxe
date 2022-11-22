@@ -297,244 +297,6 @@ void ADiscThrow::GenerateDiscEnv(DfisX::Disc_Env * disc_environment)
 }
 
 
-void ADiscThrow::near_ground_detected(
-  float height_off_ground,           //in cm
-  FVector landscape_normal,          
-  FString physics_material_name,     //
-  float density_of_fluidgrass,        //kg/m^3
-  float height_of_fluidgrass)       //m
-
-{
-  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, physics_material_name);
-  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));  
-  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
-  GEngine->AddOnScreenDebugMessage(213, 5.0f, FColor::Red, FString::SanitizeFloat(density_of_fluidgrass));
-
-  // We'll make a basic disc shape approximation for the friction model (a thin cylinder in a fluid)
-
-  // the coeff of friction (represented here as a fluid density) will decay from
-  // fluidgrass_at_ground_deadband to height_of_fluidgrass linearly to make things simple
-  // -> The presumption being that short or tall grass becomes more dense near the ground, 
-  //    and that the 'near ground' equivalent fluid density is approximately 'density_of_fluidgrass'
-
-  const float fluidgrass_at_ground_deadband = 0.1; //m
-  const float height_above_ground_m = height_off_ground * 0.01;
-
-  // get height above the ground minus deadband, over the fluidgrass height
-  const float deadband_fluidgrass_height = MAX(CLOSE_TO_ZERO, height_of_fluidgrass  - fluidgrass_at_ground_deadband);
-  const float deadband_disc_height       = MAX(0.0,           height_above_ground_m - fluidgrass_at_ground_deadband);
-
-  // factor to multiply fluid density by, assuming a linear relationship from zero down to density_of_fluidgrass at and below the deadband
-  const float height_above_ground_factor = 
-    MIN(1.0, MAX(0.0, (deadband_fluidgrass_height - deadband_disc_height)) / MAX(deadband_fluidgrass_height, CLOSE_TO_ZERO));
-
-  const float attenuated_density = height_above_ground_factor * density_of_fluidgrass;// kg/m^3
-
-  // simple friction model just to get our feet wet, fixed Cd
-  // remember this is GROUND speed (as opposed to airspeed in Daero), since our 'fluidgrass' is ground relative
-  const float lin_vel_squared = throw_container.current_disc_state.disc_velocity.norm() * throw_container.current_disc_state.disc_velocity.norm();
-  Eigen::Vector3d lin_vel_unit_vector = throw_container.current_disc_state.disc_velocity / MAX(throw_container.current_disc_state.disc_velocity.norm(), CLOSE_TO_ZERO);
-
-  // slight upgrade to computing the exposed surface area from the delta between the disc normal, and the GROUND speed velocity vector
-  
-  Eigen::Vector3d landscape_normal_unit = {landscape_normal[0], landscape_normal[1], landscape_normal[2]};
-  const float angle_ground_plane_to_disc_normal = angle_between_vectors(landscape_normal_unit, throw_container.current_disc_state.disc_orient_z_vect);
-
-  // copied from Daero
-  // For now, we'll disable edge height drag if the disc is up on edge
-  // (not compelling, but the disc flat on the ground is against the grain of the grass, and up on end is along the grain)
-  const float edge_height = 
-    sin(abs(angle_ground_plane_to_disc_normal)) > sin(M_PI/8.0) ? 
-    0.0 :
-    MAX(0.0, throw_container.disc_object.thickness - throw_container.disc_object.rim_camber_height - throw_container.disc_object.dome_height);
-
-  // just take half the rect area for now for the edge
-  const float area_edge_blunt = edge_height * throw_container.disc_object.radius*2.0 * 0.5;
-  const float area_plate = throw_container.disc_object.radius*throw_container.disc_object.radius * M_PI;
-
-  // based on the angle between the ground speed and the disc normal, compute the portion of each surface which is exposed to the 'fluidgrass'
-  const float angle_ground_speed_to_disc_normal = angle_between_vectors(throw_container.current_disc_state.disc_velocity, throw_container.current_disc_state.disc_orient_z_vect);
-
-  // at 90 degrees, full edge is exposed
-  // at 0 degrees, full plate is exposed
-  const float area_exposed = abs(sin(angle_ground_speed_to_disc_normal) * area_edge_blunt) + abs(cos(angle_ground_speed_to_disc_normal) * area_plate);
-
-  // the friction is further reduced by computing how far the disc is sticking up out of the fluidgrass
-  // the height that the disc reaches up above the ground, 90 degrees angle_ground_plane_to_disc_normal implies we are up on the edge
-  const float disc_height_sticking_up_from_ground = abs(sin(angle_ground_plane_to_disc_normal)) * throw_container.disc_object.radius*2.0;
-
-  // now we compute an attenuation factor based on how much the disc is sticking up above the fluidgrass height
-  // for now, this will ignore the linear change to the density and just be an attenuation factor with the current 'attenuated_density'
-  const float disc_height_sticking_up_from_ground_factor = 
-    MIN(1.0, 
-      MAX(0.0, (height_of_fluidgrass - height_above_ground_m)) // height from bottom of disc to top of fluidgrass
-      /
-      MAX(CLOSE_TO_ZERO, disc_height_sticking_up_from_ground) // height from bottom of disc to top of scenery
-    );
-
-  //GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Orange, FString::SanitizeFloat(disc_height_sticking_up_from_ground_factor));
-  //GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(arc_length_during_dt));
-  //GEngine->AddOnScreenDebugMessage(216, 5.0f, FColor::Green,  FString::SanitizeFloat(area_exposed * disc_height_sticking_up_from_ground_factor));
-
-
-  // assume Cd_EDGE/Cd_PLATE is 1.1 for now
-  const float Cd = 1.1;
-  const float fluidgrass_drag_force_mag = 0.5 * attenuated_density * area_exposed * disc_height_sticking_up_from_ground_factor * Cd * lin_vel_squared;
-
-  // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
-  // where omega is the angular vel in m/s
-  // and 'r' is the radius in m
-  // Just assume a fixed Cm here
-  const float r5 = 
-    (
-      throw_container.disc_object.radius * 
-      throw_container.disc_object.radius * 
-      throw_container.disc_object.radius * 
-      throw_container.disc_object.radius * 
-      throw_container.disc_object.radius
-    );
-
-  // copied from Daero
-  const float ang_torque_Z =
-    -signum(throw_container.current_disc_state.disc_rotation_vel) *
-    0.5 * 
-    attenuated_density * 
-    (throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.disc_rotation_vel) * 
-    r5 *
-    0.5; // Cm = 0.05
-
-    // don't bother to slow the spin if we are up on edge (for now)
-  const float apply_rotation_Z_drag = sin(abs(angle_ground_plane_to_disc_normal)) < sin(M_PI/8.0) ? 1.0 : 0.0;
-
-  // not sure what to do here, we could just resist motion using the paddle-boat style of fluid resistance?
-  const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
-  const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
-
-  // copied from Daero
-  const double xy_rot_form_drag_limit = 0.13412;
-  float rot_drag_torque_x_Nm = 
-      -signum(throw_container.current_disc_state.disc_rolling_vel) *
-      2.0 * xy_rot_form_drag_limit *
-      Cd *
-      r5 *
-      attenuated_density *
-      (throw_container.current_disc_state.disc_rolling_vel*throw_container.current_disc_state.disc_rolling_vel);
-
-  float rot_drag_torque_y_Nm = 
-      -signum(throw_container.current_disc_state.disc_pitching_vel) *
-      2.0 * xy_rot_form_drag_limit *
-      Cd *
-      r5 *
-      attenuated_density *
-      (throw_container.current_disc_state.disc_pitching_vel*throw_container.current_disc_state.disc_pitching_vel);
-
-  // one more thing: let's apply a change to the linear acceleration on the disc from the spin and contact with the ground
-  // for now, we assume the moment arm is always just the disc radius
-  // and we only apply when the angle between the disc normal and the ground is greater than pi/16
-  // first, we get the linear vector to apply the force in from the cross product of the ground vector, and the disc normal
-  // then we get the directionality of the force from the spin direction
-
-  // so this cross product will point 'backward' if the disc is slanted to the right
-  // \
-  //  \      ^   ^
-  // __\__  /  X |
-  // and 'forward' if the disc is slanted to the left
-  //    /
-  //   /    ^    ^
-  // _/___   \ X |
-  Eigen::Vector3d disc_spin_propel_vector = throw_container.current_disc_state.disc_orient_z_vect.cross(landscape_normal_unit);
-
-  // just in case
-  disc_spin_propel_vector /= disc_spin_propel_vector.norm();
-
-  // In the 'backward' case, we expect it to be propelled in that direction if it is spinning CW wrt the disc normal (+Z)
-  // In the 'forward'  case, we expect it to be propelled in that direction if it is spinning CW wrt the disc normal (+Z)
-
-  // compute angular momentum:
-  //const float Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
-  //const float L = abs(throw_container.current_disc_state.disc_rotation_vel) * Iz;
-
-  // assuming 'no-slip' friction, the angular rate arc length will simply influence a force onto the centre of the disc
-  // so we compute the arc length over one (Dpropagate) dt
-  const float circumf = 2.0 * M_PI * throw_container.disc_object.radius;
-  const float arc_length_during_dt = -(throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.last_dt) * (circumf / (2.0*M_PI));
-
-  const float extra_linear_vel = arc_length_during_dt / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
-
-  // we need to take a derivative of this vel 
-  // vs the component of existing ground speed of the disc IN THIS VECTOR
-  // SO we need the projection of the ground speed onto disc_spin_propel_vector
-  // Note: --> at some linear and angular rate, we won't actually apply any torque here
-  //       --> We'll be covering exactly the same distance due to linear velocity as we would induce from the spin and arclength
-  // http://sites.science.oregonstate.edu/math/home/programs/undergrad/CalculusQuestStudyGuides/vcalc/dotprod/dotprod.html
-
-  Eigen::Vector3d ground_speed_projection_to_propel_vector = 
-    disc_spin_propel_vector.dot(throw_container.current_disc_state.disc_velocity) * disc_spin_propel_vector
-    /
-    MAX((disc_spin_propel_vector.norm()*disc_spin_propel_vector.norm()), CLOSE_TO_ZERO);
-
-  // get new vel from spin along propel vector
-  Eigen::Vector3d disc_spin_propel_vel = disc_spin_propel_vector * extra_linear_vel;
-  
-  // take a derivative wrt ground_speed_projection_to_propel_vector
-  // NOTE: There seems to be something wrong with this derivative, possibly a timing thing
-  // which is causing the disc to oscillate back and forth.
-  // For now, just hack it in using the disc_spin_propel_vel only (assumes disc is at rest for linear vel!! NOT GREAT!)
-  //Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector*0.0) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
-  // Let's just do a crappy magnitude subtraction for now to try to reign in this effect
-  // This will knee-cap the effect and always assumes that we are propelling in the existing ground speed direction of travel
-  // Agh, that sucks, we'd better fix this timing issue later....
-
-  float disc_spin_propel_vel_mag = disc_spin_propel_vel.norm();
-  disc_spin_propel_vel /= MAX(disc_spin_propel_vel_mag, CLOSE_TO_ZERO);
-  disc_spin_propel_vel_mag -= ground_speed_projection_to_propel_vector.norm();
-  disc_spin_propel_vel *= MAX(disc_spin_propel_vel_mag, 0.0);
-
-  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
-  
-
-  //float disc_spin_propel_accel = extra_linear_vel / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
-
-  // since we aren't doing a proper derivative at this point, limit the accel to some arbitray limit
-  //const float max_propel_accel = 50.0;
-  //float disc_spin_propel_accel_mag = disc_spin_propel_accel.norm();
-  //disc_spin_propel_accel /= disc_spin_propel_accel_mag;
-  //BOUND_VARIABLE(disc_spin_propel_accel_mag, -max_propel_accel, max_propel_accel);
-  //disc_spin_propel_accel *= disc_spin_propel_accel_mag;
-
-  Eigen::Vector3d disc_spin_propel_force_N = disc_spin_propel_accel * throw_container.disc_object.mass;
-
-  if(throw_container.current_disc_state.last_dt < CLOSE_TO_ZERO || sin(abs(angle_ground_plane_to_disc_normal)) < sin(M_PI/16.0))
-  {
-    disc_spin_propel_force_N *= 0;
-  }
-
-  // Note: We should also use this no-slip rolling term to add or subtract spin! it's a two-way street!
-
-  GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Green, FString::SanitizeFloat(ang_torque_Z * apply_rotation_Z_drag));
-  GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(abs(angle_ground_plane_to_disc_normal)));
-
-  if(height_above_ground_m <= height_of_fluidgrass)
-  {
-    // populate friction
-    throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag + disc_spin_propel_force_N;
-
-    throw_container.friction_input.ang_torque_XYZ *= 0;
-
-    throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
-    throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
-    throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
-  }
-  // no friction to apply
-  else
-  {
-    throw_container.friction_input.lin_force_XYZ  *= 0;
-    throw_container.friction_input.ang_torque_XYZ *= 0;
-  }
-  
-}
-
-
 void ADiscThrow::new_captured_throw(
   const int captured_disc_index, 
   const FVector captured_position, 
@@ -866,7 +628,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 8572;
+  const int changevar = 2664;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
@@ -1173,6 +935,246 @@ void ADiscThrow::on_collision(
   if(!DISABLE_COMPLEX_DISC_COLLISION && !skip_input)
   {
     throw_container.collision_input.consumed_input = 0;
+  }
+  
+}
+
+void ADiscThrow::near_ground_detected(
+  float height_off_ground,           //in cm
+  FVector landscape_normal,          
+  FString physics_material_name,     //
+  float density_of_fluidgrass,        //kg/m^3
+  float height_of_fluidgrass)       //m
+
+{
+  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, physics_material_name);
+  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));  
+  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
+  GEngine->AddOnScreenDebugMessage(213, 5.0f, FColor::Red, FString::SanitizeFloat(density_of_fluidgrass));
+
+  // We'll make a basic disc shape approximation for the friction model (a thin cylinder in a fluid)
+
+  // the coeff of friction (represented here as a fluid density) will decay from
+  // fluidgrass_at_ground_deadband to height_of_fluidgrass linearly to make things simple
+  // -> The presumption being that short or tall grass becomes more dense near the ground, 
+  //    and that the 'near ground' equivalent fluid density is approximately 'density_of_fluidgrass'
+
+  const float fluidgrass_at_ground_deadband = 0.1; //m
+  const float height_above_ground_m = height_off_ground * 0.01;
+
+  // get height above the ground minus deadband, over the fluidgrass height
+  const float deadband_fluidgrass_height = MAX(CLOSE_TO_ZERO, height_of_fluidgrass  - fluidgrass_at_ground_deadband);
+  const float deadband_disc_height       = MAX(0.0,           height_above_ground_m - fluidgrass_at_ground_deadband);
+
+  // factor to multiply fluid density by, assuming a linear relationship from zero down to density_of_fluidgrass at and below the deadband
+  const float height_above_ground_factor = 
+    MIN(1.0, MAX(0.0, (deadband_fluidgrass_height - deadband_disc_height)) / MAX(deadband_fluidgrass_height, CLOSE_TO_ZERO));
+
+  const float attenuated_density = height_above_ground_factor * density_of_fluidgrass;// kg/m^3
+
+  // simple friction model just to get our feet wet, fixed Cd
+  // remember this is GROUND speed (as opposed to airspeed in Daero), since our 'fluidgrass' is ground relative
+  const float lin_vel_squared = throw_container.current_disc_state.disc_velocity.norm() * throw_container.current_disc_state.disc_velocity.norm();
+  Eigen::Vector3d lin_vel_unit_vector = throw_container.current_disc_state.disc_velocity / MAX(throw_container.current_disc_state.disc_velocity.norm(), CLOSE_TO_ZERO);
+
+  // slight upgrade to computing the exposed surface area from the delta between the disc normal, and the GROUND speed velocity vector
+  
+  Eigen::Vector3d landscape_normal_unit = {landscape_normal[0], landscape_normal[1], landscape_normal[2]};
+  const float angle_ground_plane_to_disc_normal = angle_between_vectors(landscape_normal_unit, throw_container.current_disc_state.disc_orient_z_vect);
+
+  // copied from Daero
+  // For now, we'll disable edge height drag if the disc is up on edge
+  // (not compelling, but the disc flat on the ground is against the grain of the grass, and up on end is along the grain)
+  const float on_edge_angle_limit_deg = DEG_TO_RAD(22.5);
+
+  const float edge_height = 
+    sin(abs(angle_ground_plane_to_disc_normal)) > sin(on_edge_angle_limit_deg) ? 
+    0.0 :
+    MAX(0.0, throw_container.disc_object.thickness - throw_container.disc_object.rim_camber_height - throw_container.disc_object.dome_height);
+
+  // just take half the rect area for now for the edge
+  const float area_edge_blunt = edge_height * throw_container.disc_object.radius*2.0 * 0.5;
+  const float area_plate = throw_container.disc_object.radius*throw_container.disc_object.radius * M_PI;
+
+  // based on the angle between the ground speed and the disc normal, compute the portion of each surface which is exposed to the 'fluidgrass'
+  const float angle_ground_speed_to_disc_normal = angle_between_vectors(throw_container.current_disc_state.disc_velocity, throw_container.current_disc_state.disc_orient_z_vect);
+
+  // at 90 degrees, full edge is exposed
+  // at 0 degrees, full plate is exposed
+  const float area_exposed = abs(sin(angle_ground_speed_to_disc_normal) * area_edge_blunt) + abs(cos(angle_ground_speed_to_disc_normal) * area_plate);
+
+  // the friction is further reduced by computing how far the disc is sticking up out of the fluidgrass
+  // the height that the disc reaches up above the ground, 90 degrees angle_ground_plane_to_disc_normal implies we are up on the edge
+  const float disc_height_sticking_up_from_ground = abs(sin(angle_ground_plane_to_disc_normal)) * throw_container.disc_object.radius*2.0;
+
+  // now we compute an attenuation factor based on how much the disc is sticking up above the fluidgrass height
+  // for now, this will ignore the linear change to the density and just be an attenuation factor with the current 'attenuated_density'
+  const float disc_height_sticking_up_from_ground_factor = 
+    MIN(1.0, 
+      MAX(0.0, (height_of_fluidgrass - height_above_ground_m)) // height from bottom of disc to top of fluidgrass
+      /
+      MAX(CLOSE_TO_ZERO, disc_height_sticking_up_from_ground) // height from bottom of disc to top of scenery
+    );
+
+  //GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Orange, FString::SanitizeFloat(disc_height_sticking_up_from_ground_factor));
+  //GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(arc_length_during_dt));
+  //GEngine->AddOnScreenDebugMessage(216, 5.0f, FColor::Green,  FString::SanitizeFloat(area_exposed * disc_height_sticking_up_from_ground_factor));
+
+
+  // assume Cd_EDGE/Cd_PLATE is 1.1 for now
+  const float Cd = 1.1;
+  const float fluidgrass_drag_force_mag = 0.5 * attenuated_density * area_exposed * disc_height_sticking_up_from_ground_factor * Cd * lin_vel_squared;
+
+  // parasidic drag torque = Tq = 0.5 * rho * omega^2 * r^5 * Cm
+  // where omega is the angular vel in m/s
+  // and 'r' is the radius in m
+  // Just assume a fixed Cm here
+  const float r5 = 
+    (
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius * 
+      throw_container.disc_object.radius
+    );
+
+  // copied from Daero
+  const float ang_torque_Z =
+    -signum(throw_container.current_disc_state.disc_rotation_vel) *
+    0.5 * 
+    attenuated_density * 
+    (throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.disc_rotation_vel) * 
+    r5 *
+    0.5; // Cm = 0.05
+
+    // don't bother to slow the spin if we are up on edge (for now)
+  const float apply_rotation_Z_drag = sin(abs(angle_ground_plane_to_disc_normal)) < sin(on_edge_angle_limit_deg) ? 1.0 : 0.0;
+
+  // not sure what to do here, we could just resist motion using the paddle-boat style of fluid resistance?
+  const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+  const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+
+  // copied from Daero
+  const double xy_rot_form_drag_limit = 0.13412;
+  float rot_drag_torque_x_Nm = 
+      -signum(throw_container.current_disc_state.disc_rolling_vel) *
+      2.0 * xy_rot_form_drag_limit *
+      Cd *
+      r5 *
+      attenuated_density *
+      (throw_container.current_disc_state.disc_rolling_vel*throw_container.current_disc_state.disc_rolling_vel);
+
+  float rot_drag_torque_y_Nm = 
+      -signum(throw_container.current_disc_state.disc_pitching_vel) *
+      2.0 * xy_rot_form_drag_limit *
+      Cd *
+      r5 *
+      attenuated_density *
+      (throw_container.current_disc_state.disc_pitching_vel*throw_container.current_disc_state.disc_pitching_vel);
+
+  // one more thing: let's apply a change to the linear acceleration on the disc from the spin and contact with the ground
+  // for now, we assume the moment arm is always just the disc radius
+  // and we only apply when the angle between the disc normal and the ground is greater than pi/16
+  // first, we get the linear vector to apply the force in from the cross product of the ground vector, and the disc normal
+  // then we get the directionality of the force from the spin direction
+
+  // so this cross product will point 'backward' if the disc is slanted to the right
+  // \
+  //  \      ^   ^
+  // __\__  /  X |
+  // and 'forward' if the disc is slanted to the left
+  //    /
+  //   /    ^    ^
+  // _/___   \ X |
+  Eigen::Vector3d disc_spin_propel_vector = throw_container.current_disc_state.disc_orient_z_vect.cross(landscape_normal_unit);
+
+  // just in case
+  disc_spin_propel_vector /= disc_spin_propel_vector.norm();
+
+  // In the 'backward' case, we expect it to be propelled in that direction if it is spinning CW wrt the disc normal (+Z)
+  // In the 'forward'  case, we expect it to be propelled in that direction if it is spinning CW wrt the disc normal (+Z)
+
+  // compute angular momentum:
+  //const float Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+  //const float L = abs(throw_container.current_disc_state.disc_rotation_vel) * Iz;
+
+  // assuming 'no-slip' friction, the angular rate arc length will simply influence a force onto the centre of the disc
+  // so we compute the arc length over one (Dpropagate) dt
+  const float circumf = 2.0 * M_PI * throw_container.disc_object.radius;
+  const float arc_length_during_dt = -(throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.last_dt) * (circumf / (2.0*M_PI));
+
+  const float extra_linear_vel = arc_length_during_dt / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+
+  // we need to take a derivative of this vel 
+  // vs the component of existing ground speed of the disc IN THIS VECTOR
+  // SO we need the projection of the ground speed onto disc_spin_propel_vector
+  // Note: --> at some linear and angular rate, we won't actually apply any torque here
+  //       --> We'll be covering exactly the same distance due to linear velocity as we would induce from the spin and arclength
+  // http://sites.science.oregonstate.edu/math/home/programs/undergrad/CalculusQuestStudyGuides/vcalc/dotprod/dotprod.html
+
+  Eigen::Vector3d ground_speed_projection_to_propel_vector = 
+    disc_spin_propel_vector.dot(throw_container.current_disc_state.disc_velocity) * disc_spin_propel_vector
+    /
+    MAX((disc_spin_propel_vector.norm()*disc_spin_propel_vector.norm()), CLOSE_TO_ZERO);
+
+  // get new vel from spin along propel vector
+  Eigen::Vector3d disc_spin_propel_vel = disc_spin_propel_vector * extra_linear_vel;
+  
+  // take a derivative wrt ground_speed_projection_to_propel_vector
+  // NOTE: There seems to be something wrong with this derivative, possibly a timing thing
+  // which is causing the disc to oscillate back and forth.
+  // For now, just hack it in using the disc_spin_propel_vel only (assumes disc is at rest for linear vel!! NOT GREAT!)
+  //Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector*0.0) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  // Let's just do a crappy magnitude subtraction for now to try to reign in this effect
+  // This will knee-cap the effect and always assumes that we are propelling in the existing ground speed direction of travel
+  // Agh, that sucks, we'd better fix this timing issue later....
+
+  float disc_spin_propel_vel_mag = disc_spin_propel_vel.norm();
+  disc_spin_propel_vel /= MAX(disc_spin_propel_vel_mag, CLOSE_TO_ZERO);
+  disc_spin_propel_vel_mag -= ground_speed_projection_to_propel_vector.norm();
+  disc_spin_propel_vel *= MAX(disc_spin_propel_vel_mag, 0.0);
+
+  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  
+
+  //float disc_spin_propel_accel = extra_linear_vel / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+
+  // since we aren't doing a proper derivative at this point, limit the accel to some arbitray limit
+  //const float max_propel_accel = 50.0;
+  //float disc_spin_propel_accel_mag = disc_spin_propel_accel.norm();
+  //disc_spin_propel_accel /= disc_spin_propel_accel_mag;
+  //BOUND_VARIABLE(disc_spin_propel_accel_mag, -max_propel_accel, max_propel_accel);
+  //disc_spin_propel_accel *= disc_spin_propel_accel_mag;
+
+  Eigen::Vector3d disc_spin_propel_force_N = disc_spin_propel_accel * throw_container.disc_object.mass;
+
+  if(throw_container.current_disc_state.last_dt < CLOSE_TO_ZERO || sin(abs(angle_ground_plane_to_disc_normal)) < sin(M_PI/16.0))
+  {
+    disc_spin_propel_force_N *= 0;
+  }
+
+  // Note: We should also use this no-slip rolling term to add or subtract spin! it's a two-way street!
+
+  GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Green, FString::SanitizeFloat(ang_torque_Z * apply_rotation_Z_drag));
+  GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(abs(angle_ground_plane_to_disc_normal)));
+
+  // DISABLE fluid friction for now!
+  if(false && height_above_ground_m <= height_of_fluidgrass)
+  {
+    // populate friction
+    throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag + disc_spin_propel_force_N;
+
+    throw_container.friction_input.ang_torque_XYZ *= 0;
+
+    throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
+    throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
+    throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
+  }
+  // no friction to apply
+  else
+  {
+    throw_container.friction_input.lin_force_XYZ  *= 0;
+    throw_container.friction_input.ang_torque_XYZ *= 0;
   }
   
 }
