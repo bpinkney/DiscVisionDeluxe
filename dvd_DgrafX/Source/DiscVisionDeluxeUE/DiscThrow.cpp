@@ -628,7 +628,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 2664;
+  const int changevar = 712;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
@@ -792,6 +792,8 @@ void ADiscThrow::on_collision(
   // reset torque sum
   throw_container.collision_input.ang_torque_from_impulses_Nm *= 0;
   throw_container.collision_input.lin_force_from_impulses_N *= 0;
+
+  GEngine->AddOnScreenDebugMessage(230, 5.0f, FColor::Yellow, FString("total_hit_events: ") + FString::FromInt(total_hit_events));
   for(i = 0; i < total_hit_events; i++)
   {
     Eigen::Vector3d world_frame_moment_arm;
@@ -829,38 +831,20 @@ void ADiscThrow::on_collision(
   // integrate previous ang vel state
   throw_container.collision_input.ang_vel_from_impulses_Nm = last_local_ang_vel_radps + ang_accel_from_impulses_radps2 * dt; //throw_container.collision_input.ang_vel_radps + ang_accel_from_impulses_radps2 * dt;
 
-  // overwrite previous ang vel state (this wil behave as if the propagation had occurred on the k-1 timestep, so we see the gyro response during time 'k')
-  // only doing this for roll/pitch for now
-  //throw_container.collision_input.ang_vel_radps[0] = ang_vel_from_impulses_Nm[0];
-  //throw_container.collision_input.ang_vel_radps[1] = ang_vel_from_impulses_Nm[1];
-
-  // Check for ang vel reversal, this is annoying, but necessary, probably due to the atan stuff at the top of this file
-  /*int reverse_count = 0;
-  if(signum(throw_container.current_disc_state.disc_pitching_vel) != signum(throw_container.collision_input.ang_vel_radps[0]))
-  {
-    //reverse_count++;
-  }
-  if(signum(throw_container.current_disc_state.disc_rolling_vel) != signum(throw_container.collision_input.ang_vel_radps[1]))
-  {
-    //reverse_count++;
-  }
-  if(signum(throw_container.current_disc_state.disc_rotation_vel) != signum(throw_container.collision_input.ang_vel_radps[2]))
-  {
-    reverse_count++;
-  }
-
-  if(reverse_count > 0) // just base this on the spin for now, since the roll/pitch are derived from the impulse?? Nope.
-  {
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,FString("FORCED TO RECTIFY ANG VELS!"));
-    throw_container.collision_input.ang_vel_radps *= -1;
-  }*/
-
   // compute linear force from fixed mass of 170g and linear vel change for comparison
   Eigen::Vector3d lin_force_from_vel_delta;
+
+/*  Eigen::Vector3d lin_vel_deltac;
+  // HACK: Recompute delta vel from normal vel until we start getting things back in this handler (nov 2022)!
+  lin_vel_deltac[0] = lin_vel[0] - throw_container.current_disc_state.disc_velocity[0]*100.0;
+  lin_vel_deltac[1] = lin_vel[1] - throw_container.current_disc_state.disc_velocity[1]*100.0;
+  lin_vel_deltac[2] = lin_vel[2] - throw_container.current_disc_state.disc_velocity[2]*100.0;*/
+
   lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * 0.170; //cm to m, world frame
   lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
 
+  throw_container.collision_input.lin_force_from_delta_vel_N = lin_force_from_vel_delta;
 
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(EigenVect3dToString(throw_container.collision_input.lin_force_from_impulses_N).c_str()));
   //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
@@ -947,10 +931,10 @@ void ADiscThrow::near_ground_detected(
   float height_of_fluidgrass)       //m
 
 {
-  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, physics_material_name);
-  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString::SanitizeFloat(height_off_ground));  
-  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString::SanitizeFloat(height_of_fluidgrass));
-  GEngine->AddOnScreenDebugMessage(213, 5.0f, FColor::Red, FString::SanitizeFloat(density_of_fluidgrass));
+  GEngine->AddOnScreenDebugMessage(213, 5.0f, FColor::Blue, FString("density_of_fluidgrass: ") + FString::SanitizeFloat(density_of_fluidgrass));
+  GEngine->AddOnScreenDebugMessage(212, 5.0f, FColor::Blue, FString("height_of_fluidgrass (cm): ") + FString::SanitizeFloat(height_of_fluidgrass*100.0));
+  GEngine->AddOnScreenDebugMessage(211, 5.0f, FColor::Blue, FString("height_off_ground (cm): ") + FString::SanitizeFloat(height_off_ground));
+  GEngine->AddOnScreenDebugMessage(210, 5.0f, FColor::Blue, FString("physics_material_name): ") + physics_material_name);
 
   // We'll make a basic disc shape approximation for the friction model (a thin cylinder in a fluid)
 
@@ -1016,7 +1000,7 @@ void ADiscThrow::near_ground_detected(
       MAX(CLOSE_TO_ZERO, disc_height_sticking_up_from_ground) // height from bottom of disc to top of scenery
     );
 
-  //GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Orange, FString::SanitizeFloat(disc_height_sticking_up_from_ground_factor));
+  GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Orange, FString("disc_height_sticking_up_from_ground_factor: ") + FString::SanitizeFloat(disc_height_sticking_up_from_ground_factor));
   //GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(arc_length_during_dt));
   //GEngine->AddOnScreenDebugMessage(216, 5.0f, FColor::Green,  FString::SanitizeFloat(area_exposed * disc_height_sticking_up_from_ground_factor));
 
@@ -1123,18 +1107,19 @@ void ADiscThrow::near_ground_detected(
   // take a derivative wrt ground_speed_projection_to_propel_vector
   // NOTE: There seems to be something wrong with this derivative, possibly a timing thing
   // which is causing the disc to oscillate back and forth.
-  // For now, just hack it in using the disc_spin_propel_vel only (assumes disc is at rest for linear vel!! NOT GREAT!)
-  //Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector*0.0) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  ////// For now, just hack it in using the disc_spin_propel_vel only (assumes disc is at rest for linear vel!! NOT GREAT!)
+  // Ignore the last line, we go back to the proper method until otherwise required
+  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
   // Let's just do a crappy magnitude subtraction for now to try to reign in this effect
   // This will knee-cap the effect and always assumes that we are propelling in the existing ground speed direction of travel
   // Agh, that sucks, we'd better fix this timing issue later....
 
-  float disc_spin_propel_vel_mag = disc_spin_propel_vel.norm();
+/*  float disc_spin_propel_vel_mag = disc_spin_propel_vel.norm();
   disc_spin_propel_vel /= MAX(disc_spin_propel_vel_mag, CLOSE_TO_ZERO);
   disc_spin_propel_vel_mag -= ground_speed_projection_to_propel_vector.norm();
   disc_spin_propel_vel *= MAX(disc_spin_propel_vel_mag, 0.0);
 
-  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);*/
   
 
   //float disc_spin_propel_accel = extra_linear_vel / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
@@ -1155,20 +1140,35 @@ void ADiscThrow::near_ground_detected(
 
   // Note: We should also use this no-slip rolling term to add or subtract spin! it's a two-way street!
 
-  GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Green, FString::SanitizeFloat(ang_torque_Z * apply_rotation_Z_drag));
-  GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(abs(angle_ground_plane_to_disc_normal)));
+  //GEngine->AddOnScreenDebugMessage(214, 5.0f, FColor::Green, FString::SanitizeFloat(ang_torque_Z * apply_rotation_Z_drag));
+  //GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(abs(angle_ground_plane_to_disc_normal)));
 
-  // DISABLE fluid friction for now!
-  if(false && height_above_ground_m <= height_of_fluidgrass)
+  if(height_above_ground_m <= height_of_fluidgrass)
   {
     // populate friction
-    throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag + disc_spin_propel_force_N;
+    throw_container.friction_input.lin_force_XYZ = -lin_vel_unit_vector * fluidgrass_drag_force_mag;// + disc_spin_propel_force_N;
+
+/*    GEngine->AddOnScreenDebugMessage(227, 5.0f, FColor::Red, FString("Z lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[2]));
+    GEngine->AddOnScreenDebugMessage(226, 5.0f, FColor::Red, FString("Y lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[1]));
+    GEngine->AddOnScreenDebugMessage(225, 5.0f, FColor::Red, FString("X lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[0]));*/
+
+    GEngine->AddOnScreenDebugMessage(227, 5.0f, FColor::Red, FString("Z lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[2]));
+    GEngine->AddOnScreenDebugMessage(226, 5.0f, FColor::Red, FString("Y lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[1]));
+    GEngine->AddOnScreenDebugMessage(225, 5.0f, FColor::Red, FString("X lin collision force (N): ") + FString::SanitizeFloat(throw_container.current_disc_state.forces_state.collision_force[0]));
+
+    GEngine->AddOnScreenDebugMessage(223, 5.0f, FColor::Blue, FString("Z lin vel (m/s): ") + FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[2]));
+    GEngine->AddOnScreenDebugMessage(222, 5.0f, FColor::Blue, FString("Y lin vel (m/s): ") + FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[1]));
+    GEngine->AddOnScreenDebugMessage(221, 5.0f, FColor::Blue, FString("X lin vel (m/s): ") + FString::SanitizeFloat(throw_container.current_disc_state.disc_velocity[0]));
+
+    GEngine->AddOnScreenDebugMessage(219, 5.0f, FColor::Yellow, FString("Z lin force from fluid friction (N): ") + FString::SanitizeFloat(throw_container.friction_input.lin_force_XYZ[2]));
+    GEngine->AddOnScreenDebugMessage(218, 5.0f, FColor::Yellow, FString("Y lin force from fluid friction (N): ") + FString::SanitizeFloat(throw_container.friction_input.lin_force_XYZ[1]));
+    GEngine->AddOnScreenDebugMessage(217, 5.0f, FColor::Yellow, FString("X lin force from fluid friction (N): ") + FString::SanitizeFloat(throw_container.friction_input.lin_force_XYZ[0]));
 
     throw_container.friction_input.ang_torque_XYZ *= 0;
 
-    throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
-    throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
-    throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
+    //throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
+    //throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
+    //throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
   }
   // no friction to apply
   else

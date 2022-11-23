@@ -53,10 +53,10 @@ namespace DfisX
 
     const float collision_apply_frames = DfisX_frames_to_continue_collision;
 
-    // DISABLE COLLISIONS FOR NOW!
+    // DISABLE collisions again for now
     if(false && throw_container->collision_input.consumed_input < collision_apply_frames && throw_container->collision_input.delta_time_s > CLOSE_TO_ZERO)
     {
-      const bool overwrite_states_ignore_forces_torques = true;
+      const bool overwrite_states_ignore_forces_torques = false;
       if(overwrite_states_ignore_forces_torques)
       {
 
@@ -317,14 +317,19 @@ namespace DfisX
         //throw_container->current_disc_state.disc_orient_z_vect[1]  = throw_container->collision_input.disc_rotation[1];
         //throw_container->current_disc_state.disc_orient_z_vect[2]  = throw_container->collision_input.disc_rotation[2];
 
+/*        throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_impulses_N[0];
+        throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_impulses_N[1];
+        throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_impulses_N[2];*/
+
         // Better idea since it prevents propagation from JUST collisions, however, harder to sync timing wise
         throw_container->current_disc_state.forces_state.collision_force[0]      = throw_container->collision_input.lin_force_from_delta_vel_N[0];
         throw_container->current_disc_state.forces_state.collision_force[1]      = throw_container->collision_input.lin_force_from_delta_vel_N[1];
         throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];
 
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
+        // DISABLE any collision torque for now!
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];
       }
 
       throw_container->collision_input.consumed_input++;
