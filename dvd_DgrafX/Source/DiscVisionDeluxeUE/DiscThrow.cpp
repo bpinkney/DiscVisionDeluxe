@@ -624,7 +624,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 712;
+  const int changevar = 5044;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
@@ -782,7 +782,9 @@ void ADiscThrow::on_collision(
 
   // due to horrible mid-hit propagation and sub-stepping in unreal, we can't trust the hit_location magnitude
   // we are receiving. Attenuate the signal so the disc doesn't freak out (HACK)
-  const double moment_arm_scale = 0.1;
+  //const double moment_arm_scale = 1.0;
+
+  const double aribitary_collision_force_attenuation_factor = 0.9;
 
   int k = 0;
   // reset torque sum
@@ -790,20 +792,74 @@ void ADiscThrow::on_collision(
   throw_container.collision_input.lin_force_from_impulses_N *= 0;
 
   GEngine->AddOnScreenDebugMessage(230, 5.0f, FColor::Yellow, FString("total_hit_events: ") + FString::FromInt(total_hit_events));
+
   for(i = 0; i < total_hit_events; i++)
   {
+    GEngine->AddOnScreenDebugMessage(231+i*2, 5.0f, FColor::Yellow, 
+    FString("hit_location (") + FString::FromInt(i) + FString("): [") +
+      FString::SanitizeFloat(hit_location[0][0]) + FString(", ") +
+      FString::SanitizeFloat(hit_location[0][1]) + FString(", ") +
+      FString::SanitizeFloat(hit_location[0][2]) + FString("]"));
+
     Eigen::Vector3d world_frame_moment_arm;
     Eigen::Vector3d world_frame_normal_force_N;
     for(k = 0; k < 3; k++)
     {
-      world_frame_moment_arm[k] = hit_location[i][k]*0.01 * moment_arm_scale; // cm to m
+      world_frame_moment_arm[k] = hit_location[i][k]*0.01;// * moment_arm_scale; // cm to m
       // Unreal forces are in "kg cm / s^2" (which is 0.01 N)
       // Presuming then that their impulses are in 'kg cm / s' -> 0.01 Ns ? (this seems to be correct)
-      world_frame_normal_force_N[k] = normal_impulse[i][k]/dt*0.01; 
+      world_frame_normal_force_N[k] = normal_impulse[i][k]/dt*0.01 * aribitary_collision_force_attenuation_factor; 
     }
+
+    // compute impact force from delta position and kinetic energy
+
    
-    // Compute torque
-    Eigen::Vector3d world_frame_torque_Nm = world_frame_moment_arm.cross(world_frame_normal_force_N);
+    // Now that the collison model is a sphere (Nov 2022), we need to compute a moment arm on the disc itself
+    // For now, let's just take the hit_location (relative to the disc/sphere centre) and compute a projection
+    // onto the plane defined by the disc normal
+    // This is not strictly correct, since the moment arm magnitude is now a function of the disc orientation
+    // HOWEVER, we can trivially expand this vector to the full disc radius if desired (it is!), and it may help us to bound
+    // the torque in some strange cases
+
+    // Projection of vector 'a' onto a plane defined by the plane normal vector 'n':
+    // proj_a = a - dot(a, n) * n / ||n||^2
+    Eigen::Vector3d disc_normal_unit_vec = throw_container.current_disc_state.disc_orient_z_vect;
+    Eigen::Vector3d proj_hit_location = world_frame_moment_arm - world_frame_moment_arm.dot(disc_normal_unit_vec) * disc_normal_unit_vec;
+
+    // if we expand the moment arm back to the full radius,
+    // we'l need to attenuate the torque applied if we are below (say) half the radius after moment arm projection
+    // (HACK, but we'll need something like this)
+    
+    // Let's expand this back out to the disc radius!
+    // convert to unit vector
+    //proj_hit_location = proj_hit_location / proj_hit_location.norm();
+    // multiply by disc radius
+    //proj_hit_location = proj_hit_location * throw_container.disc_object.radius;
+
+    GEngine->AddOnScreenDebugMessage(231+i*2+1, 5.0f, FColor::Yellow, 
+    FString("hit_location_proj (") + FString::FromInt(i) + FString("): [") +
+      FString::SanitizeFloat(proj_hit_location[0]/0.01) + FString(", ") +
+      FString::SanitizeFloat(proj_hit_location[1]/0.01) + FString(", ") +
+      FString::SanitizeFloat(proj_hit_location[2]/0.01) + FString("] friction = ") + FString::SanitizeFloat(hit_friction[i]));
+
+    // Compute torque (deprecated once we started using a sphere, now use the proj_hit_location extrapolated back out to the disc radius)
+    //Eigen::Vector3d world_frame_torque_Nm = world_frame_moment_arm.cross(world_frame_normal_force_N);
+    Eigen::Vector3d world_frame_torque_Nm = proj_hit_location.cross(world_frame_normal_force_N);
+
+    GEngine->AddOnScreenDebugMessage(240, 5.0f, FColor::Orange, 
+    FString("world_frame_torque_Nm from impulses (") + FString::FromInt(i) + FString("): [") +
+      FString::SanitizeFloat(world_frame_torque_Nm[0]) + FString(", ") +
+      FString::SanitizeFloat(world_frame_torque_Nm[1]) + FString(", ") +
+      FString::SanitizeFloat(world_frame_torque_Nm[2]) + FString("]"));
+
+    if(world_frame_torque_Nm.norm() > 5)
+    {
+      GEngine->AddOnScreenDebugMessage(245, 5.0f, FColor::Red, 
+        FString("world_frame_torque_Nm from impulses (") + FString::FromInt(i) + FString("): [") +
+        FString::SanitizeFloat(world_frame_torque_Nm[0]) + FString(", ") +
+        FString::SanitizeFloat(world_frame_torque_Nm[1]) + FString(", ") +
+        FString::SanitizeFloat(world_frame_torque_Nm[2]) + FString("] dt_ms = ") + FString::SanitizeFloat(dt*1000.0));
+    }
 
     // rotate to disc frame
     Eigen::Vector3d disc_frame_torque_Nm = Rwd * world_frame_torque_Nm;
@@ -836,9 +892,9 @@ void ADiscThrow::on_collision(
   lin_vel_deltac[1] = lin_vel[1] - throw_container.current_disc_state.disc_velocity[1]*100.0;
   lin_vel_deltac[2] = lin_vel[2] - throw_container.current_disc_state.disc_velocity[2]*100.0;*/
 
-  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * 0.170; //cm to m, world frame
-  lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * 0.170; //cm to m, world frame
-  lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * 0.170; //cm to m, world frame
+  lin_force_from_vel_delta[0] = lin_vel_delta[0]*0.01 / dt * throw_container.disc_object.mass; //cm to m, world frame
+  lin_force_from_vel_delta[1] = lin_vel_delta[1]*0.01 / dt * throw_container.disc_object.mass; //cm to m, world frame
+  lin_force_from_vel_delta[2] = lin_vel_delta[2]*0.01 / dt * throw_container.disc_object.mass; //cm to m, world frame
 
   throw_container.collision_input.lin_force_from_delta_vel_N = lin_force_from_vel_delta;
 
@@ -871,8 +927,9 @@ void ADiscThrow::on_collision(
   // To do this, look at the linear distance travelled, and the kinetci energy and momentum, 
   // and use that to determine the max force we allow
   
-  Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
+  //Eigen::Vector3d delta_distance = throw_container.collision_input.lin_pos_m - throw_container.current_disc_state.disc_location;
   //float distance_travelled = delta_distance.norm();
+  Eigen::Vector3d delta_distance = throw_container.collision_input.lin_vel_mps * dt;
 
   // 3 axis kinetic energy
   //cwiseProduct for multiplication and cwiseQuotient to divide vectors element-wise
@@ -886,20 +943,20 @@ void ADiscThrow::on_collision(
     kinetic_energy[1] / MAX(delta_distance[1], CLOSE_TO_ZERO),
     kinetic_energy[2] / MAX(delta_distance[2], CLOSE_TO_ZERO)
   };
-  // add gravity
-  Eigen::Vector3d grav_vector_N = {0, 0, GRAV * throw_container.disc_object.mass};
-  kinetic_momentum_N += grav_vector_N;
+  // add gravity to kinetic force
+  //Eigen::Vector3d grav_vector_N = {0, 0, GRAV * throw_container.disc_object.mass};
+  //kinetic_momentum_N += grav_vector_N;
 
   
   bool skip_input = false;
   // check that we exceed the max force expected
   if(throw_container.collision_input.lin_force_from_impulses_N.norm() > kinetic_momentum_N.norm())
   {
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
-    //skip_input = true;
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(kinetic_momentum_N.norm())));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
-    //GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
+    skip_input = true;
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(kinetic_momentum_N.norm())));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
   }
   
 
@@ -968,7 +1025,7 @@ void ADiscThrow::near_ground_detected(
   const float on_edge_angle_limit_deg = DEG_TO_RAD(22.5);
 
   const float edge_height = 
-    sin(abs(angle_ground_plane_to_disc_normal)) > sin(on_edge_angle_limit_deg) ? 
+    sin(abs(angle_ground_plane_to_disc_normal)) > sin(abs(on_edge_angle_limit_deg)) ? 
     0.0 :
     MAX(0.0, throw_container.disc_object.thickness - throw_container.disc_object.rim_camber_height - throw_container.disc_object.dome_height);
 
@@ -997,7 +1054,7 @@ void ADiscThrow::near_ground_detected(
     );
 
   GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Orange, FString("disc_height_sticking_up_from_ground_factor: ") + FString::SanitizeFloat(disc_height_sticking_up_from_ground_factor));
-  //GEngine->AddOnScreenDebugMessage(215, 5.0f, FColor::Yellow, FString::SanitizeFloat(arc_length_during_dt));
+  GEngine->AddOnScreenDebugMessage(216, 5.0f, FColor::Orange, FString("angle_ground_plane_to_disc_normal (deg): ") + FString::SanitizeFloat(RAD_TO_DEG(angle_ground_plane_to_disc_normal)));
   //GEngine->AddOnScreenDebugMessage(216, 5.0f, FColor::Green,  FString::SanitizeFloat(area_exposed * disc_height_sticking_up_from_ground_factor));
 
 
@@ -1018,6 +1075,13 @@ void ADiscThrow::near_ground_detected(
       throw_container.disc_object.radius
     );
 
+  // add a static friction penalty, starting around 100 rpm (10 rad/s) by increasing the moment of friction 
+  float Cm = 0.5;
+  if(abs(throw_container.current_disc_state.disc_rotation_vel) < 10)
+  {
+    Cm *= 10 / MAX(abs(throw_container.current_disc_state.disc_rotation_vel), 1.0);
+  }
+
   // copied from Daero
   const float ang_torque_Z =
     -signum(throw_container.current_disc_state.disc_rotation_vel) *
@@ -1025,14 +1089,22 @@ void ADiscThrow::near_ground_detected(
     attenuated_density * 
     (throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.disc_rotation_vel) * 
     r5 *
-    0.5; // Cm = 0.05
+    Cm; // Cm = 0.05?
 
-    // don't bother to slow the spin if we are up on edge (for now)
-  const float apply_rotation_Z_drag = sin(abs(angle_ground_plane_to_disc_normal)) < sin(on_edge_angle_limit_deg) ? 1.0 : 0.0;
+  // don't bother to slow the spin if we are up on edge (for now)
+  // furthermore, to avoid the need for friction handling in on_collision, apply a multiplier if he disc is 'flat' on the ground (or thereabouts)
+  //const float apply_rotation_Z_drag = sin(abs(angle_ground_plane_to_disc_normal)) < sin(abs(on_edge_angle_limit_deg)) ? 1.0 : 0.0;
+  float rotation_Z_drag_mult = pow(abs(cos(angle_ground_plane_to_disc_normal)), 20);
 
-  // not sure what to do here, we could just resist motion using the paddle-boat style of fluid resistance?
-  const double Ix = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
-  const double Iy = 1.0/4.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+  // consider the 'one timestep to stop' amounts here for settling spin (MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  const float min_dt = MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  const double Iz = 1.0/2.0 * throw_container.disc_object.mass * (throw_container.disc_object.radius*throw_container.disc_object.radius);
+  const float ang_vel_delta_from_torque = (ang_torque_Z / Iz) * min_dt;
+  if(abs(ang_vel_delta_from_torque) > abs(throw_container.current_disc_state.disc_rotation_vel))
+  {
+    throw_container.current_disc_state.disc_rotation_vel = 0.0;
+    rotation_Z_drag_mult = 0.0;
+  }
 
   // copied from Daero
   const double xy_rot_form_drag_limit = 0.13412;
@@ -1129,6 +1201,12 @@ void ADiscThrow::near_ground_detected(
 
   Eigen::Vector3d disc_spin_propel_force_N = disc_spin_propel_accel * throw_container.disc_object.mass;
 
+  GEngine->AddOnScreenDebugMessage(250, 5.0f, FColor::Red, 
+    FString("disc_spin_propel_force_N: [") +
+      FString::SanitizeFloat(disc_spin_propel_force_N[0]) + FString(", ") +
+      FString::SanitizeFloat(disc_spin_propel_force_N[1]) + FString(", ") +
+      FString::SanitizeFloat(disc_spin_propel_force_N[2]) + FString("]"));
+
   if(throw_container.current_disc_state.last_dt < CLOSE_TO_ZERO || sin(abs(angle_ground_plane_to_disc_normal)) < sin(M_PI/16.0))
   {
     disc_spin_propel_force_N *= 0;
@@ -1162,9 +1240,9 @@ void ADiscThrow::near_ground_detected(
 
     throw_container.friction_input.ang_torque_XYZ *= 0;
 
-    //throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
-    //throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
-    //throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * apply_rotation_Z_drag;
+    throw_container.friction_input.ang_torque_XYZ[0] = rot_drag_torque_x_Nm;
+    throw_container.friction_input.ang_torque_XYZ[1] = rot_drag_torque_y_Nm;
+    throw_container.friction_input.ang_torque_XYZ[2] = ang_torque_Z * rotation_Z_drag_mult;
   }
   // no friction to apply
   else
