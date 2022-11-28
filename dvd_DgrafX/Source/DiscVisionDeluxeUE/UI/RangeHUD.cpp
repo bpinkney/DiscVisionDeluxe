@@ -87,11 +87,13 @@ void ARangeHUD::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	if (IsValid(this->latest_disc_throw))
 	{
-
+		if (RangeUserWidget)
+	{
 		RangeUserWidget->PopulateHUD(this->latest_disc_throw);
 		MapWidget->draw_line_from_disc_throw_ptr(this->latest_disc_throw);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("New Throw Detect!"));
 	}
+}
 }
 
 void ARangeHUD::PopulateHUD()
@@ -141,6 +143,7 @@ void ARangeHUD::main_menu_next_btn()
 {
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud next btn"));
+
 	ptr_disc_character->main_menu_next_btn();
 }
 
@@ -148,6 +151,7 @@ void ARangeHUD::main_menu_prev_btn()
 {
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud prev btn"));
+	MapWidget->SetVisibility(ESlateVisibility::Visible);
 	ptr_disc_character->main_menu_prev_btn();
 }
 
@@ -156,6 +160,7 @@ void ARangeHUD::main_menu_choose_location_btn()
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString(" hud engage btn"));
 	ptr_disc_character->pause_was_finished();
 	ptr_disc_character->main_menu_choose_location_btn();
+	
 		if (MainMenuWidget)
 	{
 			MainMenuWidget->RemoveFromViewport();
@@ -168,7 +173,10 @@ void ARangeHUD::main_menu_bag_maker_btn()
 	ptr_disc_character->main_menu_bag_maker_btn();
 		if (MainMenuWidget)
 	{
-			MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			//MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			MainMenuWidget->RemoveFromViewport();
+			RangeUserWidget->RemoveFromViewport();
+			MapWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 	BagMakerWidget->SetVisibility(ESlateVisibility::Visible);
 }
@@ -178,7 +186,10 @@ void ARangeHUD::bag_maker_exit_btn()
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString("exit bag maker"));
 	ptr_disc_character->bag_maker_exit_btn();
 	BagMakerWidget->SetVisibility(ESlateVisibility::Hidden);
-	MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	//MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	MainMenuWidget->AddToViewport();
+	RangeUserWidget->AddToViewport();
+	MapWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 	
