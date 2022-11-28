@@ -616,10 +616,6 @@ void ADiscThrow::on_collision(
   const TArray<FVector> normal_impulse, //looks si, magnitude and direction
   const FVector lin_vel,                //world frame
   const FVector lin_vel_delta,          //world frame
-  const FVector ang_vel,                //disc frame
-  const FVector world_ang_vel,
-  const FVector world_ang_vel_delta,
-  const FVector ang_vel_delta,          //disc frame
   const int total_hit_events,
   const float delta_time,               //si
   const TArray<float> hit_friction,
@@ -707,13 +703,13 @@ void ADiscThrow::on_collision(
   {
     throw_container.collision_input.lin_pos_m[i]                  = disc_position[i]*0.01; //cm to m, world frame
     throw_container.collision_input.lin_vel_mps[i]                = lin_vel[i]*0.01;       //cm to m, world frame
-    world_ang_vel_radps[i]                                        = world_ang_vel[i];      // about the XYZ unreal world frame (we think)
-    world_ang_vel_delta_radps[i]                                  = world_ang_vel_delta[i];      // about the XYZ unreal world frame (we think)
+    //world_ang_vel_radps[i]                                        = world_ang_vel[i];      // about the XYZ unreal world frame (we think)
+    //world_ang_vel_delta_radps[i]                                  = world_ang_vel_delta[i];      // about the XYZ unreal world frame (we think)
     throw_container.collision_input.disc_rotation[i]              = disc_rotation[i];
 
     // Try to re-derive the linear force from the vel delta for comparison and validation
     world_lin_acc[i] = lin_vel_delta[i]*0.01 / dt;
-    world_ang_acc[i] = world_ang_vel_delta[i] / dt;
+    //world_ang_acc[i] = world_ang_vel_delta[i] / dt;
   }
 
   throw_container.collision_input.lin_force_from_delta_vel_N = world_lin_acc * throw_container.disc_object.mass;
@@ -756,8 +752,8 @@ void ADiscThrow::on_collision(
   FVector wf_ang_vel = FVector(world_ang_vel_radps_rpy[0], world_ang_vel_radps_rpy[1], world_ang_vel_radps_rpy[2]);
   log_string(wf_ang_vel.ToString());
   log_string(FString("Collision UDF ang vel"));
-  FVector udf_ang_vel = FVector(ang_vel[0], ang_vel[1], ang_vel[2]);
-  log_string(udf_ang_vel.ToString());
+  //FVector udf_ang_vel = FVector(ang_vel[0], ang_vel[1], ang_vel[2]);
+  //log_string(udf_ang_vel.ToString());
 
 /*  GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green,FString(EigenVect3dToString(throw_container.collision_input.ang_vel_radps).c_str()));
   GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,FString(EigenVect3dToString(world_ang_vel_radps_rpy).c_str()));
