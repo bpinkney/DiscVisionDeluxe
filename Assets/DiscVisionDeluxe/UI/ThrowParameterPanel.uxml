@@ -1,0 +1,181 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+
+    <Style src="ThrowParameterPanel.uss" />
+
+    <ui:VisualElement name="panel-root" class="panel-root">
+
+        <!-- Title bar -->
+        <ui:Label text="THROW PARAMETERS" class="panel-title" />
+
+        <ui:ScrollView name="main-scroll" class="main-scroll">
+
+            <!-- ── Disc Selection ────────────────────────────────── -->
+            <ui:Label text="DISC" class="section-header" />
+
+            <!-- Compact inline-label filters (same row height as sliders) -->
+            <ui:DropdownField name="type-filter"         label="Type" class="compact-filter" />
+            <ui:DropdownField name="stability-filter"    label="Stab" class="compact-filter" />
+            <ui:DropdownField name="manufacturer-filter" label="Mfr"  class="compact-filter" />
+
+            <!-- Search field -->
+            <ui:TextField name="disc-search" label="Search" class="compact-filter disc-search" />
+
+            <!-- Filtered disc list -->
+            <ui:DropdownField name="disc-dropdown" class="disc-dropdown" />
+
+            <!-- Recents -->
+            <ui:VisualElement class="recents-section">
+                <ui:Label text="RECENT" class="recents-label" />
+                <ui:VisualElement name="recents-container" class="recents-container" />
+            </ui:VisualElement>
+
+            <!-- ── Throw Parameters ──────────────────────────────── -->
+            <ui:Label text="THROW" class="section-header" />
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Speed (m/s)" class="slider-label" />
+                <ui:Slider name="speed-slider" low-value="5" high-value="40" value="22" class="slider" />
+                <ui:Label name="speed-val" text="22.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Heading (deg)" class="slider-label" />
+                <ui:Slider name="heading-slider" low-value="-180" high-value="180" value="0" class="slider" />
+                <ui:Label name="heading-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Launch Angle (deg)" class="slider-label" />
+                <ui:Slider name="launch-angle-slider" low-value="-30" high-value="45" value="3" class="slider" />
+                <ui:Label name="launch-angle-val" text="3.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Hyzer (deg)" class="slider-label" />
+                <ui:Slider name="hyzer-slider" low-value="-45" high-value="45" value="0" class="slider" />
+                <ui:Label name="hyzer-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Pitch (deg)" class="slider-label" />
+                <ui:Slider name="pitch-slider" low-value="-30" high-value="30" value="0" class="slider" />
+                <ui:Label name="pitch-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Spin (RPM)" class="slider-label" />
+                <ui:Slider name="spin-slider" low-value="-1200" high-value="1200" value="-700" class="slider" />
+                <ui:Label name="spin-val" text="-700" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Wobble" class="slider-label" />
+                <ui:Slider name="wobble-slider" low-value="0" high-value="1" value="0" class="slider" />
+                <ui:Label name="wobble-val" text="0.00" class="val-label" />
+            </ui:VisualElement>
+
+            <!-- ── Environment ───────────────────────────────────── -->
+            <ui:Label text="ENVIRONMENT" class="section-header" />
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Wind X (m/s)" class="slider-label" />
+                <ui:Slider name="wind-x-slider" low-value="-20" high-value="20" value="0" class="slider" />
+                <ui:Label name="wind-x-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Wind Y (m/s)" class="slider-label" />
+                <ui:Slider name="wind-y-slider" low-value="-20" high-value="20" value="0" class="slider" />
+                <ui:Label name="wind-y-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Wind Z (m/s)" class="slider-label" />
+                <ui:Slider name="wind-z-slider" low-value="-20" high-value="20" value="0" class="slider" />
+                <ui:Label name="wind-z-val" text="0.0" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Air Density" class="slider-label" />
+                <ui:Slider name="air-density-slider" low-value="0.8" high-value="1.4" value="1.225" class="slider" />
+                <ui:Label name="air-density-val" text="1.225" class="val-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Gust Factor" class="slider-label" />
+                <ui:SliderInt name="gust-slider" low-value="0" high-value="10" value="0" class="slider" />
+                <ui:Label name="gust-val" text="0" class="val-label" />
+            </ui:VisualElement>
+
+            <!-- ── Aero Debug (collapsible) ──────────────────────── -->
+            <ui:Foldout name="aero-foldout" text="AERO DEBUG" value="false" class="aero-foldout">
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Cd Edge" class="slider-label" />
+                    <ui:Slider name="cd-edge-slider" low-value="0.1" high-value="2.0" value="0.6" class="slider" />
+                    <ui:Label name="cd-edge-val" text="0.600" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Cl Cavity" class="slider-label" />
+                    <ui:Slider name="cl-cavity-slider" low-value="1" high-value="100" value="45" class="slider" />
+                    <ui:Label name="cl-cavity-val" text="45.0" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Cl Camber" class="slider-label" />
+                    <ui:Slider name="cl-camber-slider" low-value="0" high-value="5" value="1" class="slider" />
+                    <ui:Label name="cl-camber-val" text="1.000" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Cavity Area" class="slider-label" />
+                    <ui:Slider name="cavity-area-slider" low-value="0" high-value="3" value="1" class="slider" />
+                    <ui:Label name="cavity-area-val" text="1.000" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Pitch Cavity" class="slider-label" />
+                    <ui:Slider name="pitch-cavity-slider" low-value="0" high-value="0.2" value="0.042" class="slider" />
+                    <ui:Label name="pitch-cavity-val" text="0.042" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="slider-row">
+                    <ui:Label text="Pitch Camber" class="slider-label" />
+                    <ui:Slider name="pitch-camber-slider" low-value="0" high-value="0.5" value="0.15" class="slider" />
+                    <ui:Label name="pitch-camber-val" text="0.150" class="val-label" />
+                </ui:VisualElement>
+
+                <ui:Button name="reset-aero-btn" text="Reset Aero Defaults" class="reset-btn" />
+
+            </ui:Foldout>
+
+            <!-- ── Trail ─────────────────────────────────────────── -->
+            <ui:Label text="TRAIL" class="section-header" />
+            <ui:Toggle name="keep-throws-toggle" label="Keep All Throws" value="false" class="toggle-row" />
+
+        </ui:ScrollView>
+
+        <!-- Stats live outside the scroll so they can't resize it -->
+        <ui:Label name="stats-label" text="" class="stats-label" />
+
+        <!-- ── Camera Mode ───────────────────────────────────── -->
+        <ui:VisualElement class="camera-row">
+            <ui:Label text="CAM" class="camera-label" />
+            <ui:DropdownField name="camera-dropdown" class="camera-dropdown" />
+        </ui:VisualElement>
+
+        <!-- ── Action Buttons ────────────────────────────────── -->
+        <ui:VisualElement class="button-row">
+            <ui:Button name="launch-btn" text="LAUNCH" class="launch-btn" />
+            <ui:Button name="rethrow-btn" text="RE-THROW" class="action-btn" />
+            <ui:Button name="clear-btn" text="CLEAR" class="action-btn" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

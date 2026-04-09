@@ -1,0 +1,14 @@
+Follow the cmkae instructions on 
+https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
+
+cd lib
+git clone https://github.com/opencv/opencv.git
+cd opencv
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make -j7
+sudo make install
+sudo ldconfig -v
+
+technically after this, you should be OK to remove all these files, but they are nice to have for ctag refs

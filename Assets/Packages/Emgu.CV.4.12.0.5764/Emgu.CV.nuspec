@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Emgu.CV</id>
+    <version>4.12.0.5764</version>
+    <title>Emgu CV</title>
+    <authors>Emgu Corporation</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>nuget_icon.png</icon>
+    <readme>docs/README.md</readme>
+    <projectUrl>https://www.emgu.com/</projectUrl>
+    <description>Emgu CV is a cross platform .Net wrapper to the OpenCV image processing library. Allowing OpenCV functions to be called from .NET compatible languages such as C#, VB, VC++, IronPython etc.</description>
+    <releaseNotes>This is the 4.12.0 release of Emgu CV. For online documentation please visit
+https://www.emgu.com/wiki/files/4.12.0/document/index.html</releaseNotes>
+    <copyright>© Emgu Corporation 2025. All rights reserved.</copyright>
+    <tags>opencv emgu emgucv ai image</tags>
+    <repository type="git" url="https://github.com/emgucv/emgucv" commit="1c9c1dd8ad452e1cbe0ccb75395d19c6f71e3814" />
+    <dependencies>
+      <group targetFramework="net9.0-ios18.0">
+        <dependency id="System.Drawing.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.InteropServices.RuntimeInformation" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net9.0-maccatalyst18.0">
+        <dependency id="System.Drawing.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.InteropServices.RuntimeInformation" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Drawing.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.InteropServices.RuntimeInformation" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

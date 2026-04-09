@@ -1,0 +1,1273 @@
+mold_name,manufacturer,disc_type,stability,rim_camber_shape,mass_kg,radius_m,rim_width_m,thickness_m,rim_depth_m,rim_camber_h_m,dome_height_m
+Radius,1080 Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02000,0.01500,0.00499,0.00316
+Bee Line,ABC Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02450,0.01600,0.01100,0.00690,0.00437
+Flying Squirrel,ABC Discs,Putter,Stable,Flat,0.18180,0.10950,0.01250,0.02000,0.01400,0.01900,0.00000
+Gamma Ray,ABC Discs,Putter,Stable,Concave,0.17430,0.10500,0.01950,0.01800,0.01300,0.00458,0.00362
+Mission,ABC Discs,Putter,Stable,Flat,0.18090,0.10900,0.01200,0.02000,0.01400,0.01884,0.00016
+Money,ABC Discs,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02200,0.01700,0.00313,0.00247
+Secret Weapon,ABC Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.02000,0.01100,0.00718,0.00456
+Baobab,Above Ground Level,Midrange,Understable,NONE,0.17680,0.10650,0.01100,0.01700,0.01300,0.00861,0.00336
+Cedar,Above Ground Level,Driver,Overstable,Concave,0.17850,0.10750,0.02200,0.01700,0.01100,0.01336,0.00279
+Cypress,Above Ground Level,Driver,Overstable,Concave,0.17600,0.10600,0.02250,0.01500,0.01100,0.00804,0.00404
+Locust,Above Ground Level,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01600,0.01100,0.00801,0.00402
+Madrone,Above Ground Level,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02200,0.01700,0.00313,0.00247
+Magnolia,Above Ground Level,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.02000,0.01200,0.01884,0.00016
+Manzanita,Above Ground Level,Putter,Understable,Flat,0.17430,0.10500,0.01150,0.02100,0.01600,0.00336,0.00265
+Ponderosa,Above Ground Level,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02100,0.01500,0.00524,0.00332
+Sycamore,Above Ground Level,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.02200,0.01300,0.01009,0.00507
+Arrow - Approach & Putter,Aerobie,Midrange,Stable,Concave,0.17760,0.10700,0.01500,0.01800,0.01100,0.01297,0.00381
+Epic Driver,Aerobie,Driver,Overstable,Concave,0.17510,0.10550,0.03300,0.01400,0.01100,0.00759,0.00481
+Sharpshooter #1,Aerobie,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01700,0.01300,0.00864,0.00434
+Sharpshooter #2,Aerobie,Midrange,Overstable,Concave,0.17510,0.10550,0.01500,0.01700,0.01200,0.00522,0.00331
+Sharpshooter #3,Aerobie,Midrange,Stable,NONE,0.17680,0.10650,0.01250,0.01700,0.01300,0.00900,0.00352
+Albatrossdisc Driver,Albatrossdisc,Fairway,Overstable,Concave,0.17430,0.10500,0.01750,0.01600,0.01200,0.00368,0.00291
+Albatrossdisc Midrange,Albatrossdisc,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01900,0.01300,0.00473,0.00300
+Albatrossdisc Putter,Albatrossdisc,Putter,Understable,Flat,0.17600,0.10600,0.00800,0.02100,0.01600,0.00696,0.00350
+Caravel,Albatrossdisc,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.02000,0.01300,0.00903,0.00454
+Frigate,Albatrossdisc,Midrange,Overstable,NONE,0.17600,0.10600,0.01150,0.01500,0.01200,0.00570,0.00286
+Galley,Albatrossdisc,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01800,0.01400,0.00448,0.00284
+Apollo,Alfa Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01350,0.01800,0.01300,0.01696,0.00014
+Dragonfly,AquaFlight Discs,Putter,Stable,Flat,0.17430,0.10500,0.00950,0.01600,0.01100,0.00215,0.00170
+Osprey,AquaFlight Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02300,0.01600,0.01200,0.00473,0.00374
+Peace Frog,AquaFlight Discs,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.02200,0.01600,0.00299,0.00236
+Pelican,AquaFlight Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01700,0.02000,0.01200,0.00667,0.00423
+Swift,AquaFlight Discs,Driver,Stable,Concave,0.17430,0.10500,0.01950,0.01600,0.01100,0.00406,0.00321
+50 Cal,Arsenal Discs,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01600,0.01200,0.00586,0.00371
+Air Strike,Arsenal Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01500,0.01200,0.00453,0.00358
+C4,Arsenal Discs,Putter,Stable,Flat,0.17510,0.10550,0.01000,0.01900,0.01300,0.00460,0.00292
+Cyborg,Arsenal Discs,Fairway,Stable,Concave,0.17430,0.10500,0.01800,0.01600,0.01200,0.00378,0.00298
+Morningstar,Arsenal Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.01900,0.01300,0.01691,0.00114
+Alias,Axiom Discs,Midrange,Understable,NONE,0.17850,0.10750,0.01200,0.01800,0.01200,0.01415,0.00295
+Clash,Axiom Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01400,0.01100,0.00485,0.00307
+Crave,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01850,0.01400,0.01200,0.00494,0.00313
+Defy,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01500,0.01100,0.00598,0.00379
+Delirium,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02550,0.01800,0.01200,0.00800,0.00507
+Envy,Axiom Discs,Putter,Stable,Flat,0.17430,0.10500,0.01100,0.01800,0.01400,0.00276,0.00218
+Excite,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02600,0.02100,0.01200,0.00947,0.00601
+Fireball,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01400,0.01100,0.00521,0.00330
+Hex,Axiom Discs,Midrange,Stable,Flat,0.17760,0.10700,0.01450,0.01600,0.01300,0.01141,0.00335
+Insanity,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02050,0.01400,0.01100,0.00530,0.00336
+Inspire,Axiom Discs,Driver,Stable,Concave,0.17510,0.10550,0.01850,0.01500,0.01200,0.00530,0.00336
+Mayhem,Axiom Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01900,0.01200,0.01073,0.00539
+Panic,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01200,0.00722,0.00458
+Proxy,Axiom Discs,Putter,Understable,Flat,0.17430,0.10500,0.01100,0.01800,0.01500,0.00276,0.00218
+Pyro,Axiom Discs,Midrange,Stable,Concave,0.17850,0.10750,0.01550,0.01600,0.01300,0.01258,0.00262
+Rhythm,Axiom Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01800,0.01500,0.01200,0.00708,0.00356
+Tantrum,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02550,0.01900,0.01200,0.00845,0.00536
+Tenacity,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01900,0.01200,0.00807,0.00512
+Theory,Axiom Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01200,0.01900,0.01300,0.01493,0.00312
+Thrill,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01500,0.01100,0.00598,0.00379
+Vanish,Axiom Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01500,0.01100,0.00607,0.00385
+Virus,Axiom Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01400,0.01100,0.00720,0.00362
+Wrath,Axiom Discs,Driver,Stable,Concave,0.17510,0.10550,0.02050,0.01400,0.01100,0.00530,0.00336
+MaxGlide,Best Disc Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01600,0.01100,0.00648,0.00411
+Berzerker,Black Zombie Disc Golf,Driver,Overstable,Concave,0.17760,0.10700,0.02200,0.01600,0.01100,0.01175,0.00345
+Chainsaw,Black Zombie Disc Golf,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.02200,0.01500,0.00298,0.00236
+Crossbow,Black Zombie Disc Golf,Midrange,Stable,NONE,0.18180,0.10950,0.01400,0.01600,0.01200,0.01520,0.00000
+Flame Thrower,Black Zombie Disc Golf,Driver,Stable,Concave,0.17930,0.10800,0.02200,0.01700,0.01200,0.01424,0.00191
+Shotgun,Black Zombie Disc Golf,Midrange,Stable,Concave,0.18260,0.11000,0.01600,0.01800,0.01300,0.01710,0.00000
+War Hammer,Black Zombie Disc Golf,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01500,0.00705,0.00355
+Bomb,CHING Sports,Midrange,Stable,Concave,0.17600,0.10600,0.01600,0.01600,0.01300,0.00711,0.00357
+Fusion Genesis,CHING Sports,Driver,Stable,Concave,0.17680,0.10650,0.02200,0.01400,0.01100,0.00945,0.00369
+Fusion Juju,CHING Sports,Putter,Understable,Flat,0.17680,0.10650,0.00750,0.02200,0.01500,0.00998,0.00390
+Fusion Legacy,CHING Sports,Midrange,Stable,NONE,0.17680,0.10650,0.01300,0.01700,0.01100,0.00912,0.00356
+Fusion Velocity,CHING Sports,Fairway,Overstable,Concave,0.17600,0.10600,0.01800,0.01700,0.01200,0.00803,0.00404
+Power Celerity,CHING Sports,Driver,Overstable,Concave,0.17600,0.10600,0.01950,0.01500,0.01200,0.00740,0.00372
+Power Genesis,CHING Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01500,0.01200,0.00794,0.00399
+Power Juju,CHING Sports,Putter,Understable,Flat,0.17600,0.10600,0.00850,0.02500,0.01500,0.00846,0.00425
+Power Legacy (Legacy),CHING Sports,Midrange,Stable,NONE,0.17600,0.10600,0.01200,0.01700,0.01100,0.00657,0.00330
+Power Oracle (Oracle),CHING Sports,Midrange,Stable,NONE,0.17600,0.10600,0.01200,0.01800,0.01100,0.00696,0.00350
+Power Precision,CHING Sports,Putter,Stable,Flat,0.17680,0.10650,0.01300,0.02200,0.01400,0.01183,0.00462
+Power Prodigy,CHING Sports,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01600,0.01200,0.01019,0.00398
+Power Velocity,CHING Sports,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01500,0.01200,0.00955,0.00373
+Prodigy,CHING Sports,Driver,Overstable,Concave,0.17680,0.10650,0.01900,0.01500,0.01200,0.00943,0.00368
+Sniper,CHING Sports,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01600,0.01200,0.00642,0.00323
+Stinger,CHING Sports,Putter,Stable,Flat,0.17680,0.10650,0.00800,0.01600,0.01200,0.00736,0.00287
+Supreme Celerity,CHING Sports,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01600,0.01200,0.01019,0.00398
+Supreme Genesis,CHING Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01800,0.01100,0.00952,0.00479
+Supreme Juju,CHING Sports,Putter,Understable,Flat,0.17680,0.10650,0.00800,0.02500,0.01500,0.01153,0.00450
+Supreme Legacy,CHING Sports,Midrange,Stable,NONE,0.17680,0.10650,0.01300,0.01600,0.01100,0.00858,0.00335
+Supreme Oracle,CHING Sports,Midrange,Stable,NONE,0.17680,0.10650,0.01350,0.01700,0.01100,0.00925,0.00361
+Supreme Prodigy,CHING Sports,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01600,0.01200,0.00778,0.00391
+Supreme Velocity,CHING Sports,Driver,Overstable,Concave,0.17600,0.10600,0.01850,0.01600,0.01200,0.00767,0.00386
+Tank,CHING Sports,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02000,0.01300,0.00689,0.00347
+Credo,Crosslap Disc Golf Parks,Putter,Understable,Flat,0.18010,0.10850,0.01200,0.02000,0.01600,0.01780,0.00120
+Lucky,Crosslap Disc Golf Parks,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.01700,0.01300,0.01513,0.00102
+Shadowplay,Crosslap Disc Golf Parks,Putter,Stable,Flat,0.17510,0.10550,0.01100,0.02000,0.01400,0.00511,0.00324
+Vigil,Crosslap Disc Golf Parks,Driver,Stable,Concave,0.18010,0.10850,0.01900,0.01500,0.01100,0.01335,0.00090
+Boom,DKG Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02650,0.02100,0.01200,0.00709,0.00560
+Hail Mary,DKG Disc Sports,Putter,Understable,Concave,0.17430,0.10500,0.02200,0.02100,0.01600,0.00599,0.00473
+Kraken,DKG Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02550,0.02100,0.01200,0.00684,0.00540
+Merc,DKG Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02650,0.02000,0.01100,0.00675,0.00533
+Miracle,DKG Disc Sports,Putter,Understable,Concave,0.17430,0.10500,0.01900,0.02200,0.01600,0.00549,0.00433
+Protégé,DKG Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02650,0.02000,0.01200,0.00675,0.00533
+Tempest,DKG Disc Sports,Putter,Stable,Concave,0.17430,0.10500,0.02500,0.02000,0.01300,0.00640,0.00505
+Wing & A Prayer,DKG Disc Sports,Putter,Understable,Concave,0.17430,0.10500,0.02000,0.02200,0.01600,0.00575,0.00454
+Assault,DMI Sports,Putter,Stable,Flat,0.17510,0.10550,0.01100,0.02200,0.01300,0.00562,0.00356
+Sabotage,DMI Sports,Midrange,Stable,NONE,0.17760,0.10700,0.01200,0.02200,0.01300,0.01478,0.00434
+Vendetta,DMI Sports,Putter,Stable,Flat,0.17510,0.10550,0.01100,0.02400,0.01400,0.00614,0.00389
+Albatross,Daredevil Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02300,0.01600,0.01100,0.00473,0.00373
+Beaver,Daredevil Discs,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02200,0.01600,0.00776,0.00390
+Bigfoot,Daredevil Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01600,0.01100,0.00700,0.00444
+Bighorn,Daredevil Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02200,0.01600,0.00792,0.00398
+Buffalo,Daredevil Discs,Driver,Stable,Concave,0.17430,0.10500,0.02000,0.01600,0.01200,0.00416,0.00329
+Caribou,Daredevil Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01250,0.02100,0.01300,0.01978,0.00017
+Gray Jay,Daredevil Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01400,0.01100,0.00422,0.00333
+Great Horned Owl,Daredevil Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02200,0.01400,0.00790,0.00397
+Grizzly,Daredevil Discs,Midrange,Stable,NONE,0.18180,0.10950,0.01300,0.02000,0.01300,0.01900,0.00000
+Mammoth,Daredevil Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01700,0.01200,0.00633,0.00402
+Merlin,Daredevil Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02300,0.01700,0.01100,0.00502,0.00397
+Moose,Daredevil Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01250,0.02100,0.01300,0.01978,0.00017
+Ogopogo,Daredevil Discs,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.01500,0.01200,0.00559,0.00354
+Polar Bear,Daredevil Discs,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01500,0.00705,0.00355
+Pteranodon,Daredevil Discs,Midrange,Stable,Flat,0.17930,0.10800,0.01400,0.02300,0.01200,0.01927,0.00258
+Sabertooth,Daredevil Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.01800,0.01200,0.00468,0.00370
+Sasquatch,Daredevil Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02500,0.01700,0.01100,0.00543,0.00429
+Swift Fox,Daredevil Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01750,0.01700,0.01200,0.00578,0.00366
+Timberwolf,Daredevil Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01600,0.01200,0.00554,0.00352
+Walrus,Daredevil Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01250,0.01900,0.01200,0.01790,0.00015
+Wolverine,Daredevil Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01850,0.01800,0.01200,0.00863,0.00434
+Woodchuck,Daredevil Discs,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01500,0.00705,0.00355
+Yeti,Daredevil Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01600,0.01100,0.00700,0.00444
+Chimera,Deity Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01700,0.01200,0.00678,0.00430
+Jeteye,Destiny/Dynamic Discs,Putter,Stable,Flat,0.18010,0.10850,0.00850,0.01700,0.01100,0.01513,0.00102
+Lone Ranger,Destiny/Dynamic Discs,Putter,Stable,Flat,0.18010,0.10850,0.00850,0.01700,0.01100,0.01513,0.00102
+Puppy,Destiny/Dynamic Discs,Putter,Understable,Flat,0.17430,0.10500,0.00600,0.02500,0.01800,0.00237,0.00187
+Super Puppy,Destiny/Dynamic Discs,Putter,Understable,Flat,0.17430,0.10500,0.00600,0.02500,0.01800,0.00237,0.00187
+#1 Hi Tec (modified Stingray),Disc Golf Association,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+#1 Professional Driver,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01200,0.01508,0.00202
+#2 Hi Tec (modified Stingray),Disc Golf Association,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+#2 Professional Driver,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01200,0.01508,0.00202
+#3 Hi Tec (modified Stingray),Disc Golf Association,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+#3 Professional Driver,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01200,0.01508,0.00202
+#4 Approach,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01100,0.01508,0.00202
+#4 Hi Tec (modified Stingray),Disc Golf Association,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+#5 Hi Tec (modified Stingray),Disc Golf Association,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+#5 Roller-Putter,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01700,0.01100,0.01424,0.00191
+Aftershock,Disc Golf Association,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02000,0.01200,0.01572,0.00328
+Aftershock (D-Line),Disc Golf Association,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02100,0.01200,0.01651,0.00344
+Banzai,Disc Golf Association,Driver,Stable,Concave,0.17760,0.10700,0.01950,0.01700,0.01200,0.01249,0.00366
+Blowfly II,Disc Golf Association,Putter,Understable,Flat,0.18010,0.10850,0.01400,0.02300,0.01700,0.02047,0.00138
+DGA Factor I (modified Viper),Disc Golf Association,Midrange,Stable,Concave,0.18010,0.10850,0.01600,0.02000,0.01300,0.01780,0.00120
+DGA Factor I (modified Whippet),Disc Golf Association,Putter,Stable,Concave,0.17430,0.10500,0.01700,0.01900,0.01300,0.00427,0.00337
+DGA Factor IV (modified Aviar),Disc Golf Association,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02100,0.01500,0.00725,0.00365
+Fader,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Fader 3,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Fader II,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Gumbputt,Disc Golf Association,Putter,Understable,Flat,0.18010,0.10850,0.00750,0.02200,0.01900,0.01958,0.00132
+Hellfire,Disc Golf Association,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01600,0.01200,0.00638,0.00405
+Hooker,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02500,0.01400,0.00279,0.00220
+Hurricane (Proline),Disc Golf Association,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01600,0.01200,0.00659,0.00418
+Hurricane (SP Line),Disc Golf Association,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01800,0.01200,0.00741,0.00470
+Hypercane,Disc Golf Association,Driver,Overstable,Concave,0.17600,0.10600,0.02250,0.01600,0.01200,0.00858,0.00431
+Kitty Hawk,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Kitty Hawk Driver,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Kitty Hawk Putter,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Midnight Flyer (40,Disc Golf Association,Putter,Understable,Flat,0.19510,0.11750,0.00600,0.02600,0.01700,0.02470,0.00000
+Night Flyer (40 mold),Disc Golf Association,Putter,Understable,Flat,0.19510,0.11750,0.00600,0.02600,0.01700,0.02470,0.00000
+Pipeline,Disc Golf Association,Fairway,Stable,Concave,0.17760,0.10700,0.01800,0.01500,0.01100,0.01102,0.00323
+Powerdrive,Disc Golf Association,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02600,0.01200,0.02044,0.00426
+Proline Breaker,Disc Golf Association,Midrange,Understable,NONE,0.17430,0.10500,0.01000,0.01700,0.01200,0.00239,0.00189
+Putter,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Putterdrive,Disc Golf Association,Putter,Stable,Flat,0.17600,0.10600,0.01050,0.02400,0.01400,0.00879,0.00442
+Quake,Disc Golf Association,Midrange,Stable,Concave,0.17930,0.10800,0.01500,0.01700,0.01200,0.01424,0.00191
+Reef (Atlantis),Disc Golf Association,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02100,0.01400,0.00725,0.00364
+Rift,Disc Golf Association,Midrange,Stable,Concave,0.17930,0.10800,0.01500,0.01800,0.01300,0.01508,0.00202
+Sail,Disc Golf Association,Driver,Overstable,Concave,0.17430,0.10500,0.01900,0.01900,0.01100,0.00471,0.00372
+Shockwave,Disc Golf Association,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02200,0.01300,0.01729,0.00361
+Softtouch (smaller),Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Sparkle Aftershock,Disc Golf Association,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02000,0.01200,0.01676,0.00224
+Sparkle Reef,Disc Golf Association,Putter,Stable,Flat,0.17600,0.10600,0.01000,0.02100,0.01400,0.00754,0.00379
+Steady,Disc Golf Association,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01400,0.00704,0.00354
+Steady - Beadless (BL),Disc Golf Association,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02500,0.01500,0.00935,0.00470
+Streamliner,Disc Golf Association,Putter,Understable,Flat,0.18010,0.10850,0.01250,0.02100,0.01700,0.01869,0.00126
+Sureshot,Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.00750,0.02600,0.01400,0.00290,0.00229
+Tempest,Disc Golf Association,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01700,0.01100,0.00700,0.00444
+Titanic,Disc Golf Association,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02200,0.01500,0.00534,0.00339
+Titanic (D-Line),Disc Golf Association,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02000,0.01500,0.00283,0.00224
+Torrent,Disc Golf Association,Driver,Overstable,Concave,0.17430,0.10500,0.02450,0.01500,0.01200,0.00471,0.00372
+Tremor,Disc Golf Association,Midrange,Stable,Flat,0.17930,0.10800,0.01400,0.01700,0.01100,0.01424,0.00191
+Tsunami (D-Line),Disc Golf Association,Driver,Overstable,Concave,0.17600,0.10600,0.01850,0.01800,0.01200,0.00863,0.00434
+Ultra Hi Tech,Disc Golf Association,Midrange,Overstable,Concave,0.17850,0.10750,0.01600,0.01500,0.01100,0.01179,0.00246
+Ultra Hi Tech,Disc Golf Association,Putter,Understable,Flat,0.17850,0.10750,0.00700,0.02200,0.01400,0.01650,0.00344
+Undertow (ProLine),Disc Golf Association,Driver,Overstable,Concave,0.17850,0.10750,0.02100,0.01600,0.01200,0.01258,0.00262
+Undertow (SP-line),Disc Golf Association,Driver,Overstable,Concave,0.17760,0.10700,0.02100,0.01800,0.01200,0.01322,0.00388
+The Baron,Disc Golf UK Ltd.,Putter,Understable,Flat,0.17600,0.10600,0.01250,0.02000,0.01600,0.00791,0.00398
+The Count,Disc Golf UK Ltd.,Midrange,Stable,Flat,0.17850,0.10750,0.01400,0.01700,0.01100,0.01336,0.00279
+The Duchess,Disc Golf UK Ltd.,Fairway,Stable,Concave,0.17680,0.10650,0.01750,0.01700,0.01100,0.01029,0.00402
+The Duke,Disc Golf UK Ltd.,Putter,Stable,Concave,0.17850,0.10750,0.01700,0.01900,0.01400,0.01493,0.00312
+Lex,Disc King,Putter,Understable,Flat,0.17850,0.10750,0.01000,0.02100,0.01600,0.01651,0.00344
+Astronaut,Discmania,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01800,0.01100,0.00977,0.00491
+CD (Craze,Discmania,Driver,Overstable,Concave,0.17600,0.10600,0.01950,0.01300,0.01100,0.00641,0.00322
+CD2 (Control Driver),Discmania,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01900,0.01100,0.00695,0.00441
+CD3 (Control Driver),Discmania,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.02000,0.01200,0.00771,0.00489
+DD (Hysteria,Discmania,Driver,Stable,Concave,0.17510,0.10550,0.02200,0.01600,0.01200,0.00638,0.00405
+DD2 (Frenzy,Discmania,Driver,Overstable,Concave,0.17600,0.10600,0.02500,0.01500,0.01100,0.00857,0.00431
+DD2 (new),Discmania,Driver,Stable,Concave,0.17430,0.10500,0.02300,0.01800,0.01100,0.00532,0.00420
+DD3 (Cloud Breaker,Discmania,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01800,0.01200,0.00543,0.00429
+DD3 (retest),Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01100,0.00722,0.00458
+DDx (Distance Driver),Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01700,0.01100,0.00700,0.00444
+Enigma,Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01600,0.01100,0.00648,0.00411
+Essence,Discmania,Fairway,Stable,Concave,0.17430,0.10500,0.01800,0.01800,0.01200,0.00425,0.00336
+FD (Jackal,Discmania,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.01800,0.01100,0.00862,0.00434
+FD2 (Fairway Driver),Discmania,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.02000,0.01100,0.00958,0.00482
+FD2 (retooled Fairway Driver),Discmania,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.01600,0.01100,0.00766,0.00385
+FD3 (Fairway Driver),Discmania,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01100,0.00851,0.00428
+Fox Spirit,Discmania,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.01800,0.01300,0.00812,0.00408
+Guardian Lion,Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.01800,0.01400,0.00660,0.00332
+Instinct (150-175g),Discmania,Fairway,Stable,Concave,0.17600,0.10600,0.01800,0.01900,0.01100,0.00897,0.00451
+Link,Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.01900,0.01500,0.00697,0.00350
+Logic,Discmania,Midrange,Stable,NONE,0.17600,0.10600,0.01100,0.01900,0.01300,0.00709,0.00356
+MD (Midrange Driver),Discmania,Putter,Stable,Flat,0.18090,0.10900,0.01400,0.02100,0.01400,0.01978,0.00017
+MD1 (Midrange Driver),Discmania,Midrange,Stable,NONE,0.18010,0.10850,0.01250,0.02200,0.01300,0.01958,0.00132
+MD2 (Fiend,Discmania,Putter,Stable,Flat,0.18010,0.10850,0.01350,0.02000,0.01400,0.01780,0.00120
+MD3 (Midrange Driver),Discmania,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01900,0.01300,0.01790,0.00015
+MD4 (Midrange Driver),Discmania,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01600,0.01400,0.01424,0.00096
+MD5 (Midrange Driver),Discmania,Putter,Understable,Flat,0.17510,0.10550,0.01400,0.01900,0.01300,0.00560,0.00355
+Maestro (originally Spring Ox),Discmania,Midrange,Understable,NONE,0.17680,0.10650,0.01050,0.01700,0.01300,0.00848,0.00331
+Majesty,Discmania,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01700,0.01200,0.00523,0.00413
+Mentor (originally Sea Serpent),Discmania,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.01800,0.01200,0.00812,0.00408
+Method,Discmania,Putter,Stable,Flat,0.18010,0.10850,0.01350,0.01900,0.01400,0.01691,0.00114
+Mutant,Discmania,Midrange,Stable,NONE,0.18010,0.10850,0.01350,0.01800,0.01200,0.01602,0.00108
+Origin,Discmania,Midrange,Stable,NONE,0.17760,0.10700,0.01300,0.01600,0.01200,0.01101,0.00323
+P1 (Maniac,Discmania,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01500,0.00705,0.00355
+P1x (Beaded Putter),Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02000,0.01400,0.00747,0.00376
+P2 (Psycho,Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01500,0.00755,0.00380
+P3 (Putt & Approach),Discmania,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02000,0.01200,0.00717,0.00361
+P3x (Putt & Approach),Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.01900,0.01600,0.00711,0.00358
+PD (Freak,Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01700,0.01200,0.00611,0.00388
+PD2 (Chaos,Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01900,0.01200,0.00795,0.00504
+PD3,Discmania,Driver,Stable,Concave,0.17430,0.10500,0.02200,0.01700,0.01200,0.00483,0.00381
+PDx (Power Driver),Discmania,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.01900,0.01200,0.00733,0.00465
+Razor Claw Tactic,Discmania,Putter,Understable,Flat,0.17680,0.10650,0.01150,0.02000,0.01400,0.01029,0.00402
+Rockstar,Discmania,Driver,Stable,Concave,0.17680,0.10650,0.01850,0.01700,0.01200,0.01056,0.00412
+Sensei (Discmania Active),Discmania,Putter,Understable,Flat,0.17680,0.10650,0.01050,0.02300,0.01400,0.01148,0.00448
+Shogun,Discmania,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02400,0.01500,0.00863,0.00434
+Splice,Discmania,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01500,0.01100,0.00740,0.00372
+Sun Crow,Discmania,Fairway,Overstable,Concave,0.17510,0.10550,0.01700,0.01700,0.01200,0.00567,0.00359
+TD (Rush,Discmania,Driver,Overstable,Concave,0.17600,0.10600,0.01950,0.01600,0.01100,0.00789,0.00397
+TD2 (Fever,Discmania,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.01600,0.01100,0.00617,0.00391
+TDx (Turn Driver),Discmania,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01500,0.01200,0.00549,0.00348
+Tactic,Discmania,Putter,Stable,Flat,0.17760,0.10700,0.01150,0.01800,0.01400,0.01195,0.00351
+Tilt,Discmania,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01200,0.00596,0.00378
+APX,Discraft,Putter,Stable,Flat,0.17430,0.10500,0.00900,0.02300,0.01400,0.00298,0.00235
+Anax,Discraft,Driver,Overstable,Concave,0.17760,0.10700,0.01950,0.01700,0.01200,0.01249,0.00366
+Archer,Discraft,Midrange,Understable,Concave,0.17850,0.10750,0.01500,0.01800,0.01100,0.01415,0.00295
+Avenger,Discraft,Driver,Understable,Concave,0.17600,0.10600,0.01900,0.01700,0.01200,0.00827,0.00416
+Avenger-SS,Discraft,Driver,Overstable,Concave,0.17760,0.10700,0.01900,0.01800,0.01200,0.01322,0.00388
+Banger-GT,Discraft,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02000,0.01600,0.00720,0.00362
+Breeze (Ace Race 2003),Discraft,Putter,Understable,Flat,0.17680,0.10650,0.01150,0.01800,0.01400,0.00926,0.00362
+Buzzz,Discraft,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01900,0.01300,0.01691,0.00114
+Buzzz OS,Discraft,Midrange,Overstable,NONE,0.18010,0.10850,0.01300,0.01700,0.01200,0.01513,0.00102
+Buzzz-GT,Discraft,Midrange,Stable,NONE,0.17850,0.10750,0.01250,0.01700,0.01300,0.01336,0.00279
+Buzzz-SS,Discraft,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02100,0.01300,0.01759,0.00236
+Challenger,Discraft,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02200,0.01600,0.00312,0.00247
+Challenger OS,Discraft,Putter,Understable,Flat,0.17510,0.10550,0.01100,0.02000,0.01500,0.00512,0.00325
+Challenger SS,Discraft,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02000,0.01400,0.00485,0.00308
+Comet,Discraft,Midrange,Understable,NONE,0.18090,0.10900,0.01200,0.02100,0.01300,0.01978,0.00017
+Crank,Discraft,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01600,0.01100,0.00679,0.00431
+Crank SS,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01500,0.01100,0.00637,0.00404
+Cruiser,Discraft,Fairway,Stable,Concave,0.17760,0.10700,0.01650,0.01800,0.01200,0.01322,0.00388
+Cruiser-Windstar,Discraft,Fairway,Stable,Concave,0.17760,0.10700,0.01650,0.01800,0.01200,0.01322,0.00388
+Crush,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02050,0.01700,0.01200,0.00645,0.00409
+Cyclone,Discraft,Midrange,Overstable,Concave,0.17680,0.10650,0.01600,0.01800,0.01200,0.01049,0.00410
+Cyclone 2,Discraft,Midrange,Overstable,Concave,0.17680,0.10650,0.01600,0.01800,0.01200,0.01049,0.00410
+Deuce,Discraft,Midrange,Stable,NONE,0.18010,0.10850,0.01100,0.02200,0.01300,0.01958,0.00132
+Drone,Discraft,Midrange,Overstable,Concave,0.17850,0.10750,0.01500,0.02000,0.01300,0.01572,0.00328
+Eclipse,Discraft,Midrange,Overstable,Flat,0.18260,0.11000,0.01400,0.01600,0.01200,0.01520,0.00000
+Fierce,Discraft,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01900,0.01500,0.00474,0.00301
+Flash,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02050,0.01600,0.01200,0.00607,0.00385
+Flick,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02100,0.01300,0.01100,0.00501,0.00318
+Focus (Ace Race 2009),Discraft,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02100,0.01600,0.00511,0.00324
+Force,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01700,0.01200,0.00700,0.00444
+Glide (Ace Race 2004),Discraft,Midrange,Stable,Flat,0.17850,0.10750,0.01450,0.02000,0.01300,0.01572,0.00328
+Hades,Discraft,Driver,Understable,Concave,0.17430,0.10500,0.02250,0.01600,0.01100,0.00463,0.00366
+Heat (Ace Race 2014),Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.01950,0.02100,0.01200,0.00769,0.00487
+Hornet (Ace Race 2010),Discraft,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.01900,0.01300,0.01493,0.00312
+Impact (Ace Race 2007),Discraft,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02000,0.01300,0.01676,0.00224
+Luna,Discraft,Putter,Stable,Flat,0.17510,0.10550,0.01100,0.02000,0.01400,0.00511,0.00324
+MRV,Discraft,Midrange,Stable,NONE,0.17680,0.10650,0.01200,0.02200,0.01300,0.01148,0.00448
+MRX,Discraft,Midrange,Stable,Flat,0.17680,0.10650,0.01400,0.02100,0.01300,0.01160,0.00453
+Machete,Discraft,Driver,Stable,Concave,0.17510,0.10550,0.02150,0.01600,0.01100,0.00627,0.00398
+Magnet,Discraft,Putter,Stable,Flat,0.17600,0.10600,0.00800,0.02000,0.01400,0.00662,0.00333
+Malta (Paul McBeth Proto Mid-Range),Discraft,Midrange,Stable,NONE,0.17680,0.10650,0.01350,0.01700,0.01300,0.00926,0.00362
+Mantis (Ace Race 2013),Discraft,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01900,0.01100,0.00924,0.00464
+Marauder,Discraft,Midrange,Stable,Concave,0.18510,0.11150,0.01500,0.02000,0.01200,0.01900,0.00000
+Meteor (Ace Race 2006),Discraft,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02000,0.01300,0.01572,0.00328
+Nebula (Ace Race 2008),Discraft,Midrange,Stable,NONE,0.17680,0.10650,0.01300,0.02000,0.01300,0.01074,0.00420
+Nuke,Discraft,Driver,Overstable,Concave,0.17600,0.10600,0.02550,0.01600,0.01200,0.00926,0.00466
+Nuke OS,Discraft,Driver,Stable,Concave,0.17600,0.10600,0.02500,0.01600,0.01200,0.00915,0.00460
+Nuke SS,Discraft,Driver,Overstable,Concave,0.17600,0.10600,0.02500,0.01500,0.01100,0.00857,0.00431
+Phantom,Discraft,Midrange,Stable,NONE,0.17760,0.10700,0.01000,0.02200,0.01100,0.01404,0.00412
+Phantom Deuce,Discraft,Midrange,Stable,NONE,0.18010,0.10850,0.01100,0.02200,0.01300,0.01958,0.00132
+Phantom Light,Discraft,Midrange,Stable,NONE,0.17760,0.10700,0.01100,0.02000,0.01100,0.01309,0.00384
+Phantom+,Discraft,Midrange,Stable,NONE,0.17760,0.10700,0.01000,0.02200,0.01100,0.01404,0.00412
+Predator,Discraft,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01900,0.01100,0.00924,0.00464
+Pulse,Discraft,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01700,0.01300,0.00864,0.00434
+Punisher,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01500,0.01100,0.00598,0.00379
+Putt'r,Discraft,Putter,Understable,Flat,0.17430,0.10500,0.00900,0.02400,0.01600,0.00312,0.00246
+Raptor,Discraft,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01900,0.01100,0.01209,0.00472
+Rattler Putter,Discraft,Putter,Understable,Flat,0.17600,0.10600,0.00600,0.02200,0.01600,0.00667,0.00335
+Reaper,Discraft,Fairway,Overstable,Concave,0.17760,0.10700,0.01800,0.01500,0.01200,0.01102,0.00323
+Ringer,Discraft,Putter,Understable,Flat,0.17430,0.10500,0.00900,0.01800,0.01200,0.00232,0.00183
+Ringer GT,Discraft,Midrange,Understable,NONE,0.17510,0.10550,0.01050,0.01700,0.01100,0.00422,0.00267
+Riptide,Discraft,Driver,Overstable,Concave,0.17760,0.10700,0.02000,0.01700,0.01200,0.01249,0.00366
+Roach (Ace Race 2015),Discraft,Putter,Understable,Flat,0.17510,0.10550,0.01100,0.02000,0.01500,0.00512,0.00325
+Rogue,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01700,0.01200,0.00667,0.00423
+Shadow,Discraft,Putter,Understable,Concave,0.18340,0.11050,0.01500,0.02100,0.01800,0.01995,0.00000
+Sky Pro,Discraft,Putter,Understable,Flat,0.20000,0.12050,0.00550,0.02500,0.01600,0.02375,0.00000
+Sky Streak,Discraft,Putter,Understable,Flat,0.18680,0.11250,0.00750,0.02500,0.01600,0.02375,0.00000
+Sky-Star,Discraft,Putter,Understable,Flat,0.20000,0.12050,0.00550,0.02500,0.01600,0.02375,0.00000
+Slipstream-GT (Ace Race 2005),Discraft,Driver,Stable,Concave,0.17680,0.10650,0.01900,0.01700,0.01300,0.01070,0.00418
+SoL (Ace Race 2018),Discraft,Midrange,Stable,NONE,0.17510,0.10550,0.01100,0.01700,0.01300,0.00434,0.00275
+Spectra,Discraft,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01700,0.01200,0.00900,0.00452
+Squall,Discraft,Midrange,Stable,Flat,0.17850,0.10750,0.01450,0.01800,0.01300,0.01415,0.00295
+Stalker,Discraft,Fairway,Stable,Concave,0.17930,0.10800,0.01600,0.01600,0.01200,0.01340,0.00180
+Sting (Ace Race 2017),Discraft,Midrange,Stable,Concave,0.17760,0.10700,0.01600,0.01800,0.01200,0.01322,0.00388
+Storm,Discraft,Midrange,Stable,NONE,0.17760,0.10700,0.01300,0.01800,0.01300,0.01239,0.00364
+Stratus,Discraft,Midrange,Stable,NONE,0.17760,0.10700,0.01200,0.01800,0.01200,0.01209,0.00355
+Surge,Discraft,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.01600,0.01200,0.00596,0.00378
+Surge-SS,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01600,0.01200,0.00628,0.00398
+Talon,Discraft,Fairway,Overstable,Concave,0.17430,0.10500,0.01750,0.01500,0.01100,0.00345,0.00272
+The Hawk,Discraft,Midrange,Stable,NONE,0.17850,0.10750,0.01200,0.01800,0.01200,0.01415,0.00295
+Thrasher,Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01700,0.01100,0.00666,0.00422
+Torque,Discraft,Midrange,Stable,NONE,0.17930,0.10800,0.01250,0.01900,0.01300,0.01592,0.00213
+Tracer,Discraft,Midrange,Understable,Concave,0.18510,0.11150,0.01500,0.01700,0.01800,0.01615,0.00000
+Tracker,Discraft,Fairway,Stable,Concave,0.17600,0.10600,0.01750,0.01700,0.01200,0.00791,0.00398
+Tsunami,Discraft,Driver,Overstable,Concave,0.17760,0.10700,0.01950,0.01900,0.01200,0.01396,0.00409
+Typhoon,Discraft,Midrange,Overstable,Concave,0.18180,0.10950,0.01500,0.01800,0.01200,0.01710,0.00000
+Undertaker,Discraft,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01800,0.01100,0.00623,0.00395
+Venom,Discraft,Driver,Stable,Concave,0.17430,0.10500,0.02200,0.01600,0.01200,0.00454,0.00359
+Vortex,Discraft,Midrange,Stable,NONE,0.18010,0.10850,0.01350,0.01600,0.01300,0.01424,0.00096
+Vulture,Discraft,Fairway,Stable,Concave,0.17760,0.10700,0.01800,0.01600,0.01200,0.01175,0.00345
+Wasp,Discraft,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01300,0.01508,0.00202
+Wildcat,Discraft,Driver,Overstable,Concave,0.17680,0.10650,0.01900,0.01500,0.01200,0.00943,0.00368
+Windstar,Discraft,Fairway,Stable,Concave,0.17760,0.10700,0.01750,0.01900,0.01300,0.01396,0.00409
+X-Clone,Discraft,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.01700,0.01200,0.01249,0.00366
+X2,Discraft,Fairway,Stable,Concave,0.17430,0.10500,0.01700,0.01800,0.01200,0.00404,0.00319
+XL,Discraft,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.02100,0.01200,0.00700,0.00444
+XS,Discraft,Fairway,Overstable,Concave,0.17510,0.10550,0.01750,0.01800,0.01200,0.00612,0.00388
+XTRA,Discraft,Fairway,Overstable,Concave,0.17510,0.10550,0.01700,0.01800,0.01200,0.00600,0.00381
+Xpress,Discraft,Fairway,Overstable,Concave,0.17510,0.10550,0.01750,0.01800,0.01200,0.00612,0.00388
+Xtreme,Discraft,Fairway,Overstable,Concave,0.17430,0.10500,0.01650,0.01900,0.01200,0.00415,0.00327
+Z-Nuke (retooled),Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01600,0.01200,0.00701,0.00444
+Zeppelin (Ace Race 2011),Discraft,Putter,Understable,Flat,0.18340,0.11050,0.00900,0.02000,0.01500,0.01900,0.00000
+Zeus (former Kong),Discraft,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01600,0.01200,0.00659,0.00418
+Zombee (Ace Race 2012),Discraft,Fairway,Stable,Concave,0.17930,0.10800,0.01600,0.02100,0.01200,0.01759,0.00236
+Zone,Discraft,Putter,Overstable,Flat,0.17510,0.10550,0.01150,0.02000,0.01300,0.00524,0.00332
+Skylark (Lõoke),Disctroyer OÜ,Putter,Stable,Flat,0.18010,0.10850,0.01200,0.01900,0.01500,0.01691,0.00114
+Sparrow (Varblane),Disctroyer OÜ,Putter,Understable,Flat,0.17680,0.10650,0.01100,0.01900,0.01600,0.00965,0.00377
+Starling (Kuldnokk),Disctroyer OÜ,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01700,0.01200,0.00523,0.00413
+Stork (Toonekurg),Disctroyer OÜ,Driver,Stable,Concave,0.17680,0.10650,0.01900,0.01700,0.01200,0.01069,0.00418
+Crosshair,Discwing,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.01900,0.01400,0.00656,0.00330
+Fluent,Discwing,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01700,0.01200,0.00779,0.00392
+Mark,Discwing,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02200,0.01600,0.00535,0.00339
+Quarter K,Discwing,Putter,Stable,Concave,0.17680,0.10650,0.02300,0.02000,0.01400,0.01366,0.00534
+Quarter K II,Discwing,Driver,Overstable,Concave,0.17430,0.10500,0.02100,0.01800,0.01100,0.00489,0.00386
+Transcend,Discwing,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.01900,0.01300,0.00655,0.00329
+Vantage,Discwing,Midrange,Stable,Concave,0.17510,0.10550,0.01500,0.01800,0.01200,0.00553,0.00351
+Leviathan,Divergent Discs,Midrange,Stable,NONE,0.17680,0.10650,0.01350,0.01900,0.01100,0.01034,0.00404
+Narwhal,Divergent Discs,Midrange,Stable,NONE,0.17430,0.10500,0.01250,0.02300,0.01200,0.00392,0.00310
+Bounty,Dynamic Discs,Midrange,Stable,NONE,0.18180,0.10950,0.01200,0.01800,0.01200,0.01710,0.00000
+Breakout,Dynamic Discs,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.01600,0.01100,0.00396,0.00313
+Captain,Dynamic Discs,Driver,Stable,Concave,0.17510,0.10550,0.02250,0.01600,0.01100,0.00648,0.00411
+Convict,Dynamic Discs,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01400,0.01100,0.00700,0.00352
+Criminal,Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.01500,0.01200,0.00783,0.00394
+Defender,Dynamic Discs,Driver,Stable,Concave,0.17430,0.10500,0.02300,0.01600,0.01100,0.00473,0.00373
+Deputy,Dynamic Discs,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.02000,0.01500,0.00734,0.00369
+EMAC Judge,Dynamic Discs,Putter,Understable,Flat,0.17600,0.10600,0.01150,0.02000,0.01400,0.00761,0.00383
+EMAC Truth,Dynamic Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01500,0.01800,0.01200,0.01602,0.00108
+Enforcer,Dynamic Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01800,0.01100,0.00717,0.00455
+Escape,Dynamic Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.02000,0.01100,0.00745,0.00472
+Evader,Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01850,0.01900,0.01100,0.00910,0.00458
+Evidence,Dynamic Discs,Midrange,Understable,Concave,0.18010,0.10850,0.01500,0.01800,0.01200,0.01602,0.00108
+Felon,Dynamic Discs,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01800,0.01100,0.00901,0.00453
+Freedom,Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01600,0.01100,0.00903,0.00454
+Fugitive,Dynamic Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01350,0.02100,0.01300,0.01978,0.00017
+Gavel,Dynamic Discs,Putter,Stable,Flat,0.17680,0.10650,0.00900,0.01900,0.01400,0.00905,0.00353
+Getaway,Dynamic Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01800,0.01100,0.00670,0.00425
+Guard,Dynamic Discs,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.02100,0.01600,0.00285,0.00225
+Judge,Dynamic Discs,Putter,Stable,Flat,0.17600,0.10600,0.01150,0.02000,0.01500,0.00762,0.00383
+Justice,Dynamic Discs,Midrange,Stable,Concave,0.17680,0.10650,0.01500,0.01700,0.01300,0.00965,0.00377
+Marshal,Dynamic Discs,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.02000,0.01600,0.00734,0.00369
+Maverick,Dynamic Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.01800,0.01100,0.00824,0.00414
+Patrol,Dynamic Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01450,0.01600,0.01200,0.01424,0.00096
+Proof,Dynamic Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01250,0.01500,0.01100,0.01179,0.00246
+Raider,Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01500,0.01100,0.00846,0.00426
+Renegade,Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01700,0.01100,0.00875,0.00440
+Sergeant,Dynamic Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02100,0.01700,0.01200,0.00656,0.00416
+Sergeant (retest),Dynamic Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01500,0.01200,0.00772,0.00388
+Sheriff,Dynamic Discs,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01600,0.01100,0.00679,0.00431
+Slammer,Dynamic Discs,Putter,Stable,Flat,0.17600,0.10600,0.01000,0.01800,0.01400,0.00647,0.00325
+Suspect,Dynamic Discs,Midrange,Stable,NONE,0.17680,0.10650,0.01200,0.01600,0.01200,0.00834,0.00326
+Thief,Dynamic Discs,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01800,0.01100,0.00888,0.00446
+Trespass,Dynamic Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01900,0.01100,0.00757,0.00480
+Truth,Dynamic Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01500,0.01700,0.01200,0.01513,0.00102
+Vandal,Dynamic Discs,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01700,0.01100,0.00826,0.00416
+Verdict,Dynamic Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01500,0.01700,0.01200,0.01513,0.00102
+Warden,Dynamic Discs,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.02000,0.01500,0.00734,0.00369
+Warrant,Dynamic Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01450,0.01800,0.01300,0.01602,0.00108
+Witness,Dynamic Discs,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01800,0.01100,0.00647,0.00410
+ESP Driver,EMSCO Group,Driver,Stable,Concave,0.17600,0.10600,0.02500,0.02500,0.01200,0.01429,0.00719
+ESP Midrange,EMSCO Group,Midrange,Overstable,NONE,0.17850,0.10750,0.01350,0.02500,0.01200,0.01965,0.00410
+Penrose,EV-7,Putter,Understable,Flat,0.17510,0.10550,0.01100,0.02100,0.01500,0.00538,0.00341
+Chromium,Element Discs,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.02000,0.01200,0.00732,0.00464
+Iridium,Element Discs,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.02100,0.01500,0.00285,0.00225
+Lithium,Element Discs,Midrange,Stable,Concave,0.18180,0.10950,0.01500,0.01500,0.01300,0.01425,0.00000
+Plutonium,Element Discs,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02000,0.01500,0.00283,0.00224
+Radium,Element Discs,Midrange,Stable,Concave,0.18180,0.10950,0.01500,0.02000,0.01100,0.01900,0.00000
+Uranium,Element Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01250,0.01500,0.01400,0.00592,0.00298
+Interceptor,Elevation Disc Golf,Midrange,Stable,Flat,0.17510,0.10550,0.01450,0.01500,0.01100,0.00451,0.00286
+Honey,Essential Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01200,0.01700,0.01300,0.00658,0.00331
+Delivery,Eurodisc,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02000,0.01400,0.00283,0.00223
+Delivery Organic,Eurodisc,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01400,0.00754,0.00379
+Transition,Eurodisc,Midrange,Stable,NONE,0.17680,0.10650,0.01300,0.01900,0.01300,0.01021,0.00399
+Transition Organic,Eurodisc,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02100,0.01300,0.01651,0.00344
+Transporter,Eurodisc,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01700,0.01200,0.00589,0.00373
+Transporter Organic,Eurodisc,Fairway,Overstable,Concave,0.17600,0.10600,0.01800,0.01900,0.01200,0.00897,0.00451
+Bull Bay,FLYTEC,Putter,Stable,Flat,0.17600,0.10600,0.01000,0.02000,0.01400,0.00719,0.00361
+Oak,FLYTEC,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.02000,0.01200,0.00732,0.00464
+Willow,FLYTEC,Putter,Stable,Flat,0.17850,0.10750,0.01300,0.02100,0.01400,0.01651,0.00344
+AK-47,Fly High Discs,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02200,0.01500,0.00312,0.00246
+Diesel,Fly High Discs,Driver,Stable,Concave,0.17760,0.10700,0.02250,0.01600,0.01100,0.01175,0.00345
+Jack the Ripper,Fly High Discs,Driver,Stable,Concave,0.17430,0.10500,0.01950,0.01700,0.01100,0.00431,0.00341
+KGB,Fly High Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01900,0.01100,0.01790,0.00015
+Pure O.G.,Fly High Discs,Midrange,Stable,Concave,0.18090,0.10900,0.01500,0.01900,0.01100,0.01790,0.00015
+Train Wreck,Fly High Discs,Driver,Stable,Concave,0.17430,0.10500,0.02300,0.01800,0.01200,0.00533,0.00421
+White Widow,Fly High Discs,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02100,0.01500,0.00297,0.00235
+Dingo,Fourth Circle Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.01600,0.01300,0.01258,0.00262
+Firehawk,Fourth Circle Discs,Fairway,Overstable,Concave,0.17680,0.10650,0.01800,0.01900,0.01200,0.01166,0.00455
+Huntsman,Fourth Circle Discs,Putter,Understable,Flat,0.17680,0.10650,0.01100,0.02400,0.01600,0.01218,0.00476
+Taipan,Fourth Circle Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01600,0.01100,0.00679,0.00431
+Cruise,Full Turn Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01600,0.01100,0.00669,0.00424
+Drifter,Full Turn Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01700,0.01200,0.00611,0.00388
+Expedition,Full Turn Discs,Driver,Stable,Concave,0.17430,0.10500,0.02150,0.01700,0.01200,0.00472,0.00373
+Navigator,Full Turn Discs,Midrange,Stable,NONE,0.17930,0.10800,0.01350,0.01700,0.01500,0.01424,0.00191
+Nomad,Full Turn Discs,Putter,Stable,Concave,0.17510,0.10550,0.01950,0.02100,0.01300,0.00770,0.00488
+Passport,Full Turn Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01600,0.00756,0.00380
+Traveler,Full Turn Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01700,0.01200,0.00611,0.00388
+Voyage,Full Turn Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01800,0.01100,0.00752,0.00477
+Magneton,Galaxy Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.01900,0.01500,0.00462,0.00293
+Meteorite,Galaxy Disc Golf,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01800,0.01100,0.00705,0.00447
+Orbit,Galaxy Disc Golf,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02100,0.01300,0.00754,0.00379
+Satellite,Galaxy Disc Golf,Putter,Understable,Flat,0.17680,0.10650,0.00800,0.02100,0.01700,0.00970,0.00379
+Shooting Star,Galaxy Disc Golf,Fairway,Overstable,Concave,0.17430,0.10500,0.01800,0.01800,0.01200,0.00425,0.00336
+844 Sabre,Gateway Disc Sports,Fairway,Overstable,Concave,0.17510,0.10550,0.01700,0.02200,0.01200,0.00734,0.00465
+Apache,Gateway Disc Sports,Fairway,Overstable,Concave,0.17430,0.10500,0.01700,0.02000,0.01200,0.00448,0.00354
+Apache (retooled),Gateway Disc Sports,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+Apex,Gateway Disc Sports,Driver,Stable,Concave,0.17850,0.10750,0.02200,0.01900,0.01100,0.01493,0.00312
+Assassin,Gateway Disc Sports,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.01900,0.01100,0.00471,0.00372
+Assassin (retooled),Gateway Disc Sports,Driver,Stable,Concave,0.17430,0.10500,0.01950,0.01900,0.01100,0.00482,0.00381
+Blade,Gateway Disc Sports,Driver,Stable,Concave,0.17680,0.10650,0.02000,0.01500,0.01100,0.00966,0.00377
+Blast DT,Gateway Disc Sports,Driver,Overstable,Concave,0.17680,0.10650,0.02150,0.01600,0.01100,0.01067,0.00417
+Blaze,Gateway Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.01900,0.01200,0.00633,0.00402
+Blurr,Gateway Disc Sports,Driver,Overstable,Concave,0.17680,0.10650,0.02150,0.01700,0.01100,0.01134,0.00443
+Chief,Gateway Disc Sports,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02100,0.01500,0.00297,0.00235
+Chief (retooled),Gateway Disc Sports,Midrange,Understable,NONE,0.17430,0.10550,0.00950,0.01700,0.01300,0.00401,0.00254
+Chief OS,Gateway Disc Sports,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02100,0.01300,0.00754,0.00379
+Demon,Gateway Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.01900,0.01200,0.00633,0.00402
+Devilhawk,Gateway Disc Sports,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02100,0.01300,0.00754,0.00379
+Diablo,Gateway Disc Sports,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01700,0.01200,0.00863,0.00434
+Diablo DT,Gateway Disc Sports,Driver,Overstable,Concave,0.17930,0.10800,0.02200,0.01300,0.01100,0.01089,0.00146
+Doggy Style,Gateway Disc Sports,Putter,Understable,Flat,0.18760,0.11300,0.00700,0.02200,0.01700,0.02090,0.00000
+Element,Gateway Disc Sports,Midrange,Understable,NONE,0.18340,0.11050,0.01250,0.01700,0.01300,0.01615,0.00000
+Element X,Gateway Disc Sports,Midrange,Stable,NONE,0.18180,0.10950,0.01300,0.01900,0.01200,0.01805,0.00000
+Hybrid,Gateway Disc Sports,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.02200,0.01300,0.01009,0.00507
+Illusion,Gateway Disc Sports,Driver,Stable,Concave,0.17760,0.10700,0.02100,0.01500,0.01100,0.01102,0.00323
+Journey - LS,Gateway Disc Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.01900,0.01100,0.00991,0.00498
+Karma,Gateway Disc Sports,Midrange,Stable,NONE,0.18180,0.10950,0.01400,0.01900,0.01100,0.01805,0.00000
+Magic,Gateway Disc Sports,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02100,0.01500,0.00297,0.00235
+Mystic,Gateway Disc Sports,Midrange,Stable,Concave,0.18090,0.10900,0.01500,0.01900,0.01100,0.01790,0.00015
+Mystic (retooled),Gateway Disc Sports,Midrange,Stable,Concave,0.18260,0.11000,0.01500,0.02000,0.01100,0.01900,0.00000
+Ninja,Gateway Disc Sports,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01900,0.01200,0.00951,0.00478
+Prophecy,Gateway Disc Sports,Midrange,Stable,Flat,0.18180,0.10950,0.01450,0.01700,0.01200,0.01615,0.00000
+Rage,Gateway Disc Sports,Driver,Overstable,Concave,0.17760,0.10700,0.02250,0.01800,0.01200,0.01322,0.00388
+Rage (retooled),Gateway Disc Sports,Driver,Overstable,Concave,0.17850,0.10750,0.02200,0.01700,0.01100,0.01336,0.00279
+Sabre,Gateway Disc Sports,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01800,0.01200,0.00824,0.00415
+Samurai,Gateway Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01800,0.01200,0.00741,0.00470
+Savage,Gateway Disc Sports,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+Scout (new),Gateway Disc Sports,Midrange,Understable,Flat,0.18090,0.10900,0.01400,0.02100,0.01100,0.01978,0.00017
+Scout (old),Gateway Disc Sports,Fairway,Stable,Concave,0.17430,0.10500,0.01700,0.02000,0.01200,0.00448,0.00354
+Shaman,Gateway Disc Sports,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01800,0.01300,0.00646,0.00325
+Siren,Gateway Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01800,0.01200,0.00753,0.00478
+Slayer,Gateway Disc Sports,Driver,Stable,Concave,0.17430,0.10500,0.02300,0.01700,0.01200,0.00503,0.00397
+Slayer (retooled),Gateway Disc Sports,Driver,Stable,Concave,0.17510,0.10550,0.02350,0.01500,0.01200,0.00628,0.00398
+Spear,Gateway Disc Sports,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01400,0.01100,0.00691,0.00347
+Speed Demon,Gateway Disc Sports,Driver,Overstable,Concave,0.17760,0.10700,0.02200,0.01800,0.01100,0.01322,0.00388
+Speed Demon DT,Gateway Disc Sports,Driver,Overstable,Concave,0.17680,0.10650,0.02150,0.01800,0.01100,0.01201,0.00469
+Spirit,Gateway Disc Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01800,0.01100,0.00926,0.00466
+Voodoo,Gateway Disc Sports,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02100,0.01600,0.00511,0.00324
+Voodoo (revised),Gateway Disc Sports,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01600,0.00756,0.00380
+Warlock,Gateway Disc Sports,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02300,0.01600,0.00559,0.00355
+Warrior (new),Gateway Disc Sports,Midrange,Stable,NONE,0.18260,0.11000,0.01350,0.01900,0.01200,0.01805,0.00000
+Warrior (old),Gateway Disc Sports,Fairway,Stable,Concave,0.17430,0.10500,0.01700,0.02100,0.01200,0.00471,0.00372
+Warspear,Gateway Disc Sports,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01800,0.01300,0.00646,0.00325
+Wizard,Gateway Disc Sports,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02100,0.01800,0.00299,0.00236
+Wizard (revised),Gateway Disc Sports,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01800,0.00758,0.00381
+Fenris,Guru Disc Golf,Driver,Overstable,Concave,0.17600,0.10600,0.02500,0.01700,0.01100,0.00971,0.00488
+Midgard,Guru Disc Golf,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01700,0.01100,0.00588,0.00373
+Mjølner,Guru Disc Golf,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02000,0.01500,0.00719,0.00362
+Sleipner,Guru Disc Golf,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01500,0.01100,0.00772,0.00388
+Thor,Guru Disc Golf,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.02100,0.01300,0.01869,0.00126
+All in One,HOLE19 sarl,Putter,Understable,Flat,0.17680,0.10650,0.00950,0.01900,0.01400,0.00919,0.00359
+Hero Bullseye Putt & Approach,Hero Disc,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.01800,0.01400,0.00437,0.00277
+Hero Maximus Distance Driver,Hero Disc,Fairway,Stable,Concave,0.17510,0.10550,0.01750,0.01600,0.01200,0.00544,0.00345
+Hero Stinger Mid-Range,Hero Disc,Midrange,Stable,NONE,0.17600,0.10600,0.01000,0.01900,0.01300,0.00682,0.00343
+Guardian,Hero Leports Co.,Putter,Stable,Flat,0.17680,0.10650,0.01000,0.02100,0.01500,0.01033,0.00403
+Cheengz I-One,Hyperflite,Putter,Understable,Flat,0.18340,0.11050,0.00900,0.02000,0.01400,0.01900,0.00000
+Alpaca,Infinite Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02000,0.01500,0.00499,0.00316
+Anubis,Infinite Discs,Midrange,Stable,Concave,0.18090,0.10900,0.01550,0.02100,0.01300,0.01978,0.00017
+Aztec,Infinite Discs,Driver,Stable,Concave,0.17600,0.10600,0.02150,0.01500,0.01100,0.00782,0.00393
+Centurion,Infinite Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01650,0.01800,0.01200,0.00588,0.00373
+Chariot,Infinite Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01700,0.01400,0.01601,0.00014
+Cohort,Infinite Discs,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.01800,0.01300,0.00436,0.00276
+Emperor,Infinite Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01700,0.01200,0.00711,0.00451
+Exodus,Infinite Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01800,0.01100,0.00623,0.00395
+Inca,Infinite Discs,Putter,Stable,Flat,0.18010,0.10850,0.01350,0.01900,0.01400,0.01691,0.00114
+Maya,Infinite Discs,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.01600,0.01100,0.00617,0.00391
+Myth,Infinite Discs,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02100,0.01500,0.00785,0.00395
+Pharaoh,Infinite Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01400,0.01100,0.00585,0.00371
+Ra,Infinite Discs,Putter,Stable,Flat,0.18010,0.10850,0.01450,0.01800,0.01400,0.01602,0.00108
+Ruin,Infinite Discs,Putter,Stable,Flat,0.18090,0.10900,0.01350,0.01800,0.01400,0.01696,0.00014
+Scarab,Infinite Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02100,0.01500,0.00755,0.00380
+Scepter,Infinite Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01950,0.01400,0.01100,0.00691,0.00347
+Slab,Infinite Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01600,0.01200,0.00869,0.00437
+Sphinx,Infinite Discs,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01600,0.01100,0.00575,0.00364
+Tomb,Infinite Discs,Midrange,Understable,Convex,0.17680,0.10650,0.01100,0.01600,0.01300,0.00810,0.00316
+Ace,Innova Champion Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01600,0.01600,0.01200,0.00513,0.00325
+Aero,Innova Champion Discs,Midrange,Understable,NONE,0.18010,0.10850,0.01050,0.02500,0.01300,0.02224,0.00151
+Animal,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02100,0.01300,0.00754,0.00379
+Ape,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02450,0.01500,0.01200,0.00647,0.00410
+Archangel,Innova Champion Discs,Driver,Understable,Concave,0.17510,0.10550,0.01900,0.01600,0.01500,0.00577,0.00366
+Archon,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.02250,0.01700,0.01200,0.00689,0.00437
+Atlas,Innova Champion Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01350,0.01700,0.01400,0.01601,0.00014
+Avatar,Innova Champion Discs,Putter,Stable,Flat,0.18010,0.10850,0.01350,0.01800,0.01400,0.01602,0.00108
+Aviar,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02000,0.01500,0.00691,0.00347
+Aviar 3,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.01900,0.01500,0.00683,0.00344
+Aviar Putter,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02000,0.01500,0.00691,0.00347
+Aviar XD,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02100,0.01100,0.00722,0.00363
+Aviar XD (retooled),Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02000,0.01200,0.00689,0.00346
+AviarX3,Innova Champion Discs,Putter,Understable,Flat,0.17680,0.10650,0.01000,0.01800,0.01600,0.00886,0.00346
+Banshee,Innova Champion Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01800,0.01500,0.01200,0.00708,0.00356
+Barracuda,Innova Champion Discs,Midrange,Stable,Concave,0.18680,0.11250,0.01600,0.01700,0.01200,0.01615,0.00000
+Beast,Innova Champion Discs,Driver,Understable,Concave,0.17600,0.10600,0.02050,0.01400,0.01100,0.00710,0.00357
+Birdie,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.00700,0.02300,0.01900,0.00472,0.00299
+Birdie (retooled),Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.00700,0.02400,0.01900,0.00764,0.00384
+Boss,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02500,0.01500,0.01200,0.00858,0.00431
+Bulldog,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01250,0.02000,0.01600,0.00552,0.00350
+Bullfrog,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01800,0.01300,0.00448,0.00284
+CE Aero,Innova Champion Discs,Midrange,Stable,NONE,0.18260,0.11000,0.01000,0.02300,0.01300,0.02185,0.00000
+CE Aviar,Innova Champion Discs,Putter,Understable,Flat,0.17680,0.10650,0.00900,0.02000,0.01500,0.00953,0.00372
+CE Eagle,Innova Champion Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01600,0.01200,0.00733,0.00368
+CE FireBird,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01400,0.01200,0.00681,0.00342
+CE Leopard,Innova Champion Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01600,0.01600,0.01100,0.00512,0.00325
+CE Spider,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01700,0.01400,0.00683,0.00344
+CE TeeBird,Innova Champion Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01500,0.01100,0.00687,0.00345
+CE Valkyrie,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01400,0.01200,0.00681,0.00342
+CRO,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.01350,0.02000,0.01400,0.00818,0.00411
+Caiman,Innova Champion Discs,Midrange,Understable,Flat,0.17510,0.10550,0.01400,0.01700,0.01400,0.00501,0.00318
+Cheetah,Innova Champion Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01600,0.01900,0.01200,0.00609,0.00386
+Cheetah (retooled),Innova Champion Discs,Midrange,Overstable,Concave,0.17600,0.10600,0.01600,0.01900,0.01200,0.00843,0.00424
+Classic Ace,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02200,0.01100,0.00757,0.00380
+Classic Roc,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02000,0.01200,0.00689,0.00346
+Cobra,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02000,0.01100,0.01780,0.00120
+Cobra Classic,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02100,0.01100,0.01869,0.00126
+Colossus,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01700,0.01100,0.00744,0.00472
+Colt,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01100,0.01800,0.01300,0.00672,0.00338
+Commander,Innova Champion Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.02200,0.01200,0.02073,0.00017
+Condor,Innova Champion Discs,Putter,Stable,Flat,0.20000,0.12050,0.01300,0.02200,0.01600,0.02090,0.00000
+Corvette,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01800,0.01200,0.00765,0.00485
+Coupe,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02000,0.01300,0.00689,0.00347
+Coyote,Innova Champion Discs,Midrange,Stable,Convex,0.18010,0.10850,0.01150,0.01900,0.01300,0.01691,0.00114
+Croc,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01400,0.02000,0.01400,0.00590,0.00374
+Daedalus,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01500,0.01200,0.00628,0.00398
+Dart,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.01200,0.02200,0.01400,0.00853,0.00429
+Destroyer,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01400,0.01200,0.00558,0.00354
+Dolphin,Innova Champion Discs,Midrange,Stable,Concave,0.17760,0.10700,0.01600,0.02100,0.01200,0.01542,0.00453
+Dominator,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02450,0.01400,0.01100,0.00604,0.00383
+Dragon,Innova Champion Discs,Fairway,Stable,Concave,0.17430,0.10500,0.01800,0.01900,0.01200,0.00449,0.00354
+Eagle (new),Innova Champion Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01600,0.01200,0.00733,0.00368
+Eagle (old),Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01050,0.02500,0.01300,0.02224,0.00151
+Firebird,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01400,0.01200,0.00503,0.00319
+Firebird L (FL),Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01700,0.01200,0.00611,0.00388
+Firefly,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02100,0.01500,0.00510,0.00323
+Firestorm,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01500,0.01100,0.00617,0.00391
+Foxbat,Innova Champion Discs,Putter,Stable,Flat,0.18010,0.10850,0.01350,0.02200,0.01400,0.01958,0.00132
+Gargoyle,Innova Champion Discs,Midrange,Stable,Flat,0.17600,0.10600,0.01400,0.02000,0.01200,0.00831,0.00418
+Gator,Innova Champion Discs,Putter,Overstable,Flat,0.17600,0.10600,0.01300,0.01900,0.01400,0.00764,0.00384
+Gator3,Innova Champion Discs,Putter,Stable,Concave,0.17600,0.10600,0.01500,0.01800,0.01400,0.00775,0.00389
+Gazelle,Innova Champion Discs,Midrange,Overstable,Concave,0.17600,0.10600,0.01600,0.01800,0.01200,0.00799,0.00402
+Goblin,Innova Champion Discs,Putter,Stable,Flat,0.17600,0.10600,0.00950,0.02200,0.01300,0.00774,0.00389
+Gopher,Innova Champion Discs,Putter,Understable,Flat,0.19010,0.11450,0.00700,0.02500,0.02100,0.02375,0.00000
+Gremlin,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01350,0.01800,0.01200,0.00735,0.00370
+Griffin,Innova Champion Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.02000,0.01300,0.00917,0.00461
+Groove,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01200,0.00722,0.00458
+Hammer,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02100,0.01100,0.01869,0.00126
+Hawg,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01200,0.02000,0.01300,0.00775,0.00390
+Hydra,Innova Champion Discs,Putter,Stable,Flat,0.17510,0.10550,0.01400,0.02000,0.01400,0.00590,0.00374
+Invader,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.01900,0.01500,0.00697,0.00350
+Invictus,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.01500,0.01200,0.00783,0.00394
+Jaguar,Innova Champion Discs,Fairway,Stable,Concave,0.20000,0.12050,0.01600,0.01700,0.01400,0.01615,0.00000
+Katana,Innova Champion Discs,Driver,Understable,Concave,0.17600,0.10600,0.02450,0.01800,0.01200,0.01016,0.00511
+Kite,Innova Champion Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.01900,0.01300,0.00858,0.00431
+Krait,Innova Champion Discs,Driver,Stable,Concave,0.17600,0.10600,0.02300,0.02300,0.01200,0.01250,0.00628
+Leopard,Innova Champion Discs,Midrange,Overstable,Concave,0.17600,0.10600,0.01600,0.01600,0.01100,0.00710,0.00357
+Leopard 3,Innova Champion Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01700,0.01700,0.01100,0.00778,0.00391
+Lion,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01350,0.01700,0.01400,0.01513,0.00102
+Lycan,Innova Champion Discs,Putter,Stable,Concave,0.18090,0.10900,0.01500,0.02100,0.01400,0.01978,0.00017
+Lynx,Innova Champion Discs,Putter,Stable,Flat,0.20000,0.12050,0.01300,0.02500,0.01600,0.02375,0.00000
+Mako,Innova Champion Discs,Putter,Stable,Flat,0.18010,0.10850,0.01200,0.02100,0.01400,0.01869,0.00126
+Mako 3,Innova Champion Discs,Putter,Stable,Convex,0.18010,0.10850,0.01350,0.01900,0.01400,0.01691,0.00114
+Mamba,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02100,0.01700,0.01100,0.00655,0.00415
+Manta,Innova Champion Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01900,0.01200,0.01790,0.00015
+Max,Innova Champion Discs,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01900,0.01200,0.01005,0.00505
+Mirage,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01100,0.01900,0.01200,0.00708,0.00356
+Monarch,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.02050,0.01600,0.01200,0.00607,0.00385
+Monster,Innova Champion Discs,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01400,0.01200,0.00701,0.00352
+Moray,Innova Champion Discs,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01900,0.01100,0.01592,0.00213
+Mystere,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.01600,0.01100,0.00617,0.00391
+ORC,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01900,0.01200,0.00951,0.00478
+Panther,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01900,0.01200,0.00762,0.00383
+Pegasus,Innova Champion Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.01700,0.01100,0.00566,0.00359
+Phenix,Innova Champion Discs,Fairway,Stable,Concave,0.19090,0.11500,0.01700,0.02600,0.01300,0.02470,0.00000
+Pig,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.01400,0.02100,0.01400,0.00874,0.00439
+Piranha,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.00700,0.02100,0.01600,0.00666,0.00335
+Pole Cat,Innova Champion Discs,Putter,Understable,Flat,0.17680,0.10650,0.00700,0.02300,0.01600,0.01026,0.00401
+Puma,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01700,0.01200,0.00682,0.00343
+Python,Innova Champion Discs,Driver,Stable,Concave,0.18010,0.10850,0.01900,0.01700,0.01100,0.01513,0.00102
+Ram,Innova Champion Discs,Fairway,Stable,Concave,0.18010,0.10850,0.01800,0.01900,0.01300,0.01691,0.00114
+Rat,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01150,0.01700,0.01400,0.00647,0.00325
+Raven,Innova Champion Discs,Midrange,Overstable,Concave,0.18010,0.10850,0.01600,0.01900,0.01200,0.01691,0.00114
+Rhyno,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01900,0.01300,0.00682,0.00343
+Rhyno X,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01050,0.02000,0.01300,0.00732,0.00368
+Roadrunner,Innova Champion Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01400,0.01200,0.00485,0.00308
+Roc,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02000,0.01300,0.01780,0.00120
+Roc 3,Innova Champion Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.02000,0.01300,0.01884,0.00016
+RocX3,Innova Champion Discs,Putter,Stable,Flat,0.18090,0.10900,0.01400,0.02000,0.01400,0.01884,0.00016
+Savant,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01600,0.01100,0.00585,0.00371
+Scorpion,Innova Champion Discs,Fairway,Overstable,Concave,0.18680,0.11250,0.01700,0.02100,0.01200,0.01995,0.00000
+Shark,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02100,0.01300,0.01869,0.00126
+Shark 3,Innova Champion Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.02000,0.01300,0.01884,0.00016
+Shryke,Innova Champion Discs,Driver,Understable,Concave,0.17510,0.10550,0.02350,0.01700,0.01200,0.00711,0.00451
+Sidewinder,Innova Champion Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01400,0.01200,0.00485,0.00308
+Skeeter,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01250,0.01900,0.01300,0.00749,0.00377
+Sonic,Innova Champion Discs,Putter,Understable,Flat,0.17930,0.10800,0.00600,0.02300,0.01600,0.01927,0.00258
+Spider,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01700,0.01400,0.00683,0.00344
+Starfire,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01400,0.01100,0.00700,0.00352
+Starfire L (SL),Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01700,0.01100,0.00633,0.00401
+Stingray,Innova Champion Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01800,0.01100,0.01602,0.00108
+Stud,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01150,0.01900,0.01300,0.00722,0.00363
+TL 3,Innova Champion Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01800,0.01700,0.01100,0.00802,0.00403
+Tee-Rex,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.02150,0.01700,0.01200,0.00667,0.00423
+TeeBird,Innova Champion Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.01500,0.01100,0.00687,0.00345
+TeeBird L (TL),Innova Champion Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01600,0.01200,0.00554,0.00352
+TeeDevil,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01600,0.01200,0.00892,0.00449
+Teebird 3,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01850,0.01700,0.01100,0.00814,0.00409
+Tern,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01700,0.01100,0.00688,0.00437
+Thunderbird,Innova Champion Discs,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01600,0.01100,0.00789,0.00397
+Toro,Innova Champion Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01300,0.01700,0.01400,0.00683,0.00344
+VRoc,Innova Champion Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.02000,0.01300,0.01884,0.00016
+Valkyrie,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01400,0.01200,0.00503,0.00319
+Viking,Innova Champion Discs,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01400,0.01100,0.00681,0.00342
+Viper,Innova Champion Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01600,0.02000,0.01300,0.01780,0.00120
+Vulcan,Innova Champion Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01400,0.01100,0.00780,0.00392
+Wahoo,Innova Champion Discs,Driver,Stable,Concave,0.17430,0.10500,0.02450,0.02000,0.01200,0.00627,0.00496
+Warhog,Innova Champion Discs,Putter,Understable,Flat,0.17600,0.10600,0.01400,0.02200,0.01400,0.00916,0.00460
+Wedge,Innova Champion Discs,Midrange,Stable,NONE,0.17600,0.10600,0.01000,0.01700,0.01200,0.00610,0.00306
+Whale,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02000,0.01500,0.00499,0.00316
+Whippet,Innova Champion Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.01900,0.01300,0.00871,0.00438
+Wolf,Innova Champion Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01200,0.01600,0.01100,0.01507,0.00013
+Wombat,Innova Champion Discs,Putter,Stable,Flat,0.18090,0.10900,0.01450,0.02200,0.01400,0.02073,0.00017
+Wombat3,Innova Champion Discs,Putter,Stable,Flat,0.18090,0.10900,0.01450,0.02000,0.01400,0.01884,0.00016
+Wraith,Innova Champion Discs,Driver,Stable,Concave,0.17510,0.10550,0.02100,0.01400,0.01200,0.00540,0.00342
+XCaliber,Innova Champion Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01600,0.01200,0.00669,0.00424
+XT V-Aviar,Innova Champion Discs,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02000,0.01400,0.00485,0.00308
+Berg,Kastaplast,Putter,Understable,Flat,0.17510,0.10550,0.00900,0.02000,0.01400,0.00459,0.00291
+Falk,Kastaplast,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01800,0.01100,0.00658,0.00417
+Grym,Kastaplast,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01800,0.01100,0.00717,0.00455
+Grym X,Kastaplast,Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.01600,0.01100,0.00835,0.00420
+Göte,Kastaplast,Midrange,Stable,NONE,0.18180,0.10950,0.01300,0.02100,0.01300,0.01995,0.00000
+Kaxe,Kastaplast,Putter,Stable,Concave,0.17430,0.10500,0.01500,0.01900,0.01300,0.00381,0.00301
+Kaxe Z,Kastaplast,Putter,Stable,Concave,0.17510,0.10550,0.01550,0.01900,0.01300,0.00597,0.00378
+Lots,Kastaplast,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01500,0.01100,0.00539,0.00342
+Rask (new),Kastaplast,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01600,0.01100,0.00846,0.00425
+Rask (old),Kastaplast,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01600,0.01100,0.00638,0.00404
+Reko,Kastaplast,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.01800,0.01400,0.00660,0.00332
+Stål,Kastaplast,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01800,0.01100,0.00647,0.00410
+Svea,Kastaplast,Midrange,Stable,NONE,0.18180,0.10950,0.01300,0.02100,0.01300,0.01995,0.00000
+Beginner Fairway Driver,Kestrel Outdoors,Fairway,Overstable,Concave,0.17430,0.10500,0.01700,0.01500,0.01100,0.00336,0.00265
+Beginner Mid-Range,Kestrel Outdoors,Midrange,Understable,NONE,0.17510,0.10550,0.01000,0.01900,0.01200,0.00460,0.00291
+Beginner Putter,Kestrel Outdoors,Putter,Understable,Flat,0.17600,0.10600,0.00800,0.01900,0.01600,0.00630,0.00317
+Orsus,LB Sport Loisir,Midrange,Stable,Flat,0.17850,0.10750,0.01400,0.02300,0.01200,0.01808,0.00377
+Ka-kaa,Las Aves Disc Golf,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01600,0.01100,0.00638,0.00404
+Wo-Hoo,Las Aves Disc Golf,Putter,Stable,Concave,0.17510,0.10550,0.01550,0.01800,0.01300,0.00565,0.00359
+Anchor,Latitude 64,Putter,Overstable,Flat,0.18010,0.10850,0.01400,0.01800,0.01500,0.01602,0.00108
+Ballista,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01100,0.00722,0.00458
+Ballista Pro,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01700,0.01100,0.00959,0.00482
+Beetle,Latitude 64,Putter,Understable,Flat,0.18180,0.10950,0.00800,0.02200,0.01600,0.02090,0.00000
+Bite,Latitude 64,Putter,Understable,Flat,0.18760,0.11300,0.00700,0.02300,0.01400,0.02185,0.00000
+Blitz,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01600,0.01200,0.00847,0.00426
+Bolt,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01700,0.01100,0.00711,0.00451
+Bryce,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01100,0.00851,0.00428
+Caltrop,Latitude 64,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.01900,0.01500,0.00258,0.00204
+Claymore,Latitude 64,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01900,0.01200,0.01691,0.00114
+Compass,Latitude 64,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02300,0.01300,0.01927,0.00258
+Core,Latitude 64,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.02000,0.01200,0.01780,0.00120
+Culverin,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.02100,0.02000,0.01100,0.01029,0.00517
+Cutlass,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01700,0.01200,0.00689,0.00437
+Dagger,Latitude 64,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02100,0.01500,0.00510,0.00323
+Diamond,Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.01850,0.01400,0.01100,0.00494,0.00313
+Explorer,Latitude 64,Fairway,Stable,Concave,0.17600,0.10600,0.01750,0.01700,0.01100,0.00790,0.00397
+Faith (Royal Prototype),Latitude 64,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02200,0.01500,0.00823,0.00414
+Falchion,Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01600,0.01100,0.00575,0.00364
+Flow,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01800,0.01200,0.00706,0.00448
+Fuji,Latitude 64,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01800,0.01200,0.01602,0.00108
+Fury,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01800,0.01100,0.00875,0.00440
+Fuse,Latitude 64,Midrange,Understable,NONE,0.18180,0.10950,0.01300,0.02100,0.01300,0.01995,0.00000
+Gauntlet,Latitude 64,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02100,0.01500,0.00785,0.00395
+Gladiator,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01700,0.01100,0.00700,0.00444
+Gobi,Latitude 64,Midrange,Stable,Flat,0.18010,0.10850,0.01450,0.01800,0.01300,0.01602,0.00108
+Grace (Royal Prototype),Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.02250,0.01600,0.01100,0.00648,0.00411
+Halo,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01400,0.01100,0.00790,0.00397
+Havoc,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01700,0.01100,0.00688,0.00437
+Jade,Latitude 64,Driver,Stable,Concave,0.17430,0.10500,0.01850,0.01800,0.01100,0.00435,0.00344
+Keystone,Latitude 64,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01900,0.01500,0.00474,0.00301
+Knight,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02450,0.01600,0.01100,0.00690,0.00437
+Macana,Latitude 64,Putter,Understable,Flat,0.17510,0.10550,0.01100,0.02100,0.01400,0.00537,0.00340
+Mace,Latitude 64,Midrange,Stable,NONE,0.18090,0.10900,0.01300,0.02100,0.01300,0.01978,0.00017
+Maul,Latitude 64,Driver,Stable,Concave,0.17760,0.10700,0.01850,0.02000,0.01100,0.01469,0.00431
+Medius,Latitude 64,Midrange,Stable,NONE,0.17850,0.10750,0.01350,0.02400,0.01200,0.01886,0.00394
+Mercy,Latitude 64,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.02100,0.01500,0.00770,0.00387
+Mirus,Latitude 64,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.02400,0.01100,0.00623,0.00492
+Missilen,Latitude 64,Driver,Overstable,Concave,0.17760,0.10700,0.02500,0.01700,0.01100,0.01249,0.00366
+Musket,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02050,0.01800,0.01100,0.00913,0.00459
+Pain,Latitude 64,Putter,Stable,Flat,0.18010,0.10850,0.01400,0.02000,0.01400,0.01780,0.00120
+Pearl,Latitude 64,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.01800,0.01200,0.01508,0.00202
+Pioneer,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.01950,0.01500,0.01200,0.00740,0.00372
+Primitus,Latitude 64,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.02300,0.01200,0.00598,0.00472
+Pure,Latitude 64,Putter,Stable,Flat,0.17600,0.10600,0.01000,0.01800,0.01400,0.00647,0.00325
+Raketen,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01100,0.00722,0.00458
+Recoil,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01800,0.01200,0.00952,0.00479
+Riot,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01900,0.01200,0.01005,0.00505
+Rive (Royal Prototype),Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.02300,0.01800,0.01200,0.00741,0.00470
+River,Latitude 64,Driver,Stable,Concave,0.17850,0.10750,0.01850,0.01900,0.01200,0.01493,0.00312
+River Pro,Latitude 64,Fairway,Stable,Concave,0.17760,0.10700,0.01800,0.01800,0.01300,0.01322,0.00388
+Ruby,Latitude 64,Putter,Understable,Flat,0.17850,0.10750,0.01000,0.01900,0.01400,0.01493,0.00312
+SPZ 1 (Putter,Latitude 64,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02100,0.01500,0.00785,0.00395
+SPZ 2 (Midrange,Latitude 64,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.01900,0.01300,0.01691,0.00114
+SPZ 3 (Driver,Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01800,0.01200,0.00647,0.00410
+Saint,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01900,0.01200,0.00924,0.00465
+Saint Pro,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.02000,0.01200,0.00959,0.00482
+Sapphire,Latitude 64,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.01700,0.01200,0.00442,0.00349
+Sarek,Latitude 64,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02200,0.01500,0.00823,0.00414
+Scythe,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01500,0.01100,0.00607,0.00385
+Sinus AP,Latitude 64,Putter,Stable,Flat,0.17600,0.10600,0.00950,0.01900,0.01400,0.00669,0.00336
+Sinus SP,Latitude 64,Putter,Stable,Flat,0.17600,0.10600,0.00950,0.01900,0.01400,0.00669,0.00336
+Spark,Latitude 64,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01500,0.01100,0.00729,0.00367
+Spike,Latitude 64,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01800,0.01300,0.00646,0.00325
+Stiletto,Latitude 64,Driver,Overstable,Concave,0.17680,0.10650,0.02450,0.01700,0.01100,0.01161,0.00454
+Striker,Latitude 64,Driver,Overstable,Concave,0.17760,0.10700,0.01900,0.01600,0.01200,0.01175,0.00345
+Trident,Latitude 64,Driver,Stable,Concave,0.17760,0.10700,0.01900,0.01400,0.01100,0.01028,0.00302
+Trust (Royal Prototype),Latitude 64,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.01900,0.01300,0.01691,0.00114
+Villain,Latitude 64,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01700,0.01200,0.00667,0.00423
+Vision,Latitude 64,Driver,Stable,Concave,0.17510,0.10550,0.01850,0.01900,0.01100,0.00670,0.00425
+XXX,Latitude 64,Driver,Stable,Concave,0.17850,0.10750,0.02000,0.01500,0.01100,0.01179,0.00246
+Zion,Latitude 64,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01100,0.00851,0.00428
+Cipher,Launch Disc Golf,Driver,Stable,Concave,0.17930,0.10800,0.01850,0.01800,0.01200,0.01508,0.00202
+Code,Launch Disc Golf,Midrange,Stable,Flat,0.17600,0.10600,0.01450,0.01600,0.01200,0.00676,0.00340
+Code X,Launch Disc Golf,Midrange,Stable,Flat,0.17600,0.10600,0.01450,0.01600,0.01200,0.00676,0.00340
+Lander,Launch Disc Golf,Putter,Stable,Flat,0.17430,0.10500,0.01200,0.01800,0.01400,0.00297,0.00235
+Aftermath,Legacy Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01700,0.01100,0.00959,0.00482
+Bandit,Legacy Discs,Driver,Stable,Concave,0.17680,0.10650,0.02000,0.01500,0.01100,0.00966,0.00377
+Cannon,Legacy Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01800,0.01200,0.00788,0.00500
+Clozer,Legacy Discs,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02100,0.01400,0.00725,0.00364
+Clutch,Legacy Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02000,0.01400,0.00690,0.00347
+Enemy,Legacy Discs,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01900,0.01200,0.00696,0.00441
+Fighter,Legacy Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02050,0.01700,0.01200,0.00863,0.00434
+Gauge,Legacy Discs,Putter,Stable,Flat,0.18090,0.10900,0.01200,0.02200,0.01400,0.02073,0.00017
+Ghost,Legacy Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02000,0.01300,0.01780,0.00120
+Hunter,Legacy Discs,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.01400,0.01400,0.00483,0.00243
+Mongoose,Legacy Discs,Driver,Stable,Concave,0.17680,0.10650,0.02000,0.01500,0.01100,0.00966,0.00377
+Nemesis,Legacy Discs,Driver,Overstable,Concave,0.17680,0.10650,0.02000,0.01500,0.01100,0.00966,0.00377
+Outlaw,Legacy Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02300,0.01600,0.01100,0.00473,0.00373
+Outlaw (retooled),Legacy Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01600,0.01100,0.00669,0.00424
+Patriot,Legacy Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01800,0.01800,0.01100,0.00849,0.00427
+Phenom,Legacy Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01750,0.01700,0.01200,0.00791,0.00398
+Prowler,Legacy Discs,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02200,0.01400,0.00759,0.00382
+Pursuit,Legacy Discs,Midrange,Stable,Concave,0.17680,0.10650,0.01500,0.01600,0.01300,0.00909,0.00355
+Rampage,Legacy Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02500,0.01800,0.01200,0.00788,0.00500
+Recluse,Legacy Discs,Midrange,Stable,Concave,0.17680,0.10650,0.01500,0.01600,0.01300,0.00909,0.00355
+Recon,Legacy Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01700,0.01100,0.00947,0.00476
+Rival,Legacy Discs,Fairway,Overstable,Concave,0.17680,0.10650,0.01750,0.02000,0.01200,0.01212,0.00473
+Valor,Legacy Discs,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02100,0.01300,0.01869,0.00126
+Vengeance,Legacy Discs,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01700,0.01200,0.00851,0.00428
+#1 Flyer,Lightning Discs,Midrange,Stable,Concave,0.17760,0.10700,0.01600,0.01500,0.01100,0.01102,0.00323
+#1 Helix,Lightning Discs,Midrange,Stable,Concave,0.17850,0.10750,0.01600,0.01600,0.01300,0.01258,0.00262
+#1 Hookshot,Lightning Discs,Midrange,Stable,Concave,0.18430,0.11100,0.01500,0.01700,0.01500,0.01615,0.00000
+#1 Hyzer,Lightning Discs,Fairway,Stable,Concave,0.18010,0.10850,0.01800,0.01800,0.01300,0.01602,0.00108
+#1 Roller,Lightning Discs,Fairway,Stable,Concave,0.18010,0.10850,0.01800,0.01700,0.01100,0.01513,0.00102
+#1 Slice,Lightning Discs,Midrange,Overstable,Flat,0.18760,0.11300,0.01400,0.01800,0.01200,0.01710,0.00000
+#2 Driver,Lightning Discs,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.02000,0.01200,0.01469,0.00431
+#2 Helix,Lightning Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01700,0.01700,0.01400,0.00780,0.00392
+#2 Hookshot,Lightning Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02100,0.01100,0.01651,0.00344
+#2 Hyzer,Lightning Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01600,0.02000,0.01200,0.00641,0.00406
+#2 Putter,Lightning Discs,Putter,Understable,Flat,0.18090,0.10900,0.01000,0.02600,0.01600,0.02449,0.00021
+#2 Roller,Lightning Discs,Driver,Stable,Concave,0.19590,0.11800,0.02200,0.02100,0.01400,0.01995,0.00000
+#2 Slice,Lightning Discs,Midrange,Overstable,NONE,0.17930,0.10800,0.01300,0.02000,0.01100,0.01676,0.00224
+#2 Upshot,Lightning Discs,Putter,Stable,Flat,0.17760,0.10700,0.00900,0.02000,0.01500,0.01247,0.00366
+#3 Driver,Lightning Discs,Midrange,Overstable,Concave,0.18680,0.11250,0.01600,0.02000,0.01200,0.01900,0.00000
+#3 Flyer,Lightning Discs,Midrange,Stable,Concave,0.18510,0.11150,0.01550,0.02000,0.01200,0.01900,0.00000
+#3 Hookshot,Lightning Discs,Midrange,Overstable,NONE,0.18180,0.10950,0.01350,0.02100,0.01200,0.01995,0.00000
+#4 Driver,Lightning Discs,Fairway,Overstable,Concave,0.17600,0.10600,0.01650,0.01700,0.01100,0.00766,0.00385
+AT-6 Texan,Lightning Discs,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02500,0.01300,0.02094,0.00281
+B-17 Flying Fortress,Lightning Discs,Driver,Stable,Concave,0.19590,0.11800,0.02200,0.02100,0.01400,0.01995,0.00000
+B-2 Stealth,Lightning Discs,Midrange,Stable,Concave,0.18590,0.11200,0.01500,0.01800,0.01200,0.01710,0.00000
+B-25 Mitchell,Lightning Discs,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.01500,0.01100,0.01102,0.00323
+B-25 Mitchell (retooled),Lightning Discs,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.01500,0.01100,0.01102,0.00323
+Dauntless,Lightning Discs,Midrange,Stable,Concave,0.18430,0.11100,0.01500,0.01700,0.01500,0.01615,0.00000
+F-14 Tomcat,Lightning Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01900,0.01100,0.01691,0.00114
+F-15 Eagle,Lightning Discs,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.02000,0.01200,0.01469,0.00431
+F-18 Hornet,Lightning Discs,Fairway,Stable,Concave,0.18340,0.11050,0.01600,0.02000,0.01200,0.01900,0.00000
+F-4-U Corsair,Lightning Discs,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01900,0.01100,0.01790,0.00015
+F-6 Hellcat,Lightning Discs,Midrange,Overstable,Flat,0.18760,0.11300,0.01400,0.01800,0.01200,0.01710,0.00000
+F-8-F Bearcat,Lightning Discs,Midrange,Overstable,NONE,0.17930,0.10800,0.01300,0.02000,0.01100,0.01676,0.00224
+Falcon,Lightning Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02400,0.01300,0.01886,0.00394
+Maxline -- 1,Lightning Discs,Driver,Stable,Concave,0.17680,0.10650,0.02100,0.01700,0.01100,0.01121,0.00438
+P-38 Lightning,Lightning Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02100,0.01100,0.01651,0.00344
+P-38J Lightning,Lightning Discs,Midrange,Overstable,NONE,0.18090,0.10900,0.01300,0.01400,0.01100,0.01319,0.00011
+P-51 Mustang,Lightning Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01250,0.02200,0.01200,0.02073,0.00017
+Rubber Putter,Lightning Discs,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.02500,0.01300,0.02094,0.00281
+SR-71 Blackbird,Lightning Discs,Midrange,Overstable,NONE,0.18180,0.10950,0.01350,0.02100,0.01200,0.01995,0.00000
+Spitfire,Lightning Discs,Midrange,Stable,Concave,0.18510,0.11150,0.01550,0.02000,0.01200,0.01900,0.00000
+The Driver,Lightning Discs,Midrange,Overstable,Concave,0.17760,0.10700,0.01600,0.01500,0.01100,0.01102,0.00323
+Thunderbolt,Lightning Discs,Midrange,Stable,NONE,0.17760,0.10700,0.01000,0.02300,0.01200,0.01469,0.00431
+Upshot,Lightning Discs,Putter,Understable,Flat,0.17930,0.10800,0.00700,0.02200,0.01400,0.01843,0.00247
+X-15,Lightning Discs,Midrange,Stable,NONE,0.17760,0.10700,0.01300,0.01800,0.01100,0.01238,0.00363
+Bowie,Lone Star Molding,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01100,0.00722,0.00458
+Mad Cat,Lone Star Molding,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01800,0.01200,0.00876,0.00440
+Penny Putter,Lone Star Molding,Putter,Understable,Flat,0.17430,0.10500,0.01100,0.01900,0.01500,0.00292,0.00230
+The Dillard Midrange Md-1,Lone Star Molding,Midrange,Stable,NONE,0.17760,0.10700,0.01300,0.01600,0.01200,0.01101,0.00323
+The Harpoon,Lone Star Molding,Midrange,Stable,NONE,0.17850,0.10750,0.01200,0.01700,0.01200,0.01336,0.00279
+The Mockingbird (Ka Kaw),Lone Star Molding,Fairway,Overstable,Concave,0.17430,0.10500,0.01750,0.02000,0.01200,0.00460,0.00364
+Hydrogen,Løft Discs,Putter,Understable,Flat,0.17600,0.10600,0.00750,0.02100,0.01500,0.00681,0.00342
+Amp,MVP Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.01900,0.01700,0.01100,0.00421,0.00333
+Anode,MVP Disc Sports,Putter,Stable,Flat,0.17430,0.10500,0.01050,0.02100,0.01400,0.00309,0.00244
+Atom,MVP Disc Sports,Putter,Understable,Flat,0.17510,0.10550,0.01150,0.01900,0.01400,0.00498,0.00316
+Axis,MVP Disc Sports,Midrange,Stable,NONE,0.18090,0.10900,0.01300,0.02100,0.01300,0.01978,0.00017
+Beam,MVP Disc Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02350,0.01700,0.01200,0.00936,0.00470
+Catalyst,MVP Disc Sports,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01900,0.01200,0.00807,0.00512
+Cypher,MVP Disc Sports,Fairway,Stable,Concave,0.17600,0.10600,0.01800,0.01500,0.01200,0.00708,0.00356
+Deflector,MVP Disc Sports,Midrange,Stable,Concave,0.17850,0.10750,0.01600,0.02000,0.01300,0.01572,0.00328
+Dimension,MVP Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02500,0.01800,0.01200,0.00575,0.00454
+Energy,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.02100,0.01200,0.00892,0.00566
+Entropy,MVP Disc Sports,Putter,Stable,Flat,0.17600,0.10600,0.01200,0.02000,0.01400,0.00775,0.00390
+Impulse,MVP Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.01400,0.01200,0.00364,0.00287
+Inertia,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01400,0.01200,0.00522,0.00331
+Ion,MVP Disc Sports,Putter,Understable,Flat,0.17430,0.10500,0.01100,0.01900,0.01600,0.00292,0.00231
+Limit,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02550,0.01800,0.01200,0.00800,0.00507
+Matrix,MVP Disc Sports,Midrange,Stable,Flat,0.17850,0.10750,0.01400,0.01600,0.01400,0.01258,0.00262
+Motion,MVP Disc Sports,Driver,Stable,Concave,0.17430,0.10500,0.02000,0.01400,0.01200,0.00364,0.00287
+Nitro,MVP Disc Sports,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01900,0.01200,0.01073,0.00539
+Nomad,MVP Disc Sports,Putter,Stable,Flat,0.17600,0.10600,0.01100,0.02000,0.01400,0.00747,0.00376
+Octane,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01200,0.00722,0.00458
+Ohm,MVP Disc Sports,Putter,Understable,Flat,0.17600,0.10600,0.01050,0.01900,0.01500,0.00697,0.00350
+Orbital,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01400,0.01100,0.00558,0.00354
+Particle,MVP Disc Sports,Putter,Understable,Flat,0.17510,0.10550,0.01150,0.02000,0.01400,0.00524,0.00333
+Phase,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01400,0.01100,0.00558,0.00354
+Photon,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01400,0.01100,0.00567,0.00360
+Reactor,MVP Disc Sports,Midrange,Stable,Flat,0.17760,0.10700,0.01450,0.01700,0.01300,0.01213,0.00356
+Relativity,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02550,0.01900,0.01200,0.00845,0.00536
+Relay,MVP Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.01500,0.01200,0.00500,0.00317
+Resistor,MVP Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01500,0.01200,0.00520,0.00330
+Servo,MVP Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01400,0.01200,0.00485,0.00308
+Shock,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.01950,0.01600,0.01100,0.00585,0.00371
+Signal,MVP Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01700,0.01500,0.01200,0.00500,0.00317
+Spin,MVP Disc Sports,Putter,Understable,Flat,0.17430,0.10500,0.01100,0.01900,0.01500,0.00292,0.00230
+Switch,MVP Disc Sports,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01400,0.01200,0.00485,0.00308
+Tangent,MVP Disc Sports,Midrange,Stable,NONE,0.17850,0.10750,0.01200,0.02100,0.01300,0.01651,0.00344
+Teleport,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02550,0.01900,0.01200,0.00845,0.00536
+Tensor,MVP Disc Sports,Midrange,Stable,NONE,0.17850,0.10750,0.01200,0.02000,0.01300,0.01572,0.00328
+Tesla,MVP Disc Sports,Driver,Overstable,Concave,0.17430,0.10500,0.02000,0.01400,0.01200,0.00364,0.00287
+Vector,MVP Disc Sports,Midrange,Stable,NONE,0.18010,0.10850,0.01300,0.02100,0.01300,0.01869,0.00126
+Vertex,MVP Disc Sports,Midrange,Stable,NONE,0.17850,0.10750,0.01250,0.01900,0.01300,0.01493,0.00312
+Volt,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01100,0.00596,0.00378
+Wave,MVP Disc Sports,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01400,0.01100,0.00567,0.00360
+Aquarius,Millennium Golf Discs,Driver,Stable,Concave,0.17430,0.10500,0.02000,0.01900,0.01200,0.00494,0.00390
+Aries,Millennium Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02100,0.01600,0.01100,0.00617,0.00391
+Astra,Millennium Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01500,0.01200,0.00598,0.00379
+Aurora MF,Millennium Golf Discs,Putter,Stable,Flat,0.18010,0.10850,0.01150,0.02100,0.01400,0.01869,0.00126
+Draco,Millennium Golf Discs,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01400,0.01200,0.00691,0.00347
+EXP,Millennium Golf Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01600,0.01200,0.00554,0.00352
+Falcon,Millennium Golf Discs,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01400,0.01100,0.00594,0.00377
+JLS,Millennium Golf Discs,Midrange,Stable,Concave,0.17430,0.10500,0.01600,0.01500,0.01100,0.00318,0.00251
+Marksman,Millennium Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01950,0.01600,0.01200,0.00586,0.00371
+Midrange MS/Aurora,Millennium Golf Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01200,0.01800,0.01200,0.01696,0.00014
+Moab,Millennium Golf Discs,Fairway,Stable,Concave,0.18090,0.10900,0.01700,0.01700,0.01200,0.01601,0.00014
+Mortar,Millennium Golf Discs,Putter,Understable,Flat,0.17600,0.10600,0.01400,0.01900,0.01400,0.00791,0.00398
+Omega,Millennium Golf Discs,Putter,Understable,Flat,0.17510,0.10550,0.00900,0.02000,0.01500,0.00460,0.00291
+Omega SuperSoft Putter Big Bead,Millennium Golf Discs,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02100,0.01500,0.00725,0.00365
+Omega4,Millennium Golf Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02000,0.01500,0.00499,0.00316
+Orion LF,Millennium Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01850,0.01500,0.01200,0.00530,0.00336
+Orion LS,Millennium Golf Discs,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01400,0.01200,0.00503,0.00319
+Polaris LF,Millennium Golf Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01600,0.01900,0.01100,0.00608,0.00386
+Polaris LS,Millennium Golf Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01600,0.01900,0.01100,0.00608,0.00386
+QJLS,Millennium Golf Discs,Midrange,Stable,Concave,0.17600,0.10600,0.01600,0.01800,0.01100,0.00798,0.00401
+QMS,Millennium Golf Discs,Putter,Stable,Flat,0.18090,0.10900,0.01200,0.02000,0.01400,0.01884,0.00016
+Quasar,Millennium Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02500,0.01600,0.01200,0.00915,0.00460
+Sabot,Millennium Golf Discs,Driver,Stable,Concave,0.17510,0.10550,0.02200,0.01700,0.01200,0.00678,0.00430
+Scorpius,Millennium Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01200,0.00722,0.00458
+Sentinel MF,Millennium Golf Discs,Midrange,Overstable,NONE,0.18010,0.10850,0.01300,0.02100,0.01200,0.01869,0.00126
+Tachyon LF,Millennium Golf Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01600,0.02000,0.01300,0.01780,0.00120
+Tachyon LS,Millennium Golf Discs,Midrange,Overstable,Concave,0.18010,0.10850,0.01600,0.01900,0.01200,0.01691,0.00114
+Tank - Panzer,Millennium Golf Discs,Putter,Understable,Flat,0.17600,0.10600,0.01200,0.02100,0.01400,0.00814,0.00409
+Taurus,Millennium Golf Discs,Putter,Understable,Flat,0.18010,0.10850,0.01350,0.02000,0.01500,0.01780,0.00120
+Veteran,Millennium Golf Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01800,0.01200,0.00624,0.00395
+Alpha,Mint Discs,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.02100,0.01200,0.00783,0.00496
+Bobcat,Mint Discs,Putter,Stable,Flat,0.17760,0.10700,0.01450,0.01900,0.01400,0.01356,0.00398
+Bullet,Mint Discs,Putter,Understable,Flat,0.17600,0.10600,0.01150,0.01800,0.01500,0.00686,0.00345
+Freetail,Mint Discs,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.01700,0.01200,0.00633,0.00402
+Grackle,Mint Discs,Driver,Stable,Concave,0.17680,0.10650,0.01900,0.01600,0.01200,0.01006,0.00393
+Jackalope,Mint Discs,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01500,0.01100,0.00740,0.00372
+Longhorn,Mint Discs,Driver,Stable,Concave,0.17680,0.10650,0.02150,0.01500,0.01200,0.01001,0.00391
+Mustang,Mint Discs,Midrange,Stable,Flat,0.17850,0.10750,0.01450,0.01600,0.01300,0.01258,0.00262
+Phoenix,Mint Discs,Driver,Stable,Concave,0.17600,0.10600,0.02000,0.01500,0.01200,0.00751,0.00378
+Profit,Mint Discs,Putter,Understable,Flat,0.17510,0.10550,0.01100,0.01900,0.01600,0.00487,0.00309
+NSH1 TheTeleporter,Newb SimHouse Custom Discs,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01400,0.01200,0.00503,0.00319
+NSH2 The Borg,Newb SimHouse Custom Discs,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01500,0.01200,0.00762,0.00383
+NSH3 Dwayne,Newb SimHouse Custom Discs,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01600,0.01300,0.00586,0.00372
+NSH4 Mr. Putt,Newb SimHouse Custom Discs,Midrange,Understable,NONE,0.17510,0.10550,0.01050,0.01700,0.01300,0.00423,0.00268
+Skeggøx,Nordisc,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.01900,0.01300,0.00858,0.00431
+Caldera,Obsidian Discs Oy,Driver,Overstable,Concave,0.17600,0.10600,0.02250,0.01700,0.01200,0.00912,0.00458
+Cinder,Obsidian Discs Oy,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.02200,0.01300,0.01055,0.00531
+Rift,Obsidian Discs Oy,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01500,0.01200,0.00772,0.00388
+Shard,Obsidian Discs Oy,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01500,0.01200,0.00730,0.00367
+Splinter,Obsidian Discs Oy,Putter,Understable,Flat,0.17680,0.10650,0.01050,0.02400,0.01500,0.01199,0.00468
+Andro 1,Ozone Discs,Midrange,Stable,Concave,0.17850,0.10750,0.01500,0.01800,0.01300,0.01415,0.00295
+Andro C,Ozone Discs,Midrange,Stable,Concave,0.17760,0.10700,0.01500,0.01500,0.01300,0.01082,0.00318
+Andro C (retooled),Ozone Discs,Midrange,Stable,Concave,0.17930,0.10800,0.01500,0.01500,0.01300,0.01257,0.00168
+Hyperion,Ozone Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02150,0.01600,0.01100,0.00444,0.00351
+Mercury Putter,Pacific Cycle,Putter,Understable,Flat,0.17680,0.10650,0.00800,0.02000,0.01600,0.00923,0.00361
+Pluto Driver,Pacific Cycle,Midrange,Overstable,Flat,0.17430,0.10500,0.01400,0.01700,0.01100,0.00320,0.00253
+Saturn Mid Range,Pacific Cycle,Midrange,Stable,Flat,0.17430,0.10500,0.01400,0.01700,0.01100,0.00320,0.00253
+Bird-Dog,Paradigm Disc Golf,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02400,0.01500,0.00340,0.00268
+Terrapin,Paradigm Disc Golf,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.01900,0.01300,0.01691,0.00114
+Tiger,Paradigm Disc Golf,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.01700,0.01100,0.00588,0.00373
+Habit,Plastic Addicts,Putter,Understable,Flat,0.18340,0.11050,0.01000,0.02100,0.01600,0.01995,0.00000
+Intervention,Plastic Addicts,Driver,Stable,Concave,0.17600,0.10600,0.02250,0.01300,0.01100,0.00697,0.00350
+Maximizer,Plastic Paradise,Putter,Understable,Concave,0.18090,0.10900,0.01700,0.01800,0.01600,0.01696,0.00014
+Optimizer,Plastic Paradise,Putter,Understable,Flat,0.18260,0.11000,0.00900,0.01700,0.01700,0.01615,0.00000
+A1,Prodigy Disc,Putter,Stable,Flat,0.17430,0.10500,0.01400,0.02000,0.01300,0.00377,0.00298
+A2,Prodigy Disc,Putter,Stable,Flat,0.17430,0.10500,0.01400,0.02000,0.01300,0.00377,0.00298
+A3,Prodigy Disc,Putter,Stable,Flat,0.17430,0.10500,0.01400,0.02000,0.01300,0.00377,0.00298
+A4,Prodigy Disc,Putter,Understable,Flat,0.17430,0.10500,0.01400,0.02000,0.01300,0.00377,0.00298
+D Model #3,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02150,0.01600,0.01100,0.00444,0.00351
+D Model #5,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02150,0.01600,0.01100,0.00444,0.00351
+D Model Distance Driver S,Prodigy Disc,Driver,Stable,Concave,0.17510,0.10550,0.02200,0.01500,0.01100,0.00598,0.00379
+D Model OS,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02150,0.01500,0.01100,0.00416,0.00329
+D Model US,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02150,0.01600,0.01100,0.00444,0.00351
+D Model US+,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02250,0.01800,0.01100,0.00521,0.00412
+D Model US++,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02200,0.01700,0.01100,0.00482,0.00381
+D1,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01900,0.01200,0.00573,0.00453
+D1 Max,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01600,0.01200,0.00483,0.00381
+D1 V2 (retooled D1),Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01900,0.01200,0.00807,0.00512
+D2,Prodigy Disc,Driver,Stable,Concave,0.17430,0.10500,0.02350,0.01900,0.01200,0.00573,0.00453
+D2 Max,Prodigy Disc,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01900,0.01200,0.00807,0.00512
+D2 V2 (retooled D2),Prodigy Disc,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01900,0.01200,0.00807,0.00512
+D3,Prodigy Disc,Driver,Stable,Concave,0.17430,0.10500,0.02350,0.01700,0.01200,0.00513,0.00405
+D3 Max,Prodigy Disc,Driver,Stable,Concave,0.17510,0.10550,0.02400,0.01800,0.01200,0.00765,0.00485
+D3 V2 (retooled D3),Prodigy Disc,Driver,Stable,Concave,0.17430,0.10500,0.02350,0.01900,0.01200,0.00573,0.00453
+D4,Prodigy Disc,Driver,Stable,Concave,0.17430,0.10500,0.02350,0.01900,0.01200,0.00573,0.00453
+D4 Max,Prodigy Disc,Driver,Stable,Concave,0.17430,0.10500,0.02350,0.01900,0.01200,0.00573,0.00453
+D5,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01600,0.01200,0.00680,0.00431
+D5 V2 (retooled D5),Prodigy Disc,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01700,0.01200,0.00948,0.00477
+D6,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01600,0.01200,0.00492,0.00389
+D6 Max,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01700,0.01200,0.00722,0.00458
+D6 V2 (retooled D6),Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01800,0.01200,0.00543,0.00429
+F Model Fairway Driver S,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.02050,0.01400,0.01100,0.00912,0.00356
+F Model OS,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.02100,0.01600,0.01100,0.01055,0.00412
+F Model OS+,Prodigy Disc,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01700,0.01100,0.00863,0.00434
+F Model US,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.02050,0.01500,0.01100,0.00977,0.00382
+F1,Prodigy Disc,Fairway,Overstable,Concave,0.17680,0.10650,0.01800,0.01500,0.01100,0.00920,0.00359
+F2,Prodigy Disc,Fairway,Stable,Concave,0.17680,0.10650,0.01800,0.01500,0.01100,0.00920,0.00359
+F3,Prodigy Disc,Fairway,Stable,Concave,0.17680,0.10650,0.01800,0.01500,0.01100,0.00920,0.00359
+F5,Prodigy Disc,Fairway,Stable,Concave,0.17680,0.10650,0.01800,0.01900,0.01200,0.01166,0.00455
+F7,Prodigy Disc,Fairway,Stable,Concave,0.17680,0.10650,0.01750,0.01500,0.01100,0.00908,0.00355
+FX-2,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01200,0.00596,0.00378
+H1,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+H1 (retooled H1),Prodigy Disc,Driver,Overstable,Concave,0.17760,0.10700,0.02000,0.01600,0.01200,0.01175,0.00345
+H2,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.01900,0.01700,0.01200,0.01069,0.00418
+H2 V2 (retooled H2),Prodigy Disc,Driver,Overstable,Concave,0.17760,0.10700,0.02000,0.01600,0.01200,0.01175,0.00345
+H3,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.02000,0.01700,0.01200,0.01095,0.00428
+H3 V2 (retooled H3),Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.02000,0.01800,0.01200,0.01160,0.00453
+H4,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+H4 (retooled),Prodigy Disc,Driver,Overstable,Concave,0.17680,0.10650,0.01950,0.01500,0.01200,0.00955,0.00373
+H5,Prodigy Disc,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01700,0.01200,0.01082,0.00423
+M Model Mid Range OS,Prodigy Disc,Putter,Stable,Flat,0.18010,0.10850,0.01300,0.01900,0.01400,0.01691,0.00114
+M Model S,Prodigy Disc,Putter,Stable,Flat,0.18010,0.10850,0.01300,0.02000,0.01500,0.01780,0.00120
+M Model US,Prodigy Disc,Putter,Stable,Flat,0.18090,0.10900,0.01350,0.01900,0.01500,0.01790,0.00015
+M1,Prodigy Disc,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.02000,0.01300,0.01780,0.00120
+M2 (originally M3),Prodigy Disc,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.02000,0.01300,0.01780,0.00120
+M3 (originally M2),Prodigy Disc,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01900,0.01300,0.01691,0.00114
+M4,Prodigy Disc,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.02000,0.01300,0.01780,0.00120
+M5,Prodigy Disc,Midrange,Stable,NONE,0.18010,0.10850,0.01350,0.02200,0.01300,0.01958,0.00132
+MX-3,Prodigy Disc,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01900,0.01300,0.01691,0.00114
+New M1,Prodigy Disc,Midrange,Stable,Flat,0.18090,0.10900,0.01400,0.01900,0.01300,0.01790,0.00015
+P Model Putter OS,Prodigy Disc,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02200,0.01500,0.00534,0.00339
+P Model US,Prodigy Disc,Putter,Understable,Flat,0.17680,0.10650,0.01100,0.02000,0.01500,0.01015,0.00396
+PA1,Prodigy Disc,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.01900,0.01400,0.00268,0.00212
+PA2,Prodigy Disc,Putter,Stable,Flat,0.17510,0.10550,0.01000,0.01900,0.01400,0.00461,0.00292
+PA3,Prodigy Disc,Putter,Understable,Flat,0.17430,0.10500,0.01050,0.02000,0.01400,0.00295,0.00233
+PA4,Prodigy Disc,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.01900,0.01400,0.00268,0.00212
+X1,Prodigy Disc,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01500,0.01200,0.00453,0.00358
+X2,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01800,0.01100,0.00729,0.00462
+X3,Prodigy Disc,Driver,Stable,Concave,0.17510,0.10550,0.02250,0.01700,0.01100,0.00688,0.00437
+X4,Prodigy Disc,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01700,0.01100,0.00923,0.00464
+X5,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01900,0.01100,0.00769,0.00488
+X6,Prodigy Disc,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01800,0.01100,0.00729,0.00462
+FASTi,Prodiscus,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01100,0.00596,0.00378
+FLIPPERi,Prodiscus,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01200,0.00851,0.00428
+Jokeri,Prodiscus,Putter,Understable,Flat,0.17600,0.10600,0.01100,0.01800,0.01500,0.00673,0.00338
+Laseri,Prodiscus,Driver,Stable,Concave,0.17510,0.10550,0.01950,0.01600,0.01100,0.00585,0.00371
+Legenda,Prodiscus,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01500,0.01100,0.00452,0.00357
+Midari,Prodiscus,Putter,Stable,Flat,0.17930,0.10800,0.01400,0.01800,0.01500,0.01508,0.00202
+Razeri,Prodiscus,Driver,Overstable,Concave,0.17510,0.10550,0.02350,0.01500,0.01100,0.00627,0.00398
+Respecti,Prodiscus,Putter,Stable,Concave,0.17430,0.10500,0.01900,0.01800,0.01300,0.00447,0.00353
+Rocket,Prodiscus,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01700,0.01300,0.00840,0.00422
+STARi,Prodiscus,Putter,Stable,Flat,0.17930,0.10800,0.01350,0.01900,0.01400,0.01592,0.00213
+Slaidi,Prodiscus,Driver,Stable,Concave,0.17510,0.10550,0.02150,0.02000,0.01200,0.00784,0.00497
+Sparta,Prodiscus,Putter,Understable,Flat,0.17680,0.10650,0.01050,0.02000,0.01600,0.01000,0.00391
+Titan,Prodiscus,Driver,Stable,Concave,0.17600,0.10600,0.01950,0.01600,0.01200,0.00790,0.00397
+10 Meter Brick,Quest Applied Technologies,Midrange,Stable,NONE,0.17760,0.10700,0.01200,0.01800,0.01300,0.01210,0.00355
+10 Meter Crossfire,Quest Applied Technologies,Putter,Stable,Flat,0.17600,0.10600,0.01150,0.02100,0.01400,0.00799,0.00402
+100 Meter Lazer,Quest Applied Technologies,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01400,0.01100,0.00720,0.00362
+Backbone,Quest Applied Technologies,Midrange,Stable,NONE,0.17600,0.10600,0.01300,0.01900,0.01100,0.00762,0.00383
+Crossfire,Quest Applied Technologies,Putter,Stable,Flat,0.17600,0.10600,0.01150,0.02000,0.01400,0.00761,0.00383
+Double D,Quest Applied Technologies,Driver,Overstable,Concave,0.17510,0.10550,0.02600,0.01900,0.01100,0.00856,0.00543
+Inferno,Quest Applied Technologies,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01900,0.01300,0.00966,0.00485
+Low Speed Driver,Quest Applied Technologies,Driver,Stable,Concave,0.19420,0.11700,0.02400,0.01600,0.01400,0.01520,0.00000
+Nighthawk,Quest Applied Technologies,Putter,Stable,Concave,0.17850,0.10750,0.01600,0.02100,0.01400,0.01651,0.00344
+Odyssey Approach & Putter,Quest Applied Technologies,Fairway,Stable,Concave,0.17850,0.10750,0.01700,0.02300,0.01200,0.01808,0.00377
+Odyssey Driver,Quest Applied Technologies,Putter,Stable,Concave,0.17680,0.10650,0.02250,0.02500,0.01500,0.01708,0.00667
+Odyssey Midrange,Quest Applied Technologies,Putter,Stable,Flat,0.17850,0.10750,0.01450,0.02500,0.01500,0.01965,0.00410
+Odyssey Power Driver,Quest Applied Technologies,Putter,Stable,Concave,0.17760,0.10700,0.02150,0.02100,0.01500,0.01542,0.00453
+Odyssey Putter,Quest Applied Technologies,Putter,Stable,Flat,0.17680,0.10650,0.01150,0.02600,0.01500,0.01339,0.00523
+Odyssey True Line Putter,Quest Applied Technologies,Putter,Stable,Flat,0.17760,0.10700,0.01100,0.02300,0.01500,0.01510,0.00443
+Raging Inferno DT,Quest Applied Technologies,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.01900,0.01100,0.00745,0.00472
+Ragning Inferno,Quest Applied Technologies,Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.01900,0.01100,0.00991,0.00498
+Rock-It,Quest Applied Technologies,Midrange,Stable,NONE,0.17680,0.10650,0.01250,0.01800,0.01300,0.00953,0.00372
+Scorcher,Quest Applied Technologies,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01900,0.01200,0.01005,0.00505
+Scream,Quest Applied Technologies,Putter,Stable,Concave,0.17600,0.10600,0.02250,0.02200,0.01400,0.01181,0.00594
+Scream DT,Quest Applied Technologies,Putter,Stable,Concave,0.17510,0.10550,0.02150,0.02600,0.01300,0.01021,0.00647
+Scream DT Max,Quest Applied Technologies,Driver,Stable,Concave,0.17680,0.10650,0.02250,0.01700,0.01300,0.01161,0.00454
+Scream DT Ultra,Quest Applied Technologies,Driver,Stable,Concave,0.17760,0.10700,0.02200,0.01600,0.01300,0.01175,0.00345
+Scream DT Ultra 2,Quest Applied Technologies,Driver,Stable,Concave,0.17680,0.10650,0.02200,0.01600,0.01300,0.01081,0.00422
+Scream II,Quest Applied Technologies,Putter,Stable,Concave,0.17680,0.10650,0.02200,0.02200,0.01400,0.01487,0.00581
+T-Bone,Quest Applied Technologies,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01600,0.01200,0.00778,0.00391
+Wildfire,Quest Applied Technologies,Fairway,Understable,Concave,0.17600,0.10600,0.01750,0.02400,0.01200,0.01116,0.00561
+Huia (DGFD1),RPM Discs/Disc Golf Aotearoa,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.01900,0.01200,0.00911,0.00458
+Kahu (DGD2),RPM Discs/Disc Golf Aotearoa,Driver,Stable,Concave,0.17430,0.10500,0.02400,0.01500,0.01100,0.00461,0.00364
+Kea (MR2),RPM Discs/Disc Golf Aotearoa,Putter,Understable,Concave,0.17600,0.10600,0.01600,0.01900,0.01400,0.00845,0.00425
+Kiwi (DGD1,RPM Discs/Disc Golf Aotearoa,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01400,0.01200,0.00522,0.00331
+Kiwi (DGD1,RPM Discs/Disc Golf Aotearoa,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01900,0.01200,0.00758,0.00480
+Kotare (DGD3),RPM Discs/Disc Golf Aotearoa,Driver,Stable,Concave,0.17600,0.10600,0.02350,0.01500,0.01200,0.00826,0.00415
+Kotare (DGD3,RPM Discs/Disc Golf Aotearoa,Driver,Overstable,Concave,0.17600,0.10600,0.02350,0.01500,0.01200,0.00826,0.00415
+Kotuku (MR3),RPM Discs/Disc Golf Aotearoa,Midrange,Stable,NONE,0.18010,0.10850,0.01350,0.01700,0.01400,0.01513,0.00102
+Piwakawaka (MR1,RPM Discs/Disc Golf Aotearoa,Midrange,Stable,NONE,0.18090,0.10900,0.01300,0.02000,0.01200,0.01884,0.00016
+Rippa (DGR1),RPM Discs/Disc Golf Aotearoa,Putter,Understable,Flat,0.18760,0.11300,0.00650,0.02500,0.01600,0.02375,0.00000
+Ruru (PA2),RPM Discs/Disc Golf Aotearoa,Putter,Understable,Flat,0.17430,0.10500,0.01050,0.02300,0.01600,0.00340,0.00269
+Tui (PA1),RPM Discs/Disc Golf Aotearoa,Putter,Stable,Flat,0.17510,0.10550,0.00900,0.01800,0.01400,0.00413,0.00262
+Gila,Reptilian Disc Golf,Putter,Stable,Flat,0.17430,0.10500,0.00900,0.01600,0.01200,0.00206,0.00163
+Ptero,Reptilian Disc Golf,Fairway,Stable,Concave,0.17600,0.10600,0.01800,0.01700,0.01100,0.00802,0.00403
+Scale,Reptilian Disc Golf,Putter,Understable,Flat,0.17430,0.10500,0.01000,0.02200,0.01500,0.00312,0.00246
+Serpent,Reptilian Disc Golf,Putter,Understable,Flat,0.17430,0.10500,0.00950,0.02200,0.01500,0.00298,0.00236
+Stego,Reptilian Disc Golf,Midrange,Understable,NONE,0.17680,0.10650,0.01000,0.01800,0.01200,0.00883,0.00345
+Tyrant,Reptilian Disc Golf,Fairway,Overstable,Concave,0.17600,0.10600,0.01800,0.01400,0.01100,0.00661,0.00332
+Velociraptor,Reptilian Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.02000,0.02000,0.01600,0.00523,0.00413
+Ballistic,Rip Disc Golf,Driver,Stable,Concave,0.17510,0.10550,0.02350,0.02000,0.01200,0.00837,0.00531
+Graboide,Rip Disc Golf,Putter,Understable,Flat,0.17600,0.10600,0.01300,0.02500,0.01700,0.01008,0.00507
+Relic,Rip Disc Golf,Putter,Understable,Flat,0.17600,0.10600,0.01300,0.02400,0.01700,0.00967,0.00486
+Antidote,Salient Discs,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02000,0.01300,0.01572,0.00328
+Backdraft,Salient Discs,Driver,Stable,Concave,0.17680,0.10650,0.02450,0.02000,0.01300,0.01366,0.00534
+Prometheus,Salient Discs,Driver,Overstable,Concave,0.18760,0.11300,0.02550,0.01600,0.01200,0.01520,0.00000
+Touch,Salient Discs,Putter,Stable,Concave,0.17600,0.10600,0.01700,0.02000,0.01400,0.00918,0.00461
+Vein,Salient Discs,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01900,0.01300,0.01210,0.00473
+Flagship,Skyiron,Driver,Overstable,Concave,0.17850,0.10750,0.02150,0.01300,0.01100,0.01022,0.00213
+Chainzilla,Skyquest Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02200,0.01700,0.00793,0.00399
+L13,Skyquest Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01500,0.01100,0.00772,0.00388
+L13 (retooled),Skyquest Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02100,0.01500,0.01100,0.00578,0.00367
+Medusa,Skyquest Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01500,0.01100,0.00772,0.00388
+Helios,Snap Discsports,Driver,Overstable,Concave,0.18010,0.10850,0.02350,0.01600,0.01200,0.01424,0.00096
+uControl,Sportme,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.01500,0.01200,0.01257,0.00168
+uDrive,Sportme,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01500,0.01100,0.00539,0.00342
+uPutt,Sportme,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02200,0.01600,0.00550,0.00348
+Abyss,Storm Disc Golf,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.01600,0.01100,0.00596,0.00378
+Jet Stream,Storm Disc Golf,Driver,Overstable,Concave,0.17430,0.10500,0.02250,0.01700,0.01200,0.00493,0.00389
+Maelstrom,Storm Disc Golf,Driver,Stable,Concave,0.17760,0.10700,0.02150,0.01700,0.01100,0.01249,0.00366
+Radar,Storm Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02000,0.01500,0.00486,0.00308
+The Crater,Storm Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01800,0.01300,0.00448,0.00284
+The Eye,Storm Disc Golf,Midrange,Stable,Flat,0.18180,0.10950,0.01450,0.01800,0.01200,0.01710,0.00000
+Wall Cloud,Storm Disc Golf,Midrange,Stable,Concave,0.18180,0.10950,0.01550,0.02100,0.01300,0.01995,0.00000
+Drift,Streamline Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01750,0.01800,0.01200,0.00837,0.00421
+Echo,Streamline Discs,Midrange,Stable,Flat,0.17760,0.10700,0.01450,0.01600,0.01300,0.01141,0.00335
+Engine,Streamline Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01500,0.01100,0.00836,0.00420
+Flare,Streamline Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01800,0.01200,0.00901,0.00453
+Jet,Streamline Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01500,0.01100,0.00793,0.00399
+Lift,Streamline Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01200,0.00851,0.00428
+Pilot,Streamline Discs,Putter,Understable,Concave,0.17600,0.10600,0.01500,0.01900,0.01500,0.00818,0.00411
+Runway,Streamline Discs,Midrange,Stable,Flat,0.17850,0.10750,0.01450,0.01700,0.01400,0.01336,0.00279
+Stabilizer,Streamline Discs,Putter,Understable,Flat,0.17600,0.10600,0.01200,0.01800,0.01400,0.00698,0.00351
+Trace,Streamline Discs,Driver,Stable,Concave,0.17600,0.10600,0.02200,0.01700,0.01200,0.00900,0.00452
+Contrail,Sune Sport,Fairway,Stable,Concave,0.17430,0.10500,0.01650,0.01500,0.01300,0.00328,0.00259
+Cumulus,Sune Sport,Midrange,Understable,NONE,0.17510,0.10550,0.01100,0.01700,0.01400,0.00435,0.00276
+Flow Motion,Sune Sport,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01900,0.01500,0.00474,0.00301
+Inter Locked,Sune Sport,Putter,Understable,Flat,0.17600,0.10600,0.00800,0.02100,0.01600,0.00696,0.00350
+Mad Mission,Sune Sport,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.01800,0.01400,0.00647,0.00325
+Night Trooper,Sune Sport,Fairway,Overstable,Concave,0.17430,0.10500,0.01750,0.01500,0.01100,0.00345,0.00272
+Short Slacker,Sune Sport,Driver,Overstable,Concave,0.17430,0.10500,0.02100,0.01400,0.01200,0.00381,0.00301
+Silent Cruiser,Sune Sport,Putter,Stable,Concave,0.17510,0.10550,0.01650,0.01800,0.01300,0.00589,0.00373
+Super Soft Golf Disc,Sune Sport,Midrange,Stable,NONE,0.17510,0.10550,0.01000,0.01600,0.01200,0.00387,0.00245
+Mjölnir,Synergy Discs,Fairway,Stable,Concave,0.18260,0.11000,0.01800,0.01600,0.01100,0.01520,0.00000
+Charge,TOBU Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01750,0.01500,0.01100,0.00509,0.00323
+Power Roller (renamed from Kyng Roller),TOBU Discs,Fairway,Overstable,Concave,0.17510,0.10550,0.01800,0.01400,0.01100,0.00485,0.00307
+Animus,Thought Space Athletics,Driver,Stable,Concave,0.17600,0.10600,0.02100,0.01600,0.01200,0.00824,0.00414
+Mantra,Thought Space Athletics,Driver,Stable,Concave,0.17600,0.10600,0.02050,0.01700,0.01200,0.00863,0.00434
+Pathfinder,Thought Space Athletics,Midrange,Stable,Flat,0.17850,0.10750,0.01450,0.01700,0.01300,0.01336,0.00279
+Praxis,Thought Space Athletics,Putter,Understable,Flat,0.17600,0.10600,0.01200,0.01800,0.01400,0.00698,0.00351
+Votum,Thought Space Athletics,Driver,Stable,Concave,0.17600,0.10600,0.01850,0.01700,0.01200,0.00815,0.00410
+Rei (零),Tokyo Discs,Putter,Stable,Flat,0.17430,0.10500,0.01150,0.02100,0.01400,0.00334,0.00264
+Lex,UB Disc Golf - Hand Candy,Putter,Understable,Flat,0.17760,0.10700,0.00900,0.02100,0.01600,0.01310,0.00384
+Monstrum,UB Disc Golf - Hand Candy,Driver,Stable,Concave,0.17510,0.10550,0.02350,0.01500,0.01300,0.00628,0.00398
+Procul,UB Disc Golf - Hand Candy,Driver,Stable,Concave,0.17510,0.10550,0.02350,0.01600,0.01300,0.00670,0.00425
+Arch,Vibram Disc Golf,Fairway,Stable,Concave,0.17430,0.10500,0.01800,0.01900,0.01100,0.00448,0.00354
+Ascent,Vibram Disc Golf,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01600,0.01200,0.00575,0.00365
+Crag,Vibram Disc Golf,Putter,Stable,Flat,0.17760,0.10700,0.01400,0.02000,0.01400,0.01411,0.00414
+Four20,Vibram Disc Golf,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01700,0.01100,0.00523,0.00413
+Ibex,Vibram Disc Golf,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02400,0.01300,0.01886,0.00394
+Lace,Vibram Disc Golf,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01800,0.01100,0.00553,0.00437
+Launch,Vibram Disc Golf,Midrange,Stable,NONE,0.17760,0.10700,0.01300,0.02100,0.01300,0.01446,0.00424
+Notch,Vibram Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.02000,0.01200,0.00496,0.00392
+O-Lace,Vibram Disc Golf,Driver,Overstable,Concave,0.17430,0.10500,0.02350,0.01700,0.01100,0.00513,0.00405
+Obex,Vibram Disc Golf,Midrange,Stable,NONE,0.17850,0.10750,0.01300,0.02100,0.01200,0.01651,0.00344
+Onyx,Vibram Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.01850,0.01800,0.01100,0.00435,0.00344
+Ridge,Vibram Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.00900,0.02000,0.01600,0.00460,0.00292
+Solace,Vibram Disc Golf,Driver,Overstable,Concave,0.17510,0.10550,0.02450,0.01700,0.01100,0.00733,0.00465
+Sole,Vibram Disc Golf,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02300,0.01500,0.00827,0.00416
+Summit,Vibram Disc Golf,Midrange,Understable,NONE,0.17510,0.10550,0.00950,0.01900,0.01200,0.00447,0.00284
+Trak,Vibram Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.01700,0.01200,0.00422,0.00333
+Trek,Vibram Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.01800,0.01100,0.00446,0.00352
+V.P.,Vibram Disc Golf,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.02000,0.01600,0.00487,0.00309
+Valley,Vibram Disc Golf,Fairway,Stable,Concave,0.17430,0.10500,0.01800,0.01900,0.01100,0.00448,0.00354
+Vamp,Vibram Disc Golf,Driver,Stable,Concave,0.17430,0.10500,0.01900,0.01900,0.01200,0.00471,0.00372
+unLace,Vibram Disc Golf,Driver,Overstable,Concave,0.17510,0.10550,0.02400,0.01900,0.01100,0.00807,0.00512
+Axe,Viking Discs (IP-Agency Finland Oy),Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.02000,0.01300,0.00718,0.00361
+Barbarian,Viking Discs (IP-Agency Finland Oy),Driver,Stable,Concave,0.17680,0.10650,0.01850,0.01800,0.01200,0.01118,0.00437
+Berserker,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17600,0.10600,0.02100,0.01700,0.01200,0.00875,0.00440
+Cosmos,Viking Discs (IP-Agency Finland Oy),Fairway,Overstable,Concave,0.17430,0.10500,0.01800,0.01600,0.01100,0.00377,0.00298
+Fenrir,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17680,0.10650,0.02000,0.01800,0.01100,0.01159,0.00453
+Knife,Viking Discs (IP-Agency Finland Oy),Putter,Understable,Flat,0.17510,0.10550,0.01000,0.01900,0.01800,0.00463,0.00294
+Loki,Viking Discs (IP-Agency Finland Oy),Midrange,Stable,Flat,0.17760,0.10700,0.01450,0.01900,0.01300,0.01355,0.00398
+Nordic Warrior,Viking Discs (IP-Agency Finland Oy),Putter,Stable,Flat,0.17850,0.10750,0.01400,0.02000,0.01400,0.01572,0.00328
+Odin,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17680,0.10650,0.02350,0.01400,0.01100,0.00956,0.00374
+Ragnarok,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17600,0.10600,0.02150,0.02100,0.01100,0.01095,0.00551
+Rune,Viking Discs (IP-Agency Finland Oy),Putter,Understable,Flat,0.17600,0.10600,0.01100,0.02100,0.01600,0.00786,0.00395
+Thunder God Thor,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17430,0.10500,0.02500,0.01700,0.01200,0.00544,0.00429
+Valhalla,Viking Discs (IP-Agency Finland Oy),Driver,Overstable,Concave,0.17680,0.10650,0.02250,0.02000,0.01200,0.01366,0.00533
+Ahti,Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01700,0.01100,0.00851,0.00428
+Anvil,Westside Golf Discs,Midrange,Stable,Concave,0.17680,0.10650,0.01500,0.01800,0.01200,0.01022,0.00399
+Bard (Laulaja1),Westside Golf Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01450,0.01900,0.01300,0.01691,0.00114
+Boatman (Tuonelan Lautturi1),Westside Golf Discs,Driver,Stable,Concave,0.17760,0.10700,0.02200,0.01900,0.01300,0.01396,0.00409
+Boatman VIP Air (VIP Air Tuonelan Lautturi1),Westside Golf Discs,Driver,Stable,Concave,0.17760,0.10700,0.02200,0.01900,0.01300,0.01396,0.00409
+Catapult (Katapultt1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01600,0.01100,0.00648,0.00411
+Crown (Kruunu1),Westside Golf Discs,Putter,Stable,Flat,0.17600,0.10600,0.01000,0.02000,0.01400,0.00719,0.00361
+Destiny (Kohtalo1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01600,0.01100,0.00869,0.00437
+Fortress (Linnoitus1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02000,0.01500,0.01100,0.00750,0.00377
+Gatekeeper,Westside Golf Discs,Midrange,Overstable,Flat,0.18010,0.10850,0.01400,0.01800,0.01300,0.01602,0.00108
+Giant (Vipunen1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01700,0.01200,0.00689,0.00437
+Giant VIP Air (VIP Air Vipunen1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01700,0.01200,0.00689,0.00437
+Harp (Kannel1),Westside Golf Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01100,0.01600,0.01400,0.00598,0.00300
+Hatchet (Sotakipves1),Westside Golf Discs,Driver,Overstable,Concave,0.17680,0.10650,0.01850,0.02000,0.01200,0.01243,0.00485
+King (Pohjolan Isäntä1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02300,0.01900,0.01100,0.00782,0.00496
+King VIP Air (VIP Air Pohjolan Isäntä1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02350,0.01800,0.01100,0.00990,0.00498
+Longbowman (Jousimies1),Westside Golf Discs,Fairway,Stable,Concave,0.17680,0.10650,0.01800,0.01600,0.01100,0.00981,0.00383
+Maiden,Westside Golf Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01800,0.01300,0.00646,0.00325
+Northman (Pohjan Poika1),Westside Golf Discs,Driver,Overstable,Concave,0.17850,0.10750,0.02000,0.01700,0.01100,0.01336,0.00279
+Northman VIP Air (VIP Air Pohjan Poika1),Westside Golf Discs,Driver,Overstable,Concave,0.17760,0.10700,0.02000,0.02000,0.01100,0.01469,0.00431
+Pine (Hornan Honka1),Westside Golf Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01500,0.01900,0.01300,0.01691,0.00114
+Queen (Pohjolan Emäntä1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01500,0.01100,0.00814,0.00410
+Sampo,Westside Golf Discs,Driver,Stable,Concave,0.17600,0.10600,0.02100,0.01900,0.01200,0.00978,0.00492
+Seer (Ennustaja1),Westside Golf Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01750,0.01800,0.01100,0.00837,0.00421
+Shield (Kilpi1),Westside Golf Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02500,0.01400,0.00623,0.00395
+Sling (Linko1),Westside Golf Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01250,0.01800,0.01200,0.01696,0.00014
+Sorcerer (Tietäjä1),Westside Golf Discs,Driver,Stable,Concave,0.17600,0.10600,0.02250,0.01600,0.01100,0.00857,0.00431
+Stag (Hiiden Hirvi1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.01900,0.01800,0.01200,0.00876,0.00440
+Stag VIP Air (VIP Air Hiiden Hirvi1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.01900,0.01800,0.01200,0.00647,0.00410
+Swan (Tuonelan Joutsen1),Westside Golf Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.02000,0.01400,0.00498,0.00316
+Swan (retooled,Westside Golf Discs,Putter,Understable,Flat,0.17510,0.10550,0.01050,0.01900,0.01400,0.00473,0.00300
+Swan Reborn (Tuonelan Joutsen1),Westside Golf Discs,Putter,Stable,Flat,0.17510,0.10550,0.01100,0.01900,0.01300,0.00485,0.00308
+Sword (Kalevan Miekka1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01800,0.01200,0.00952,0.00479
+Sword VIP Air (VIP Air Kalevan Miekka1),Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02200,0.01700,0.01200,0.00678,0.00430
+The Adder,Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02200,0.01900,0.01100,0.01005,0.00505
+Tursas (Tursas1),Westside Golf Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01700,0.01300,0.01513,0.00102
+Tursas VIP Air (VIP Air Tursas1),Westside Golf Discs,Midrange,Stable,Flat,0.17930,0.10800,0.01400,0.01700,0.01300,0.01424,0.00191
+Underworld (Manala1),Westside Golf Discs,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+Underworld VIP Air (VIP Air Manala1),Westside Golf Discs,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01600,0.01200,0.01019,0.00398
+War Horse,Westside Golf Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02250,0.01600,0.01200,0.00649,0.00411
+Warship (Pursi1),Westside Golf Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.02100,0.01300,0.01869,0.00126
+Warship VIP Air (VIP Air Pursi1),Westside Golf Discs,Midrange,Stable,Flat,0.18010,0.10850,0.01400,0.01900,0.01300,0.01691,0.00114
+World (Maailma1),Westside Golf Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02450,0.01600,0.01200,0.00903,0.00454
+119g (40,Wham-O,Putter,Understable,Flat,0.19510,0.11750,0.00600,0.02600,0.01700,0.02470,0.00000
+44 Mold,Wham-O,Fairway,Stable,Concave,0.17930,0.10800,0.01600,0.02200,0.01200,0.01843,0.00247
+77 Mold,Wham-O,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02000,0.01100,0.01780,0.00120
+78 Mold,Wham-O,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02000,0.01100,0.01780,0.00120
+86 Mold,Wham-O,Putter,Stable,Flat,0.17510,0.10550,0.01000,0.02600,0.01400,0.00631,0.00400
+86 Softie,Wham-O,Putter,Stable,Flat,0.17680,0.10650,0.01000,0.02600,0.01500,0.01279,0.00499
+91 Mold,Wham-O,Putter,Stable,Flat,0.17600,0.10600,0.00900,0.02100,0.01200,0.00723,0.00364
+Apollo,Wham-O,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.02000,0.01100,0.01676,0.00224
+Fairway Driver (new),Wham-O,Fairway,Stable,Concave,0.17510,0.10550,0.01800,0.02100,0.01100,0.00727,0.00461
+Fairway Driver (old),Wham-O,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01200,0.00596,0.00378
+Gemini,Wham-O,Putter,Understable,Flat,0.17510,0.10550,0.00800,0.02500,0.01500,0.00542,0.00344
+Max Flight,Wham-O,Midrange,Stable,NONE,0.18430,0.11100,0.01200,0.02300,0.01300,0.02185,0.00000
+Mid Range Approach,Wham-O,Midrange,Stable,NONE,0.17930,0.10800,0.01200,0.02200,0.01300,0.01843,0.00247
+Mid-Range,Wham-O,Midrange,Stable,NONE,0.18010,0.10850,0.01250,0.02200,0.01200,0.01958,0.00132
+Putter,Wham-O,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02200,0.01500,0.00776,0.00390
+S Driver,Wham-O,Driver,Overstable,Concave,0.17510,0.10550,0.02000,0.01600,0.01200,0.00596,0.00378
+Superturn Driver,Wham-O,Fairway,Overstable,Concave,0.17430,0.10500,0.01750,0.02000,0.01200,0.00460,0.00364
+Touchline Bank/Long Range Driver,Wham-O,Midrange,Stable,NONE,0.18010,0.10850,0.01200,0.02100,0.01200,0.01869,0.00126
+Touchline Over,Wham-O,Fairway,Stable,Concave,0.17510,0.10550,0.01750,0.02000,0.01200,0.00680,0.00431
+Touchline Putter/Putter,Wham-O,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02100,0.01500,0.00740,0.00372
+Touchline True/Mid Range Approach,Wham-O,Putter,Stable,Flat,0.18010,0.10850,0.01200,0.02100,0.01400,0.01869,0.00126
+Touchline Under,Wham-O,Driver,Stable,Concave,0.17510,0.10550,0.01900,0.01700,0.01200,0.00611,0.00388
+Turnover Driver,Wham-O,Midrange,Stable,NONE,0.18010,0.10850,0.01250,0.02100,0.01100,0.01869,0.00126
+Voyager,Wham-O,Fairway,Stable,Concave,0.17510,0.10550,0.01600,0.01700,0.01100,0.00544,0.00345
+Voyager II,Wham-O,Fairway,Overstable,Concave,0.17510,0.10550,0.01700,0.01600,0.01200,0.00533,0.00338
+Addax,Wild Discs,Midrange,Stable,Concave,0.18010,0.10850,0.01500,0.01700,0.01300,0.01513,0.00102
+Hummingbird,Wild Discs,Putter,Understable,Flat,0.17600,0.10600,0.00950,0.02000,0.01500,0.00705,0.00355
+Orca,Wild Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02300,0.01400,0.01100,0.00760,0.00382
+XPT1 (Bennu,XCOM Discs,Putter,Understable,Flat,0.17430,0.10500,0.01050,0.02200,0.01500,0.00325,0.00256
+XPT2 (Eden,XCOM Discs,Midrange,Stable,NONE,0.17680,0.10650,0.01300,0.02000,0.01300,0.01074,0.00420
+XPT3 (Griffon,XCOM Discs,Putter,Stable,Flat,0.17930,0.10800,0.01350,0.01900,0.01400,0.01592,0.00213
+XPT4 (Helios,XCOM Discs,Fairway,Stable,Concave,0.17430,0.10500,0.01650,0.01600,0.01100,0.00349,0.00275
+XPT5 (Zion,XCOM Discs,Driver,Overstable,Concave,0.17760,0.10700,0.02100,0.01700,0.01100,0.01249,0.00366
+Claws (爪),Yikun Discs,Putter,Understable,Flat,0.17600,0.10600,0.00900,0.02000,0.01700,0.00692,0.00348
+Crossbow (Nu,Yikun Discs,Midrange,Stable,Concave,0.17680,0.10650,0.01550,0.01600,0.01300,0.00921,0.00360
+Da'e (大鹗),Yikun Discs,Driver,Overstable,Concave,0.17430,0.10500,0.02400,0.01700,0.01100,0.00523,0.00413
+Fu (夸父,Yikun Discs,Driver,Overstable,Concave,0.17680,0.10650,0.01900,0.01800,0.01200,0.01132,0.00442
+Gou (天狗),Yikun Discs,Driver,Stable,Concave,0.17680,0.10650,0.01950,0.01800,0.01200,0.01146,0.00448
+Gui (旋龟),Yikun Discs,Putter,Understable,Flat,0.17510,0.10550,0.01000,0.01800,0.01500,0.00437,0.00277
+Hammer (Chui,Yikun Discs,Midrange,Understable,NONE,0.17510,0.10550,0.01300,0.01700,0.01400,0.00479,0.00304
+Hu (九尾狐),Yikun Discs,Driver,Stable,Concave,0.17600,0.10600,0.01900,0.01800,0.01100,0.00875,0.00440
+Jiao (狡),Yikun Discs,Midrange,Stable,Concave,0.17600,0.10600,0.01600,0.01600,0.01100,0.00710,0.00357
+Jun (鵕鸟),Yikun Discs,Driver,Overstable,Concave,0.17510,0.10550,0.02150,0.02000,0.01200,0.00784,0.00497
+Kui (夔牛),Yikun Discs,Fairway,Stable,Concave,0.17600,0.10600,0.01650,0.02100,0.01300,0.00948,0.00477
+Lu (Luan,Yikun Discs,Driver,Stable,Concave,0.17600,0.10600,0.02400,0.01400,0.01100,0.00780,0.00392
+Meteor Hammer (流星锤),Yikun Discs,Putter,Understable,Flat,0.17600,0.10600,0.01000,0.02000,0.01500,0.00719,0.00362
+Qi (穷奇,Yikun Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02350,0.01600,0.01100,0.00880,0.00443
+Shu (耳鼠,Yikun Discs,Midrange,Stable,NONE,0.18090,0.10900,0.01350,0.01800,0.01100,0.01696,0.00014
+Tomahawk (八卦钺),Yikun Discs,Midrange,Stable,NONE,0.17930,0.10800,0.01300,0.01900,0.01300,0.01592,0.00213
+Twin Swords (双刃剑),Yikun Discs,Driver,Overstable,Concave,0.17600,0.10600,0.02400,0.01900,0.01200,0.01059,0.00533
+View (视),Yikun Discs,Fairway,Stable,Concave,0.17510,0.10550,0.01750,0.02000,0.01200,0.00680,0.00431
+Wei (精卫),Yikun Discs,Driver,Stable,Concave,0.17510,0.10550,0.02000,0.01700,0.01100,0.00633,0.00401
+Wings (翼),Yikun Discs,Midrange,Understable,NONE,0.17600,0.10600,0.01000,0.01800,0.01200,0.00645,0.00324
+Xing (刑天,Yikun Discs,Putter,Understable,Flat,0.17680,0.10650,0.01000,0.02100,0.01700,0.01035,0.00404
+Yan (朱厌,Yikun Discs,Putter,Stable,Flat,0.18180,0.10950,0.01100,0.02200,0.01400,0.02090,0.00000
+Yao (文鳐鱼),Yikun Discs,Putter,Stable,Flat,0.17930,0.10800,0.01400,0.01900,0.01400,0.01592,0.00213

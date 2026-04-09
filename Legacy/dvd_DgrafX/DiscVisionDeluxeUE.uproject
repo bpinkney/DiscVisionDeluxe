@@ -1,0 +1,25 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.25",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "DiscVisionDeluxeUE",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"UMG",
+				"Slate",
+				"SlateCore"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Iliad",
+			"Enabled": false
+		}
+	]
+}

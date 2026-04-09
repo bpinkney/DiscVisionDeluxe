@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc204c6e1a31e3941a5f25f7d3e55231, type: 3}
+  m_Name: Prodigy_Disc_F7
+  m_EditorClassIdentifier: DfisX.Unity::DfisX.DiscModel
+  moldName: F7
+  manufacturer: Prodigy Disc
+  discType: Fairway
+  stability: Stable
+  rimCamberShape: Concave
+  mass: 0.1768
+  radius: 0.1065
+  rimWidth: 0.0175
+  thickness: 0.015
+  rimDepth: 0.011
+  rimCamberHeight: 0.00908
+  domeHeight: 0.00355
