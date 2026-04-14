@@ -1,0 +1,11 @@
+{
+    "name": "DfisX.Unity",
+    "rootNamespace": "",
+    "references": [
+        "DfisX.Runtime",
+        "Unity.Mathematics",
+        "Unity.Collections"
+    ],
+    "autoReferenced": true,
+    "noEngineReferences": false
+}

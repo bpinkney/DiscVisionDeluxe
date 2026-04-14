@@ -1,0 +1,24 @@
+{
+    "name": "DiscVisionDeluxe.Camera",
+    "rootNamespace": "DiscVisionDeluxe.Camera",
+    "references": [
+        "DiscVisionDeluxe",
+        "DfisX.Unity",
+        "DfisX.Runtime",
+        "Unity.Mathematics",
+        "Unity.Collections",
+        "Unity.Cinemachine"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

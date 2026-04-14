@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc204c6e1a31e3941a5f25f7d3e55231, type: 3}
+  m_Name: Innova_Champion_Discs_Jaguar
+  m_EditorClassIdentifier: DfisX.Unity::DfisX.DiscModel
+  moldName: Jaguar
+  manufacturer: Innova Champion Discs
+  discType: Fairway
+  stability: Stable
+  rimCamberShape: Concave
+  mass: 0.2
+  radius: 0.1205
+  rimWidth: 0.016
+  thickness: 0.017
+  rimDepth: 0.014
+  rimCamberHeight: 0.01615
+  domeHeight: 0
