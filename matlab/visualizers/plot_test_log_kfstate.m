@@ -10,7 +10,7 @@ close all; clc;
 
 %meas_csvlog << "time_ms, meas_time_ms, frame_id, lin_x_m, lin_y_m, lin_z_m, ang_h_rad, ang_p_rad, ang_s_rad, disc_index, player" << endl;
 
-%log_dir = '/home/bpinkney/disc_vision_deluxe/DiscVisionDeluxe/bin/logs/garret_init_logs/2020-08-20_22-22-21_log_data'
+log_dir = 'C:\Users\picard\Downloads\2020-06-05_09-04-36_log_data_dest1'
 
 log_dir
 

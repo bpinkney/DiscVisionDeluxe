@@ -9,7 +9,7 @@ function dvd_DvisEst_plot_disc_meas()
 
   % M = csvread('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_groundplanesample/csvlog.csv', 1, 0);
 
-  ld = dvd_DvisEst_load_csv_log('~/disc_vision_deluxe/DiscVisionDeluxe/resources/test_throws/blackflyframecapture_labshots0/imgs_drive11fast/csvlog.csv');
+  ld = dvd_DvisEst_load_csv_log('C:\Users\picard\Downloads\2020-06-05_09-04-36_log_data_dest1\state_out.csv');
 
   % Coordinate frame of an AprilTag:
   % 

@@ -327,9 +327,11 @@ namespace DfisX
         throw_container->current_disc_state.forces_state.collision_force[2]      = throw_container->collision_input.lin_force_from_delta_vel_N[2];*/
 
         // DISABLE any collision torque for now!
-        /*throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
-        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = 0*throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];*/
+        throw_container->current_disc_state.forces_state.collision_torque_xyz =  {0,0,0};
+
+/*        throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[0];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[1];
+        throw_container->current_disc_state.forces_state.collision_torque_xyz[2] = throw_container->collision_input.ang_torque_from_delta_vel_Nm[2];*/
 
         throw_container->current_disc_state.forces_state.collision_torque_xyz[0] = throw_container->collision_input.ang_torque_from_impulses_Nm[0];
         throw_container->current_disc_state.forces_state.collision_torque_xyz[1] = throw_container->collision_input.ang_torque_from_impulses_Nm[1];

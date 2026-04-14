@@ -624,7 +624,7 @@ void ADiscThrow::on_collision(
 {
 
   // change this unused variable randomly using sed to force unreal to rebuild
-  const int changevar = 5044;
+  const int changevar = 3783;
 
   //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString("Driver detected!"));
   // x5 thresholds for camera pan
@@ -712,7 +712,7 @@ void ADiscThrow::on_collision(
     //world_ang_acc[i] = world_ang_vel_delta[i] / dt;
   }
 
-  throw_container.collision_input.lin_force_from_delta_vel_N = world_lin_acc * throw_container.disc_object.mass;
+  //throw_container.collision_input.lin_force_from_delta_vel_N = world_lin_acc * throw_container.disc_object.mass;
 
   // try to build a rotation matrix from the local disc unit vectors
   // ideally, this will result in a rotation from the world frame to the local disc frame
@@ -769,13 +769,14 @@ void ADiscThrow::on_collision(
   // Get current ang vel in local disc airspeed vel frame RPY -> rotation rates about disc plane XYZ
   Eigen::Vector3d last_local_ang_vel_radps = {throw_container.current_disc_state.disc_rolling_vel, throw_container.current_disc_state.disc_pitching_vel, throw_container.current_disc_state.disc_rotation_vel};
 
-  Eigen::Vector3d local_ang_accel_radps2 = Rwd * world_ang_acc;
+  // This older method relied on getting a good ang_vel from unreal, and was deprecated nov 2022
+/*  Eigen::Vector3d local_ang_accel_radps2 = Rwd * world_ang_acc;
 
   Eigen::Vector3d local_ang_torque_Nm;
   local_ang_torque_Nm[0] = local_ang_accel_radps2[0] * Ix;
   local_ang_torque_Nm[1] = local_ang_accel_radps2[1] * Iy;
   local_ang_torque_Nm[2] = local_ang_accel_radps2[2] * Iz;
-  throw_container.collision_input.ang_torque_from_delta_vel_Nm = local_ang_torque_Nm;
+  throw_container.collision_input.ang_torque_from_delta_vel_Nm = local_ang_torque_Nm;*/
 
   // OR
   // 2. Derive torque from the hit location
@@ -787,9 +788,12 @@ void ADiscThrow::on_collision(
   const double aribitary_collision_force_attenuation_factor = 0.9;
 
   int k = 0;
-  // reset torque sum
-  throw_container.collision_input.ang_torque_from_impulses_Nm *= 0;
-  throw_container.collision_input.lin_force_from_impulses_N *= 0;
+  // reset force and torque sums
+  throw_container.collision_input.ang_torque_from_impulses_Nm   *= 0;
+  throw_container.collision_input.ang_torque_from_delta_vel_Nm  *= 0;
+  throw_container.collision_input.lin_force_from_impulses_N     *= 0;
+  throw_container.collision_input.lin_force_from_delta_vel_N    *= 0;
+
 
   GEngine->AddOnScreenDebugMessage(230, 5.0f, FColor::Yellow, FString("total_hit_events: ") + FString::FromInt(total_hit_events));
 
@@ -851,6 +855,27 @@ void ADiscThrow::on_collision(
       FString::SanitizeFloat(world_frame_torque_Nm[0]) + FString(", ") +
       FString::SanitizeFloat(world_frame_torque_Nm[1]) + FString(", ") +
       FString::SanitizeFloat(world_frame_torque_Nm[2]) + FString("]"));
+
+    // In a bit of a fun twist, we're going to also use the projected moment arm to compute the torque, but use the lin vel delta to get the force magnitude!
+    // This replaces the previous alternative where the ang_vel was used to compute this torque
+    if(i==0)
+    {
+      // We have 2 options here for the linear force:
+      // 1. We can use the lin_vel_delta which is passed in. This will probably get us better forces, but might not converge very well is unreal is trash (and it is)
+      // 2. We can use a delta between the lin_vel which is passed in, and the previous lin_vel from our DfisX states. Forces can be bigger, but it helps converge things faster
+
+      // for #1
+      Eigen::Vector3d world_frame_torque_from_vel_Nm = proj_hit_location.cross(throw_container.collision_input.lin_force_from_delta_vel_N);
+      // for #2
+      /*Eigen::Vector3d lin_force_from_vel_state_N = {0,0,0};
+      if(throw_container.collision_input.delta_time_s > CLOSE_TO_ZERO)
+      {
+        lin_force_from_vel_state_N = (throw_container.collision_input.lin_vel_mps - throw_container.current_disc_state.disc_velocity) / throw_container.collision_input.delta_time_s * throw_container.disc_object.mass;
+      }
+      Eigen::Vector3d world_frame_torque_from_vel_Nm = proj_hit_location.cross(lin_force_from_vel_state_N);*/
+
+      throw_container.collision_input.ang_torque_from_delta_vel_Nm = world_frame_torque_from_vel_Nm;
+    }
 
     if(world_frame_torque_Nm.norm() > 5)
     {
@@ -944,19 +969,19 @@ void ADiscThrow::on_collision(
     kinetic_energy[2] / MAX(delta_distance[2], CLOSE_TO_ZERO)
   };
   // add gravity to kinetic force
-  //Eigen::Vector3d grav_vector_N = {0, 0, GRAV * throw_container.disc_object.mass};
-  //kinetic_momentum_N += grav_vector_N;
+  Eigen::Vector3d grav_vector_N = {0, 0, GRAV * throw_container.disc_object.mass};
+  kinetic_momentum_N += grav_vector_N;
 
   
   bool skip_input = false;
   // check that we exceed the max force expected
   if(throw_container.collision_input.lin_force_from_impulses_N.norm() > kinetic_momentum_N.norm())
   {
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
+    GEngine->AddOnScreenDebugMessage(260, 30.f, FColor::Yellow,(FString("Rejected impulse due to force in excess of our momentum!")));
     skip_input = true;
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(kinetic_momentum_N.norm())));
+/*    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow,(FString::SanitizeFloat(kinetic_momentum_N.norm())));
     GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Red,(FString::SanitizeFloat(throw_container.collision_input.lin_force_from_impulses_N.norm())));
-    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));
+    GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Green, FString(" "));*/
   }
   
 
@@ -1153,9 +1178,10 @@ void ADiscThrow::near_ground_detected(
   // assuming 'no-slip' friction, the angular rate arc length will simply influence a force onto the centre of the disc
   // so we compute the arc length over one (Dpropagate) dt
   const float circumf = 2.0 * M_PI * throw_container.disc_object.radius;
-  const float arc_length_during_dt = -(throw_container.current_disc_state.disc_rotation_vel * throw_container.current_disc_state.last_dt) * (circumf / (2.0*M_PI));
+  // remove dt from this calculation to avoid float issues and divisions (previously using MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO))
+  const float arc_length_during_dt = -(throw_container.current_disc_state.disc_rotation_vel) * (circumf / (2.0*M_PI)); // * dt;
 
-  const float extra_linear_vel = arc_length_during_dt / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  const float extra_linear_vel = arc_length_during_dt; // / dt
 
   // we need to take a derivative of this vel 
   // vs the component of existing ground speed of the disc IN THIS VECTOR
@@ -1177,7 +1203,11 @@ void ADiscThrow::near_ground_detected(
   // which is causing the disc to oscillate back and forth.
   ////// For now, just hack it in using the disc_spin_propel_vel only (assumes disc is at rest for linear vel!! NOT GREAT!)
   // Ignore the last line, we go back to the proper method until otherwise required
-  Eigen::Vector3d disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector) / MAX(throw_container.current_disc_state.last_dt, CLOSE_TO_ZERO);
+  Eigen::Vector3d disc_spin_propel_accel = {0,0,0};
+  if(throw_container.current_disc_state.last_dt > CLOSE_TO_ZERO)
+  {
+    disc_spin_propel_accel = (disc_spin_propel_vel - ground_speed_projection_to_propel_vector) / throw_container.current_disc_state.last_dt;
+  }
   // Let's just do a crappy magnitude subtraction for now to try to reign in this effect
   // This will knee-cap the effect and always assumes that we are propelling in the existing ground speed direction of travel
   // Agh, that sucks, we'd better fix this timing issue later....
