@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc204c6e1a31e3941a5f25f7d3e55231, type: 3}
+  m_Name: Prodigy_Disc_FX-2
+  m_EditorClassIdentifier: DfisX.Unity::DfisX.DiscModel
+  moldName: FX-2
+  manufacturer: Prodigy Disc
+  discType: Driver
+  stability: Overstable
+  rimCamberShape: Concave
+  mass: 0.1751
+  radius: 0.1055
+  rimWidth: 0.02
+  thickness: 0.016
+  rimDepth: 0.012
+  rimCamberHeight: 0.00596
+  domeHeight: 0.00378

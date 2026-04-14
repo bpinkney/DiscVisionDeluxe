@@ -1,0 +1,20 @@
+{
+    "name": "DiscVisionDeluxe",
+    "references": [
+        "DfisX.Unity",
+        "DfisX.Runtime",
+        "Unity.Mathematics",
+        "Unity.Collections",
+        "Unity.TextMeshPro",
+        "Unity.Cinemachine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

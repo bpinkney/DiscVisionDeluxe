@@ -1,0 +1,372 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   ThrowParameterPanel.uss  —  Dark disc golf sim aesthetic
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Panel root — positioned right side of screen, semi-transparent */
+.panel-root {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 320px;
+    background-color: rgba(14, 16, 18, 0.90);
+    border-left-width: 1px;
+    border-left-color: rgba(80, 200, 120, 0.35);
+    flex-direction: column;
+    overflow: visible;
+}
+
+/* Title bar */
+.panel-title {
+    font-size: 13px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    padding: 10px 14px 6px 14px;
+    letter-spacing: 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(80, 200, 120, 0.25);
+}
+
+/* Scrollable content area */
+.main-scroll {
+    flex-grow: 1;
+    padding: 4px 0;
+}
+
+/* Section headers */
+.section-header {
+    font-size: 9px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    padding-left: 14px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(80, 200, 120, 0.15);
+}
+
+/* Each slider row */
+.slider-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 8px 2px 14px;
+    height: 26px;
+}
+
+.slider-row:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Slider label (left column, fixed width) */
+.slider-label {
+    font-size: 11px;
+    color: rgb(200, 205, 210);
+    width: 120px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* The slider itself */
+.slider {
+    flex-grow: 1;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.slider .unity-base-slider__dragger {
+    background-color: rgb(80, 200, 120);
+    border-radius: 4px;
+    width: 10px;
+}
+
+.slider .unity-base-slider__tracker {
+    background-color: rgba(80, 200, 120, 0.25);
+    height: 2px;
+}
+
+/* Numeric value label (right column) */
+.val-label {
+    font-size: 11px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    width: 52px;
+    -unity-text-align: upper-right;
+    flex-shrink: 0;
+}
+
+/* ── Compact disc filters & search (match slider-row density) ─────────────── */
+
+/* Shared row base — same padding/height as .slider-row */
+.compact-filter {
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px 0 14px;
+    height: 26px;
+    margin: 0;
+}
+
+/* Inline label (left column, fixed width to align with slider labels) */
+.compact-filter .unity-base-field__label {
+    font-size: 11px;
+    color: rgb(200, 205, 210);
+    width: 52px;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+/* Input portion of filter dropdowns */
+.compact-filter .unity-base-field__input,
+.compact-filter .unity-dropdown-field__input,
+.compact-filter .unity-popup-field__input {
+    flex-grow: 1;
+    height: 18px;
+    background-color: rgba(30, 34, 38, 1);
+    border-color: rgba(80, 200, 120, 0.25);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(200, 205, 210);
+    font-size: 11px;
+    padding: 0 4px;
+}
+
+/* Hover tint to match slider rows */
+.compact-filter:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Search field cursor & text colour */
+.disc-search .unity-base-text-field__input {
+    color: rgb(220, 225, 230);
+}
+
+/* ── Recents row ──────────────────────────────────────────────────────────── */
+
+.recents-section {
+    padding: 2px 8px 4px 14px;
+}
+
+.recents-label {
+    font-size: 9px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+}
+
+.recents-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+/* Each recent disc pill */
+.recent-btn {
+    height: 20px;
+    padding: 0 7px;
+    background-color: rgba(40, 44, 48, 0.9);
+    border-color: rgba(80, 200, 120, 0.3);
+    border-width: 1px;
+    border-radius: 10px;
+    color: rgb(180, 185, 190);
+    font-size: 10px;
+}
+
+.recent-btn:hover {
+    background-color: rgba(80, 200, 120, 0.15);
+    border-color: rgb(80, 200, 120);
+    color: rgb(80, 200, 120);
+}
+
+.recent-btn--active {
+    background-color: rgba(80, 200, 120, 0.25);
+    border-color: rgb(80, 200, 120);
+    color: rgb(80, 200, 120);
+}
+
+/* Disc dropdown — full panel width, no label */
+.disc-dropdown {
+    margin: 3px 8px 4px 14px;
+}
+
+.disc-dropdown .unity-base-field__input,
+.disc-dropdown .unity-dropdown-field__input,
+.disc-dropdown .unity-popup-field__input {
+    background-color: rgba(40, 44, 48, 1);
+    border-color: rgba(80, 200, 120, 0.4);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(220, 225, 230);
+    font-size: 11px;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Popup list — no horizontal scroll, items sized to content */
+.unity-base-dropdown__container-outer {
+    overflow: hidden;
+}
+
+.unity-base-dropdown .unity-scroller--horizontal {
+    display: none;
+}
+
+.unity-base-dropdown .unity-list-view__item > .unity-label,
+.unity-base-dropdown .unity-base-dropdown__item > .unity-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Toggle row */
+.toggle-row {
+    padding: 4px 8px 4px 14px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.toggle-row .unity-label {
+    font-size: 11px;
+    color: rgb(200, 205, 210);
+}
+
+.toggle-row .unity-toggle__checkmark {
+    background-color: rgba(40, 44, 48, 1);
+    border-color: rgba(80, 200, 120, 0.4);
+    border-width: 1px;
+    border-radius: 2px;
+}
+
+.toggle-row .unity-toggle__input:checked > .unity-toggle__checkmark {
+    background-color: rgb(80, 200, 120);
+}
+
+/* Aero debug foldout */
+.aero-foldout {
+    margin: 4px 8px 2px 8px;
+    border-width: 1px;
+    border-color: rgba(80, 200, 120, 0.2);
+    border-radius: 3px;
+    padding-bottom: 4px;
+}
+
+.aero-foldout .unity-foldout__toggle .unity-label {
+    font-size: 9px;
+    color: rgb(150, 160, 170);
+    letter-spacing: 1px;
+}
+
+/* Reset aero button */
+.reset-btn {
+    margin: 6px 14px 2px 14px;
+    background-color: rgba(40, 44, 48, 0.8);
+    border-color: rgba(80, 200, 120, 0.3);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(150, 160, 170);
+    font-size: 11px;
+    height: 24px;
+}
+
+.reset-btn:hover {
+    background-color: rgba(80, 200, 120, 0.15);
+    color: rgb(80, 200, 120);
+}
+
+/* Stats label (post-landing readout) — fixed height prevents panel resize */
+.stats-label {
+    font-size: 11px;
+    color: rgb(80, 200, 120);
+    padding: 6px 14px;
+    white-space: normal;
+    height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+    overflow: hidden;
+    border-top-width: 1px;
+    border-top-color: rgba(80, 200, 120, 0.15);
+    flex-shrink: 0;
+}
+
+/* Camera mode row */
+.camera-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 8px 4px 14px;
+    border-top-width: 1px;
+    border-top-color: rgba(80, 200, 120, 0.25);
+    flex-shrink: 0;
+}
+
+.camera-label {
+    font-size: 9px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    width: 36px;
+    flex-shrink: 0;
+}
+
+.camera-dropdown {
+    flex-grow: 1;
+}
+
+.camera-dropdown .unity-base-field__input,
+.camera-dropdown .unity-dropdown-field__input {
+    background-color: rgba(40, 44, 48, 1);
+    border-color: rgba(80, 200, 120, 0.4);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(220, 225, 230);
+    font-size: 11px;
+}
+
+/* Button row at bottom */
+.button-row {
+    flex-direction: row;
+    padding: 8px 10px;
+    border-top-width: 1px;
+    border-top-color: rgba(80, 200, 120, 0.25);
+    flex-shrink: 0;
+}
+
+/* Launch button (primary) */
+.launch-btn {
+    flex-grow: 1;
+    height: 36px;
+    margin-right: 6px;
+    background-color: rgb(60, 160, 90);
+    border-width: 0;
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.launch-btn:hover {
+    background-color: rgb(80, 190, 110);
+}
+
+.launch-btn:active {
+    background-color: rgb(50, 130, 70);
+}
+
+/* Secondary action buttons */
+.action-btn {
+    width: 72px;
+    height: 36px;
+    margin-right: 4px;
+    background-color: rgba(40, 44, 48, 0.9);
+    border-color: rgba(80, 200, 120, 0.4);
+    border-width: 1px;
+    border-radius: 4px;
+    color: rgb(180, 185, 190);
+    font-size: 11px;
+}
+
+.action-btn:hover {
+    background-color: rgba(80, 200, 120, 0.15);
+    color: rgb(80, 200, 120);
+    border-color: rgb(80, 200, 120);
+}
