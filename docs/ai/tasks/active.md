@@ -53,7 +53,7 @@ AppSettings.cs should persist: preferMetric, defaultDisc (DiscModel GUID or name
 #### Priority 3 — Polish
 | ID | Task | Priority | Status |
 |---|---|---|---|
-| POL-4 | Throw result statistics panel | Medium | Not started |
+| POL-4 | Throw result statistics panel | Medium | Done — scene wire-up by user |
 | POL-5 | Wind indicator HUD | Low | Not started |
 | POL-6 | Practice range modes + leaderboard | Low | Not started |
 | POL-7 | Replay system | Low | Not started |
@@ -64,7 +64,11 @@ AppSettings.cs should persist: preferMetric, defaultDisc (DiscModel GUID or name
 | POL-12 | Collision feedback into flight model | Low | Not started |
 
 **POL-4 Notes:**
-FlightStats struct in DfisXStructs.cs needs new fields: maxHeightM, lateralDriftM. Populate in DiscFlightSimulator.BuildStats(). Slide panel in from bottom after OnThrowFinished.
+Code complete. Scene wire-up required:
+1. Empty GameObject → UIDocument (Source = ThrowResultPanel.uxml, Sort Order above ThrowParameterPanel) + ThrowResultPanelController. Assign: discVisualizer, throwParamPanel, discPreview.
+2. Separate empty GameObject `DiscPreviewRig` → DiscPreviewController. Assign sourceDisc = DiscVisualController in scene.
+3. Assign DiscPreviewRig to ThrowResultPanelController.discPreview in Inspector.
+If preview shows black box instead of transparency: URP camera may need allowHDR=false or camera output alpha override.
 
 **POL-5 Notes:**
 Windsock style: sock body droops/extends in wind direction, length reflects speed. Gust indicator driven by DiscEnvironment.gustFactor — brief elongation + ripple animation. Corner HUD overlay.

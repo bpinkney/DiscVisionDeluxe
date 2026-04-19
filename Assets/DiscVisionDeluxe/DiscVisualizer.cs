@@ -155,6 +155,12 @@ namespace DiscVisionDeluxe
         // ---------------------------------------------------------------
         public bool IsSimFlying  => _isSimFlying;
         public DfisX.FlightStats LastFlightStats { get; private set; }
+        public DfisX.ThrowContainer ActiveContainer => _sim?.Container;
+
+        /// <summary>Fired when DfisX flight ends. Payload contains all throw statistics.</summary>
+        public event System.Action<DfisX.FlightStats> OnSimFinished;
+        /// <summary>Fired immediately after NewThrow() — container is initialised and ready.</summary>
+        public event System.Action OnSimStarted;
 
         public IReadOnlyList<LineRenderer> GetArchivedTrails() => _archivedTrails;
 
@@ -392,6 +398,7 @@ namespace DiscVisionDeluxe
             PrepareNewDfisxTrail(p.discIndex, p.directModel, source);
 
             _sim.NewThrow(p, env, aeroDebug);
+            OnSimStarted?.Invoke();
             _isSimFlying = true;
 
             ApplySimStateToTransform(_sim.Container.currentDiscState);
@@ -543,6 +550,7 @@ namespace DiscVisionDeluxe
                 LandingMarker.Spawn(landingPos, stats.distanceM);
             }
 
+            OnSimFinished?.Invoke(stats);
             Debug.Log($"[DiscVisualizer] Flight complete. {stats}");
         }
 

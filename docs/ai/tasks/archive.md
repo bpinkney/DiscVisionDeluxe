@@ -28,6 +28,7 @@ One row per task. Do not expand entries.
 | POL-2.5 | DistanceMarker polish (smaller text, outline, ground lines) | ~8-9 |
 | POL-3 | MiniMap (software-drawn Texture2D, Bresenham, no extra camera) | ~8-9 |
 | POL-10 | Disc mesh + foil stamp first pass (DiscMeshBuilder, DiscVisualController, DiscFoilStamp) | ~12-13 |
+| POL-4 | Throw result statistics panel + 3D disc preview (ThrowResultPanelController, DiscPreviewController, FlightStats extended, ThrowContainer snapshot fields) | 14 |
 | SIM-4 | Disc database 1,272 discs, DiscParamsImporter, multi-filter disc selection, recents | 13 |
 
 ---

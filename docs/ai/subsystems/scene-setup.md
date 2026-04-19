@@ -69,6 +69,19 @@ LiveDiscTracker component:
 ## Distance Marker Spawner (PracticeRange)
 Markers along +X axis. groundOffsetY: raise above terrain. Labels face camera (Quaternion.Euler(0,90,0)).
 
+## ThrowResultPanel (POL-4)
+Two GameObjects required:
+
+**ThrowResultPanel (GameObject)**
+- UIDocument: Source = ThrowResultPanel.uxml, Sort Order = 2 (above ThrowParameterPanel)
+- ThrowResultPanelController: assign discVisualizer, throwParamPanel, discPreview
+
+**DiscPreviewRig (GameObject)**
+- DiscPreviewController: assign sourceDisc = DiscVisualController on Disc GameObject
+- No transform setup needed — Awake() moves it to y=5000 automatically
+
+ThrowResultPanelController.discPreview → DiscPreviewRig's DiscPreviewController.
+
 ## DiscModel Assets Location
 Assets/Resources/DiscModels/ — DiscModelLibrary.asset + 1,272 individual .asset files (post SIM-4).
 Named presets (original 11): Innova_Destroyer, etc.

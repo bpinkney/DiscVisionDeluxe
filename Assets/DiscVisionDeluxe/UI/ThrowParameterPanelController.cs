@@ -578,6 +578,51 @@ namespace DiscVisionDeluxe.UI
             return env;
         }
 
+        // ── Populate from history ────────────────────────────────────────────
+
+        /// <summary>
+        /// Populate all throw-parameter sliders from a historical FlightStats entry.
+        /// Called by ThrowResultPanelController when the user picks a previous throw.
+        /// </summary>
+        public void PopulateFromHistory(DfisX.FlightStats stats)
+        {
+            var root = GetComponent<UIDocument>().rootVisualElement;
+
+            // Sliders — SetSliderValue triggers each registered callback, which
+            // updates the corresponding private field and calls RequestPreviewUpdate.
+            SetSliderValue(root, "speed-slider",         "speed-val",        stats.throwSpeedMps,     "F1");
+            SetSliderValue(root, "heading-slider",        "heading-val",      stats.throwAzimuthDeg,   "F1");
+            SetSliderValue(root, "launch-angle-slider",   "launch-angle-val", stats.throwElevationDeg, "F1");
+            SetSliderValue(root, "hyzer-slider",          "hyzer-val",        stats.hyzerAngleDeg,     "F1");
+            SetSliderValue(root, "pitch-slider",          "pitch-val",        stats.noseAngleDeg,      "F1");
+            // spinRpm is positive-RHBH; the slider uses negative-RHBH convention
+            SetSliderValue(root, "spin-slider",           "spin-val",        -stats.spinRpm,           "F0");
+
+            // Disc — clear all filters then find the disc by mold name
+            if (discModelLibrary != null && !string.IsNullOrEmpty(stats.discName))
+            {
+                _filterType         = "All";
+                _filterManufacturer = "All";
+                _filterStability    = "All";
+                _filterSearch       = "";
+                root.Q<DropdownField>("type-filter")        ?.SetValueWithoutNotify("All");
+                root.Q<DropdownField>("stability-filter")   ?.SetValueWithoutNotify("All");
+                root.Q<DropdownField>("manufacturer-filter")?.SetValueWithoutNotify("All");
+                root.Q<TextField>("disc-search")            ?.SetValueWithoutNotify("");
+
+                foreach (var d in discModelLibrary.discs)
+                {
+                    if (d != null && d.moldName == stats.discName)
+                    {
+                        _selectedModel = d;
+                        break;
+                    }
+                }
+
+                RebuildDiscDropdown();
+            }
+        }
+
         // ── Helpers ──────────────────────────────────────────────────────────
 
         static void BindSlider(VisualElement root, string sliderName, string labelName,

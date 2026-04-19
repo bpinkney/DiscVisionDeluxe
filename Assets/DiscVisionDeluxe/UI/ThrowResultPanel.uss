@@ -1,0 +1,135 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   ThrowResultPanel.uss  —  Throw statistics overlay
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── History bar (persistent, top-left) ───────────────────────────────────── */
+
+.top-bar {
+    position: absolute;
+    top: 14px;
+    left: 165px;
+    flex-direction: row;
+    align-items: center;
+    height: 32px;
+    background-color: rgba(14, 16, 18, 0.88);
+    border-width: 1px;
+    border-color: rgba(80, 200, 120, 0.35);
+    border-radius: 4px;
+    padding: 0 10px;
+}
+
+.top-bar-label {
+    font-size: 9px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.history-dropdown {
+    width: 180px;
+}
+
+.history-dropdown .unity-base-field__input,
+.history-dropdown .unity-dropdown-field__input {
+    background-color: rgba(30, 34, 38, 1);
+    border-color: rgba(80, 200, 120, 0.3);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(220, 225, 230);
+    font-size: 11px;
+    height: 22px;
+    padding: 0 6px;
+}
+
+/* ── Stats panel (bottom-left, shown after throw) ─────────────────────────── */
+
+.stats-panel {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 320px;
+    background-color: rgba(14, 16, 18, 0.92);
+    border-width: 1px;
+    border-color: rgba(80, 200, 120, 0.35);
+    border-radius: 4px;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Title bar ────────────────────────────────────────────────────────────── */
+
+.panel-title {
+    font-size: 11px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    padding: 8px 12px 5px 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(80, 200, 120, 0.25);
+}
+
+/* ── Disc name ────────────────────────────────────────────────────────────── */
+
+.disc-name-label {
+    font-size: 15px;
+    color: rgb(240, 245, 250);
+    -unity-font-style: bold;
+    padding: 6px 12px 4px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* ── Section headers ──────────────────────────────────────────────────────── */
+
+.section-header {
+    font-size: 9px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    margin-bottom: 1px;
+    padding-left: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(80, 200, 120, 0.15);
+}
+
+/* ── Disc preview ─────────────────────────────────────────────────────────── */
+
+.disc-preview {
+    width: 288px;
+    height: 172px;
+    margin: 2px 12px 6px 12px;
+    border-radius: 3px;
+    overflow: hidden;
+    align-self: center;
+}
+
+/* ── Stat rows ────────────────────────────────────────────────────────────── */
+
+.stat-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 1px 10px 1px 12px;
+    height: 22px;
+}
+
+.stat-row:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: rgb(170, 175, 182);
+    width: 96px;
+    flex-shrink: 0;
+}
+
+.stat-val {
+    font-size: 11px;
+    color: rgb(220, 228, 235);
+    -unity-font-style: bold;
+    flex-grow: 1;
+    -unity-text-align: upper-right;
+}
