@@ -46,3 +46,4 @@ ignore.conf
 
 # Null/junk files
 null
+ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json
