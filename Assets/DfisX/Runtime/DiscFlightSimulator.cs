@@ -125,7 +125,13 @@ namespace DfisX
                 : DiscModelPresets.Destroyer().ToBlittable();
 
             // ---- Statistics origin ----
-            Container.discStartLocation = p.position;
+            Container.discStartLocation  = p.position;
+            Container.throwSpinRateRadS  = p.spinRate;
+            Container.throwHyzerRad      = p.hyzer;
+            Container.throwPitchRad      = p.pitch;
+            Container.throwDiscName      = p.directModel != null
+                                           ? p.directModel.moldName
+                                           : p.discIndex.ToString();
 
             // Run one priming step so Daero populates unit vectors before
             // the first external call to StepSimulation() — mirrors the
@@ -262,18 +268,68 @@ namespace DfisX
             if (Container.discStateCount < 2)
                 return default;
 
-            float3 startLoc   = Container.discStateArray[0].discLocation;
-            float3 finishLoc  = Container.discStateArray[Container.discStateCount - 1].discLocation;
-            float3 startVel   = Container.discStateArray[0].discVelocity;
+            float3 startLoc  = Container.discStateArray[0].discLocation;
+            float3 finishLoc = Container.discStateArray[Container.discStateCount - 1].discLocation;
+            float3 startVel  = Container.discStateArray[0].discVelocity;
+
+            // Horizontal throw direction (DfisX Z-up: X=forward, Y=right)
+            float2 velH       = new float2(startVel.x, startVel.y);
+            float  hSpeed     = length(velH);
+            float2 throwDir   = hSpeed > 0.001f ? velH / hSpeed : new float2(1f, 0f);
+            float2 perpDir    = new float2(-throwDir.y, throwDir.x); // points RIGHT of throw dir
+
+            float rawSpin  = Container.throwSpinRateRadS != 0f
+                             ? Container.throwSpinRateRadS
+                             : Container.discStateArray[0].discRotationVel;
+            float speedMps = length(startVel);
+            // Display convention: positive RPM = RHBH (clockwise from above) = turns right first
+            float spinRpm  = -rawSpin * 60f / (2f * PI);
+            float turnSide          = spinRpm >= 0f ? 1f : -1f; // +1 = right, -1 = left
+
+            float maxTurnLateral    = 0f;
+            float signedLatLanding  = 0f;
+            float maxHeight         = 0f;
+
+            for (int i = 0; i < Container.discStateCount; i++)
+            {
+                float3 pos   = Container.discStateArray[i].discLocation;
+                float2 relH  = new float2(pos.x - startLoc.x, pos.y - startLoc.y);
+                float  lat   = dot(relH, perpDir) * turnSide; // positive = turn direction
+
+                if (lat > maxTurnLateral) maxTurnLateral = lat;
+
+                float h = pos.z - startLoc.z;
+                if (h > maxHeight) maxHeight = h;
+
+                if (i == Container.discStateCount - 1) signedLatLanding = lat;
+            }
+
+            float2 relFinish    = new float2(finishLoc.x - startLoc.x, finishLoc.y - startLoc.y);
+            float  horizDist    = length(relFinish);        // 2-D horizontal distance tee→landing
+            float  lateralDist  = dot(relFinish, perpDir); // positive = right of throw dir
 
             return new FlightStats
             {
-                timeAloftS          = Container.discStateCount * dt,
-                distanceM           = length(finishLoc - startLoc),
-                maxSpeedMps         = length(startVel),
-                stepCount           = Container.currentDiscState.forcesState.stepCount,
-                startLocation       = startLoc,
-                landingLocation     = finishLoc
+                timeAloftS        = Container.discStateCount * dt,
+                distanceM         = length(finishLoc - startLoc),
+                maxSpeedMps       = speedMps,
+                stepCount         = Container.currentDiscState.forcesState.stepCount,
+                startLocation     = startLoc,
+                landingLocation   = finishLoc,
+
+                discName          = Container.throwDiscName ?? "Unknown",
+                throwSpeedMps     = speedMps,
+                spinRpm           = spinRpm,
+                spinFactor        = speedMps > 0f ? abs(spinRpm) / speedMps : 0f,
+                hyzerAngleDeg     = degrees(Container.throwHyzerRad),
+                noseAngleDeg      = degrees(Container.throwPitchRad),
+                throwElevationDeg = degrees(atan2(startVel.z, hSpeed)),
+                throwAzimuthDeg   = degrees(atan2(startVel.y, startVel.x)),
+                horizontalDistM   = horizDist,
+                lateralDistM      = lateralDist,
+                maxHeightM        = maxHeight,
+                lateralTurnM      = maxTurnLateral,
+                lateralFadeM      = max(0f, maxTurnLateral - signedLatLanding),
             };
         }
 
@@ -309,16 +365,34 @@ namespace DfisX
 
     public struct FlightStats
     {
+        // Core
         public float  timeAloftS;
-        public float  distanceM;
-        public float  maxSpeedMps;
+        public float  distanceM;        // 3-D straight-line release-to-landing
+        public float  maxSpeedMps;      // release speed (kept for backwards compat)
         public int    stepCount;
         public float3 startLocation;
         public float3 landingLocation;
 
+        // Throw inputs
+        public string discName;
+        public float  throwSpeedMps;    // = maxSpeedMps (release speed)
+        public float  spinRpm;          // positive = RHBH (turns right first)
+        public float  spinFactor;       // |spinRpm| / throwSpeedMps
+        public float  hyzerAngleDeg;    // positive = disc tilted right (RHBH)
+        public float  noseAngleDeg;     // positive = nose up
+        public float  throwElevationDeg;
+        public float  throwAzimuthDeg;  // from +X axis in horizontal plane
+
+        // Flight shape
+        public float  horizontalDistM;  // downrange along initial throw direction
+        public float  lateralDistM;     // landing offset: positive = right of throw line
+        public float  maxHeightM;       // peak altitude above release
+        public float  lateralTurnM;     // max lateral in turn direction
+        public float  lateralFadeM;     // lateral from turn peak back toward fade side
+
         public override string ToString() =>
             $"Time: {timeAloftS:F2}s  Distance: {distanceM:F1}m ({distanceM * 3.28f:F0}ft)" +
-            $"  MaxSpeed: {maxSpeedMps:F1}m/s ({maxSpeedMps * 2.237f:F0}mph)" +
+            $"  Speed: {maxSpeedMps:F1}m/s ({maxSpeedMps * 2.237f:F0}mph)" +
             $"  Steps: {stepCount}";
     }
 }

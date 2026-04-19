@@ -1,0 +1,97 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+
+    <Style src="ThrowResultPanel.uss" />
+
+    <!-- History bar — persistent, shown after first throw -->
+    <ui:VisualElement name="top-bar" class="top-bar">
+        <ui:Label text="HISTORY" class="top-bar-label" />
+        <ui:DropdownField name="history-dropdown" class="history-dropdown" />
+    </ui:VisualElement>
+
+    <!-- Stats panel — slides in after throw, fades after 5 s -->
+    <ui:VisualElement name="stats-panel" class="stats-panel">
+
+        <ui:Label text="THROW RESULTS" class="panel-title" />
+
+        <!-- Disc name -->
+        <ui:Label name="stat-disc-name" text="—" class="disc-name-label" />
+
+        <!-- Disc 3-D preview -->
+        <ui:VisualElement name="disc-preview" class="disc-preview" />
+
+        <!-- ── Throw inputs ─────────────────────────────────────────── -->
+        <ui:Label text="THROW" class="section-header" />
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Speed" class="stat-label" />
+            <ui:Label name="stat-speed" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Spin RPM" class="stat-label" />
+            <ui:Label name="stat-spin-rpm" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Spin Factor" class="stat-label" />
+            <ui:Label name="stat-spin-factor" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Hyzer" class="stat-label" />
+            <ui:Label name="stat-hyzer" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Nose Angle" class="stat-label" />
+            <ui:Label name="stat-nose" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Elevation" class="stat-label" />
+            <ui:Label name="stat-elevation" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Azimuth" class="stat-label" />
+            <ui:Label name="stat-azimuth" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <!-- ── Flight results ───────────────────────────────────────── -->
+        <ui:Label text="FLIGHT" class="section-header" />
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Distance" class="stat-label" />
+            <ui:Label name="stat-distance" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Lateral" class="stat-label" />
+            <ui:Label name="stat-lateral" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Time Aloft" class="stat-label" />
+            <ui:Label name="stat-time" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <!-- ── Flight shape ─────────────────────────────────────────── -->
+        <ui:Label text="SHAPE" class="section-header" />
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Turn" class="stat-label" />
+            <ui:Label name="stat-turn" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="stat-row">
+            <ui:Label text="Fade" class="stat-label" />
+            <ui:Label name="stat-fade" text="—" class="stat-val" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

@@ -1,5 +1,5 @@
 # DiscVisionDeluxe — AI Context Index
-Last updated: Session 13 (2026-04-14)
+Last updated: Session 14 (2026-04-18)
 
 ## What This Project Is
 Unity 6 disc golf flight simulator. DfisX C++ physics engine ported to C#.
@@ -20,7 +20,7 @@ Unity 6000.4.0f1. URP (com.unity.render-pipelines.universal 17.4.0). Cinemachine
 | DfisX (Unity, noEngineRef=false) | DiscFlightSimulator.cs, DiscModel.cs, DiscModelLibrary.cs, DiscModelPresets.cs, ThrowParameters.cs |
 | DiscVisionDeluxe | DiscState.cs, DiscKalmanFilter.cs, DiscSimulator.cs, DiscVisualizer.cs, CsvLogReader.cs, DiscThrowDebugger.cs |
 | DiscVisionDeluxe.Camera | SpinnakerCAPI.cs, SpinnakerCameraCapture.cs, AprilTagDetector.cs, CameraCalibration.cs, GroundPlaneCalibration.cs, GroundPlaneCalibrator.cs, LiveDiscTracker.cs, FollowFlightCamera.cs |
-| DiscVisionDeluxe.UI | ThrowParameterPanelController.cs, MiniMap.cs, WindIndicator.cs, ThrowResultPanelController.cs, LeaderboardPanelController.cs |
+| DiscVisionDeluxe.UI | ThrowParameterPanelController.cs, MiniMap.cs, WindIndicator.cs, ThrowResultPanelController.cs, DiscPreviewController.cs, LeaderboardPanelController.cs |
 | DiscVisionDeluxe.Visualization | DiscMeshBuilder.cs, DiscVisualController.cs, ShotPreviewLine.cs, LandingMarker.cs |
 
 ## Flight Pipeline
@@ -46,7 +46,7 @@ Disc flies along Unity +X. Camera must face +X. All scene layout uses +X as flig
 | INF-5 | Main menu scene + AppSettings.cs persistence | Infra |
 | CAM-ISSUE-1 | Redo camera calibration (current RMS 3.4274 — target <1.0) | Track A |
 | CAM-ISSUE-3 | Real throws not detected without establishment | Track A |
-| POL-4 | Throw result statistics panel | Track B |
+| POL-4 | Throw result statistics panel + disc preview | Track B — Done |
 | POL-5 | Wind indicator HUD (windsock style) | Track B |
 | POL-6 | Practice range modes + leaderboard | Track B |
 | POL-7 | Replay system (discStateArray serialization) | Track B |
@@ -79,3 +79,4 @@ Disc flies along Unity +X. Camera must face +X. All scene layout uses +X as flig
 | 11 | CAM-2: Emgu CV 4.12 AprilTag. CAM-3: calibration EditorWindow. |
 | 12 | CAM-4: ground plane calibration. CAM-5 PoC: LiveDiscTracker, end-to-end throw detected. |
 | 13 | SIM-4: 1,272 discs imported, multi-filter disc selection UI, recents list. |
+| 14 | POL-4: ThrowResultPanelController (stats, real-time updates, 5-throw history, populate-from-history), DiscPreviewController (3D disc preview in RT, transparent bg, front-angle camera). |

@@ -70,10 +70,35 @@ dfisxTrajectoryLine must have vertex-color-capable material. Awake() auto-create
 Global physics-model tuning constants — NOT per-disc parameters. Applied identically to every disc.
 Sliders: cdEdge(0.6), clCavity(45.0), clCamber(1.0), cavityEdgeExposedAreaFactor(1.0), pitchingMomentCavityLiftOffset(0.042), pitchingMomentCamberLiftOffset(0.15).
 
+## ThrowResultPanelController (UI/)
+Files: ThrowResultPanel.uxml / ThrowResultPanel.uss / ThrowResultPanelController.cs / DiscPreviewController.cs
+
+Stats shown: Disc Name, Speed, Spin RPM, Spin Factor, Hyzer, Nose Angle, Elevation, Azimuth, Distance, Lateral, Time Aloft, Turn, Fade.
+- Panel appears immediately on throw (HandleSimStarted), Distance/Lateral/Time update in real-time via Update().
+- HandleThrowFinished finalises Turn, Fade, and corrects Distance/Lateral/Time with BuildStats values.
+- History dropdown (top-bar, left: 165px — right of MiniMap) stores last 5 throws. Selecting from dropdown calls PopulateFromHistory on ThrowParameterPanelController.
+
+**Spin sign convention**: `spinRpm = -rawSpin * 60 / (2π)` — negated so RHBH (negative spinRate in physics) displays positive.
+**Turn/Fade**: perpDir = 90° CCW from throwDir (points right); turnSide = ±1 from spin sign; fadeM = max(0, maxTurnLateral − signedLatLanding).
+**Horizontal distance**: `length(relFinish.xy)` — 2D magnitude, NOT dot product (would undercount with lateral drift).
+
+ThrowContainer primitive snapshot fields (DfisXStructs.cs — Core, no UnityEngine):
+`throwSpinRateRadS`, `throwHyzerRad`, `throwPitchRad`, `throwDiscName` — set in DiscFlightSimulator.NewThrow().
+
+## DiscPreviewController (UI/)
+Renders a 3D disc preview into a 288×172 RenderTexture, displayed as a `backgroundImage` on the `disc-preview` VisualElement inside stats-panel.
+
+**Isolation**: entire rig (camera + disc copy) placed at y=5000. Camera farClipPlane=3.0m — main scene never bleeds in, no custom layer needed.
+**Camera**: local position (0, 0.4, 1.3) — from in front of disc, ~17° above horizontal. Shows hyzer as left/right tilt, nose angle as face pitch. FOV=14°, transparent clear (0,0,0,0).
+**Disc copy**: MeshFilter + MeshRenderer child. MirrorDiscAppearance() copies sharedMesh + creates Material instances from sourceDisc (DiscVisualController).
+**UpdateOrientation(hyzerDeg, noseAngleDeg)**: uses DiscNormal formula (same as ThrowParameters.DiscNormal): `nx=sin(-p)cos(h), ny=sin(h)cos(p), nz=cos(p)cos(h)`; DfisX→Unity axis swap (x,y,z)→(x,z,y); then `Quaternion.LookRotation(Vector3.forward, discNormalUnity)`.
+**RT binding**: one-frame coroutine in ThrowResultPanelController.Start() — `Background.FromRenderTexture(discPreview.PreviewRT)`.
+**Known issue**: if RT shows black box instead of transparency, URP camera output alpha may need `allowHDR=false` or a camera output action tweak.
+
 ## Pending Tasks
 | ID | Status | Notes |
 |---|---|---|
-| POL-4 | Pending | Throw result stats panel — slide in after landing; shows distance/height/drift. FlightStats fields maxHeightM, lateralDriftM need adding to DfisXStructs.cs. |
+| POL-4 | Done | Code complete. Requires scene wiring (see scene-setup.md). |
 | POL-5 | Pending | Wind indicator HUD (windsock style). Sock body droops in wind direction; gust indicator animates on gustFactor. |
 | POL-6 | Pending | Practice range modes + leaderboard. Modes: Freestyle, DistanceChallenge, AccuracyChallenge. Persists leaderboard.json. |
 | POL-7 | Pending | Replay system. discStateArray.ToArray() → raw bytes → file. NativeArray.CopyFrom() on load. Play/pause/scrub coroutine. |

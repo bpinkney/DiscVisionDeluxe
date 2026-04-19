@@ -301,6 +301,12 @@ namespace DfisX
         public float3 discFinishLocation;
         public float  discCumulativeRoll;
 
+        // Throw-input snapshot for BuildStats (avoids ThrowParameters dependency)
+        public float  throwSpinRateRadS;
+        public float  throwHyzerRad;
+        public float  throwPitchRad;
+        public string throwDiscName;
+
         public ThrowContainer(int initialCapacity = 5000)
         {
             discStateArray = new NativeArray<DiscState>(
