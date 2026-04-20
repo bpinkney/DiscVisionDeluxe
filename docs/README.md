@@ -4,23 +4,37 @@ DiscVisionDeluxe is a Unity 6 disc golf flight simulator. A FLIR Spinnaker camer
 
 ## Contents
 
+### Project
+- [Overview](Project/Overview.md) — High-level diagram, two input paths, key entrypoints, tech stack
+- [Development Guidelines](Project/DevelopmentGuidelines.md) — Invariants, conventions, how to wire new inputs
+- [Assembly Reference](Project/AssemblyReference.md) — All asmdef files, dependency graph, platform rules
+- [Decision Log](Project/DecisionLog.md) — All architecture decisions with rationale
+
 ### Setup
 - [Unity Project Setup](setup/unity-setup.md) — Unity version, packages, URP configuration, scene list
 - [Camera Hardware Setup](setup/camera-hardware.md) — FLIR Spinnaker SDK installation, DLL configuration
 - [Camera Calibration](setup/camera-calibration.md) — Lens calibration and ground plane calibration workflows
 
-### Architecture
-- [System Overview](architecture/overview.md) — High-level diagram, two input paths, key entrypoints
-- [DfisX Physics Engine](architecture/dfisX-physics.md) — C# port design, blittable structs, coordinate system
-- [Kalman Filter Pipeline](architecture/kf-pipeline.md) — KF design, CSV path, live camera path
-- [Camera Pipeline](architecture/camera-pipeline.md) — P/Invoke rationale, thread architecture, AprilTag
-- [Assembly Reference](architecture/assembly-reference.md) — All asmdef files, dependency graph, platform rules
-
-### Development
-- [Adding Features](development/adding-features.md) — Conventions, invariants, how to wire new inputs
-- [Disc Database](development/disc-database.md) — PDGA CSV structure, import tool, DiscModel ScriptableObject
-- [Open Issues](development/open-issues.md) — Known problems with context and workarounds
-- [Decision Log](development/decision-log.md) — All architecture decisions with rationale
+### Features
+| Feature | Status | Entry |
+|---|---|---|
+| DfisX Physics Engine | ✅ Complete (Burst pending) | [Entry](Features/DfisXPhysicsEngine/Entry.md) |
+| Kalman Filter Pipeline | ✅ Complete | [Entry](Features/KalmanFilterPipeline/Entry.md) |
+| Camera Pipeline | 🔧 In Progress | [Entry](Features/CameraPipeline/Entry.md) |
+| Disc Database | ✅ Complete | [Entry](Features/DiscDatabase/Entry.md) |
+| Disc Visualization | 🔧 In Progress | [Entry](Features/DiscVisualization/Entry.md) |
+| UI Throw Panel | ✅ Complete | [Entry](Features/UIThrowPanel/Entry.md) |
+| UI Results Panel | ✅ Complete | [Entry](Features/UIResultsPanel/Entry.md) |
+| Flight Cameras | ✅ Complete | [Entry](Features/FlightCameras/Entry.md) |
+| MiniMap | ✅ Complete | [Entry](Features/MiniMap/Entry.md) |
+| Scene Environment | 🔧 In Progress | [Entry](Features/SceneEnvironment/Entry.md) |
+| Wind Indicator HUD | ⏳ Pending | [Entry](Features/WindIndicatorHUD/Entry.md) |
+| Practice Range Modes | ⏳ Pending | [Entry](Features/PracticeRangeModes/Entry.md) |
+| Replay System | ⏳ Pending | [Entry](Features/ReplaySystem/Entry.md) |
+| Collision Feedback | ⏳ Pending | [Entry](Features/CollisionFeedback/Entry.md) |
+| Course Holes | ⏳ Stretch | [Entry](Features/CourseHoles/Entry.md) |
+| Burst Migration | ⏳ Pending | [Entry](Features/BurstMigration/Entry.md) |
+| Main Menu | ⏳ Pending | [Entry](Features/MainMenu/Entry.md) |
 
 ### AI Context
 The `ai/` folder contains context files for the AI coding assistant. They are not intended for human reading.

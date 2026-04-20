@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using DfisX;
-using DiscVisionDeluxe.Camera;
+using DiscVisionDeluxe.FlightCameras;
 using DiscVisionDeluxe.Visualization;
 
 namespace DiscVisionDeluxe.UI

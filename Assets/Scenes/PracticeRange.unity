@@ -514,7 +514,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fd5d3cc8103b8c43a2fd5a11066329b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DiscVisionDeluxe::DiscVisionDeluxe.Camera.FollowFlightCamera
+  m_EditorClassIdentifier: DiscVisionDeluxe::DiscVisionDeluxe.FlightCameras.FollowFlightCamera
   discVisualizer: {fileID: 1679812620}
   discTransform: {fileID: 1679812623}
   vcamOverview: {fileID: 929846357}
