@@ -6,8 +6,7 @@
         "DfisX.Unity",
         "DfisX.Runtime",
         "Unity.Mathematics",
-        "Unity.Collections",
-        "Unity.Cinemachine"
+        "Unity.Collections"
     ],
     "includePlatforms": [
         "Editor",
