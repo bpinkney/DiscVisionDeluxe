@@ -47,3 +47,6 @@ ignore.conf
 # Null/junk files
 null
 ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json
+Assets/Settings/UniversalRenderPipelineGlobalSettings.asset
+Assets/URPDefaultResources/
+ProjectSettings/GraphicsSettings.asset
