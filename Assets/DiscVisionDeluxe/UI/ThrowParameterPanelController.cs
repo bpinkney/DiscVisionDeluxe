@@ -31,6 +31,7 @@ namespace DiscVisionDeluxe.UI
         public DiscModelLibrary  discModelLibrary;
         public FollowFlightCamera followFlightCamera;
         public ShotPreviewLine   shotPreviewLine;
+        public WindField         windField;
 
         // ── Throw parameter state (mirrors DiscThrowDebugger fields) ────────
 
@@ -41,14 +42,6 @@ namespace DiscVisionDeluxe.UI
         float _pitchDeg       = 0f;
         float _spinRpm        = -700f;
         float _wobble         = 0f;
-
-        // ── Environment state ────────────────────────────────────────────────
-
-        float      _windX       = 0f;
-        float      _windY       = 0f;
-        float      _windZ       = 0f;
-        float      _airDensity  = 1.225f;
-        int        _gustFactor  = 0;
 
         // ── Aero debug state ─────────────────────────────────────────────────
 
@@ -319,25 +312,27 @@ namespace DiscVisionDeluxe.UI
             BindSlider(root, "wobble-slider",      "wobble-val",      v => { _wobble         = v; RequestPreviewUpdate(); }, "F2");
         }
 
-        // ── Environment sliders ──────────────────────────────────────────────
+        // ── Environment controls ─────────────────────────────────────────────
 
         void BindEnvironment(VisualElement root)
         {
-            BindSlider(root, "wind-x-slider",      "wind-x-val",      v => { _windX      = v; RequestPreviewUpdate(); }, "F1");
-            BindSlider(root, "wind-y-slider",      "wind-y-val",      v => { _windY      = v; RequestPreviewUpdate(); }, "F1");
-            BindSlider(root, "wind-z-slider",      "wind-z-val",      v => { _windZ      = v; RequestPreviewUpdate(); }, "F1");
-            BindSlider(root, "air-density-slider", "air-density-val", v => { _airDensity = v; RequestPreviewUpdate(); }, "F3");
+            if (windField == null) return;
 
-            var gustSlider = root.Q<SliderInt>("gust-slider");
-            var gustVal    = root.Q<Label>("gust-val");
-            if (gustSlider != null)
+            BindSlider(root, "wind-dir-slider",   "wind-dir-val",   v => { windField.windDirectionDeg = v; RequestPreviewUpdate(); }, "F0");
+            BindSlider(root, "wind-speed-slider", "wind-speed-val", v => { windField.windSpeedKph     = v; RequestPreviewUpdate(); }, "F0");
+            BindSlider(root, "wind-vert-slider",  "wind-vert-val",  v => { windField.windVerticalMs   = v; RequestPreviewUpdate(); }, "F1");
+            BindSlider(root, "air-density-slider","air-density-val",v => { windField.airDensity        = v; RequestPreviewUpdate(); }, "F3");
+
+            var gustDropdown = root.Q<DropdownField>("gust-dropdown");
+            if (gustDropdown == null) return;
+
+            gustDropdown.choices = new List<string>(System.Enum.GetNames(typeof(GustFactor)));
+            gustDropdown.index   = (int)windField.gustFactor;
+            gustDropdown.RegisterValueChangedCallback(_ =>
             {
-                gustSlider.RegisterValueChangedCallback(evt =>
-                {
-                    _gustFactor = evt.newValue;
-                    if (gustVal != null) gustVal.text = evt.newValue.ToString();
-                });
-            }
+                windField.gustFactor = (GustFactor)gustDropdown.index;
+                RequestPreviewUpdate();
+            });
         }
 
         // ── Aero debug sliders ───────────────────────────────────────────────
@@ -572,10 +567,7 @@ namespace DiscVisionDeluxe.UI
 
         DiscEnvironment BuildEnvironment()
         {
-            var env = DiscEnvironment.Default;
-            env.windVectorXYZ = new Unity.Mathematics.float3(_windX, _windY, _windZ);
-            env.airDensity    = _airDensity;
-            return env;
+            return windField != null ? windField.BuildEnvironment() : DiscEnvironment.Default;
         }
 
         // ── Populate from history ────────────────────────────────────────────

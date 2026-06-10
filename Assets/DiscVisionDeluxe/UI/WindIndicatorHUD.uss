@@ -1,0 +1,31 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   WindIndicatorHUD.uss  —  Labels overlaid beneath the 3D windsock
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Anchor bottom-left; WindIndicator.cs positions this to match the 3D sock */
+.wind-hud-root {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    width: 80px;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* Cardinal direction (N, NE, E …) */
+.wind-cardinal {
+    font-size: 14px;
+    color: rgb(80, 200, 120);
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    letter-spacing: 1px;
+}
+
+/* Speed in kph — no gusts */
+.wind-speed {
+    font-size: 11px;
+    color: rgb(180, 190, 195);
+    -unity-text-align: upper-center;
+    margin-top: 2px;
+}

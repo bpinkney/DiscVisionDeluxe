@@ -7,11 +7,13 @@ type: project
 # Wind Indicator HUD Entry
 
 - **Status**: ⏳ Pending
-- **Active task**: POL-5 — Windsock HUD (sock droops in wind direction, gust animation on gustFactor)
+- **Active task**: POL-5 — Wind system + windsock HUD
 - **Blocker**: None
 
 ## Key Scripts
-- `Assets/DiscVisionDeluxe/UI/WindIndicator.cs` (stub exists)
+- `Assets/DiscVisionDeluxe/Environment/WindField.cs` (new — wind simulation/sampling)
+- `Assets/DiscVisionDeluxe/UI/WindIndicator.cs` (new — HUD controller)
 
 ## Load More
 - Active tasks: [Tasks.md](Tasks.md)
+- Feature design: [Design.md](Design.md)

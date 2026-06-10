@@ -68,11 +68,9 @@ namespace DiscVisionDeluxe
                  "It rebuilds the procedural disc mesh whenever the selected model changes.")]
         public DiscVisionDeluxe.Visualization.DiscVisualController discVisualController;
 
-        [Tooltip("Wind vector in DfisX Z-up world frame (m/s). X=forward, Y=right, Z=up.")]
-        public Vector3 windVectorZUp = Vector3.zero;
-
-        [Tooltip("Air density (kg/m3). ISA sea-level = 1.225")]
-        public float airDensity = 1.225f;
+        [Tooltip("Scene WindField — owns direction, speed, gust, and air density. " +
+                 "Assign the WindField GameObject from the scene. If null, calm air is assumed.")]
+        public WindField windField;
 
         [Header("DfisX Rigidbody Handoff")]
         [Tooltip("Rigidbody on this GameObject. Set isKinematic = true in prefab.")]
@@ -294,10 +292,7 @@ namespace DiscVisionDeluxe
                 directModel = initState.directModel
             };
 
-            var env = DfisX.DiscEnvironment.Default;
-            env.windVectorXYZ = new Unity.Mathematics.float3(
-                windVectorZUp.x, windVectorZUp.y, windVectorZUp.z);
-            env.airDensity = airDensity;
+            var env = windField != null ? windField.BuildEnvironment() : DfisX.DiscEnvironment.Default;
 
             discVisualController?.SetDiscModel(initState.directModel);
             _StartDfisxFlight(p, env, default);
@@ -333,10 +328,7 @@ namespace DiscVisionDeluxe
                 directModel = initState.directModel
             };
 
-            var env = DfisX.DiscEnvironment.Default;
-            env.windVectorXYZ = new Unity.Mathematics.float3(
-                windVectorZUp.x, windVectorZUp.y, windVectorZUp.z);
-            env.airDensity = airDensity;
+            var env = windField != null ? windField.BuildEnvironment() : DfisX.DiscEnvironment.Default;
 
             discVisualController?.SetDiscModel(initState.directModel);
             _StartDfisxFlight(p, env, aeroDebug);
@@ -372,10 +364,7 @@ namespace DiscVisionDeluxe
                 discIndex = (DfisX.DiscLayoutIndex)(int)initState.discMold
             };
 
-            var env = DfisX.DiscEnvironment.Default;
-            env.windVectorXYZ = new Unity.Mathematics.float3(
-                windVectorZUp.x, windVectorZUp.y, windVectorZUp.z);
-            env.airDensity = airDensity;
+            var env = windField != null ? windField.BuildEnvironment() : DfisX.DiscEnvironment.Default;
 
             _StartDfisxFlight(p, env, default, ThrowSource.Live);
         }

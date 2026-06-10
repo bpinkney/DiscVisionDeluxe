@@ -82,21 +82,21 @@
             <ui:Label text="ENVIRONMENT" class="section-header" />
 
             <ui:VisualElement class="slider-row">
-                <ui:Label text="Wind X (m/s)" class="slider-label" />
-                <ui:Slider name="wind-x-slider" low-value="-20" high-value="20" value="0" class="slider" />
-                <ui:Label name="wind-x-val" text="0.0" class="val-label" />
+                <ui:Label text="Wind Dir (°)" class="slider-label" />
+                <ui:Slider name="wind-dir-slider" low-value="0" high-value="359" value="0" class="slider" />
+                <ui:Label name="wind-dir-val" text="0" class="val-label" />
             </ui:VisualElement>
 
             <ui:VisualElement class="slider-row">
-                <ui:Label text="Wind Y (m/s)" class="slider-label" />
-                <ui:Slider name="wind-y-slider" low-value="-20" high-value="20" value="0" class="slider" />
-                <ui:Label name="wind-y-val" text="0.0" class="val-label" />
+                <ui:Label text="Wind Speed (kph)" class="slider-label" />
+                <ui:Slider name="wind-speed-slider" low-value="0" high-value="100" value="0" class="slider" />
+                <ui:Label name="wind-speed-val" text="0" class="val-label" />
             </ui:VisualElement>
 
             <ui:VisualElement class="slider-row">
-                <ui:Label text="Wind Z (m/s)" class="slider-label" />
-                <ui:Slider name="wind-z-slider" low-value="-20" high-value="20" value="0" class="slider" />
-                <ui:Label name="wind-z-val" text="0.0" class="val-label" />
+                <ui:Label text="Vertical (m/s)" class="slider-label" />
+                <ui:Slider name="wind-vert-slider" low-value="-5" high-value="5" value="0" class="slider" />
+                <ui:Label name="wind-vert-val" text="0.0" class="val-label" />
             </ui:VisualElement>
 
             <ui:VisualElement class="slider-row">
@@ -106,9 +106,8 @@
             </ui:VisualElement>
 
             <ui:VisualElement class="slider-row">
-                <ui:Label text="Gust Factor" class="slider-label" />
-                <ui:SliderInt name="gust-slider" low-value="0" high-value="10" value="0" class="slider" />
-                <ui:Label name="gust-val" text="0" class="val-label" />
+                <ui:Label text="Gusts" class="slider-label" />
+                <ui:DropdownField name="gust-dropdown" class="gust-dropdown" />
             </ui:VisualElement>
 
             <!-- ── Aero Debug (collapsible) ──────────────────────── -->

@@ -241,6 +241,24 @@
     background-color: rgb(80, 200, 120);
 }
 
+/* Gust dropdown — fits inside slider-row, grows to fill available space */
+.gust-dropdown {
+    flex-grow: 1;
+    margin-left: 4px;
+}
+
+.gust-dropdown .unity-base-field__input,
+.gust-dropdown .unity-dropdown-field__input {
+    background-color: rgba(40, 44, 48, 1);
+    border-color: rgba(80, 200, 120, 0.4);
+    border-width: 1px;
+    border-radius: 3px;
+    color: rgb(220, 225, 230);
+    font-size: 11px;
+    height: 18px;
+    padding: 0 4px;
+}
+
 /* Aero debug foldout */
 .aero-foldout {
     margin: 4px 8px 2px 8px;
